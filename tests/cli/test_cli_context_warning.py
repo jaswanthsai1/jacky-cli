@@ -48,7 +48,7 @@ class TestLowContextWarning:
 
     def test_warning_for_below_minimum_context(self, cli_obj):
         """Warning shown when context is below Jacky' minimum."""
-        cli_obj.agent.context_compressor.context_length = 32768
+        cli_obj.agent.context_compressor.context_length = MINIMUM_CONTEXT_LENGTH - 1
         with patch("jacky_cli.cli.get_tool_definitions", return_value=[]), \
              patch("jacky_cli.cli.build_welcome_banner"):
             cli_obj.show_banner()

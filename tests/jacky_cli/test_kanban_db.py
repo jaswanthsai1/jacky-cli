@@ -3101,7 +3101,7 @@ def test_connect_falls_back_to_delete_on_locking_protocol(tmp_path, monkeypatch,
         )
 
     with _patch("jacky_cli.kanban_db.sqlite3.connect", side_effect=wal_blocking_connect):
-        with caplog.at_level("WARNING", logger="jacky_state"):
+        with caplog.at_level("WARNING", logger="jacky_cli.jacky_state"):
             conn = kb.connect()
 
     # One fallback warning, naming kanban.db

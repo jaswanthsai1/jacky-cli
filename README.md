@@ -52,7 +52,7 @@ jacky
 `.env.example` → `.env`, links the `jacky` command onto your `PATH`, and — before
 declaring success — actually runs `jacky --help` to prove the install works.
 
-📖 **[Full documentation →](website/docs/)** &nbsp;|&nbsp; 🎯 **[Hunt-loop methodology →](METHODOLOGY.md)**
+📖 **[Full documentation →](website/docs/)** &nbsp;|&nbsp; 🎯 **[Hunt-loop methodology →](docs/METHODOLOGY.md)**
 
 <img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00E5FF,100:9D00FF" alt="divider"/>
 
@@ -60,7 +60,7 @@ declaring success — actually runs `jacky --help` to prove the install works.
 
 <table>
 <tr><td><b>Dual local + cloud model support</b></td><td>Run entirely offline against <a href="https://ollama.com">Ollama</a> and any GGUF model — zero API cost, nothing leaves your machine — or point it at any OpenAI-compatible cloud provider (OpenRouter, direct OpenAI/Anthropic, Google AI Studio, and more). Switch providers any time with <code>jacky model</code>, no code changes.</td></tr>
-<tr><td><b>Bundled offensive-security methodology</b></td><td>Ships with a real bug-bounty / red-team hunt-loop doctrine under <code>skills/</code>: scope → recon → rank → enumerate → test → validate → chain → report, plus finding-validation gates, evidence-hygiene discipline, and report-writing formulas. See <a href="METHODOLOGY.md">METHODOLOGY.md</a>.</td></tr>
+<tr><td><b>Bundled offensive-security methodology</b></td><td>Ships with a real bug-bounty / red-team hunt-loop doctrine under <code>skills/</code>: scope → recon → rank → enumerate → test → validate → chain → report, plus finding-validation gates, evidence-hygiene discipline, and report-writing formulas. See <a href="docs/METHODOLOGY.md">METHODOLOGY.md</a>.</td></tr>
 <tr><td><b>A closed learning loop</b></td><td>Agent-curated memory with periodic nudges. Autonomous skill creation after complex tasks — skills self-improve during use. FTS5 session search with LLM summarization for cross-session recall. Compatible with the <a href="https://agentskills.io">agentskills.io</a> open standard.</td></tr>
 <tr><td><b>A real terminal interface</b></td><td>Full TUI with multiline editing, slash-command autocomplete, conversation history, interrupt-and-redirect, and streaming tool output.</td></tr>
 <tr><td><b>Lives where you do</b></td><td>Telegram, Discord, Slack, WhatsApp, Signal, and CLI — all from a single gateway process. Voice memo transcription, cross-platform conversation continuity.</td></tr>
@@ -116,7 +116,7 @@ jacky update       # Update to the latest version
 jacky doctor       # Diagnose any issues
 ```
 
-📖 **[Full documentation →](website/docs/)** &nbsp;|&nbsp; 🎯 **[Hunt-loop methodology →](METHODOLOGY.md)**
+📖 **[Full documentation →](website/docs/)** &nbsp;|&nbsp; 🎯 **[Hunt-loop methodology →](docs/METHODOLOGY.md)**
 
 ---
 
@@ -159,16 +159,16 @@ Source docs live under [`website/docs/`](website/docs/):
 | [Providers](website/docs/integrations/providers.md)                            | Local (Ollama) and cloud (OpenAI-compatible) providers      |
 | [Local Ollama Setup](website/docs/guides/local-ollama-setup.md)                | Zero-API-cost local setup, hardware guidance                |
 | [Architecture](website/docs/developer-guide/architecture.md)                   | Project structure, agent loop, key classes                 |
-| [Contributing](CONTRIBUTING.md)                                                | Development setup, PR process, code style                  |
+| [Contributing](.github/CONTRIBUTING.md)                                                | Development setup, PR process, code style                  |
 | [CLI Reference](website/docs/reference/cli-commands.md)                        | All commands and flags                                     |
 | [Environment Variables](website/docs/reference/environment-variables.md)       | Complete env var reference                                  |
-| **[Hunt-Loop Methodology](METHODOLOGY.md)**                                    | **Bundled bug-bounty/offensive-security doctrine and skills** |
+| **[Hunt-Loop Methodology](docs/METHODOLOGY.md)**                                    | **Bundled bug-bounty/offensive-security doctrine and skills** |
 
 ---
 
 ## Contributing
 
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and PR process.
+We welcome contributions! See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for development setup, code style, and PR process.
 
 ```bash
 git clone https://github.com/jaswanthsai1/jacky-cli.git

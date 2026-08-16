@@ -205,7 +205,7 @@ jobs:
         run: |
           BODY="## ⚠️ Unbounded PyPI Dependency Detected
 
-          This PR adds PyPI dependencies without a \`<next_major\` upper bound. Per our [supply chain policy](../blob/main/CONTRIBUTING.md#dependency-pinning-policy-supply-chain-hardening), all PyPI deps must be pinned as \`>=floor,<next_major\`.
+          This PR adds PyPI dependencies without a \`<next_major\` upper bound. Per our [supply chain policy](../blob/main/.github/CONTRIBUTING.md#dependency-pinning-policy-supply-chain-hardening), all PyPI deps must be pinned as \`>=floor,<next_major\`.
 
           **Unbounded specs found:**
           \`\`\`

@@ -88,7 +88,7 @@ def test_inspection_agent_uses_resolved_platform_toolsets(monkeypatch):
 
     monkeypatch.setitem(
         sys.modules,
-        "run_agent",
+        "jacky_cli.run_agent",
         SimpleNamespace(AIAgent=FakeAIAgent),
     )
     monkeypatch.setattr("jacky_cli.config.load_config", lambda: cfg)

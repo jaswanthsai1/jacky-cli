@@ -135,7 +135,7 @@ Edit `S6ServiceManager._render_run_script` in `jacky_cli/service_manager.py`. Th
 ### Run the docker test harness
 
 ```sh
-docker build -t jacky-agent-harness:latest .
+docker build -f docker/Dockerfile -t jacky-agent-harness:latest .
 JACKY_TEST_IMAGE=jacky-agent-harness:latest scripts/run_tests.sh tests/docker/ -v
 # Expect 19 passed, 0 xfailed against the s6 image
 ```

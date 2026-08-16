@@ -370,7 +370,7 @@ def test_agent_abort_request_openai_client_does_not_call_client_close(caplog):
     agent = AIAgent.__new__(AIAgent)
     agent._client_log_context = lambda: "provider=test"
 
-    with caplog.at_level(logging.INFO, logger="run_agent"):
+    with caplog.at_level(logging.INFO, logger="jacky_cli.run_agent"):
         agent._abort_request_openai_client(client, reason="interrupt_abort")
 
     # Sockets shut down (one in our fake pool).

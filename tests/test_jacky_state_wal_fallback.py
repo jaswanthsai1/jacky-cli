@@ -84,7 +84,7 @@ class TestApplyWalWithFallback:
     def test_falls_back_to_delete_on_locking_protocol(self, tmp_path, caplog):
         """NFS-style ``locking protocol`` error → DELETE mode + one WARNING."""
         conn, _ = _open_blocking(tmp_path / "nfs.db", isolation_level=None)
-        with caplog.at_level("WARNING", logger="jacky_state"):
+        with caplog.at_level("WARNING", logger="jacky_cli.jacky_state"):
             mode = apply_wal_with_fallback(conn, db_label="test.db")
 
         assert mode == "delete"
@@ -203,7 +203,7 @@ class TestApplyWalWithFallback:
         on every kb.connect() call; without dedup, errors.log fills with
         hundreds of identical warnings per hour.
         """
-        with caplog.at_level("WARNING", logger="jacky_state"):
+        with caplog.at_level("WARNING", logger="jacky_cli.jacky_state"):
             # Three separate connections to "the same DB" via the same label
             for i in range(3):
                 conn, _ = _open_blocking(
@@ -225,7 +225,7 @@ class TestApplyWalWithFallback:
 
     def test_warning_fires_independently_per_db_label(self, tmp_path, caplog):
         """Different db_labels each get their own one warning (not globally dedup'd)."""
-        with caplog.at_level("WARNING", logger="jacky_state"):
+        with caplog.at_level("WARNING", logger="jacky_cli.jacky_state"):
             conn1, _ = _open_blocking(tmp_path / "a.db", isolation_level=None)
             apply_wal_with_fallback(conn1, db_label="state.db")
             conn1.close()

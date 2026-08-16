@@ -110,7 +110,7 @@ EXCLUDED_SUFFIXES = {
 # patterns it detects — and the CONTRIBUTING docs that list them).
 EXCLUDED_FILES = {
     "scripts/check-windows-footguns.py",
-    "CONTRIBUTING.md",
+    ".github/CONTRIBUTING.md",
 }
 
 

@@ -134,7 +134,7 @@ def test_log_stream_retry_includes_diagnostic_fields(caplog):
     outer = RuntimeError("Connection error.")
     outer.__cause__ = inner
 
-    with caplog.at_level(logging.WARNING, logger="run_agent"):
+    with caplog.at_level(logging.WARNING, logger="jacky_cli.run_agent"):
         agent._log_stream_retry(
             kind="drop mid tool-call",
             error=outer,
@@ -176,7 +176,7 @@ def test_log_stream_retry_works_without_diag(caplog):
     agent._delegate_depth = 0
     agent.provider = "openrouter"
 
-    with caplog.at_level(logging.WARNING, logger="run_agent"):
+    with caplog.at_level(logging.WARNING, logger="jacky_cli.run_agent"):
         agent._log_stream_retry(
             kind="drop",
             error=ConnectionError("x"),

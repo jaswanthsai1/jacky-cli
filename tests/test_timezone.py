@@ -68,7 +68,7 @@ class TestJackyTimeNow:
     def test_invalid_timezone_falls_back(self, caplog):
         """Invalid timezone logs warning and falls back to server-local."""
         os.environ["JACKY_TIMEZONE"] = "Mars/Olympus_Mons"
-        with caplog.at_level(logging.WARNING, logger="jacky_time"):
+        with caplog.at_level(logging.WARNING, logger="jacky_cli.jacky_time"):
             result = jacky_time.now()
         assert result.tzinfo is not None  # Still tz-aware (server-local)
         assert "Invalid timezone" in caplog.text
