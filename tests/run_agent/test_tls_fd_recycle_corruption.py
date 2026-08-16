@@ -358,7 +358,7 @@ def test_agent_abort_request_openai_client_does_not_call_client_close(caplog):
     the FD race is back. Pin both the shutdown side-effect AND the absence
     of any ``client.close()`` call.
     """
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
 
     sock = _FakeSocket()
     client = _build_fake_client(sock)
@@ -394,7 +394,7 @@ def test_agent_abort_request_openai_client_does_not_call_client_close(caplog):
 
 def test_agent_abort_request_openai_client_null_client_is_noop():
     """A ``None`` client must short-circuit cleanly (defensive)."""
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
 
     agent = AIAgent.__new__(AIAgent)
     agent._client_log_context = lambda: "provider=test"

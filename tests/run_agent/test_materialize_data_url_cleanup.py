@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 def _list_anthropic_tmpfiles(tmpdir: str) -> list[str]:

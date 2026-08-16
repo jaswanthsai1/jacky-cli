@@ -215,12 +215,14 @@ pytest tests/ -v
 
 ```
 jacky-agent/
-├── run_agent.py              # AIAgent class — core conversation loop, tool dispatch, session persistence
-├── cli.py                    # JackyCLI class — interactive TUI, prompt_toolkit integration
-├── model_tools.py            # Tool orchestration (thin layer over tools/registry.py)
-├── toolsets.py               # Tool groupings and presets (jacky-cli, jacky-telegram, etc.)
-├── jacky_state.py           # SQLite session database with FTS5 full-text search, session titles
-├── batch_runner.py           # Parallel batch processing for trajectory generation
+├── jacky_cli/                 # CLI package — also home to the former root-level modules
+│   │                          #   (now jacky_cli.<name>):
+│   ├── run_agent.py           #   AIAgent class — core conversation loop, tool dispatch, session persistence
+│   ├── cli.py                 #   JackyCLI class — interactive TUI, prompt_toolkit integration
+│   ├── model_tools.py         #   Tool orchestration (thin layer over tools/registry.py)
+│   ├── toolsets.py            #   Tool groupings and presets (jacky-cli, jacky-telegram, etc.)
+│   ├── jacky_state.py        #   SQLite session database with FTS5 full-text search, session titles
+│   └── batch_runner.py        #   Parallel batch processing for trajectory generation
 │
 ├── agent/                    # Agent internals (extracted modules)
 │   ├── prompt_builder.py         # System prompt assembly (identity, skills, context files, memory)

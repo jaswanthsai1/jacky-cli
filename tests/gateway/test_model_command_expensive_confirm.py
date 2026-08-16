@@ -83,7 +83,7 @@ def _setup_isolated_home(tmp_path, monkeypatch, *, warn):
         "jacky_cli.model_switch.switch_model",
         lambda **kw: _fake_switch_result(),
     )
-    monkeypatch.setattr("jacky_constants.get_jacky_home", lambda: jacky_home)
+    monkeypatch.setattr("jacky_cli.jacky_constants.get_jacky_home", lambda: jacky_home)
     monkeypatch.setattr("jacky_cli.config.get_jacky_home", lambda: jacky_home)
     monkeypatch.setattr(
         "jacky_cli.model_cost_guard.expensive_model_warning",

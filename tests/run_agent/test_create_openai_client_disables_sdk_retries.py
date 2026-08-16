@@ -10,10 +10,10 @@ fix in tests/agent/test_anthropic_adapter.py.
 """
 from unittest.mock import MagicMock, patch
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
-@patch("run_agent.OpenAI")
+@patch("jacky_cli.run_agent.OpenAI")
 def test_create_openai_client_disables_sdk_retries(mock_openai):
     mock_openai.return_value = MagicMock()
     agent = AIAgent(
@@ -46,7 +46,7 @@ def test_create_openai_client_disables_sdk_retries(mock_openai):
         )
 
 
-@patch("run_agent.OpenAI")
+@patch("jacky_cli.run_agent.OpenAI")
 def test_create_openai_client_honors_explicit_max_retries(mock_openai):
     """An explicit max_retries in client_kwargs is respected (setdefault, not
     clobber) — future callers can opt back into SDK retries if needed."""

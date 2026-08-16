@@ -29,8 +29,8 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 from agent.context_compressor import ContextCompressor
-from jacky_state import SessionDB
-from run_agent import AIAgent
+from jacky_cli.jacky_state import SessionDB
+from jacky_cli.run_agent import AIAgent
 
 
 def _bare_agent() -> AIAgent:

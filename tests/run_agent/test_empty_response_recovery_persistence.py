@@ -1,6 +1,6 @@
 """Regression tests for empty-response recovery transcript persistence."""
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 class _CapturingSessionDB:

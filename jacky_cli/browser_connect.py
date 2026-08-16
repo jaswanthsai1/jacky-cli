@@ -11,7 +11,7 @@ import subprocess
 import time
 from dataclasses import dataclass, field
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 logger = logging.getLogger(__name__)
 

@@ -27,7 +27,7 @@ def curator_env(tmp_path, monkeypatch, capsys):
     monkeypatch.setenv("JACKY_HOME", str(home))
     monkeypatch.setattr(Path, "home", lambda: tmp_path)
 
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
     importlib.reload(jacky_constants)
     from agent import curator
     importlib.reload(curator)

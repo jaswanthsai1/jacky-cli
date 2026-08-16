@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 from typing import Any, Optional
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from jacky_cli.config import cfg_get
 from jacky_cli.secret_prompt import masked_secret_prompt
 
@@ -339,7 +339,7 @@ def _prompt_plugin_env_vars(manifest: dict, console) -> None:
         return
 
     from jacky_cli.config import get_env_value, save_env_value  # noqa: F811
-    from jacky_constants import display_jacky_home
+    from jacky_cli.jacky_constants import display_jacky_home
 
     # Normalise to list-of-dicts
     env_specs: list[dict] = []

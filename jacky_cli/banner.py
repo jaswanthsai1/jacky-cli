@@ -11,7 +11,7 @@ import threading
 import time
 from pathlib import Path
 from urllib.parse import urlparse
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from typing import TYPE_CHECKING, Dict, List, Optional
 
 # rich and prompt_toolkit are imported lazily (inside the functions that use
@@ -675,11 +675,11 @@ def build_welcome_banner(console: "Console", model: str, cwd: str,
             preset name and the banner renders the aggregator instead of a
             bare model slug.
     """
-    from model_tools import check_tool_availability, TOOLSET_REQUIREMENTS
+    from jacky_cli.model_tools import check_tool_availability, TOOLSET_REQUIREMENTS
     from rich.panel import Panel
     from rich.table import Table
     if get_toolset_for_tool is None:
-        from model_tools import get_toolset_for_tool
+        from jacky_cli.model_tools import get_toolset_for_tool
 
     tools = tools or []
     enabled_toolsets = enabled_toolsets or []

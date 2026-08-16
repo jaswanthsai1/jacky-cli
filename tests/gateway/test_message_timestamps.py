@@ -6,7 +6,7 @@ from gateway.message_timestamps import (
     render_user_content_with_timestamp,
     strip_leading_message_timestamps,
 )
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 BERLIN = ZoneInfo("Europe/Berlin")

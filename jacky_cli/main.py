@@ -57,7 +57,7 @@ Usage:
 # ``jacky update`` to recover.  Missing the bootstrap means UTF-8 stdio
 # setup is skipped on Windows — degraded, not broken.  POSIX is unaffected.
 try:
-    import jacky_bootstrap  # noqa: F401
+    import jacky_cli.jacky_bootstrap as jacky_bootstrap  # noqa: F401
 except ModuleNotFoundError:
     pass
 
@@ -486,7 +486,7 @@ def _apply_profile_override() -> None:
     # the "Docker & Profiles & Dashboard" report.
     if profile_name is None and not os.environ.get("JACKY_S6_SUPERVISED_CHILD"):
         try:
-            from jacky_constants import get_default_jacky_root
+            from jacky_cli.jacky_constants import get_default_jacky_root
 
             active_path = get_default_jacky_root() / "active_profile"
             if active_path.exists():
@@ -582,7 +582,7 @@ except Exception:
 # Dashboard entrypoints bootstrap with GUI mode so gui.log is always present
 # during GUI testing, including pre-dispatch startup failures.
 try:
-    from jacky_logging import setup_logging as _setup_logging
+    from jacky_cli.jacky_logging import setup_logging as _setup_logging
 
     _setup_logging(
         mode=(
@@ -600,7 +600,7 @@ except Exception:
 # this just calls the toggle without a redundant load_config() round trip.
 if _FORCE_IPV4_EARLY:
     try:
-        from jacky_constants import apply_ipv4_preference as _apply_ipv4
+        from jacky_cli.jacky_constants import apply_ipv4_preference as _apply_ipv4
 
         _apply_ipv4(force=True)
     except Exception:
@@ -1158,7 +1158,7 @@ def _resolve_last_session(source: str = "cli") -> Optional[str]:
     """Look up the most recently-used session ID for a source."""
     db = None
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         sessions = db.search_sessions(source=source, limit=1)
@@ -1297,7 +1297,7 @@ def _resolve_session_by_name_or_id(name_or_id: str) -> Optional[str]:
       resumed at the live tip instead of a stale parent with no messages.
     """
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
 
@@ -1350,7 +1350,7 @@ def _print_tui_exit_summary(
 
     db = None
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         session = db.get_session(target)
@@ -2040,7 +2040,7 @@ def _launch_tui(
     wt_info = None
     if worktree:
         try:
-            from cli import (
+            from jacky_cli.cli import (
                 _cleanup_worktree,
                 _git_repo_root,
                 _prune_stale_worktrees,
@@ -2406,7 +2406,7 @@ def cmd_chat(args):
         )
 
     # Import and run the CLI
-    from cli import main as cli_main
+    from jacky_cli.cli import main as cli_main
 
     # Build kwargs from args
     kwargs = {
@@ -2461,7 +2461,7 @@ def cmd_whatsapp(args):
     """Set up WhatsApp: choose mode, configure, install bridge, pair via QR."""
     _require_tty("whatsapp")
     from jacky_cli.config import get_env_value, save_env_value
-    from jacky_constants import find_node_executable, with_jacky_node_path
+    from jacky_cli.jacky_constants import find_node_executable, with_jacky_node_path
 
     print()
     print("⚕ WhatsApp Setup")
@@ -4138,7 +4138,7 @@ def _run_anthropic_oauth_flow(save_env_value):
         ):
             use_anthropic_claude_code_credentials(save_fn=save_env_value)
             print("  ✓ Claude Code credentials linked.")
-            from jacky_constants import display_jacky_home as _dhh_fn
+            from jacky_cli.jacky_constants import display_jacky_home as _dhh_fn
 
             print(
                 f"    Jacky will use Claude's credential store directly instead of copying a setup-token into {_dhh_fn()}/.env."
@@ -4484,11 +4484,11 @@ _UPDATE_CRITICAL_FILES = (
     "jacky_cli/config.py",
     "jacky_cli/__init__.py",
     "jacky_cli/web_server.py",
-    "cli.py",
-    "run_agent.py",
-    "model_tools.py",
-    "toolsets.py",
-    "jacky_constants.py",
+    "jacky_cli/cli.py",
+    "jacky_cli/run_agent.py",
+    "jacky_cli/model_tools.py",
+    "jacky_cli/toolsets.py",
+    "jacky_cli/jacky_constants.py",
 )
 
 
@@ -4561,7 +4561,7 @@ def _gateway_prompt(prompt_text: str, default: str = "", timeout: float = 300.0)
     """
     import json as _json
     import uuid as _uuid
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     home = get_jacky_home()
     prompt_path = home / ".update_prompt.json"
@@ -4875,7 +4875,7 @@ def _build_web_ui(web_dir: Path, *, fatal: bool = False) -> bool:
             encoding = getattr(sys.stdout, "encoding", None) or "ascii"
             print(text.encode(encoding, errors="replace").decode(encoding, errors="replace"))
 
-    from jacky_constants import find_node_executable, with_jacky_node_path
+    from jacky_cli.jacky_constants import find_node_executable, with_jacky_node_path
 
     npm = find_node_executable("npm")
     if not npm:
@@ -5060,7 +5060,7 @@ def _compute_desktop_content_hash(project_root: Path) -> str:
 
 def _desktop_stamp_path() -> Path:
     """Return the path to the desktop build stamp file under $JACKY_HOME."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     return get_jacky_home() / "desktop-build-stamp.json"
 
 
@@ -5316,7 +5316,7 @@ def _redownload_electron_dist(
     installer = electron_dir / "install.js"
     if not installer.is_file():
         return False
-    from jacky_constants import find_node_executable, with_jacky_node_path
+    from jacky_cli.jacky_constants import find_node_executable, with_jacky_node_path
 
     node = find_node_executable("node")
     if not node:
@@ -5610,12 +5610,12 @@ def cmd_gui(args: argparse.Namespace):
         sys.exit(1)
 
     try:
-        from jacky_logging import setup_logging as _setup_logging_gui
+        from jacky_cli.jacky_logging import setup_logging as _setup_logging_gui
         _setup_logging_gui(mode="gui")
     except Exception:
         pass
 
-    from jacky_constants import find_node_executable, with_jacky_node_path
+    from jacky_cli.jacky_constants import find_node_executable, with_jacky_node_path
 
     # with_jacky_node_path() copies os.environ when called with no arg.
     env = with_jacky_node_path()
@@ -6757,7 +6757,7 @@ def _count_commits_between(git_cmd: list[str], cwd: Path, base: str, head: str) 
 
 def _should_skip_upstream_prompt() -> bool:
     """Check if user previously declined to add upstream."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     return (get_jacky_home() / SKIP_UPSTREAM_PROMPT_FILE).exists()
 
@@ -6765,7 +6765,7 @@ def _should_skip_upstream_prompt() -> bool:
 def _mark_skip_upstream_prompt():
     """Create marker file to skip future upstream prompts."""
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         (get_jacky_home() / SKIP_UPSTREAM_PROMPT_FILE).touch()
     except Exception:
@@ -6914,7 +6914,7 @@ def _invalidate_update_cache():
     """
     homes = []
     # Default profile home (Docker-aware — uses /opt/data in Docker)
-    from jacky_constants import get_default_jacky_root
+    from jacky_cli.jacky_constants import get_default_jacky_root
 
     default_home = get_default_jacky_root()
     homes.append(default_home)
@@ -8106,7 +8106,7 @@ def _ensure_uv_for_termux(pip_cmd: list[str]) -> str | None:
 
 
 def _update_node_dependencies() -> None:
-    from jacky_constants import find_node_executable, with_jacky_node_path
+    from jacky_cli.jacky_constants import find_node_executable, with_jacky_node_path
 
     npm = find_node_executable("npm")
     if not npm:
@@ -8745,7 +8745,7 @@ def _run_pre_update_backup(args) -> None:
 
     # Render path using display_jacky_home so the user sees ~/.jacky/...
     try:
-        from jacky_constants import get_jacky_home, display_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home, display_jacky_home
 
         home = get_jacky_home()
         try:
@@ -8768,7 +8768,7 @@ def _write_update_planned_stop_marker(profile_path: Path, pid: int) -> bool:
         from datetime import timezone
 
         from gateway.status import _get_process_start_time
-        from utils import atomic_json_write
+        from jacky_cli.utils import atomic_json_write
 
         record = {
             "target_pid": pid,
@@ -9970,7 +9970,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
         # Electron build by ``jacky update``.
         desktop_dir = PROJECT_ROOT / "apps" / "desktop"
         has_desktop_app = _desktop_packaged_executable(desktop_dir) is not None or _desktop_dist_exists(desktop_dir)
-        from jacky_constants import find_node_executable
+        from jacky_cli.jacky_constants import find_node_executable
 
         if (desktop_dir / "package.json").exists() and find_node_executable("npm") and has_desktop_app:
             print("→ Checking if desktop app needs rebuilding...")
@@ -9989,7 +9989,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                 tail = "\n".join((build_result.stdout or "").strip().splitlines()[-15:])
                 if tail:
                     print(tail)
-                from jacky_constants import display_jacky_home as _dhh
+                from jacky_cli.jacky_constants import display_jacky_home as _dhh
                 print(f"  Full build log: {_dhh()}/logs/update.log")
             else:
                 print("  ✓ Desktop app up to date")
@@ -10019,7 +10019,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
         # attributes like display_jacky_home() added since the last release.
         try:
             import importlib
-            import jacky_constants as _hc
+            import jacky_cli.jacky_constants as _hc
 
             importlib.reload(_hc)
         except Exception:
@@ -10507,7 +10507,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
             # systemd units without SIGUSR1 wiring this wait just times out
             # and we fall back to ``systemctl restart`` (the old behaviour).
             try:
-                from jacky_constants import (
+                from jacky_cli.jacky_constants import (
                     DEFAULT_GATEWAY_RESTART_DRAIN_TIMEOUT as _DEFAULT_DRAIN,
                 )
             except Exception:
@@ -11129,7 +11129,7 @@ def cmd_profile(args):
         _is_wrapper_dir_in_path,
         _get_wrapper_dir,
     )
-    from jacky_constants import display_jacky_home
+    from jacky_cli.jacky_constants import display_jacky_home
 
     action = getattr(args, "profile_action", None)
 
@@ -11365,7 +11365,7 @@ def cmd_profile(args):
         if name and not text_value and not auto_flag:
             try:
                 if _profiles_mod.normalize_profile_name(name) == "default":
-                    from jacky_constants import get_jacky_home as _hh
+                    from jacky_cli.jacky_constants import get_jacky_home as _hh
                     profile_dir = Path(_hh())
                 else:
                     profile_dir = _profiles_mod.get_profile_dir(name)
@@ -11388,7 +11388,7 @@ def cmd_profile(args):
         if text_value:
             try:
                 if _profiles_mod.normalize_profile_name(name) == "default":
-                    from jacky_constants import get_jacky_home as _hh
+                    from jacky_cli.jacky_constants import get_jacky_home as _hh
                     profile_dir = Path(_hh())
                 else:
                     profile_dir = _profiles_mod.get_profile_dir(name)
@@ -12050,7 +12050,7 @@ def cmd_dashboard(args):
         # and /opt/data for Docker (it strips a trailing profiles/<name>).
         # See the support report for the double-mount workaround this avoids.
         try:
-            from jacky_constants import get_default_jacky_root
+            from jacky_cli.jacky_constants import get_default_jacky_root
             env["JACKY_HOME"] = str(get_default_jacky_root())
         except Exception:
             # Best-effort: if root resolution fails, fall back to the prior
@@ -12070,7 +12070,7 @@ def cmd_dashboard(args):
     # Attach gui.log early so dashboard startup/build failures are captured in
     # the same logs directory as every other Jacky surface.
     try:
-        from jacky_logging import setup_logging as _setup_logging_gui
+        from jacky_cli.jacky_logging import setup_logging as _setup_logging_gui
         _setup_logging_gui(mode="gui")
     except Exception:
         pass
@@ -12641,7 +12641,7 @@ def cmd_memory(args):
         print("\n  ✓ Memory provider: built-in only")
         print("  Saved to config.yaml\n")
     elif sub == "reset":
-        from jacky_constants import get_jacky_home, display_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home, display_jacky_home
 
         mem_dir = get_jacky_home() / "memories"
         target = getattr(args, "target", "all")
@@ -12733,7 +12733,7 @@ def cmd_tools(args):
 
 def cmd_insights(args):
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         from agent.insights import InsightsEngine
 
         db = SessionDB()
@@ -13786,7 +13786,7 @@ def main():
         # exactly the case where SessionDB() can't open, so it operates on the
         # raw file path instead.
         if action == "repair":
-            from jacky_state import (
+            from jacky_cli.jacky_state import (
                 DEFAULT_DB_PATH,
                 _db_opens_cleanly,
                 repair_state_db_schema,
@@ -13812,7 +13812,7 @@ def main():
                     print(f"  backup: {report['backup_path']}")
                 print(f"  strategy: {report.get('strategy')}")
                 try:
-                    from jacky_state import SessionDB
+                    from jacky_cli.jacky_state import SessionDB
 
                     n = SessionDB()._conn.execute(
                         "SELECT COUNT(*) FROM sessions"
@@ -13828,7 +13828,7 @@ def main():
             return
 
         try:
-            from jacky_state import SessionDB
+            from jacky_cli.jacky_state import SessionDB
 
             db = SessionDB()
         except Exception as e:

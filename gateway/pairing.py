@@ -33,8 +33,8 @@ from gateway.whatsapp_identity import (
     expand_whatsapp_aliases,
     normalize_whatsapp_identifier,
 )
-from jacky_constants import get_jacky_dir, get_jacky_home
-from utils import atomic_replace
+from jacky_cli.jacky_constants import get_jacky_dir, get_jacky_home
+from jacky_cli.utils import atomic_replace
 
 logger = logging.getLogger(__name__)
 
@@ -252,7 +252,7 @@ class PairingStore:
         # Resolve storage directory lazily — tests use a temp JACKY_HOME
         # and PairingStore may be constructed before the env is set.
         if profile:
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             self._dir = get_jacky_home() / "profiles" / profile / "pairing"
         else:
             self._dir = PAIRING_DIR

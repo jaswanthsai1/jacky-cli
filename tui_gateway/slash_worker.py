@@ -12,7 +12,7 @@ Protocol: reads JSON lines from stdin {id, command}, writes {id, ok, output|erro
 # name won't collide with a user package), and it owns the canonical
 # path-hardening logic shared with the other entry points — #51693 added the
 # guard to ``entry.py``/``acp_adapter/entry.py`` but missed this child.
-import jacky_bootstrap
+import jacky_cli.jacky_bootstrap as jacky_bootstrap
 
 jacky_bootstrap.harden_import_path()
 
@@ -27,8 +27,8 @@ import time
 
 import psutil
 
-import cli as cli_mod
-from cli import JackyCLI
+import jacky_cli.cli as cli_mod
+from jacky_cli.cli import JackyCLI
 from rich.console import Console
 
 # Env-overridable so the integration test can drive sub-second timing.

@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Optional
 
 from jacky_cli.config import get_jacky_home, get_config_path, load_config, save_config
-from jacky_constants import get_optional_skills_dir
+from jacky_cli.jacky_constants import get_optional_skills_dir
 from jacky_cli.setup import (
     Colors,
     color,

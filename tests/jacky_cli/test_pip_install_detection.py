@@ -153,7 +153,7 @@ def test_container_without_stamp_is_not_docker(tmp_path):
     (tmp_path / ".git").mkdir()
     with patch("jacky_cli.config.get_managed_system", return_value=None), \
          patch("jacky_cli.config.get_jacky_home", return_value=tmp_path), \
-         patch("jacky_constants.is_container", return_value=True):
+         patch("jacky_cli.jacky_constants.is_container", return_value=True):
         from jacky_cli.config import detect_install_method
         assert detect_install_method(project_root=tmp_path) == "git"
 
@@ -162,7 +162,7 @@ def test_container_pip_install_without_stamp_is_pip(tmp_path):
     """Container + no .git + no stamp -> pip, not docker (issue #34397)."""
     with patch("jacky_cli.config.get_managed_system", return_value=None), \
          patch("jacky_cli.config.get_jacky_home", return_value=tmp_path), \
-         patch("jacky_constants.is_container", return_value=True):
+         patch("jacky_cli.jacky_constants.is_container", return_value=True):
         from jacky_cli.config import detect_install_method
         assert detect_install_method(project_root=tmp_path) == "pip"
 
@@ -183,7 +183,7 @@ def test_banner_warns_on_pip_install(tmp_path):
     (hh / ".install_method").write_text("pip\n")
 
     with patch("jacky_cli.config.get_jacky_home", return_value=hh), \
-         patch("jacky_constants.get_jacky_home", return_value=hh):
+         patch("jacky_cli.jacky_constants.get_jacky_home", return_value=hh):
         buf = io.StringIO()
         # Wide console so the warning isn't wrapped across lines in the panel.
         console = Console(file=buf, width=400, force_terminal=False, color_system=None)
@@ -209,7 +209,7 @@ def test_banner_warns_on_homebrew_install(tmp_path):
     (hh / ".install_method").write_text("homebrew\n")
 
     with patch("jacky_cli.config.get_jacky_home", return_value=hh), \
-         patch("jacky_constants.get_jacky_home", return_value=hh):
+         patch("jacky_cli.jacky_constants.get_jacky_home", return_value=hh):
         buf = io.StringIO()
         console = Console(file=buf, width=400, force_terminal=False, color_system=None)
         banner.build_welcome_banner(
@@ -235,7 +235,7 @@ def test_banner_no_pip_warning_on_git_install(tmp_path):
     (hh / ".install_method").write_text("git\n")
 
     with patch("jacky_cli.config.get_jacky_home", return_value=hh), \
-         patch("jacky_constants.get_jacky_home", return_value=hh):
+         patch("jacky_cli.jacky_constants.get_jacky_home", return_value=hh):
         buf = io.StringIO()
         console = Console(file=buf, width=400, force_terminal=False, color_system=None)
         banner.build_welcome_banner(

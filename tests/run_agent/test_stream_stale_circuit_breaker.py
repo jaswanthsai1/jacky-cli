@@ -24,7 +24,7 @@ from types import SimpleNamespace
 
 
 def _make_anthropic_agent(**kwargs):
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
 
     defaults = dict(
         api_key="test-key",

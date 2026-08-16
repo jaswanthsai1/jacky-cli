@@ -10,7 +10,7 @@ import os
 import sys
 from pathlib import Path
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from plugins.memory.honcho.client import _host_block, profile_host_key, resolve_active_host, resolve_config_path, HOST
 from jacky_cli.config import cfg_get
 
@@ -273,7 +273,7 @@ def _read_config() -> dict:
 def _write_config(cfg: dict, path: Path | None = None) -> None:
     path = path or _local_config_path()
     path.parent.mkdir(parents=True, exist_ok=True)
-    from utils import atomic_json_write
+    from jacky_cli.utils import atomic_json_write
     atomic_json_write(path, cfg, mode=0o600)
 
 

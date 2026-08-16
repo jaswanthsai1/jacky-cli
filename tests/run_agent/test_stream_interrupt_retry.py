@@ -18,7 +18,7 @@ import pytest
 
 def _make_agent(**kwargs):
     """Create a minimal AIAgent for streaming tests."""
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
 
     defaults = dict(
         api_key="test-key",
@@ -40,8 +40,8 @@ class TestStreamInterruptBeforeRetry:
     @pytest.mark.filterwarnings(
         "ignore::pytest.PytestUnhandledThreadExceptionWarning"
     )
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_interrupt_prevents_stream_retry(self, mock_close, mock_create):
         """When _interrupt_requested is set during a transient stream error,
         the retry loop must NOT retry — it should raise InterruptedError
@@ -79,8 +79,8 @@ class TestStreamInterruptBeforeRetry:
     @pytest.mark.filterwarnings(
         "ignore::pytest.PytestUnhandledThreadExceptionWarning"
     )
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_interrupt_before_first_attempt(self, mock_close, mock_create):
         """If _interrupt_requested is already set when the streaming call
         starts, it should exit immediately without making any API call."""
@@ -96,8 +96,8 @@ class TestStreamInterruptBeforeRetry:
         # No API call should have been made at all
         assert mock_client.chat.completions.create.call_count == 0
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_normal_retry_still_works_without_interrupt(self, mock_close, mock_create):
         """Without an interrupt, transient errors should still retry normally."""
         import httpx

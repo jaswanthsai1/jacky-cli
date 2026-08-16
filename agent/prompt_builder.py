@@ -13,7 +13,7 @@ import contextvars
 from collections import OrderedDict
 from pathlib import Path
 
-from jacky_constants import get_jacky_home, get_skills_dir, is_wsl
+from jacky_cli.jacky_constants import get_jacky_home, get_skills_dir, is_wsl
 from typing import Optional
 
 from agent.runtime_cwd import resolve_agent_cwd
@@ -30,7 +30,7 @@ from agent.skill_utils import (
     skill_matches_platform,
     skill_matches_platform_list,
 )
-from utils import atomic_json_write
+from jacky_cli.utils import atomic_json_write
 
 logger = logging.getLogger(__name__)
 

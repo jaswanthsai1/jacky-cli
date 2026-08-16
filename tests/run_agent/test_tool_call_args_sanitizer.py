@@ -3,7 +3,7 @@
 import copy
 import logging
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 _MISSING = object()

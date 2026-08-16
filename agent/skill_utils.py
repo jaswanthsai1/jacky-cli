@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-from jacky_constants import get_config_path, get_skills_dir, is_termux
+from jacky_cli.jacky_constants import get_config_path, get_skills_dir, is_termux
 
 logger = logging.getLogger(__name__)
 
@@ -251,7 +251,7 @@ def _detect_environment(env: str) -> bool:
                 result = False
     elif env == "docker":
         try:
-            from jacky_constants import is_container
+            from jacky_cli.jacky_constants import is_container
 
             result = is_container()
         except Exception:
@@ -466,7 +466,7 @@ def get_external_skills_dirs() -> List[Path]:
     if not isinstance(raw_dirs, list):
         return []
 
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     jacky_home = get_jacky_home()
     local_skills = get_skills_dir().resolve()

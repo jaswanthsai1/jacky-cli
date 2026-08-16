@@ -227,7 +227,7 @@ class TestExecuteCode(unittest.TestCase):
             # Use real execution but mock the tool dispatcher
             pass
         # Actually run with full integration, mocking at the model_tools level
-        with patch("model_tools.handle_function_call", side_effect=_mock_handle_function_call):
+        with patch("jacky_cli.model_tools.handle_function_call", side_effect=_mock_handle_function_call):
             result = execute_code(
                 code=code,
                 task_id="test-task",
@@ -253,8 +253,9 @@ class TestExecuteCode(unittest.TestCase):
         self.assertLess(elapsed, 2.0, f"execute_code took {elapsed:.3f}s")
 
     def test_repo_root_modules_are_importable(self):
-        """Sandboxed scripts can import modules that live at the repo root."""
-        result = self._run('import jacky_constants; print(jacky_constants.__file__)')
+        """Sandboxed scripts can import the jacky_cli package that lives at
+        the repo root (jacky_constants.py etc. now live inside jacky_cli/)."""
+        result = self._run('import jacky_cli.jacky_constants as jacky_constants; print(jacky_constants.__file__)')
         self.assertEqual(result["status"], "success")
         self.assertIn("jacky_constants.py", result["output"])
 
@@ -341,7 +342,7 @@ else:
                 function_name, function_args, task_id=task_id, user_task=user_task
             )
 
-        with patch("model_tools.handle_function_call", side_effect=slow_mock):
+        with patch("jacky_cli.model_tools.handle_function_call", side_effect=slow_mock):
             raw = execute_code(
                 code=code,
                 task_id="test-concurrent",
@@ -395,7 +396,7 @@ raise RuntimeError("deliberate crash")
     def test_timeout_enforcement(self):
         """Script that sleeps too long is killed."""
         code = "import time; time.sleep(999)"
-        with patch("model_tools.handle_function_call", side_effect=_mock_handle_function_call):
+        with patch("jacky_cli.model_tools.handle_function_call", side_effect=_mock_handle_function_call):
             # Override config to use a very short timeout
             with patch("tools.code_execution_tool._load_config", return_value={"timeout": 2, "max_tool_calls": 50}):
                 result = json.loads(execute_code(
@@ -738,7 +739,7 @@ class TestEnvVarFiltering(unittest.TestCase):
         try:
             if extra_env:
                 os.environ.update(extra_env)
-            with patch("model_tools.handle_function_call", return_value='{}'), \
+            with patch("jacky_cli.model_tools.handle_function_call", return_value='{}'), \
                  patch("tools.code_execution_tool._load_config",
                        return_value={"timeout": 10, "max_tool_calls": 50}):
                 raw = execute_code(code, task_id="test-env",
@@ -850,7 +851,7 @@ class TestExecuteCodeEdgeCases(unittest.TestCase):
             "from jacky_tools import terminal, web_search, read_file\n"
             "print('all imports ok')\n"
         )
-        with patch("model_tools.handle_function_call",
+        with patch("jacky_cli.model_tools.handle_function_call",
                     return_value=json.dumps({"ok": True})):
             result = json.loads(execute_code(code, task_id="test-none",
                                              enabled_tools=None))
@@ -864,7 +865,7 @@ class TestExecuteCodeEdgeCases(unittest.TestCase):
             "from jacky_tools import terminal, web_search\n"
             "print('imports ok')\n"
         )
-        with patch("model_tools.handle_function_call",
+        with patch("jacky_cli.model_tools.handle_function_call",
                     return_value=json.dumps({"ok": True})):
             result = json.loads(execute_code(code, task_id="test-empty",
                                              enabled_tools=[]))
@@ -879,7 +880,7 @@ class TestExecuteCodeEdgeCases(unittest.TestCase):
             "from jacky_tools import terminal\n"
             "print('fallback ok')\n"
         )
-        with patch("model_tools.handle_function_call",
+        with patch("jacky_cli.model_tools.handle_function_call",
                     return_value=json.dumps({"ok": True})):
             result = json.loads(execute_code(
                 code, task_id="test-nonoverlap",
@@ -896,7 +897,7 @@ class TestExecuteCodeEdgeCases(unittest.TestCase):
 class TestLoadConfig(unittest.TestCase):
     def test_returns_empty_dict_when_cli_config_unavailable(self):
         from tools.code_execution_tool import _load_config
-        with patch.dict("sys.modules", {"cli": None}):
+        with patch.dict("sys.modules", {"jacky_cli.cli": None}):
             result = _load_config()
             self.assertIsInstance(result, dict)
 
@@ -911,7 +912,7 @@ class TestLoadConfig(unittest.TestCase):
         from tools.code_execution_tool import _load_config
         mock_cli = MagicMock()
         mock_cli.CLI_CONFIG = {"code_execution": {"timeout": 999}}
-        with patch.dict("sys.modules", {"cli": mock_cli}), \
+        with patch.dict("sys.modules", {"jacky_cli.cli": mock_cli}), \
              patch("jacky_cli.config.read_raw_config", return_value={}):
             result = _load_config()
         self.assertEqual(result, {})
@@ -941,7 +942,7 @@ class TestInterruptHandling(unittest.TestCase):
         t.start()
 
         try:
-            with patch("model_tools.handle_function_call",
+            with patch("jacky_cli.model_tools.handle_function_call",
                         return_value=json.dumps({"ok": True})), \
                  patch("tools.code_execution_tool._load_config",
                        return_value={"timeout": 30, "max_tool_calls": 50}):
@@ -960,7 +961,7 @@ class TestHeadTailTruncation(unittest.TestCase):
     """Tests for head+tail truncation of large stdout in execute_code."""
 
     def _run(self, code):
-        with patch("model_tools.handle_function_call", side_effect=_mock_handle_function_call):
+        with patch("jacky_cli.model_tools.handle_function_call", side_effect=_mock_handle_function_call):
             result = execute_code(
                 code=code,
                 task_id="test-task",
@@ -1051,7 +1052,7 @@ class TestRpcTokenAuthorization(unittest.TestCase):
 
         def _run():
             with patch(
-                "model_tools.handle_function_call",
+                "jacky_cli.model_tools.handle_function_call",
                 side_effect=_mock_handle_function_call,
             ):
                 _rpc_server_loop(

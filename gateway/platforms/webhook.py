@@ -375,7 +375,7 @@ class WebhookAdapter(BasePlatformAdapter):
 
     def _reload_dynamic_routes(self) -> None:
         """Reload agent-created subscriptions from disk if the file changed."""
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         jacky_home = get_jacky_home()
         subs_path = jacky_home / _DYNAMIC_ROUTES_FILENAME
         if not subs_path.exists():

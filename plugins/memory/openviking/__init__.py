@@ -49,7 +49,7 @@ from agent.message_content import flatten_message_text
 from agent.memory_provider import MemoryProvider
 from agent.skill_commands import extract_user_instruction_from_skill_message
 from tools.registry import tool_error
-from utils import atomic_json_write, env_var_enabled
+from jacky_cli.utils import atomic_json_write, env_var_enabled
 
 logger = logging.getLogger(__name__)
 
@@ -1148,7 +1148,7 @@ def _local_openviking_bind(endpoint: str) -> tuple[str, int]:
 
 def _openviking_server_log_path() -> Path:
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         home = get_jacky_home()
     except Exception:
         home = Path(os.environ.get("JACKY_HOME", "")).expanduser() if os.environ.get("JACKY_HOME") else Path.home() / ".jacky"

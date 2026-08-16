@@ -32,7 +32,7 @@ class TestCliTurnRoutePool:
             service_tier=None,
         )
 
-        from cli import JackyCLI
+        from jacky_cli.cli import JackyCLI
         bound = JackyCLI._resolve_turn_agent_config.__get__(shell)
         route = bound("test message")
 
@@ -75,7 +75,7 @@ class TestEagerFallbackWithPool:
 
     def _make_agent(self, has_pool=True, pool_has_creds=True, has_fallback=True):
         """Create a minimal AIAgent mock with the fields needed."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         with patch.object(AIAgent, "__init__", lambda self, **kw: None):
             agent = AIAgent()
@@ -142,7 +142,7 @@ class TestPoolRotationCycle:
     """Verify the retry-same → rotate → exhaust flow in _recover_with_credential_pool."""
 
     def _make_agent_with_pool(self, pool_entries=3):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         with patch.object(AIAgent, "__init__", lambda self, **kw: None):
             agent = AIAgent()
@@ -224,7 +224,7 @@ class TestPoolRotationCycle:
 
     def test_no_pool_returns_false(self):
         """No pool should return (False, unchanged)."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         with patch.object(AIAgent, "__init__", lambda self, **kw: None):
             agent = AIAgent()

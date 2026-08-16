@@ -15,7 +15,7 @@ Usage:
 # IMPORTANT: jacky_bootstrap must be the very first import — UTF-8 stdio
 # on Windows.  No-op on POSIX.  See jacky_bootstrap.py for full rationale.
 try:
-    import jacky_bootstrap  # noqa: F401
+    import jacky_cli.jacky_bootstrap as jacky_bootstrap  # noqa: F401
 except ModuleNotFoundError:
     # Graceful fallback when jacky_bootstrap isn't registered in the venv
     # yet — happens during partial ``jacky update`` where git-reset landed
@@ -167,7 +167,7 @@ _COMMAND_SPINNER_FRAMES = ("⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧
 
 # Load .env from ~/.jacky/.env first, then project root as dev fallback.
 # User-managed env files should override stale shell exports on restart.
-from jacky_constants import get_jacky_home, display_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home, display_jacky_home
 from jacky_cli.browser_connect import (
     DEFAULT_BROWSER_CDP_URL,
     is_browser_debug_ready,
@@ -175,10 +175,10 @@ from jacky_cli.browser_connect import (
     try_launch_chrome_debug,
 )
 from jacky_cli.env_loader import load_jacky_dotenv
-from utils import base_url_host_matches, fast_safe_load
+from jacky_cli.utils import base_url_host_matches, fast_safe_load
 
 _jacky_home = get_jacky_home()
-_project_env = Path(__file__).parent / '.env'
+_project_env = Path(__file__).parent.parent / '.env'
 load_jacky_dotenv(jacky_home=_jacky_home, project_env=_project_env)
 
 
@@ -340,7 +340,7 @@ def _parse_reasoning_config(effort) -> dict | None:
     Accepts the raw config value (string or YAML boolean — ``false``/``off``
     parse as thinking disabled, see parse_reasoning_effort).
     """
-    from jacky_constants import parse_reasoning_effort
+    from jacky_cli.jacky_constants import parse_reasoning_effort
     result = parse_reasoning_effort(effort)
     if effort and str(effort).strip() and result is None:
         logger.warning("Unknown reasoning_effort '%s', using default (medium)", effort)
@@ -376,7 +376,7 @@ def load_cli_config() -> Dict[str, Any]:
     """
     # Check user config first ({JACKY_HOME}/config.yaml)
     user_config_path = _jacky_home / 'config.yaml'
-    project_config_path = Path(__file__).parent / 'cli-config.yaml'
+    project_config_path = Path(__file__).parent.parent / 'cli-config.yaml'
 
     # --ignore-user-config: force-skip the user config.yaml (still honor project
     # config as a fallback so defaults stay sensible).
@@ -733,7 +733,7 @@ CLI_CONFIG = load_cli_config()
 # Initialize centralized logging early — agent.log + errors.log in ~/.jacky/logs/.
 # This ensures CLI sessions produce a log trail even before AIAgent is instantiated.
 try:
-    from jacky_logging import setup_logging
+    from jacky_cli.jacky_logging import setup_logging
     setup_logging(mode="cli")
 except Exception:
     pass  # Logging setup is best-effort — don't crash the CLI
@@ -837,21 +837,21 @@ from rich.text import Text as _RichText
 # Import agent and tool systems lazily. Bare interactive startup only needs the
 # prompt; the full agent/tool registry is initialized on first use.
 def AIAgent(*args, **kwargs):
-    from run_agent import AIAgent as _AIAgent
+    from jacky_cli.run_agent import AIAgent as _AIAgent
 
     return _AIAgent(*args, **kwargs)
 
 
 def get_tool_definitions(*args, **kwargs):
     from jacky_cli.mcp_startup import wait_for_mcp_discovery
-    from model_tools import get_tool_definitions as _get_tool_definitions
+    from jacky_cli.model_tools import get_tool_definitions as _get_tool_definitions
 
     wait_for_mcp_discovery()
     return _get_tool_definitions(*args, **kwargs)
 
 
 def get_toolset_for_tool(*args, **kwargs):
-    from model_tools import get_toolset_for_tool as _get_toolset_for_tool
+    from jacky_cli.model_tools import get_toolset_for_tool as _get_toolset_for_tool
 
     return _get_toolset_for_tool(*args, **kwargs)
 
@@ -861,19 +861,19 @@ from jacky_cli.commands import SlashCommandCompleter, SlashCommandAutoSuggest
 
 
 def get_all_toolsets(*args, **kwargs):
-    from toolsets import get_all_toolsets as _get_all_toolsets
+    from jacky_cli.toolsets import get_all_toolsets as _get_all_toolsets
 
     return _get_all_toolsets(*args, **kwargs)
 
 
 def get_toolset_info(*args, **kwargs):
-    from toolsets import get_toolset_info as _get_toolset_info
+    from jacky_cli.toolsets import get_toolset_info as _get_toolset_info
 
     return _get_toolset_info(*args, **kwargs)
 
 
 def validate_toolset(*args, **kwargs):
-    from toolsets import validate_toolset as _validate_toolset
+    from jacky_cli.toolsets import validate_toolset as _validate_toolset
 
     return _validate_toolset(*args, **kwargs)
 
@@ -1781,7 +1781,7 @@ def _run_state_db_auto_maintenance(session_db) -> None:
         return
     try:
         from jacky_cli.config import load_config as _load_full_config
-        from jacky_constants import get_jacky_home as _get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home as _get_jacky_home
         _jacky_home_maint = _get_jacky_home()
 
         # One-time prune of empty TUI ghost sessions.
@@ -2760,7 +2760,7 @@ _IMAGE_EXTENSIONS = frozenset({
 })
 
 
-from jacky_constants import is_termux as _is_termux_environment
+from jacky_cli.jacky_constants import is_termux as _is_termux_environment
 
 
 def _termux_example_image_path(filename: str = "cat.png") -> str:
@@ -3644,7 +3644,7 @@ def save_config_value(key_path: str, value: any) -> bool:
     """
     # Use the same precedence as load_cli_config: user config first, then project config
     user_config_path = _jacky_home / 'config.yaml'
-    project_config_path = Path(__file__).parent / 'cli-config.yaml'
+    project_config_path = Path(__file__).parent.parent / 'cli-config.yaml'
     config_path = user_config_path if user_config_path.exists() else project_config_path
     
     try:
@@ -3653,7 +3653,7 @@ def save_config_value(key_path: str, value: any) -> bool:
         
         # Save back atomically while preserving comments, ordering, quotes, and
         # readable Unicode in user-edited config.yaml.
-        from utils import atomic_roundtrip_yaml_update
+        from jacky_cli.utils import atomic_roundtrip_yaml_update
         atomic_roundtrip_yaml_update(config_path, key_path, value)
         
         # Enforce owner-only permissions on config files (contain API keys)
@@ -3976,7 +3976,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
         self._session_db = None
         self._session_db_unavailable = False
         try:
-            from jacky_state import SessionDB
+            from jacky_cli.jacky_state import SessionDB
             self._session_db = SessionDB()
         except Exception as e:
             # #41386: a failed session store means the transcript is NOT
@@ -6476,7 +6476,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
     def _show_tool_availability_warnings(self):
         """Show warnings about disabled tools due to missing API keys."""
         try:
-            from model_tools import check_tool_availability
+            from jacky_cli.model_tools import check_tool_availability
             
             available, unavailable = check_tool_availability()
             
@@ -6749,7 +6749,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
         terminal_timeout = os.getenv("TERMINAL_TIMEOUT", "60")
         
         user_config_path = _jacky_home / 'config.yaml'
-        project_config_path = Path(__file__).parent / 'cli-config.yaml'
+        project_config_path = Path(__file__).parent.parent / 'cli-config.yaml'
         if user_config_path.exists():
             config_path = user_config_path
         else:
@@ -6967,7 +6967,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
         if getattr(self, "conversation_history", None):
             return False
         try:
-            from jacky_constants import get_jacky_home as _ghh
+            from jacky_cli.jacky_constants import get_jacky_home as _ghh
             return self._session_db.delete_session_if_empty(
                 session_id, sessions_dir=_ghh() / "sessions"
             )
@@ -7101,7 +7101,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
                 except Exception:
                     pass
                 if title and self._session_db:
-                    from jacky_state import SessionDB
+                    from jacky_cli.jacky_state import SessionDB
                     try:
                         sanitized = SessionDB.sanitize_title(title)
                     except ValueError as e:
@@ -8570,7 +8570,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
                     if self._session_db:
                         # Sanitize the title early so feedback matches what gets stored
                         try:
-                            from jacky_state import SessionDB
+                            from jacky_cli.jacky_state import SessionDB
                             new_title = SessionDB.sanitize_title(raw_title)
                         except ValueError as e:
                             _cprint(f"  {e}")
@@ -8596,7 +8596,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
                                 self._pending_title = new_title
                                 _cprint(f"  Session title queued: {new_title} (will be saved on first message)")
                     else:
-                        from jacky_state import format_session_db_unavailable
+                        from jacky_cli.jacky_state import format_session_db_unavailable
                         _cprint(f"  {format_session_db_unavailable()}")
                 else:
                     _cprint("  Usage: /title <your session title>")
@@ -8611,7 +8611,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
                 else:
                     _cprint("  No title set. Usage: /title <your session title>")
             else:
-                from jacky_state import format_session_db_unavailable
+                from jacky_cli.jacky_state import format_session_db_unavailable
                 _cprint(f"  {format_session_db_unavailable()}")
         elif canonical == "handoff":
             if not self._handle_handoff_command(cmd_original):
@@ -10476,7 +10476,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
                 i += 1
 
         try:
-            from jacky_state import SessionDB
+            from jacky_cli.jacky_state import SessionDB
             from agent.insights import InsightsEngine
 
             db = SessionDB()
@@ -12204,7 +12204,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
         # rich-text editors (Google Docs, Word, etc.).  Lone surrogates are invalid
         # UTF-8 and crash JSON serialization in the OpenAI SDK.
         if isinstance(message, str):
-            from run_agent import _sanitize_surrogates
+            from jacky_cli.run_agent import _sanitize_surrogates
             message = _sanitize_surrogates(message)
 
         # Add user message to history
@@ -13193,7 +13193,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
         if os.environ.get("JACKY_DEFER_AGENT_STARTUP") != "1":
             def _prewarm_agent_runtime() -> None:
                 try:
-                    import run_agent  # noqa: F401  (imports model_tools + tool registry)
+                    import jacky_cli.run_agent as run_agent  # noqa: F401  (imports model_tools + tool registry)
                     import openai  # noqa: F401
                 except Exception:
                     logger.debug("agent runtime pre-import failed", exc_info=True)
@@ -14149,7 +14149,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
                 event.app.invalidate()
             if pasted_text:
                 # Sanitize surrogate characters (e.g. from Word/Google Docs paste) before writing
-                from run_agent import _sanitize_surrogates
+                from jacky_cli.run_agent import _sanitize_surrogates
                 pasted_text = _sanitize_surrogates(pasted_text)
                 line_count = pasted_text.count('\n')
                 buf = event.current_buffer
@@ -15627,7 +15627,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
                 # and SQLite history. Ported from google-gemini/gemini-cli#19332.
                 if getattr(self, '_delete_session_on_exit', False):
                     try:
-                        from jacky_constants import get_jacky_home as _ghh
+                        from jacky_cli.jacky_constants import get_jacky_home as _ghh
                         _sessions_dir = _ghh() / "sessions"
                         _sid = self.agent.session_id
                         if self._session_db.delete_session(_sid, sessions_dir=_sessions_dir):

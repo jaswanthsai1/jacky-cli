@@ -66,8 +66,8 @@ from typing import Dict, Any, Optional, List, Tuple, Union
 from pathlib import Path
 from agent.auxiliary_client import call_llm
 from agent.redact import redact_cdp_url
-from jacky_constants import agent_browser_runnable, get_jacky_home
-from utils import env_int, is_truthy_value
+from jacky_cli.jacky_constants import agent_browser_runnable, get_jacky_home
+from jacky_cli.utils import env_int, is_truthy_value
 from jacky_cli.config import DEFAULT_CONFIG, cfg_get
 from jacky_cli._subprocess_compat import windows_hide_flags
 
@@ -758,7 +758,7 @@ def _get_cloud_provider() -> Optional[CloudBrowserProvider]:
     return _cached_cloud_provider
 
 
-from jacky_constants import is_termux as _is_termux_environment
+from jacky_cli.jacky_constants import is_termux as _is_termux_environment
 
 
 def _browser_install_hint() -> str:
@@ -3914,7 +3914,7 @@ def browser_vision(question: str, annotate: bool = False, task_id: Optional[str]
 
     import base64
     import uuid as uuid_mod
-    from jacky_constants import get_jacky_dir
+    from jacky_cli.jacky_constants import get_jacky_dir
     screenshots_dir = get_jacky_dir("cache/screenshots", "browser_screenshots")
     screenshot_path = screenshots_dir / f"browser_screenshot_{uuid_mod.uuid4().hex}.png"
     effective_task_id = _last_session_key(task_id or "default")
@@ -3973,7 +3973,7 @@ def browser_vision(question: str, annotate: bool = False, task_id: Optional[str]
             _lp_fallback_warning = fb_result.get("fallback_warning")
             fb_path = fb_result.get("data", {}).get("path", "")
             if fb_path and os.path.exists(fb_path):
-                from jacky_constants import get_jacky_dir
+                from jacky_cli.jacky_constants import get_jacky_dir
                 screenshots_dir = get_jacky_dir("cache/screenshots", "browser_screenshots")
                 screenshots_dir.mkdir(parents=True, exist_ok=True)
                 import shutil as _shutil_vision

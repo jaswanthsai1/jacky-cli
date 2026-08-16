@@ -382,7 +382,7 @@ def run_one_scenario(scenario: Dict[str, Any], enabled: bool, out_dir: Path) -> 
     final_response = ""
     messages_out = []
     try:
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         agent = AIAgent(
             provider="openrouter",
             model="anthropic/claude-haiku-4.5",

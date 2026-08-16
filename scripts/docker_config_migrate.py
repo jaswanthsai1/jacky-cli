@@ -14,7 +14,7 @@ from jacky_cli.config import (
     get_env_path,
     migrate_config,
 )
-from utils import env_var_enabled
+from jacky_cli.utils import env_var_enabled
 
 
 def _backup_path(path: Path, stamp: str) -> Path:

@@ -367,7 +367,7 @@ class TestGatewayPidState:
         for a named profile), gateway identity files should still be written to
         the process-level JACKY_HOME, not the profile's directory.  See #56986.
         """
-        from jacky_constants import set_jacky_home_override, reset_jacky_home_override
+        from jacky_cli.jacky_constants import set_jacky_home_override, reset_jacky_home_override
 
         process_home = tmp_path / "default"
         process_home.mkdir()

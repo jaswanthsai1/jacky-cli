@@ -11,7 +11,7 @@ import types
 
 import pytest
 
-import cli as cli_mod
+import jacky_cli.cli as cli_mod
 from jacky_cli import main as main_mod
 from jacky_cli import mcp_startup
 

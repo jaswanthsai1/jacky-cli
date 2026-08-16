@@ -8,7 +8,7 @@ entry", silently dropping custom_providers and breaking model switching.
 """
 
 import yaml
-from utils import IndentDumper, atomic_yaml_write
+from jacky_cli.utils import IndentDumper, atomic_yaml_write
 
 
 class TestIndentDumperShape:

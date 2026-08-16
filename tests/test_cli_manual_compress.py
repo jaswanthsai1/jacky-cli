@@ -1,6 +1,6 @@
 from contextlib import nullcontext
 
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 
 
 class DummyAgent:

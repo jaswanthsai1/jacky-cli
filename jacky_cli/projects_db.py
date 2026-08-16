@@ -34,7 +34,7 @@ from pathlib import Path
 from typing import Iterable, List, Optional
 
 from jacky_cli.sqlite_util import add_column_if_missing as _add_column_if_missing, write_txn
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -165,7 +165,7 @@ def connect(db_path: Optional[Path] = None) -> sqlite3.Connection:
     conn = sqlite3.connect(str(path))
     try:
         conn.row_factory = sqlite3.Row
-        from jacky_state import apply_wal_with_fallback
+        from jacky_cli.jacky_state import apply_wal_with_fallback
 
         apply_wal_with_fallback(conn, db_label="projects.db")
         conn.execute("PRAGMA foreign_keys=ON")

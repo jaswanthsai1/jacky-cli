@@ -47,7 +47,7 @@ class TestRealSubagentInterrupt(unittest.TestCase):
 
     def test_interrupt_child_during_api_call(self):
         """Real AIAgent child interrupted while making API call."""
-        from run_agent import AIAgent, IterationBudget
+        from jacky_cli.run_agent import AIAgent, IterationBudget
 
         # Create a real parent agent (just enough to be a parent)
         parent = AIAgent.__new__(AIAgent)
@@ -87,7 +87,7 @@ class TestRealSubagentInterrupt(unittest.TestCase):
         def run_delegate():
             try:
                 # Patch the OpenAI client creation inside AIAgent.__init__
-                with patch('run_agent.OpenAI') as MockOpenAI:
+                with patch('jacky_cli.run_agent.OpenAI') as MockOpenAI:
                     mock_client = MagicMock()
                     # API call takes 5 seconds — should be interrupted before that
                     mock_client.chat.completions.create = _make_slow_api_response(delay=5.0)

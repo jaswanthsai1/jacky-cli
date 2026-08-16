@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
-from utils import atomic_replace, fast_safe_load
+from jacky_cli.utils import atomic_replace, fast_safe_load
 
 
 # Env var name suffixes that indicate credential values.  These are the

@@ -57,11 +57,11 @@ import shutil
 import subprocess
 import time
 from pathlib import Path
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from jacky_cli._subprocess_compat import windows_hide_flags
 from typing import Dict, List, Optional, Set, Tuple
 
-from utils import env_int
+from jacky_cli.utils import env_int
 
 logger = logging.getLogger(__name__)
 

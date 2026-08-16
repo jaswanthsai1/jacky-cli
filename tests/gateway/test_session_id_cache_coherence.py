@@ -30,7 +30,7 @@ import threading
 
 import pytest
 
-from jacky_state import AsyncSessionDB
+from jacky_cli.jacky_state import AsyncSessionDB
 
 
 def _make_runner():
@@ -106,7 +106,7 @@ class TestSessionIdCacheCoherence:
         (the message_count comparison is meaningless across different
         session_ids), not rebuild and bust the prompt cache.
         """
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB(db_path=tmp_path / "sessions.db")
         db.create_session("sA", source="telegram")
@@ -138,7 +138,7 @@ class TestSessionIdCacheCoherence:
     async def test_same_session_id_turns_still_reuse(self, tmp_path):
         """#46237 / #45966 invariant: consecutive same-session turns must
         REUSE the cached agent (prompt cache preserved)."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB(db_path=tmp_path / "sessions.db")
         db.create_session("s1", source="telegram")
@@ -169,7 +169,7 @@ class TestSessionIdCacheCoherence:
         """The original #45966 invariant must hold: a DIFFERENT process
         appending to the same session in the shared DB invalidates the
         cache (genuine cross-process write)."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB(db_path=tmp_path / "sessions.db")
         db.create_session("s1", source="telegram")
@@ -203,7 +203,7 @@ class TestSessionIdCacheCoherence:
         snapshot belongs to. Otherwise the snapshot gets overwritten with
         a different session's count, and the next switch back fires the
         guard (the original bug)."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB(db_path=tmp_path / "sessions.db")
         db.create_session("sA", source="telegram")
@@ -236,7 +236,7 @@ class TestSessionIdCacheCoherence:
     async def test_refresh_refreshes_when_session_id_matches(self, tmp_path):
         """Sanity: when the snapshot's session_id matches the current one,
         the re-baseline still runs and updates the count to the live value."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB(db_path=tmp_path / "sessions.db")
         db.create_session("s1", source="telegram")
@@ -260,7 +260,7 @@ class TestSessionIdCacheCoherence:
         """Backward-compat: legacy 2-tuples and pending-sentinel 3-tuples
         are not affected by the fix. The 2-tuple opts out of the guard;
         the sentinel is left as-is by the re-baseline."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         from gateway.run import _AGENT_PENDING_SENTINEL
 
         db = SessionDB(db_path=tmp_path / "sessions.db")
@@ -294,7 +294,7 @@ class TestSessionIdCacheCoherence:
         live count != snapshot count, the guard fires and the agent
         rebuilds (same behavior as before the fix for legacy entries).
         """
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB(db_path=tmp_path / "sessions.db")
         db.create_session("s1", source="telegram")

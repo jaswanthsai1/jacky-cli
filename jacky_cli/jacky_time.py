@@ -16,7 +16,7 @@ crashes due to a bad timezone string.
 import logging
 import os
 from datetime import datetime
-from jacky_constants import get_config_path
+from jacky_cli.jacky_constants import get_config_path
 from typing import Optional
 
 logger = logging.getLogger(__name__)

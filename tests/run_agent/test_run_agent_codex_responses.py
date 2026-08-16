@@ -9,7 +9,7 @@ sys.modules.setdefault("fire", types.SimpleNamespace(Fire=lambda *a, **k: None))
 sys.modules.setdefault("firecrawl", types.SimpleNamespace(Firecrawl=object))
 sys.modules.setdefault("fal_client", types.SimpleNamespace())
 
-import run_agent
+import jacky_cli.run_agent as run_agent
 
 
 @pytest.fixture(autouse=True)
@@ -1644,7 +1644,7 @@ def test_mid_turn_compaction_does_not_double_persist_in_place_rows(monkeypatch, 
     context and retriggering compression. This guards that regression with a
     REAL SessionDB and the REAL archive_and_compact path (no persist stubs).
     """
-    from jacky_state import SessionDB
+    from jacky_cli.jacky_state import SessionDB
 
     monkeypatch.setenv("JACKY_HOME", str(tmp_path))
     agent = _build_agent(monkeypatch)

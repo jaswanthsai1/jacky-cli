@@ -29,7 +29,7 @@ import tempfile
 from unittest.mock import MagicMock, patch
 
 from agent.tool_dispatch_helpers import make_tool_result_message
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 def _make_tool_defs(*names: str) -> list:
@@ -51,12 +51,12 @@ def _make_agent():
     (jacky_home / "logs").mkdir(parents=True, exist_ok=True)
     with (
         patch(
-            "run_agent.get_tool_definitions",
+            "jacky_cli.run_agent.get_tool_definitions",
             return_value=_make_tool_defs("web_search"),
         ),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
-        patch("run_agent._jacky_home", jacky_home),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
+        patch("jacky_cli.run_agent._jacky_home", jacky_home),
         patch("agent.model_metadata.fetch_model_metadata", return_value={}),
     ):
         agent = AIAgent(
@@ -172,7 +172,7 @@ def test_execute_tool_calls_sequential_flushes_each_tool_result_before_next_disp
     agent._flush_messages_to_session_db = MagicMock(side_effect=_record_flush)
 
     with (
-        patch("run_agent.handle_function_call", side_effect=_fake_dispatch) as disp,
+        patch("jacky_cli.run_agent.handle_function_call", side_effect=_fake_dispatch) as disp,
         patch(
             "agent.tool_executor.maybe_persist_tool_result",
             side_effect=lambda **kwargs: kwargs["content"],

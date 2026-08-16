@@ -925,7 +925,7 @@ class TestPromptGuidance:
 
 class TestRunAgentMultimodalHelpers:
     def test_is_multimodal_tool_result(self):
-        from run_agent import _is_multimodal_tool_result
+        from jacky_cli.run_agent import _is_multimodal_tool_result
         assert _is_multimodal_tool_result({
             "_multimodal": True, "content": [{"type": "text", "text": "x"}]
         })
@@ -934,7 +934,7 @@ class TestRunAgentMultimodalHelpers:
         assert not _is_multimodal_tool_result({"_multimodal": True, "content": "not a list"})
 
     def test_multimodal_text_summary_prefers_summary(self):
-        from run_agent import _multimodal_text_summary
+        from jacky_cli.run_agent import _multimodal_text_summary
         out = _multimodal_text_summary({
             "_multimodal": True,
             "content": [{"type": "text", "text": "detailed"}],
@@ -943,7 +943,7 @@ class TestRunAgentMultimodalHelpers:
         assert out == "short"
 
     def test_multimodal_text_summary_falls_back_to_parts(self):
-        from run_agent import _multimodal_text_summary
+        from jacky_cli.run_agent import _multimodal_text_summary
         out = _multimodal_text_summary({
             "_multimodal": True,
             "content": [{"type": "text", "text": "detailed"}],
@@ -951,7 +951,7 @@ class TestRunAgentMultimodalHelpers:
         assert out == "detailed"
 
     def test_append_subdir_hint_to_multimodal_appends_to_text_part(self):
-        from run_agent import _append_subdir_hint_to_multimodal
+        from jacky_cli.run_agent import _append_subdir_hint_to_multimodal
         env = {
             "_multimodal": True,
             "content": [
@@ -967,7 +967,7 @@ class TestRunAgentMultimodalHelpers:
         assert env["text_summary"] == "summary\n[subdir hint]"
 
     def test_trajectory_normalize_strips_images(self):
-        from run_agent import _trajectory_normalize_msg
+        from jacky_cli.run_agent import _trajectory_normalize_msg
         msg = {
             "role": "tool",
             "tool_call_id": "c1",
@@ -986,7 +986,7 @@ class TestRunAgentMultimodalHelpers:
         )
 
     def test_computer_use_image_result_becomes_error_for_text_only_model(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = object.__new__(AIAgent)
         agent.provider = "deepseek"
@@ -1009,7 +1009,7 @@ class TestRunAgentMultimodalHelpers:
         assert "image_url" not in content
 
     def test_computer_use_image_result_preserved_for_vision_model(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = object.__new__(AIAgent)
         result = {
@@ -1027,7 +1027,7 @@ class TestRunAgentMultimodalHelpers:
         assert any(part.get("type") == "image_url" for part in content)
 
     def test_other_multimodal_tool_uses_text_summary_for_text_only_model(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = object.__new__(AIAgent)
         agent.provider = "custom"

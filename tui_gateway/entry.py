@@ -6,7 +6,7 @@ import sys
 # the repo root next to this package, so importing it is safe before the guard
 # runs (its name won't collide with a user package), and it owns the canonical
 # path-hardening logic shared with the other entry points.
-import jacky_bootstrap
+import jacky_cli.jacky_bootstrap as jacky_bootstrap
 
 jacky_bootstrap.harden_import_path()
 

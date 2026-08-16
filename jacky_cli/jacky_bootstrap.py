@@ -143,12 +143,14 @@ def harden_import_path(src_root: str | None = None) -> None:
     to the front — relocating it ahead of any absolute cwd entry rather than
     only inserting when absent, so an absolute cwd path can't keep winning.
 
-    ``src_root`` defaults to the directory this module lives in, which is the
-    repository root for every shipped entry point, so the guard is
-    self-sufficient and does not depend on the spawner exporting an env var.
+    ``src_root`` defaults to the parent of the ``jacky_cli`` package this
+    module lives in (i.e. the repository root / site-packages root for every
+    shipped entry point) — that is the directory that must be importable as
+    ``jacky_cli.*``, so the guard is self-sufficient and does not depend on
+    the spawner exporting an env var.
     """
     root = src_root or os.environ.get("JACKY_PYTHON_SRC_ROOT") or os.path.dirname(
-        os.path.abspath(__file__)
+        os.path.dirname(os.path.abspath(__file__))
     )
 
     sys.path[:] = [p for p in sys.path if p not in ("", ".")]

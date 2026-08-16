@@ -334,7 +334,7 @@ def load_session_messages(
     Returns ``(messages, meta)``. ``meta`` is ``{}`` when the session row is
     missing (messages may still be present for a live, untitled session).
     """
-    from jacky_state import SessionDB
+    from jacky_cli.jacky_state import SessionDB
     db = SessionDB(db_path=db_path) if db_path else SessionDB()
     resolved = db.resolve_session_id(session_id) or session_id
     meta = db.get_session(resolved) or {}

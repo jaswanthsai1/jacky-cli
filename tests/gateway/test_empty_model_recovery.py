@@ -115,7 +115,7 @@ def test_bare_runner_without_cache_attr_does_not_crash(monkeypatch):
 
 
 def _bare_agent():
-    import run_agent
+    import jacky_cli.run_agent as run_agent
 
     return object.__new__(run_agent.AIAgent)
 

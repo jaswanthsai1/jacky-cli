@@ -9,7 +9,7 @@ from typing import Any
 
 import yaml
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 
 _DISK_DEGRADED_PERCENT = 90.0

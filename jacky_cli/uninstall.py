@@ -12,7 +12,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 from jacky_cli.colors import Colors, color
 
@@ -421,7 +421,7 @@ def _is_windows() -> bool:
 def _is_default_jacky_home(jacky_home: Path) -> bool:
     """Return True when ``jacky_home`` points at the default (non-profile) root."""
     try:
-        from jacky_constants import get_default_jacky_root
+        from jacky_cli.jacky_constants import get_default_jacky_root
         return jacky_home.resolve() == get_default_jacky_root().resolve()
     except Exception:
         return False

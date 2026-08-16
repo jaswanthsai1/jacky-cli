@@ -17,14 +17,14 @@ import os
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import jacky_logging
-from jacky_state import SessionDB
+import jacky_cli.jacky_logging as jacky_logging
+from jacky_cli.jacky_state import SessionDB
 
 
 def _build_agent_with_db(db: SessionDB, session_id: str):
     """Mirror tests/agent/test_compression_concurrent_fork.py's harness."""
     with patch.dict(os.environ, {"OPENROUTER_API_KEY": "test-key"}):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             api_key="test-key",

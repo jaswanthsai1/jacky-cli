@@ -14,7 +14,7 @@ These tests assert behavioral *instructions* are present — they do NOT
 snapshot the full prompt text (change-detector).
 """
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 # ---------------------------------------------------------------------------

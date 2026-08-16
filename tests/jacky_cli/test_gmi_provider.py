@@ -192,7 +192,7 @@ class TestGmiDoctor:
             check_tool_availability=lambda *a, **kw: ([], []),
             TOOLSET_REQUIREMENTS={},
         )
-        monkeypatch.setitem(sys.modules, "model_tools", fake_model_tools)
+        monkeypatch.setitem(sys.modules, "jacky_cli.model_tools", fake_model_tools)
 
         try:
             from jacky_cli import auth as _auth_mod
@@ -361,7 +361,7 @@ class TestGmiMainFlow:
             _model_flow_api_key_provider(load_config(), "gmi", "old-model")
 
         import yaml
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         config = yaml.safe_load((get_jacky_home() / "config.yaml").read_text()) or {}
         model_cfg = config.get("model")

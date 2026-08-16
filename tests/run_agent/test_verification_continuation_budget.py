@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 def _response(content="composed report"):
@@ -21,9 +21,9 @@ def _response(content="composed report"):
 def agent(tmp_path, monkeypatch):
     monkeypatch.setenv("JACKY_HOME", str(tmp_path / ".jacky"))
     with (
-        patch("run_agent.get_tool_definitions", return_value=[]),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
         instance = AIAgent(
             session_id="verify-budget-test",

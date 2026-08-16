@@ -120,7 +120,7 @@ def _disk_cache_path(home_path: Optional[Path] = None) -> Path:
 
 def _jacky_bin_dir() -> Path:
     """Where Jacky stores its managed binaries.  Profile-aware."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     return get_jacky_home() / "bin"
 

@@ -286,7 +286,7 @@ def test_dashboard_mcp_add_rejects_dangerous_entry():
 def test_profile_mcp_write_skips_dangerous_entry(tmp_path):
     from jacky_cli.config import load_config
     from jacky_cli.web_server import MCPServerCreate, _write_profile_mcp_servers
-    from jacky_constants import reset_jacky_home_override, set_jacky_home_override
+    from jacky_cli.jacky_constants import reset_jacky_home_override, set_jacky_home_override
 
     profile_dir = tmp_path / "profile"
     profile_dir.mkdir()

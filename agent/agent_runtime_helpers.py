@@ -37,7 +37,7 @@ from agent.tool_dispatch_helpers import _trajectory_normalize_msg, make_tool_res
 from agent.trajectory import convert_scratchpad_to_think
 from agent.credential_pool import STATUS_EXHAUSTED
 from agent.error_classifier import FailoverReason
-from utils import base_url_host_matches, base_url_hostname, env_var_enabled, atomic_json_write
+from jacky_cli.utils import base_url_host_matches, base_url_hostname, env_var_enabled, atomic_json_write
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +52,7 @@ _MAX_AUTH_REFRESH_ATTEMPTS = 2
 
 def _ra():
     """Lazy ``run_agent`` reference for test-patch routing."""
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     return run_agent
 
 
@@ -2205,7 +2205,7 @@ def invoke_tool(agent, function_name: str, function_args: dict, effective_task_i
     if block_message is not None:
         result = json.dumps({"error": block_message}, ensure_ascii=False)
         try:
-            from model_tools import _emit_post_tool_call_hook
+            from jacky_cli.model_tools import _emit_post_tool_call_hook
             _emit_post_tool_call_hook(
                 function_name=function_name,
                 function_args=function_args,
@@ -2229,7 +2229,7 @@ def invoke_tool(agent, function_name: str, function_args: dict, effective_task_i
     def _finish_agent_tool(result: Any, observed_args: Optional[dict] = None) -> Any:
         hook_args = observed_args if isinstance(observed_args, dict) else function_args
         try:
-            from model_tools import _emit_post_tool_call_hook
+            from jacky_cli.model_tools import _emit_post_tool_call_hook
             _emit_post_tool_call_hook(
                 function_name=function_name,
                 function_args=hook_args,
@@ -2261,7 +2261,7 @@ def invoke_tool(agent, function_name: str, function_args: dict, effective_task_i
         def _execute(next_args: dict) -> Any:
             session_db = agent._get_session_db_for_recall()
             if not session_db:
-                from jacky_state import format_session_db_unavailable
+                from jacky_cli.jacky_state import format_session_db_unavailable
                 return _finish_agent_tool(json.dumps({"success": False, "error": format_session_db_unavailable()}), next_args)
             from tools.session_search_tool import session_search as _session_search
             return _finish_agent_tool(

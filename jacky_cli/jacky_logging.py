@@ -69,7 +69,7 @@ else:
     from logging.handlers import RotatingFileHandler  # noqa: E402
 
 
-from jacky_constants import get_config_path, get_jacky_home
+from jacky_cli.jacky_constants import get_config_path, get_jacky_home
 
 # Sentinel to track whether setup_logging() has already run.  The function
 # is idempotent — calling it twice is safe but the second call is a no-op
@@ -765,7 +765,7 @@ def _read_logging_config():
     Returns ``(level, max_size_mb, backup_count)`` — any may be ``None``.
     """
     try:
-        from utils import fast_safe_load
+        from jacky_cli.utils import fast_safe_load
         config_path = get_config_path()
         if config_path.exists():
             with open(config_path, "r", encoding="utf-8") as f:

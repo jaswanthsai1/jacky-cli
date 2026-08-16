@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from jacky_constants import display_jacky_home
+from jacky_cli.jacky_constants import display_jacky_home
 
 logger = logging.getLogger(__name__)
 
@@ -479,7 +479,7 @@ def _validate_cron_base_url(
             _get_named_custom_provider,
         )
         from jacky_cli.auth import PROVIDER_REGISTRY
-        from utils import base_url_host_matches, base_url_hostname
+        from jacky_cli.utils import base_url_host_matches, base_url_hostname
     except Exception:
         # Can't resolve provider metadata -> fail closed.
         return f"Unable to validate base_url override for provider {prov!r}; refused."
@@ -537,7 +537,7 @@ def _validate_cron_script_path(script: Optional[str]) -> Optional[str]:
     if not script or not script.strip():
         return None  # empty/None = clearing the field, always OK
 
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     raw = script.strip()
 
@@ -1104,7 +1104,7 @@ def check_cronjob_requirements() -> bool:
     leave the tool disabled. Uses the shared ``env_var_enabled`` helper so
     every consumer of these flags agrees on the truthy set.
     """
-    from utils import env_var_enabled
+    from jacky_cli.utils import env_var_enabled
 
     return (
         env_var_enabled("JACKY_INTERACTIVE")

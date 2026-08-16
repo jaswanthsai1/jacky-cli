@@ -53,7 +53,7 @@ from pathlib import Path
 from typing import Any
 
 from jacky_cli import __version__ as _JACKY_VERSION
-from utils import atomic_replace
+from jacky_cli.utils import atomic_replace
 
 logger = logging.getLogger(__name__)
 
@@ -113,7 +113,7 @@ def _load_catalog_config() -> dict[str, Any]:
 
 def _cache_path() -> Path:
     """Return the disk cache path. Import lazily so tests can monkeypatch home."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     return get_jacky_home() / "cache" / "model_catalog.json"
 
 

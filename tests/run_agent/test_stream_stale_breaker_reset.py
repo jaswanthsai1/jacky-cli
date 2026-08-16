@@ -22,7 +22,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 def _make_agent_openrouter():
@@ -60,9 +60,9 @@ def _make_fallback_agent(fallback_model):
     """Full-constructor agent for the fallback path, mirroring
     tests/run_agent/test_24996_fallback_exhaustion_cooldown.py."""
     with (
-        patch("run_agent.get_tool_definitions", return_value=[]),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
         agent = AIAgent(
             api_key="test-key",
@@ -171,7 +171,7 @@ def test_restore_primary_runtime_resets_stale_streak():
     # Streak accumulated while wedged on the FALLBACK provider.
     agent._consecutive_stale_streams = 7
 
-    with patch("run_agent.OpenAI", return_value=MagicMock()):
+    with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()):
         assert agent._restore_primary_runtime() is True
 
     assert agent._consecutive_stale_streams == 0

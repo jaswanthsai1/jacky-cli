@@ -1197,7 +1197,7 @@ class QQAdapter(BasePlatformAdapter):
         Writes via ``tmp + rename`` so a partial write can't fool the reader.
         """
         try:
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             home = get_jacky_home()
             response_path = home / ".update_response"
             tmp = response_path.with_suffix(".tmp")

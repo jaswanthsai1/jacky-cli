@@ -12,7 +12,7 @@ import pytest
 
 from gateway.config import GatewayConfig, Platform, PlatformConfig
 from gateway.platforms.base import MessageEvent
-from jacky_state import AsyncSessionDB
+from jacky_cli.jacky_state import AsyncSessionDB
 from gateway.session import (
     SessionContext,
     SessionEntry,

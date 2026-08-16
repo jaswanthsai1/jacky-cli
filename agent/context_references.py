@@ -362,7 +362,7 @@ def _resolve_path(cwd: Path, target: str, *, allowed_root: Path | None = None) -
 
 
 def _ensure_reference_path_allowed(path: Path) -> None:
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     home = Path(os.path.expanduser("~")).resolve()
     jacky_home = get_jacky_home().resolve()
 

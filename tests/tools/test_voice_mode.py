@@ -330,7 +330,7 @@ class TestDetectAudioEnvironment:
         monkeypatch.delenv("SSH_CONNECTION", raising=False)
         monkeypatch.setenv("PULSE_SERVER", "unix:/run/user/1000/pulse/native")
         monkeypatch.delenv("PIPEWIRE_REMOTE", raising=False)
-        monkeypatch.setattr("jacky_constants.is_container", lambda: True)
+        monkeypatch.setattr("jacky_cli.jacky_constants.is_container", lambda: True)
         monkeypatch.setattr("tools.voice_mode._import_audio",
                             lambda: (MagicMock(), MagicMock()))
 
@@ -348,7 +348,7 @@ class TestDetectAudioEnvironment:
         monkeypatch.delenv("SSH_CONNECTION", raising=False)
         monkeypatch.delenv("PULSE_SERVER", raising=False)
         monkeypatch.setenv("PIPEWIRE_REMOTE", "/run/user/1000/pipewire-0")
-        monkeypatch.setattr("jacky_constants.is_container", lambda: True)
+        monkeypatch.setattr("jacky_cli.jacky_constants.is_container", lambda: True)
         monkeypatch.setattr("tools.voice_mode._import_audio",
                             lambda: (MagicMock(), MagicMock()))
 
@@ -366,7 +366,7 @@ class TestDetectAudioEnvironment:
         monkeypatch.delenv("SSH_CONNECTION", raising=False)
         monkeypatch.delenv("PULSE_SERVER", raising=False)
         monkeypatch.setenv("PIPEWIRE_REMOTE", "/run/user/1000/pipewire-0")
-        monkeypatch.setattr("jacky_constants.is_container", lambda: True)
+        monkeypatch.setattr("jacky_cli.jacky_constants.is_container", lambda: True)
 
         sd = MagicMock()
         sd.query_devices.return_value = []
@@ -386,7 +386,7 @@ class TestDetectAudioEnvironment:
         monkeypatch.delenv("SSH_CONNECTION", raising=False)
         monkeypatch.delenv("PULSE_SERVER", raising=False)
         monkeypatch.setenv("PIPEWIRE_REMOTE", "/run/user/1000/pipewire-0")
-        monkeypatch.setattr("jacky_constants.is_container", lambda: True)
+        monkeypatch.setattr("jacky_cli.jacky_constants.is_container", lambda: True)
 
         sd = MagicMock()
         sd.query_devices.side_effect = RuntimeError("boom")
@@ -407,7 +407,7 @@ class TestDetectAudioEnvironment:
         monkeypatch.delenv("PULSE_SERVER", raising=False)
         monkeypatch.delenv("PIPEWIRE_REMOTE", raising=False)
         monkeypatch.setattr("tools.voice_mode._pulse_socket_reachable", lambda: False)
-        monkeypatch.setattr("jacky_constants.is_container", lambda: True)
+        monkeypatch.setattr("jacky_cli.jacky_constants.is_container", lambda: True)
         monkeypatch.setattr("tools.voice_mode._import_audio",
                             lambda: (MagicMock(), MagicMock()))
 

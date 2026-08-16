@@ -10,7 +10,7 @@ A distribution is a dictionary mapping toolset names to their selection probabil
 Probabilities should sum to 100, but the system will normalize if they don't.
 
 Usage:
-    from toolset_distributions import get_distribution, list_distributions
+    from jacky_cli.toolset_distributions import get_distribution, list_distributions
     
     # Get a specific distribution
     dist = get_distribution("image_gen")
@@ -21,7 +21,7 @@ Usage:
 
 from typing import Dict, List, Optional
 import random
-from toolsets import validate_toolset
+from jacky_cli.toolsets import validate_toolset
 
 
 # Distribution definitions

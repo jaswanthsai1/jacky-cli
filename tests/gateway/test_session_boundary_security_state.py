@@ -1,4 +1,4 @@
-from jacky_state import AsyncSessionDB
+from jacky_cli.jacky_state import AsyncSessionDB
 """Regression tests for approval-state cleanup on session boundaries."""
 
 from datetime import datetime

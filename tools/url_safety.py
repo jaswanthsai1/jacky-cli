@@ -32,7 +32,7 @@ import re
 from typing import Any, Optional
 from urllib.parse import parse_qsl, quote, unquote, urljoin, urlparse, urlsplit, urlunsplit
 
-from utils import is_truthy_value
+from jacky_cli.utils import is_truthy_value
 
 logger = logging.getLogger(__name__)
 

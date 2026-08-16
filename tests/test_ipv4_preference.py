@@ -7,7 +7,7 @@ import socket
 
 def _reload_constants():
     """Reload jacky_constants to get a fresh apply_ipv4_preference."""
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
     importlib.reload(jacky_constants)
     return jacky_constants
 
@@ -25,14 +25,14 @@ class TestApplyIPv4Preference:
 
     def test_noop_when_force_false(self):
         """No patch when force=False."""
-        from jacky_constants import apply_ipv4_preference
+        from jacky_cli.jacky_constants import apply_ipv4_preference
         original = socket.getaddrinfo
         apply_ipv4_preference(force=False)
         assert socket.getaddrinfo is original
 
     def test_patches_getaddrinfo_when_forced(self):
         """Patches socket.getaddrinfo when force=True."""
-        from jacky_constants import apply_ipv4_preference
+        from jacky_cli.jacky_constants import apply_ipv4_preference
         original = socket.getaddrinfo
         apply_ipv4_preference(force=True)
         assert socket.getaddrinfo is not original
@@ -40,7 +40,7 @@ class TestApplyIPv4Preference:
 
     def test_double_patch_is_safe(self):
         """Calling apply twice doesn't double-wrap."""
-        from jacky_constants import apply_ipv4_preference
+        from jacky_cli.jacky_constants import apply_ipv4_preference
         apply_ipv4_preference(force=True)
         first_patch = socket.getaddrinfo
         apply_ipv4_preference(force=True)
@@ -48,7 +48,7 @@ class TestApplyIPv4Preference:
 
     def test_af_unspec_becomes_af_inet(self):
         """AF_UNSPEC (default) calls get rewritten to AF_INET."""
-        from jacky_constants import apply_ipv4_preference
+        from jacky_cli.jacky_constants import apply_ipv4_preference
 
         calls = []
         original = socket.getaddrinfo
@@ -66,7 +66,7 @@ class TestApplyIPv4Preference:
 
     def test_explicit_family_preserved(self):
         """Explicit AF_INET6 requests are not intercepted."""
-        from jacky_constants import apply_ipv4_preference
+        from jacky_cli.jacky_constants import apply_ipv4_preference
 
         calls = []
         original = socket.getaddrinfo
@@ -83,7 +83,7 @@ class TestApplyIPv4Preference:
 
     def test_fallback_on_gaierror(self):
         """Falls back to AF_UNSPEC if AF_INET resolution fails."""
-        from jacky_constants import apply_ipv4_preference
+        from jacky_cli.jacky_constants import apply_ipv4_preference
 
         call_families = []
 

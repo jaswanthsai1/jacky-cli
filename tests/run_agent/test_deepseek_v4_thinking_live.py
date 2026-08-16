@@ -94,7 +94,7 @@ def _make_live_client():
 
 
 def _make_agent_for_message_building(model: str):
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
 
     agent = object.__new__(AIAgent)
     agent.provider = "deepseek"

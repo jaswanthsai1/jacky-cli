@@ -75,7 +75,7 @@ async def test_compress_focus_topic_passed_to_agent():
     with (
         patch("gateway.run._resolve_runtime_agent_kwargs", return_value={"api_key": "***"}),
         patch("gateway.run._resolve_gateway_model", return_value="test-model"),
-        patch("run_agent.AIAgent", return_value=agent_instance),
+        patch("jacky_cli.run_agent.AIAgent", return_value=agent_instance),
         patch("agent.model_metadata.estimate_messages_tokens_rough", side_effect=_estimate),
     ):
         result = await runner._handle_compress_command(_make_event("/compress database schema"))
@@ -102,7 +102,7 @@ async def test_compress_no_focus_passes_none():
     with (
         patch("gateway.run._resolve_runtime_agent_kwargs", return_value={"api_key": "***"}),
         patch("gateway.run._resolve_gateway_model", return_value="test-model"),
-        patch("run_agent.AIAgent", return_value=agent_instance),
+        patch("jacky_cli.run_agent.AIAgent", return_value=agent_instance),
         patch("agent.model_metadata.estimate_messages_tokens_rough", return_value=100),
     ):
         result = await runner._handle_compress_command(_make_event("/compress"))

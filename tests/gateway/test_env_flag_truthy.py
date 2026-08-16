@@ -7,7 +7,7 @@ through the shared TRUTHY_STRINGS set, so "on" behaves like "1"/"true"/"yes".
 import os
 from unittest.mock import patch
 
-from utils import TRUTHY_STRINGS, env_var_enabled
+from jacky_cli.utils import TRUTHY_STRINGS, env_var_enabled
 
 
 def test_truthy_strings_include_on():

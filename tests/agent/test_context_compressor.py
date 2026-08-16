@@ -10,7 +10,7 @@ from agent.context_compressor import (
     SUMMARY_PREFIX,
     COMPRESSED_SUMMARY_METADATA_KEY,
 )
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 
 
 @pytest.fixture()

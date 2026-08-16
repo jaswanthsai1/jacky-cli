@@ -9,7 +9,7 @@ no messages, no title, and no child sessions.
 
 import pytest
 
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 
 
 @pytest.fixture()
@@ -109,7 +109,7 @@ class TestCLIDiscardSessionIfEmpty:
     """Wiring tests for JackyCLI._discard_session_if_empty."""
 
     def _make_cli(self, db):
-        from cli import JackyCLI
+        from jacky_cli.cli import JackyCLI
 
         cli = JackyCLI.__new__(JackyCLI)
         cli._session_db = db

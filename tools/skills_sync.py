@@ -28,10 +28,10 @@ import os
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
-from jacky_constants import get_bundled_skills_dir, get_jacky_home, get_optional_skills_dir
+from jacky_cli.jacky_constants import get_bundled_skills_dir, get_jacky_home, get_optional_skills_dir
 from agent.skill_utils import is_excluded_skill_path
 from typing import Dict, List, Optional, Set, Tuple
-from utils import atomic_replace
+from jacky_cli.utils import atomic_replace
 
 logger = logging.getLogger(__name__)
 

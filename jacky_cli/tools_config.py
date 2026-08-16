@@ -30,7 +30,7 @@ from jacky_cli.nous_subscription import (
 )
 from jacky_cli.nous_account import format_nous_portal_entitlement_message
 from tools.tool_backend_helpers import fal_key_is_configured
-from utils import base_url_hostname, is_truthy_value
+from jacky_cli.utils import base_url_hostname, is_truthy_value
 
 logger = logging.getLogger(__name__)
 
@@ -1164,7 +1164,7 @@ def _run_post_setup(post_setup_key: str):
             if result.returncode == 0:
                 _print_success("    Node.js dependencies installed")
             else:
-                from jacky_constants import display_jacky_home
+                from jacky_cli.jacky_constants import display_jacky_home
                 _print_warning(f"    npm install failed - run manually: cd {display_jacky_home()}/jacky-agent && npm install --workspaces=false")
                 if result.stderr:
                     _print_info(f"      {result.stderr.strip()[:200]}")
@@ -1641,7 +1641,7 @@ def _get_platform_tools(
     include_default_mcp_servers: bool = True,
 ) -> Set[str]:
     """Resolve which individual toolset names are enabled for a platform."""
-    from toolsets import resolve_toolset, TOOLSETS
+    from jacky_cli.toolsets import resolve_toolset, TOOLSETS
 
     platform_toolsets = config.get("platform_toolsets") or {}
     toolset_names = platform_toolsets.get(platform)
@@ -1910,7 +1910,7 @@ def _get_platform_tools(
     # at runtime, not only during the next `jacky update`/`jacky doctor`.
     _explicit = platform_toolsets.get(platform)
     if isinstance(_explicit, list) and _explicit:
-        from toolsets import validate_toolset
+        from jacky_cli.toolsets import validate_toolset
 
         _named = [str(t) for t in _explicit if isinstance(t, str) and t]
         if (
@@ -2095,7 +2095,7 @@ def _estimate_tool_tokens() -> Dict[str, int]:
 
     try:
         # Trigger full tool discovery (imports all tool modules).
-        import model_tools  # noqa: F401
+        import jacky_cli.model_tools as model_tools  # noqa: F401
         from tools.registry import registry
     except Exception:
         logger.debug("Tool registry unavailable; skipping token estimation")
@@ -2123,7 +2123,7 @@ def _prompt_toolset_checklist(
 ) -> Set[str]:
     """Multi-select checklist of toolsets. Returns set of selected toolset keys."""
     from jacky_cli.curses_ui import curses_checklist
-    from toolsets import resolve_toolset
+    from jacky_cli.toolsets import resolve_toolset
 
     # Pre-compute per-tool token counts (cached after first call).
     tool_tokens = _estimate_tool_tokens()
@@ -4222,7 +4222,7 @@ def tools_command(args=None, first_install: bool = False, config: dict = None):
         platform_choices[idx] = f"Configure {pinfo['label']}  ({new_count}/{total} enabled)"
 
     print()
-    from jacky_constants import display_jacky_home
+    from jacky_cli.jacky_constants import display_jacky_home
     print(color(f"  Tool configuration saved to {display_jacky_home()}/config.yaml", Colors.DIM))
     print(color("  Changes take effect on next 'jacky' or gateway restart.", Colors.DIM))
     print()

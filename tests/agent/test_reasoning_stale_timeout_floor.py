@@ -148,7 +148,7 @@ def _write_config(tmp_path: Path, body: str) -> None:
 
 
 def _make_agent(tmp_path: Path, **overrides):
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     kwargs = dict(
         model="gpt-5.5",
         provider="openai-codex",
@@ -175,7 +175,7 @@ def test_reasoning_floor_applies_to_nemotron_3_ultra(monkeypatch, tmp_path):
     # reasoning floor.  Patch the lookup to return None deterministically
     # rather than relying on importlib.reload of shared config modules, which
     # races other tests in the same xdist worker (#52217 flake).
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     monkeypatch.setattr(run_agent, "get_provider_stale_timeout", lambda *a, **k: None)
 
     agent = _make_agent(
@@ -202,7 +202,7 @@ def test_reasoning_floor_applies_to_opus_4_thinking(monkeypatch, tmp_path):
     _write_config(tmp_path, "")
 
     # Deterministic floor path — see test_reasoning_floor_applies_to_nemotron_3_ultra.
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     monkeypatch.setattr(run_agent, "get_provider_stale_timeout", lambda *a, **k: None)
 
     agent = _make_agent(
@@ -230,7 +230,7 @@ def test_reasoning_floor_never_overrides_explicit_user_config(monkeypatch, tmp_p
 
     # Explicit per-model config resolves to 60s (priority 1). The resolver
     # must short-circuit on this and never consult the reasoning floor.
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     monkeypatch.setattr(run_agent, "get_provider_stale_timeout", lambda *a, **k: 60.0)
 
     agent = _make_agent(
@@ -255,7 +255,7 @@ def test_reasoning_floor_loses_to_env_var_when_no_floor_match(monkeypatch, tmp_p
     _write_config(tmp_path, "")
 
     # No provider config -> resolver consults the env var (priority 3).
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     monkeypatch.setattr(run_agent, "get_provider_stale_timeout", lambda *a, **k: None)
 
     agent = _make_agent(
@@ -277,7 +277,7 @@ def test_non_reasoning_model_keeps_default(monkeypatch, tmp_path):
     _write_config(tmp_path, "")
 
     # No provider config, no env var, no floor match -> 90s implicit default.
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     monkeypatch.setattr(run_agent, "get_provider_stale_timeout", lambda *a, **k: None)
 
     agent = _make_agent(

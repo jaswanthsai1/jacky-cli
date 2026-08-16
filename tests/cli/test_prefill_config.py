@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import cli
+import jacky_cli.cli as cli
 
 
 def test_resolve_prefill_messages_file_uses_top_level(monkeypatch):

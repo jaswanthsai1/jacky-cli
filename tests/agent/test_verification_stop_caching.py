@@ -21,10 +21,10 @@ import pytest
 
 def _fresh_run_agent(jacky_home):
     for mod in list(sys.modules):
-        if mod == "run_agent" or mod.startswith("agent.") or mod.startswith("tools.") or mod.startswith("jacky_"):
+        if mod == "jacky_cli.run_agent" or mod.startswith("agent.") or mod.startswith("tools.") or mod.startswith("jacky_"):
             del sys.modules[mod]
-    import run_agent  # noqa: F401
-    return sys.modules["run_agent"]
+    import jacky_cli.run_agent as run_agent  # noqa: F401
+    return run_agent
 
 
 def test_verification_flags_registered_as_ephemeral(tmp_path, monkeypatch):

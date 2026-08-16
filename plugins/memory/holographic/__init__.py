@@ -95,7 +95,7 @@ FACT_FEEDBACK_SCHEMA = {
 # ---------------------------------------------------------------------------
 
 def _load_plugin_config() -> dict:
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     config_path = get_jacky_home() / "config.yaml"
     if not config_path.exists():
         return {}
@@ -146,7 +146,7 @@ class HolographicMemoryProvider(MemoryProvider):
             pass
 
     def get_config_schema(self):
-        from jacky_constants import display_jacky_home
+        from jacky_cli.jacky_constants import display_jacky_home
         _default_db = f"{display_jacky_home()}/memory_store.db"
         return [
             {"key": "db_path", "description": "SQLite database path", "default": _default_db},
@@ -156,7 +156,7 @@ class HolographicMemoryProvider(MemoryProvider):
         ]
 
     def initialize(self, session_id: str, **kwargs) -> None:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         _jacky_home = str(get_jacky_home())
         _default_db = _jacky_home + "/memory_store.db"
         db_path = self._config.get("db_path", _default_db)

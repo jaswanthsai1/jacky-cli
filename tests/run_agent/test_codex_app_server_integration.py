@@ -16,7 +16,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-import run_agent
+import jacky_cli.run_agent as run_agent
 from agent.transports.codex_app_server_session import CodexAppServerSession, TurnResult
 
 

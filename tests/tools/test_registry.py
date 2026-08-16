@@ -85,7 +85,7 @@ class TestRegisterAndDispatch:
             assert "unsupported result type" in result["error"]
 
     def test_handler_contract_error_survives_model_tools_pipeline(self):
-        from model_tools import handle_function_call, registry
+        from jacky_cli.model_tools import handle_function_call, registry
 
         name = "test_invalid_registry_result"
         registry.register(

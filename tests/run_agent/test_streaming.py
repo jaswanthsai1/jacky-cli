@@ -59,11 +59,11 @@ class TestStreamingAccumulator:
     """Verify that _interruptible_streaming_api_call accumulates content
     and tool calls into a response matching the non-streaming shape."""
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_text_only_response(self, mock_close, mock_create):
         """Text-only stream produces correct response shape."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         chunks = [
             _make_stream_chunk(content="Hello"),
@@ -95,11 +95,11 @@ class TestStreamingAccumulator:
         assert response.usage is not None
         assert response.usage.completion_tokens == 3
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_native_gemini_endpoint_omits_stream_options(self, mock_close, mock_create):
         """Google's native Gemini REST endpoint rejects OpenAI-only stream_options."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         mock_client = MagicMock()
         mock_client.chat.completions.create.return_value = iter([
@@ -126,11 +126,11 @@ class TestStreamingAccumulator:
         assert call_kwargs["stream"] is True
         assert "stream_options" not in call_kwargs
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_gemini_openai_compat_shim_keeps_stream_options(self, mock_close, mock_create):
         """The Gemini OpenAI-compat shim (.../openai) accepts stream_options."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         mock_client = MagicMock()
         mock_client.chat.completions.create.return_value = iter([
@@ -157,11 +157,11 @@ class TestStreamingAccumulator:
         call_kwargs = mock_client.chat.completions.create.call_args.kwargs
         assert call_kwargs["stream_options"] == {"include_usage": True}
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_openai_compatible_streaming_keeps_stream_options(self, mock_close, mock_create):
         """OpenAI-compatible aggregators still request final usage chunks."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         mock_client = MagicMock()
         mock_client.chat.completions.create.return_value = iter([
@@ -188,11 +188,11 @@ class TestStreamingAccumulator:
         call_kwargs = mock_client.chat.completions.create.call_args.kwargs
         assert call_kwargs["stream_options"] == {"include_usage": True}
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_tool_call_response(self, mock_close, mock_create):
         """Tool call stream accumulates ID, name, and arguments."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         chunks = [
             _make_stream_chunk(tool_calls=[
@@ -231,15 +231,15 @@ class TestStreamingAccumulator:
         assert tc[0].function.name == "terminal"
         assert tc[0].function.arguments == '{"command": "ls"}'
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_tool_name_not_duplicated_when_resent_per_chunk(self, mock_close, mock_create):
         """MiniMax M2.7 via NVIDIA NIM resends the full name in every chunk.
 
         Bug #8259: the old += accumulation produced "read_fileread_file".
         Assignment (matching OpenAI Node SDK / LiteLLM) prevents this.
         """
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         chunks = [
             _make_stream_chunk(tool_calls=[
@@ -277,11 +277,11 @@ class TestStreamingAccumulator:
         assert tc[0].function.name == "read_file"
         assert tc[0].function.arguments == '{"path": "x.py"}'
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_tool_call_extra_content_preserved(self, mock_close, mock_create):
         """Streamed tool calls preserve provider-specific extra_content metadata."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         chunks = [
             _make_stream_chunk(tool_calls=[
@@ -325,11 +325,11 @@ class TestStreamingAccumulator:
             "google": {"thought_signature": "sig-123"}
         }
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_mixed_content_and_tool_calls(self, mock_close, mock_create):
         """Stream with both text and tool calls accumulates both."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         chunks = [
             _make_stream_chunk(content="Let me check"),
@@ -369,11 +369,11 @@ class TestStreamingAccumulator:
 class TestStreamingCallbacks:
     """Verify that delta callbacks fire correctly."""
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_deltas_fire_in_order(self, mock_close, mock_create):
         """Callbacks receive text deltas in order."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         chunks = [
             _make_stream_chunk(content="a"),
@@ -404,11 +404,11 @@ class TestStreamingCallbacks:
 
         assert deltas == ["a", "b", "c"]
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_on_first_delta_fires_once(self, mock_close, mock_create):
         """on_first_delta callback fires exactly once."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         chunks = [
             _make_stream_chunk(content="a"),
@@ -439,11 +439,11 @@ class TestStreamingCallbacks:
 
         assert len(first_delta_calls) == 1
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_chat_stream_refreshes_activity_on_every_chunk(self, mock_close, mock_create):
         """Each streamed chat chunk should refresh the activity timestamp."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         chunks = [
             _make_stream_chunk(content="a"),
@@ -473,11 +473,11 @@ class TestStreamingCallbacks:
 
         assert touch_calls.count("receiving stream response") == len(chunks)
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_tool_only_does_not_fire_callback(self, mock_close, mock_create):
         """Tool-call-only stream does not fire the delta callback."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         chunks = [
             _make_stream_chunk(tool_calls=[
@@ -511,11 +511,11 @@ class TestStreamingCallbacks:
 
         assert deltas == []
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_text_suppressed_when_tool_calls_present(self, mock_close, mock_create):
         """Text deltas are suppressed when tool calls are also in the stream."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         chunks = [
             _make_stream_chunk(content="thinking..."),
@@ -569,11 +569,11 @@ class TestStreamingFallback:
     so the *next* main-loop retry uses non-streaming automatically.
     """
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_stream_not_supported_sets_flag_and_raises(self, mock_close, mock_create):
         """'not supported' error sets _disable_streaming and propagates."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         mock_client = MagicMock()
         mock_client.chat.completions.create.side_effect = Exception(
@@ -598,11 +598,11 @@ class TestStreamingFallback:
         # The flag should be set so the main retry loop switches to non-streaming
         assert agent._disable_streaming is True
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_non_transport_error_propagates(self, mock_close, mock_create):
         """Non-transport streaming errors propagate to the main retry loop."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         mock_client = MagicMock()
         mock_client.chat.completions.create.side_effect = Exception(
@@ -624,13 +624,13 @@ class TestStreamingFallback:
         with pytest.raises(Exception, match="Connection reset by peer"):
             agent._interruptible_streaming_api_call({})
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_response_object_disables_streaming_and_returns_final_response(
         self, mock_close, mock_create
     ):
         """Adapters that ignore stream=True should fall back cleanly."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         final_response = SimpleNamespace(
             model="copilot-acp",
@@ -672,8 +672,8 @@ class TestStreamingFallback:
         assert deltas == ["Hello from ACP"]
 
     @pytest.mark.parametrize("choices", [[], None], ids=["empty", "none"])
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_completed_response_no_usable_choices_returned_not_iterated(
         self, mock_close, mock_create, choices
     ):
@@ -688,7 +688,7 @@ class TestStreamingFallback:
         and return the object for the outer loop's invalid-response retry path
         instead of iterating it.
         """
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         final_response = SimpleNamespace(model="gpt-5.5", choices=choices, usage=None)
 
@@ -718,11 +718,11 @@ class TestStreamingFallback:
         assert agent._disable_streaming is True
         assert deltas == []
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_stream_error_propagates_original(self, mock_close, mock_create):
         """The original streaming error propagates (not a fallback error)."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         mock_client = MagicMock()
         mock_client.chat.completions.create.side_effect = Exception("stream broke")
@@ -742,11 +742,11 @@ class TestStreamingFallback:
         with pytest.raises(Exception, match="stream broke"):
             agent._interruptible_streaming_api_call({})
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_exhausted_transient_stream_error_propagates(self, mock_close, mock_create):
         """Transient stream errors retry first, then propagate after retries exhausted."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         import httpx
 
         mock_client = MagicMock()
@@ -771,8 +771,8 @@ class TestStreamingFallback:
         assert mock_client.chat.completions.create.call_count == 3
         assert mock_close.call_count >= 1
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_sse_connection_lost_retried_as_transient(self, mock_close, mock_create):
         """SSE 'Network connection lost' (APIError w/ no status_code) retries like httpx errors.
 
@@ -781,7 +781,7 @@ class TestStreamingFallback:
         this.  It should be retried at the streaming level, same as httpx connection
         errors, then propagate to the main retry loop after exhaustion.
         """
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         import httpx
 
         # Create an APIError that mimics what the OpenAI SDK raises from SSE error events.
@@ -816,11 +816,11 @@ class TestStreamingFallback:
         # Connection cleanup should happen for each failed retry
         assert mock_close.call_count >= 2
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_sse_non_connection_error_propagates_immediately(self, mock_close, mock_create):
         """SSE errors that aren't connection-related propagate immediately (no stream retry)."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         import httpx
 
         from openai import APIError as OAIAPIError
@@ -858,11 +858,11 @@ class TestStreamingFallback:
 class TestReasoningStreaming:
     """Verify reasoning content is accumulated and callback fires."""
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_reasoning_callback_fires(self, mock_close, mock_create):
         """Reasoning deltas fire the reasoning_callback."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         chunks = [
             _make_stream_chunk(reasoning_content="Let me think"),
@@ -906,7 +906,7 @@ class TestHasStreamConsumers:
     """Verify _has_stream_consumers() detects registered callbacks."""
 
     def test_no_consumers(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         agent = AIAgent(
             api_key="test-key",
             base_url="https://openrouter.ai/api/v1",
@@ -918,7 +918,7 @@ class TestHasStreamConsumers:
         assert agent._has_stream_consumers() is False
 
     def test_delta_callback_set(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         agent = AIAgent(
             api_key="test-key",
             base_url="https://openrouter.ai/api/v1",
@@ -931,7 +931,7 @@ class TestHasStreamConsumers:
         assert agent._has_stream_consumers() is True
 
     def test_stream_callback_set(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         agent = AIAgent(
             api_key="test-key",
             base_url="https://openrouter.ai/api/v1",
@@ -951,7 +951,7 @@ class TestCodexStreamCallbacks:
     """Verify _run_codex_stream fires delta callbacks."""
 
     def test_codex_text_delta_fires_callback(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         deltas = []
 
@@ -992,7 +992,7 @@ class TestCodexStreamCallbacks:
         assert "Hello from Codex!" in deltas
 
     def test_codex_stream_refreshes_activity_on_every_event(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             api_key="test-key",
@@ -1039,7 +1039,7 @@ class TestCodexStreamCallbacks:
         raises ``httpx.RemoteProtocolError``, we retry once (matching the
         old behavior on the helper) and re-raise on the second failure.
         """
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         import httpx
 
         agent = AIAgent(
@@ -1071,7 +1071,7 @@ class TestCodexStreamCallbacks:
         assert call_count["n"] == 2
 
     def test_codex_create_stream_fallback_refreshes_activity_on_every_event(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             api_key="test-key",
@@ -1124,7 +1124,7 @@ class TestAnthropicStreamCallbacks:
     """Verify Anthropic streaming refreshes activity on every event."""
 
     def test_anthropic_stream_refreshes_activity_on_every_event(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             api_key="test-key",
@@ -1173,8 +1173,8 @@ class TestAnthropicStreamCallbacks:
 
         assert touch_calls.count("receiving stream response") == len(events)
 
-    @patch("run_agent.AIAgent._rebuild_anthropic_client")
-    @patch("run_agent.AIAgent._replace_primary_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._rebuild_anthropic_client")
+    @patch("jacky_cli.run_agent.AIAgent._replace_primary_openai_client")
     def test_anthropic_stream_parser_valueerror_retries_before_delivery(
         self, mock_replace, mock_rebuild, monkeypatch,
     ):
@@ -1184,7 +1184,7 @@ class TestAnthropicStreamCallbacks:
         Anthropic client, NOT the OpenAI primary client (which would fail with
         Missing-credentials and leave the wedged stream open). See #28161.
         """
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             api_key="test-key",
@@ -1234,12 +1234,12 @@ class TestAnthropicStreamCallbacks:
         assert mock_rebuild.call_count == 1
         assert agent._anthropic_client.close.call_count == 1
 
-    @patch("run_agent.AIAgent._replace_primary_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._replace_primary_openai_client")
     def test_generic_anthropic_valueerror_still_propagates_without_stream_retry(
         self, mock_replace, monkeypatch,
     ):
         """Only known provider stream parser ValueErrors are treated as transient."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             api_key="test-key",
@@ -1282,13 +1282,13 @@ class TestPartialToolCallWarning:
     it as a stream delta so the user sees it immediately.
     """
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_partial_tool_call_surfaces_warning(self, mock_close, mock_create):
         """Stream with text + partial tool-call name + mid-stream error
         produces a stub whose content contains the user-visible warning
         and whose tool_calls is None."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         class _StallError(RuntimeError):
             pass
@@ -1350,12 +1350,12 @@ class TestPartialToolCallWarning:
             f"fired_deltas={fired_deltas}"
         )
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_partial_text_only_no_warning(self, mock_close, mock_create):
         """Text-only partial stream (no tool call mid-flight) keeps the
         pre-fix behaviour: bare recovered text, no warning noise."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         class _StallError(RuntimeError):
             pass
@@ -1410,16 +1410,16 @@ class TestSilentRetryMidToolCall:
     transient, the existing stub-with-warning behaviour is preserved.
     """
 
-    @patch("run_agent.AIAgent._replace_primary_openai_client")
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._replace_primary_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_silent_retry_recovers_tool_call(
         self, mock_close, mock_create, mock_replace,
     ):
         """First attempt: text + partial tool-call + connection drop.
         Second attempt: text + complete tool-call.  Response should contain
         the recovered tool call; no warning stub should be returned."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         import httpx as _httpx
 
         attempts = {"n": 0}
@@ -1505,16 +1505,16 @@ class TestSilentRetryMidToolCall:
             f"Stub-path warning leaked into silent-retry path: {joined!r}"
         )
 
-    @patch("run_agent.AIAgent._replace_primary_openai_client")
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._replace_primary_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_silent_retry_exhausted_falls_back_to_stub(
         self, mock_close, mock_create, mock_replace,
     ):
         """When all retry attempts fail with connection errors, fall back
         to the original stub-with-warning behaviour so the user isn't left
         with zero signal."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         import httpx as _httpx
 
         def _always_fails():
@@ -1560,16 +1560,16 @@ class TestSilentRetryMidToolCall:
         )
         assert response.choices[0].message.tool_calls is None
 
-    @patch("run_agent.AIAgent._replace_primary_openai_client")
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._replace_primary_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_no_silent_retry_for_text_only_stall(
         self, mock_close, mock_create, mock_replace,
     ):
         """Text-only stall (no tool call in flight) must NOT trigger silent
         retry — that's the case where the user saw the model's text reply
         and retrying would duplicate it with no benefit."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         import httpx as _httpx
 
         attempts = {"n": 0}
@@ -1647,7 +1647,7 @@ def _make_acp_agent(provider="copilot-acp", base_url="acp://copilot"):
     """Create an AIAgent configured for copilot-acp with a stream consumer
     so _has_stream_consumers() returns True (ensuring the test exercises the
     ACP exclusion, not the no-consumer branch)."""
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     agent = AIAgent(
         api_key="test-acp-key",
         base_url=base_url,
@@ -1671,8 +1671,8 @@ class TestCopilotACPStreamingDecision:
     must detect ACP runtimes and route to _interruptible_api_call instead.
     """
 
-    @patch("run_agent.get_tool_definitions", return_value=[])
-    @patch("run_agent.check_toolset_requirements", return_value={})
+    @patch("jacky_cli.run_agent.get_tool_definitions", return_value=[])
+    @patch("jacky_cli.run_agent.check_toolset_requirements", return_value={})
     @patch("agent.copilot_acp_client.CopilotACPClient")
     def test_provider_name_triggers_non_streaming(
         self, mock_acp_cls, _mock_check, _mock_tools
@@ -1702,8 +1702,8 @@ class TestCopilotACPStreamingDecision:
             response = mock_non_stream({})
             mock_stream.assert_not_called()
 
-    @patch("run_agent.get_tool_definitions", return_value=[])
-    @patch("run_agent.check_toolset_requirements", return_value={})
+    @patch("jacky_cli.run_agent.get_tool_definitions", return_value=[])
+    @patch("jacky_cli.run_agent.check_toolset_requirements", return_value={})
     @patch("agent.copilot_acp_client.CopilotACPClient")
     def test_acp_base_url_triggers_non_streaming(
         self, mock_acp_cls, _mock_check, _mock_tools
@@ -1723,8 +1723,8 @@ class TestCopilotACPStreamingDecision:
 
         assert _use_streaming is False
 
-    @patch("run_agent.get_tool_definitions", return_value=[])
-    @patch("run_agent.check_toolset_requirements", return_value={})
+    @patch("jacky_cli.run_agent.get_tool_definitions", return_value=[])
+    @patch("jacky_cli.run_agent.check_toolset_requirements", return_value={})
     @patch("agent.copilot_acp_client.CopilotACPClient")
     def test_acp_tcp_url_triggers_non_streaming(
         self, mock_acp_cls, _mock_check, _mock_tools
@@ -1746,7 +1746,7 @@ class TestCopilotACPStreamingDecision:
 
     def test_non_acp_provider_allows_streaming(self):
         """Regular providers still get streaming enabled."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         agent = AIAgent(
             api_key="test-key",
             base_url="https://openrouter.ai/api/v1",
@@ -1778,7 +1778,7 @@ class TestBedrockIamStreamingFallback:
     _disable_streaming for the rest of the session."""
 
     def _make_bedrock_agent(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             api_key="test-key",

@@ -10,7 +10,7 @@ from typing import Optional
 def _jacky_home_path() -> Path:
     """Resolve the active JACKY_HOME (profile-aware) without circular imports."""
     try:
-        from jacky_constants import get_jacky_home  # local import to avoid cycles
+        from jacky_cli.jacky_constants import get_jacky_home  # local import to avoid cycles
         return get_jacky_home()
     except Exception:
         return Path(os.path.expanduser("~/.jacky"))
@@ -19,7 +19,7 @@ def _jacky_home_path() -> Path:
 def _jacky_root_path() -> Path:
     """Resolve the Jacky root dir (always the parent of any profile, never per-profile)."""
     try:
-        from jacky_constants import get_default_jacky_root  # local import to avoid cycles
+        from jacky_cli.jacky_constants import get_default_jacky_root  # local import to avoid cycles
         return get_default_jacky_root()
     except Exception:
         return Path(os.path.expanduser("~/.jacky"))

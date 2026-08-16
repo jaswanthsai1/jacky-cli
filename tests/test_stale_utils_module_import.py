@@ -51,7 +51,7 @@ def _import_fresh_consumer(name: str, source: str) -> types.ModuleType:
 class TestStaleUtilsModuleImport:
     def test_fresh_consumer_import_fails_against_stale_utils(self, monkeypatch):
         """The bug: stale in-memory ``utils`` + fresh ``from utils import env_float``."""
-        import utils
+        import jacky_cli.utils as utils
 
         # Sanity: today's on-disk source is healthy.
         assert hasattr(utils, "env_float")
@@ -65,7 +65,7 @@ class TestStaleUtilsModuleImport:
     def test_client_is_incidental_discord_import_line_fails_identically(self, monkeypatch):
         """Same failure via the Discord adapter's exact import line -- the client
         does not determine the bug, the stale process does."""
-        import utils
+        import jacky_cli.utils as utils
 
         monkeypatch.delattr(utils, "env_float")
 
@@ -80,7 +80,7 @@ class TestStaleUtilsModuleImport:
         """Control: when the cached ``utils`` matches disk (env_float present),
         the same consumer import succeeds -- proving the harness isolates the
         staleness, not an unrelated import error."""
-        import utils
+        import jacky_cli.utils as utils
 
         assert hasattr(utils, "env_float")
         mod = _import_fresh_consumer(

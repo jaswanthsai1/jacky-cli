@@ -7,7 +7,7 @@ from queue import Queue
 import subprocess
 from unittest.mock import patch
 
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 from jacky_cli.browser_connect import (
     _wait_for_browser_debug_ready_or_exit,
     get_chrome_debug_candidates,

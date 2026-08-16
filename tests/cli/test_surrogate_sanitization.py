@@ -9,7 +9,7 @@ import json
 import pytest
 from unittest.mock import MagicMock, patch
 
-from run_agent import (
+from jacky_cli.run_agent import (
     _sanitize_surrogates,
     _sanitize_messages_surrogates,
     _sanitize_structure_surrogates,
@@ -293,12 +293,12 @@ class TestApiMessagesSurrogateRecovery:
 class TestRunConversationSurrogateSanitization:
     """Integration: verify run_conversation sanitizes user_message."""
 
-    @patch("run_agent.AIAgent._build_system_prompt")
-    @patch("run_agent.AIAgent._interruptible_streaming_api_call")
-    @patch("run_agent.AIAgent._interruptible_api_call")
+    @patch("jacky_cli.run_agent.AIAgent._build_system_prompt")
+    @patch("jacky_cli.run_agent.AIAgent._interruptible_streaming_api_call")
+    @patch("jacky_cli.run_agent.AIAgent._interruptible_api_call")
     def test_user_message_surrogates_sanitized(self, mock_api, mock_stream, mock_sys):
         """Surrogates in user_message are stripped before API call."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         mock_sys.return_value = "system prompt"
 

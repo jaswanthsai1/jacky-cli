@@ -22,9 +22,9 @@ from pathlib import Path
 
 import pytest
 
-from jacky_constants import get_jacky_home
-from jacky_state import SessionDB
-from run_agent import AIAgent
+from jacky_cli.jacky_constants import get_jacky_home
+from jacky_cli.jacky_state import SessionDB
+from jacky_cli.run_agent import AIAgent
 
 from agent.agent_init import (
     _codex_gpt55_autoraise_notice_marker,

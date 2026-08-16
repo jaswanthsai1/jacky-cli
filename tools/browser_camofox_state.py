@@ -13,7 +13,7 @@ import uuid
 from pathlib import Path
 from typing import Dict, Optional
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 CAMOFOX_STATE_DIR_NAME = "browser_auth"
 CAMOFOX_STATE_SUBDIR = "camofox"

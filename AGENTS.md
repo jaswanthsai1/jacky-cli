@@ -229,16 +229,17 @@ entry points you'll actually edit.
 
 ```
 jacky-agent/
-├── run_agent.py          # AIAgent class — core conversation loop (~12k LOC)
-├── model_tools.py        # Tool orchestration, discover_builtin_tools(), handle_function_call()
-├── toolsets.py           # Toolset definitions, _JACKY_CORE_TOOLS list
-├── cli.py                # JackyCLI class — interactive CLI orchestrator (~11k LOC)
-├── jacky_state.py       # SessionDB — SQLite session store (FTS5 search)
-├── jacky_constants.py   # get_jacky_home(), display_jacky_home() — profile-aware paths
-├── jacky_logging.py     # setup_logging() — agent.log / errors.log / gateway.log (profile-aware)
-├── batch_runner.py       # Parallel batch processing
 ├── agent/                # Agent internals (provider adapters, memory, caching, compression, etc.)
-├── jacky_cli/           # CLI subcommands, setup wizard, plugins loader, skin engine
+├── jacky_cli/           # CLI subcommands, setup wizard, plugins loader, skin engine, and the
+│   │                     #   former root-level modules (now jacky_cli.<name>):
+│   ├── run_agent.py      #   AIAgent class — core conversation loop (~12k LOC)
+│   ├── model_tools.py    #   Tool orchestration, discover_builtin_tools(), handle_function_call()
+│   ├── toolsets.py       #   Toolset definitions, _JACKY_CORE_TOOLS list
+│   ├── cli.py            #   JackyCLI class — interactive CLI orchestrator (~11k LOC)
+│   ├── jacky_state.py   #   SessionDB — SQLite session store (FTS5 search)
+│   ├── jacky_constants.py #   get_jacky_home(), display_jacky_home() — profile-aware paths
+│   ├── jacky_logging.py #   setup_logging() — agent.log / errors.log / gateway.log (profile-aware)
+│   └── batch_runner.py   #   Parallel batch processing
 ├── tools/                # Tool implementations — auto-discovered via tools/registry.py
 │   └── environments/     # Terminal backends (local, docker, ssh, modal, daytona, singularity)
 ├── gateway/              # Messaging gateway — run.py + session.py + platforms/

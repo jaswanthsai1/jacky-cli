@@ -153,7 +153,7 @@ def _save_supermemory_config(values: dict, jacky_home: str) -> None:
         except Exception:
             existing = {}
     existing.update(values)
-    from utils import atomic_json_write
+    from jacky_cli.utils import atomic_json_write
     atomic_json_write(config_path, existing, mode=0o600, sort_keys=True)
 
 
@@ -572,7 +572,7 @@ class SupermemoryMemoryProvider(MemoryProvider):
         _save_supermemory_config(sanitized, jacky_home)
 
     def get_status_config(self, provider_config: dict) -> dict:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         del provider_config
         jacky_home = str(get_jacky_home())
@@ -623,7 +623,7 @@ class SupermemoryMemoryProvider(MemoryProvider):
         print("\n  Start a new session to activate.\n")
 
     def initialize(self, session_id: str, **kwargs) -> None:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         self._jacky_home = kwargs.get("jacky_home") or str(get_jacky_home())
         self._session_id = session_id
         self._turn_count = 0

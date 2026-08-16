@@ -87,7 +87,7 @@ def test_review_fork_inherits_parent_cached_system_prompt():
     and forces a full re-cache. Inheriting the parent's cached prompt is
     the cheap, mechanical fix.
     """
-    import run_agent
+    import jacky_cli.run_agent as run_agent
 
     agent = _make_agent_stub(run_agent.AIAgent)
 
@@ -139,7 +139,7 @@ def test_review_fork_pins_session_start_and_session_id():
     the parent's guarantees byte-identical output from any code path that
     re-renders parts of the system prompt (compression, plugin hooks).
     """
-    import run_agent
+    import jacky_cli.run_agent as run_agent
 
     agent = _make_agent_stub(run_agent.AIAgent)
 
@@ -190,7 +190,7 @@ def test_review_fork_pins_session_start_and_session_id():
 
 def test_review_fork_inherits_parent_toolset_config():
     """``tools[]`` byte-stability: fork must inherit parent's toolset config."""
-    import run_agent
+    import jacky_cli.run_agent as run_agent
 
     agent = _make_agent_stub(run_agent.AIAgent)
 

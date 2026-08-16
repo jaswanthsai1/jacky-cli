@@ -20,8 +20,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from agent.codex_responses_adapter import _normalize_codex_response
 
-import run_agent
-from run_agent import AIAgent
+import jacky_cli.run_agent as run_agent
+from jacky_cli.run_agent import AIAgent
 from agent.error_classifier import FailoverReason
 from agent.memory_manager import MemoryManager
 from agent.prompt_builder import DEFAULT_AGENT_IDENTITY
@@ -100,10 +100,10 @@ def agent():
     """Minimal AIAgent with mocked OpenAI client and tool loading."""
     with (
         patch(
-            "run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")
+            "jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")
         ),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
         a = AIAgent(
             api_key="test-key-1234567890",
@@ -148,11 +148,11 @@ def agent_with_memory_tool():
     """Agent whose valid_tool_names includes 'memory'."""
     with (
         patch(
-            "run_agent.get_tool_definitions",
+            "jacky_cli.run_agent.get_tool_definitions",
             return_value=_make_tool_defs("web_search", "memory"),
         ),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
         a = AIAgent(
             api_key="test-k...7890",
@@ -185,11 +185,11 @@ def test_aiagent_reuses_existing_errors_log_handler():
 
         with (
             patch(
-                "run_agent.get_tool_definitions",
+                "jacky_cli.run_agent.get_tool_definitions",
                 return_value=_make_tool_defs("web_search"),
             ),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
         ):
             AIAgent(
                 api_key="test-k...7890",
@@ -225,10 +225,10 @@ class TestProviderModelNormalization:
     def test_aiagent_strips_matching_native_provider_prefix(self):
         with (
             patch(
-                "run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")
+                "jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")
             ),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
         ):
             agent = AIAgent(
                 model="zai/glm-5.1",
@@ -245,10 +245,10 @@ class TestProviderModelNormalization:
     def test_aiagent_keeps_aggregator_vendor_slug(self):
         with (
             patch(
-                "run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")
+                "jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")
             ),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
         ):
             agent = AIAgent(
                 model="anthropic/claude-sonnet-4.6",
@@ -834,8 +834,8 @@ class TestInit:
     def test_anthropic_base_url_accepted(self):
         """Anthropic base URLs should route to native Anthropic client."""
         with (
-            patch("run_agent.get_tool_definitions", return_value=[]),
-            patch("run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
             patch("agent.anthropic_adapter._anthropic_sdk") as mock_anthropic,
         ):
             agent = AIAgent(
@@ -851,9 +851,9 @@ class TestInit:
     def test_prompt_caching_claude_openrouter(self):
         """Claude model via OpenRouter should enable prompt caching."""
         with (
-            patch("run_agent.get_tool_definitions", return_value=[]),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
         ):
             a = AIAgent(
                 api_key="test-k...7890",
@@ -868,9 +868,9 @@ class TestInit:
     def test_prompt_caching_non_claude(self):
         """Non-Claude model should disable prompt caching."""
         with (
-            patch("run_agent.get_tool_definitions", return_value=[]),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
         ):
             a = AIAgent(
                 api_key="test-key-1234567890",
@@ -885,9 +885,9 @@ class TestInit:
     def test_prompt_caching_non_openrouter(self):
         """Custom base_url (not OpenRouter) should disable prompt caching."""
         with (
-            patch("run_agent.get_tool_definitions", return_value=[]),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
         ):
             a = AIAgent(
                 api_key="test-key-1234567890",
@@ -902,8 +902,8 @@ class TestInit:
     def test_prompt_caching_native_anthropic(self):
         """Native Anthropic provider should enable prompt caching."""
         with (
-            patch("run_agent.get_tool_definitions", return_value=[]),
-            patch("run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
             patch("agent.anthropic_adapter._anthropic_sdk"),
         ):
             a = AIAgent(
@@ -919,9 +919,9 @@ class TestInit:
     def test_prompt_caching_cache_ttl_defaults_without_config(self):
         """cache_ttl stays 5m when prompt_caching is absent from config."""
         with (
-            patch("run_agent.get_tool_definitions", return_value=[]),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
             patch("jacky_cli.config.load_config", return_value={}),
         ):
             a = AIAgent(
@@ -937,9 +937,9 @@ class TestInit:
     def test_prompt_caching_cache_ttl_custom_1h(self):
         """prompt_caching.cache_ttl 1h is applied when present in config."""
         with (
-            patch("run_agent.get_tool_definitions", return_value=[]),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
             patch(
                 "jacky_cli.config.load_config",
                 return_value={"prompt_caching": {"cache_ttl": "1h"}},
@@ -958,9 +958,9 @@ class TestInit:
     def test_model_max_tokens_from_config(self):
         """model.max_tokens config populates the chat-completions request cap."""
         with (
-            patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("terminal")),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("terminal")),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
             patch(
                 "jacky_cli.config.load_config",
                 return_value={"model": {"max_tokens": 4096}},
@@ -984,9 +984,9 @@ class TestInit:
     def test_constructor_max_tokens_wins_over_config(self):
         """Explicit constructor max_tokens keeps programmatic callers stable."""
         with (
-            patch("run_agent.get_tool_definitions", return_value=[]),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
             patch(
                 "jacky_cli.config.load_config",
                 return_value={"model": {"max_tokens": 4096}},
@@ -1008,9 +1008,9 @@ class TestInit:
     def test_prompt_caching_cache_ttl_invalid_falls_back(self):
         """Non-Anthropic TTL values keep default 5m without raising."""
         with (
-            patch("run_agent.get_tool_definitions", return_value=[]),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
             patch(
                 "jacky_cli.config.load_config",
                 return_value={"prompt_caching": {"cache_ttl": "30m"}},
@@ -1030,9 +1030,9 @@ class TestInit:
         """valid_tool_names should contain names from loaded tools."""
         tools = _make_tool_defs("web_search", "terminal")
         with (
-            patch("run_agent.get_tool_definitions", return_value=tools),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=tools),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
         ):
             a = AIAgent(
                 api_key="test-key-1234567890",
@@ -1046,9 +1046,9 @@ class TestInit:
     def test_session_id_auto_generated(self):
         """Session ID should be auto-generated in YYYYMMDD_HHMMSS_<hex6> format."""
         with (
-            patch("run_agent.get_tool_definitions", return_value=[]),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
         ):
             a = AIAgent(
                 api_key="test-key-1234567890",
@@ -1065,17 +1065,17 @@ class TestInit:
 
 class TestInterrupt:
     def test_interrupt_sets_flag(self, agent):
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent.interrupt()
             assert agent._interrupt_requested is True
 
     def test_interrupt_with_message(self, agent):
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent.interrupt("new question")
             assert agent._interrupt_message == "new question"
 
     def test_clear_interrupt(self, agent):
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent.interrupt("msg")
             agent.clear_interrupt()
             assert agent._interrupt_requested is False
@@ -1083,7 +1083,7 @@ class TestInterrupt:
 
     def test_is_interrupted_property(self, agent):
         assert agent.is_interrupted is False
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent.interrupt()
             assert agent.is_interrupted is True
 
@@ -1108,7 +1108,7 @@ class TestHydrateTodoStore:
             {"role": "user", "content": "hello"},
             {"role": "assistant", "content": "hi"},
         ]
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent._hydrate_todo_store(history)
         assert not agent._todo_store.has_items()
 
@@ -1123,7 +1123,7 @@ class TestHydrateTodoStore:
                 "tool_call_id": "c1",
             },
         ]
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent._hydrate_todo_store(history)
         assert agent._todo_store.has_items()
 
@@ -1136,7 +1136,7 @@ class TestHydrateTodoStore:
                 "tool_call_id": "c1",
             },
         ]
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent._hydrate_todo_store(history)
         assert not agent._todo_store.has_items()
 
@@ -1151,7 +1151,7 @@ class TestHydrateTodoStore:
                 "tool_call_id": "c1",
             },
         ]
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent._hydrate_todo_store(history)
         assert not agent._todo_store.has_items()
 
@@ -1176,7 +1176,7 @@ class TestHydrateTodoStore:
                 "tool_call_id": "c1",
             },
         ]
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent._hydrate_todo_store(history)
         assert not agent._todo_store.has_items()
 
@@ -1193,7 +1193,7 @@ class TestHydrateTodoStore:
                 "tool_call_id": "c1",
             },
         ]
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent._hydrate_todo_store(history)
         assert not agent._todo_store.has_items()
 
@@ -1208,7 +1208,7 @@ class TestHydrateTodoStore:
                 "tool_call_id": "c1",
             },
         ]
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent._hydrate_todo_store(history)
         assert not agent._todo_store.has_items()
 
@@ -1221,7 +1221,7 @@ class TestHydrateTodoStore:
                 "tool_call_id": "c1",
             },
         ]
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent._hydrate_todo_store(history)
         assert not agent._todo_store.has_items()
 
@@ -1233,10 +1233,10 @@ class TestBuildSystemPrompt:
 
     def test_can_use_soul_identity_even_when_context_files_are_skipped(self):
         with (
-            patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("terminal")),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
-            patch("run_agent.load_soul_md", return_value="SOUL IDENTITY"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("terminal")),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.load_soul_md", return_value="SOUL IDENTITY"),
         ):
             agent = AIAgent(
                 api_key="test-k...7890",
@@ -1309,14 +1309,14 @@ class TestBuildSystemPrompt:
         }
 
         with (
-            patch("run_agent.get_tool_definitions", return_value=tools),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=tools),
             patch(
-                "run_agent.check_toolset_requirements",
+                "jacky_cli.run_agent.check_toolset_requirements",
                 side_effect=AssertionError("should not re-check toolset requirements"),
             ),
-            patch("run_agent.get_toolset_for_tool", create=True, side_effect=toolset_map.get),
-            patch("run_agent.build_skills_system_prompt", return_value="SKILLS_PROMPT") as mock_skills,
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_toolset_for_tool", create=True, side_effect=toolset_map.get),
+            patch("jacky_cli.run_agent.build_skills_system_prompt", return_value="SKILLS_PROMPT") as mock_skills,
+            patch("jacky_cli.run_agent.OpenAI"),
         ):
             agent = AIAgent(
                 api_key="test-k...7890",
@@ -1340,11 +1340,11 @@ class TestToolUseEnforcementConfig:
         """Create an agent with tools and a specific enforcement config."""
         with (
             patch(
-                "run_agent.get_tool_definitions",
+                "jacky_cli.run_agent.get_tool_definitions",
                 return_value=_make_tool_defs("terminal", "web_search"),
             ),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
             patch(
                 "jacky_cli.config.load_config",
                 return_value={"agent": {"tool_use_enforcement": tool_use_enforcement}},
@@ -1488,9 +1488,9 @@ class TestToolUseEnforcementConfig:
         """Even with enforcement=true, no injection when agent has no tools."""
         from agent.prompt_builder import TOOL_USE_ENFORCEMENT_GUIDANCE
         with (
-            patch("run_agent.get_tool_definitions", return_value=[]),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
             patch(
                 "jacky_cli.config.load_config",
                 return_value={"agent": {"tool_use_enforcement": True}},
@@ -1523,11 +1523,11 @@ class TestTaskCompletionGuidance:
         agent_cfg.update(extra_cfg)
         with (
             patch(
-                "run_agent.get_tool_definitions",
+                "jacky_cli.run_agent.get_tool_definitions",
                 return_value=_make_tool_defs("terminal", "web_search"),
             ),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
             patch(
                 "jacky_cli.config.load_config",
                 return_value={"agent": agent_cfg},
@@ -1582,9 +1582,9 @@ class TestTaskCompletionGuidance:
         tools it would be advice for a capability the agent doesn't have."""
         from agent.prompt_builder import TASK_COMPLETION_GUIDANCE
         with (
-            patch("run_agent.get_tool_definitions", return_value=[]),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
             patch(
                 "jacky_cli.config.load_config",
                 return_value={"agent": {"task_completion_guidance": True}},
@@ -1612,11 +1612,11 @@ class TestEnvironmentProbeIntegration:
                     environment_probe=True):
         with (
             patch(
-                "run_agent.get_tool_definitions",
+                "jacky_cli.run_agent.get_tool_definitions",
                 return_value=_make_tool_defs("terminal"),
             ),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
             patch(
                 "jacky_cli.config.load_config",
                 return_value={"agent": {"environment_probe": environment_probe}},
@@ -2236,7 +2236,7 @@ class TestExecuteToolCalls:
         mock_msg = _mock_assistant_msg(content="", tool_calls=[tc])
         messages = []
         with patch(
-            "run_agent.handle_function_call", return_value="search result"
+            "jacky_cli.run_agent.handle_function_call", return_value="search result"
         ) as mock_hfc:
             agent._execute_tool_calls(mock_msg, messages, "task-1")
             # enabled_tools passes the agent's own valid_tool_names
@@ -2299,8 +2299,8 @@ class TestExecuteToolCalls:
         monkeypatch.setattr("jacky_cli.plugins.has_hook", lambda name: True)
 
         with (
-            patch("run_agent.handle_function_call", side_effect=KeyboardInterrupt),
-            patch("run_agent._set_interrupt"),
+            patch("jacky_cli.run_agent.handle_function_call", side_effect=KeyboardInterrupt),
+            patch("jacky_cli.run_agent._set_interrupt"),
             pytest.raises(KeyboardInterrupt),
         ):
             agent._execute_tool_calls_sequential(mock_msg, messages, "task-1")
@@ -2322,7 +2322,7 @@ class TestExecuteToolCalls:
         mock_msg = _mock_assistant_msg(content="", tool_calls=[tc1, tc2])
         messages = []
 
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent.interrupt()
 
         agent._execute_tool_calls(mock_msg, messages, "task-1")
@@ -2339,7 +2339,7 @@ class TestExecuteToolCalls:
         )
         mock_msg = _mock_assistant_msg(content="", tool_calls=[tc])
         messages = []
-        with patch("run_agent.handle_function_call", return_value="ok") as mock_hfc:
+        with patch("jacky_cli.run_agent.handle_function_call", return_value="ok") as mock_hfc:
             agent._execute_tool_calls(mock_msg, messages, "task-1")
             mock_hfc.assert_not_called()
         assert len(messages) == 1
@@ -2355,7 +2355,7 @@ class TestExecuteToolCalls:
         mock_msg = _mock_assistant_msg(content="", tool_calls=[tc])
         messages = []
         big_result = "x" * 150_000
-        with patch("run_agent.handle_function_call", return_value=big_result):
+        with patch("jacky_cli.run_agent.handle_function_call", return_value=big_result):
             agent._execute_tool_calls(mock_msg, messages, "task-1")
         # Content should be replaced with persisted-output or truncation
         assert len(messages[0]["content"]) < 150_000
@@ -2367,7 +2367,7 @@ class TestExecuteToolCalls:
         messages = []
         agent.tool_progress_callback = lambda *args, **kwargs: None
 
-        with patch("run_agent.handle_function_call", return_value="search result"), \
+        with patch("jacky_cli.run_agent.handle_function_call", return_value="search result"), \
              patch.object(agent, "_safe_print") as mock_print:
             agent._execute_tool_calls(mock_msg, messages, "task-1")
 
@@ -2382,7 +2382,7 @@ class TestExecuteToolCalls:
         agent.platform = "cli"
         agent.tool_progress_callback = None
 
-        with patch("run_agent.handle_function_call", return_value="search result"), \
+        with patch("jacky_cli.run_agent.handle_function_call", return_value="search result"), \
              patch.object(agent, "_safe_print") as mock_print:
             agent._execute_tool_calls(mock_msg, messages, "task-1")
 
@@ -2398,7 +2398,7 @@ class TestExecuteToolCalls:
         agent.platform = None
         agent.tool_progress_callback = None
 
-        with patch("run_agent.handle_function_call", return_value="search result"), \
+        with patch("jacky_cli.run_agent.handle_function_call", return_value="search result"), \
              patch.object(agent, "_safe_print") as mock_print:
             agent._execute_tool_calls(mock_msg, messages, "task-1")
 
@@ -2438,7 +2438,7 @@ class TestExecuteToolCalls:
         captured = io.StringIO()
         agent._print_fn = lambda *args, **kw: print(*args, file=captured, **kw)
 
-        with patch("run_agent.time.sleep", return_value=None):
+        with patch("jacky_cli.run_agent.time.sleep", return_value=None):
             result = agent.run_conversation("hello")
 
         assert result["completed"] is True
@@ -2638,7 +2638,7 @@ class TestConcurrentToolExecution:
             call_log.append(name)
             return json.dumps({"result": args.get("q", "")})
 
-        with patch("run_agent.handle_function_call", side_effect=fake_handle):
+        with patch("jacky_cli.run_agent.handle_function_call", side_effect=fake_handle):
             agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
 
         assert len(messages) == 3
@@ -2668,7 +2668,7 @@ class TestConcurrentToolExecution:
                 _time.sleep(0.1)  # Slow tool
             return f"result_{q}"
 
-        with patch("run_agent.handle_function_call", side_effect=fake_handle):
+        with patch("jacky_cli.run_agent.handle_function_call", side_effect=fake_handle):
             agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
 
         assert messages[0]["tool_call_id"] == "c1"
@@ -2695,7 +2695,7 @@ class TestConcurrentToolExecution:
                 raise RuntimeError("boom")
             return "success"
 
-        with patch("run_agent.handle_function_call", side_effect=fake_handle):
+        with patch("jacky_cli.run_agent.handle_function_call", side_effect=fake_handle):
             agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
 
         assert len(messages) == 2
@@ -2764,7 +2764,7 @@ class TestConcurrentToolExecution:
 
         start = _time.monotonic()
         try:
-            with patch("run_agent.handle_function_call", side_effect=fake_handle):
+            with patch("jacky_cli.run_agent.handle_function_call", side_effect=fake_handle):
                 agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
         finally:
             blocker.set()
@@ -2810,7 +2810,7 @@ class TestConcurrentToolExecution:
             return real_wait(fs, timeout=timeout)
 
         with patch("agent.tool_executor.concurrent.futures.wait", side_effect=fake_wait), \
-             patch("run_agent.handle_function_call", side_effect=lambda name, args, task_id, **k: f"real-{args.get('q')}"):
+             patch("jacky_cli.run_agent.handle_function_call", side_effect=lambda name, args, task_id, **k: f"real-{args.get('q')}"):
             agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
 
         assert len(messages) == 2
@@ -2826,7 +2826,7 @@ class TestConcurrentToolExecution:
         mock_msg = _mock_assistant_msg(content="", tool_calls=[tc1, tc2])
         messages = []
 
-        with patch("run_agent._set_interrupt"):
+        with patch("jacky_cli.run_agent._set_interrupt"):
             agent.interrupt()
 
         agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
@@ -2844,7 +2844,7 @@ class TestConcurrentToolExecution:
         messages = []
         big_result = "x" * 150_000
 
-        with patch("run_agent.handle_function_call", return_value=big_result):
+        with patch("jacky_cli.run_agent.handle_function_call", return_value=big_result):
             agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
 
         assert len(messages) == 2
@@ -2854,7 +2854,7 @@ class TestConcurrentToolExecution:
 
     def test_invoke_tool_dispatches_to_handle_function_call(self, agent):
         """_invoke_tool should route regular tools through handle_function_call."""
-        with patch("run_agent.handle_function_call", return_value="result") as mock_hfc:
+        with patch("jacky_cli.run_agent.handle_function_call", return_value="result") as mock_hfc:
             result = agent._invoke_tool("web_search", {"q": "test"}, "task-1")
             mock_hfc.assert_called_once_with(
                 "web_search", {"q": "test"}, "task-1",
@@ -2880,7 +2880,7 @@ class TestConcurrentToolExecution:
         agent.tool_start_callback = lambda tool_call_id, function_name, function_args: starts.append((tool_call_id, function_name, function_args))
         agent.tool_complete_callback = lambda tool_call_id, function_name, function_args, function_result: completes.append((tool_call_id, function_name, function_args, function_result))
 
-        with patch("run_agent.handle_function_call", return_value='{"success": true}'):
+        with patch("jacky_cli.run_agent.handle_function_call", return_value='{"success": true}'):
             agent._execute_tool_calls_sequential(mock_msg, messages, "task-1")
 
         assert starts == [("c1", "web_search", {"query": "hello"})]
@@ -2902,7 +2902,7 @@ class TestConcurrentToolExecution:
         agent.tool_complete_callback = lambda tool_call_id, function_name, function_args, function_result: completes.append((tool_call_id, function_name, function_args, function_result))
         agent.tool_progress_callback = lambda event, name, preview, args, **kw: progress.append((event, name, preview, args))
 
-        with patch("run_agent.handle_function_call", return_value='{"success": true, "typed": "sk-pro...EFGH"}'):
+        with patch("jacky_cli.run_agent.handle_function_call", return_value='{"success": true, "typed": "sk-pro...EFGH"}'):
             agent._execute_tool_calls_sequential(mock_msg, messages, "task-1")
 
         assert starts[0][2]["text"].startswith("sk-pro")
@@ -2920,7 +2920,7 @@ class TestConcurrentToolExecution:
         agent.tool_start_callback = lambda tool_call_id, function_name, function_args: starts.append((tool_call_id, function_name, function_args))
         agent.tool_complete_callback = lambda tool_call_id, function_name, function_args, function_result: completes.append((tool_call_id, function_name, function_args, function_result))
 
-        with patch("run_agent.handle_function_call", side_effect=['{"id":1}', '{"id":2}']):
+        with patch("jacky_cli.run_agent.handle_function_call", side_effect=['{"id":1}', '{"id":2}']):
             agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
 
         assert starts == [
@@ -2947,7 +2947,7 @@ class TestConcurrentToolExecution:
         agent.tool_complete_callback = lambda tool_call_id, function_name, function_args, function_result: completes.append((tool_call_id, function_name, function_args, function_result))
         agent.tool_progress_callback = lambda event, name, preview, args, **kw: progress.append((event, name, preview, args))
 
-        with patch("run_agent.handle_function_call", return_value='{"success": true, "typed": "sk-pro...EFGH"}'):
+        with patch("jacky_cli.run_agent.handle_function_call", return_value='{"success": true, "typed": "sk-pro...EFGH"}'):
             agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
 
         assert starts[0][2]["text"].startswith("sk-pro")
@@ -3005,7 +3005,7 @@ class TestConcurrentToolExecution:
             "jacky_cli.plugins.resolve_pre_tool_block",
             lambda *args, **kwargs: "Blocked",
         )
-        with patch("run_agent.handle_function_call", side_effect=AssertionError("should not run")):
+        with patch("jacky_cli.run_agent.handle_function_call", side_effect=AssertionError("should not run")):
             result = agent._invoke_tool("web_search", {"q": "test"}, "task-1")
 
         assert json.loads(result) == {"error": "Blocked"}
@@ -3030,7 +3030,7 @@ class TestConcurrentToolExecution:
         starts = []
         agent.tool_start_callback = lambda *a: starts.append(a)
 
-        with patch("run_agent.handle_function_call", side_effect=AssertionError("should not run")):
+        with patch("jacky_cli.run_agent.handle_function_call", side_effect=AssertionError("should not run")):
             agent._execute_tool_calls_sequential(mock_msg, messages, "task-1")
 
         agent._checkpoint_mgr.ensure_checkpoint.assert_not_called()
@@ -3058,7 +3058,7 @@ class TestConcurrentToolExecution:
         )
         monkeypatch.setattr("jacky_cli.plugins.has_hook", lambda name: True)
 
-        with patch("run_agent.handle_function_call", side_effect=AssertionError("should not run")):
+        with patch("jacky_cli.run_agent.handle_function_call", side_effect=AssertionError("should not run")):
             agent._execute_tool_calls_sequential(mock_msg, messages, "task-1")
 
         post_call = next(call for call in hook_calls if call[0] == "post_tool_call")
@@ -3290,7 +3290,7 @@ class TestConcurrentToolExecution:
         def fake_handle(name, args, task_id, **kwargs):
             return f"result_{name}"
 
-        with patch("run_agent.handle_function_call", side_effect=fake_handle):
+        with patch("jacky_cli.run_agent.handle_function_call", side_effect=fake_handle):
             with patch.object(agent._checkpoint_mgr, "ensure_checkpoint") as cp_mock:
                 agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
 
@@ -3317,7 +3317,7 @@ class TestConcurrentToolExecution:
         def fake_handle(name, args, task_id, **kwargs):
             return f"result_{name}"
 
-        with patch("run_agent.handle_function_call", side_effect=fake_handle):
+        with patch("jacky_cli.run_agent.handle_function_call", side_effect=fake_handle):
             with patch.object(agent._checkpoint_mgr, "ensure_checkpoint") as cp_mock:
                 agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
 
@@ -3344,7 +3344,7 @@ class TestConcurrentToolExecution:
         def fake_handle(name, args, task_id, **kwargs):
             return f"result_{name}"
 
-        with patch("run_agent.handle_function_call", side_effect=fake_handle):
+        with patch("jacky_cli.run_agent.handle_function_call", side_effect=fake_handle):
             with patch.object(agent._checkpoint_mgr, "ensure_checkpoint") as cp_mock:
                 with patch("agent.tool_executor._is_destructive_command", return_value=True):
                     agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
@@ -3378,7 +3378,7 @@ class TestConcurrentToolExecution:
         def fake_handle(name, args, task_id, **kwargs):
             return f"result_{name}"
 
-        with patch("run_agent.handle_function_call", side_effect=fake_handle):
+        with patch("jacky_cli.run_agent.handle_function_call", side_effect=fake_handle):
             with patch.object(agent._checkpoint_mgr, "ensure_checkpoint") as cp_mock:
                 agent._execute_tool_calls_concurrent(mock_msg, messages, "task-1")
 
@@ -3519,38 +3519,38 @@ class TestPathsOverlap:
     """Unit tests for the _paths_overlap helper."""
 
     def test_same_path_overlaps(self):
-        from run_agent import _paths_overlap
+        from jacky_cli.run_agent import _paths_overlap
         assert _paths_overlap(Path("src/a.py"), Path("src/a.py"))
 
     def test_siblings_do_not_overlap(self):
-        from run_agent import _paths_overlap
+        from jacky_cli.run_agent import _paths_overlap
         assert not _paths_overlap(Path("src/a.py"), Path("src/b.py"))
 
     def test_parent_child_overlap(self):
-        from run_agent import _paths_overlap
+        from jacky_cli.run_agent import _paths_overlap
         assert _paths_overlap(Path("src"), Path("src/sub/a.py"))
 
     def test_different_roots_do_not_overlap(self):
-        from run_agent import _paths_overlap
+        from jacky_cli.run_agent import _paths_overlap
         assert not _paths_overlap(Path("src/a.py"), Path("other/a.py"))
 
     def test_nested_vs_flat_do_not_overlap(self):
-        from run_agent import _paths_overlap
+        from jacky_cli.run_agent import _paths_overlap
         assert not _paths_overlap(Path("src/sub/a.py"), Path("src/a.py"))
 
     def test_empty_paths_do_not_overlap(self):
-        from run_agent import _paths_overlap
+        from jacky_cli.run_agent import _paths_overlap
         assert not _paths_overlap(Path(""), Path(""))
 
     def test_one_empty_path_does_not_overlap(self):
-        from run_agent import _paths_overlap
+        from jacky_cli.run_agent import _paths_overlap
         assert not _paths_overlap(Path(""), Path("src/a.py"))
         assert not _paths_overlap(Path("src/a.py"), Path(""))
 
 
 class TestParallelScopePathNormalization:
     def test_extract_parallel_scope_path_normalizes_relative_to_cwd(self, tmp_path, monkeypatch):
-        from run_agent import _extract_parallel_scope_path
+        from jacky_cli.run_agent import _extract_parallel_scope_path
 
         monkeypatch.chdir(tmp_path)
 
@@ -3559,7 +3559,7 @@ class TestParallelScopePathNormalization:
         assert scoped == tmp_path / "notes.txt"
 
     def test_extract_parallel_scope_path_treats_relative_and_absolute_same_file_as_same_scope(self, tmp_path, monkeypatch):
-        from run_agent import _extract_parallel_scope_path, _paths_overlap
+        from jacky_cli.run_agent import _extract_parallel_scope_path, _paths_overlap
 
         monkeypatch.chdir(tmp_path)
         abs_path = tmp_path / "notes.txt"
@@ -3571,7 +3571,7 @@ class TestParallelScopePathNormalization:
         assert _paths_overlap(rel_scoped, abs_scoped)
 
     def test_should_parallelize_tool_batch_rejects_same_file_with_mixed_path_spellings(self, tmp_path, monkeypatch):
-        from run_agent import _should_parallelize_tool_batch
+        from jacky_cli.run_agent import _should_parallelize_tool_batch
 
         monkeypatch.chdir(tmp_path)
         tc1 = _mock_tool_call(name="write_file", arguments='{"path":"notes.txt","content":"one"}', call_id="c1")
@@ -3585,14 +3585,14 @@ class TestMcpParallelToolBatch:
 
     def test_mcp_tools_default_sequential(self):
         """MCP tools without supports_parallel_tool_calls are sequential."""
-        from run_agent import _should_parallelize_tool_batch
+        from jacky_cli.run_agent import _should_parallelize_tool_batch
         tc1 = _mock_tool_call(name="mcp__github__list_repos", arguments='{"org":"openai"}', call_id="c1")
         tc2 = _mock_tool_call(name="mcp__github__search_code", arguments='{"q":"test"}', call_id="c2")
         assert not _should_parallelize_tool_batch([tc1, tc2])
 
     def test_mcp_tools_parallel_when_server_opted_in(self):
         """MCP tools from a parallel-safe server can run concurrently."""
-        from run_agent import _should_parallelize_tool_batch
+        from jacky_cli.run_agent import _should_parallelize_tool_batch
         from tools.mcp_tool import _mcp_tool_server_names, _parallel_safe_servers, _lock
         with _lock:
             _parallel_safe_servers.add("github")
@@ -3610,7 +3610,7 @@ class TestMcpParallelToolBatch:
 
     def test_mixed_mcp_and_builtin_parallel(self):
         """MCP parallel tools mixed with built-in parallel-safe tools."""
-        from run_agent import _should_parallelize_tool_batch
+        from jacky_cli.run_agent import _should_parallelize_tool_batch
         from tools.mcp_tool import _mcp_tool_server_names, _parallel_safe_servers, _lock
         with _lock:
             _parallel_safe_servers.add("docs")
@@ -3626,7 +3626,7 @@ class TestMcpParallelToolBatch:
 
     def test_mixed_parallel_and_serial_mcp_servers(self):
         """One parallel MCP server + one non-parallel MCP server = sequential."""
-        from run_agent import _should_parallelize_tool_batch
+        from jacky_cli.run_agent import _should_parallelize_tool_batch
         from tools.mcp_tool import _mcp_tool_server_names, _parallel_safe_servers, _lock
         with _lock:
             _parallel_safe_servers.add("docs")
@@ -4015,7 +4015,7 @@ class TestRunConversation:
         resp2 = _mock_response(content="Done searching", finish_reason="stop")
         agent.client.chat.completions.create.side_effect = [resp1, resp2]
         with (
-            patch("run_agent.handle_function_call", return_value="search result") as mock_handle_function_call,
+            patch("jacky_cli.run_agent.handle_function_call", return_value="search result") as mock_handle_function_call,
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
@@ -4040,7 +4040,7 @@ class TestRunConversation:
             return []
 
         with (
-            patch("run_agent.handle_function_call", return_value="search result"),
+            patch("jacky_cli.run_agent.handle_function_call", return_value="search result"),
             patch(
                 "jacky_cli.plugins.has_hook",
                 side_effect=lambda name: name in {"pre_api_request", "post_api_request"},
@@ -4153,7 +4153,7 @@ class TestRunConversation:
         agent.client.chat.completions.create.side_effect = [resp1, resp2]
 
         with (
-            patch("run_agent.handle_function_call", return_value="search result"),
+            patch("jacky_cli.run_agent.handle_function_call", return_value="search result"),
             patch.object(agent, "_safe_print") as mock_print,
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
@@ -4175,7 +4175,7 @@ class TestRunConversation:
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
-            patch("run_agent._set_interrupt"),
+            patch("jacky_cli.run_agent._set_interrupt"),
             patch.object(
                 agent, "_interruptible_api_call", side_effect=interrupt_side_effect
             ),
@@ -4624,7 +4624,7 @@ class TestRunConversation:
         agent.client.chat.completions.create.side_effect = [resp1, resp2]
 
         with (
-            patch("run_agent.handle_function_call", return_value="result"),
+            patch("jacky_cli.run_agent.handle_function_call", return_value="result"),
             patch.object(
                 agent.context_compressor, "should_compress", return_value=True
             ),
@@ -4844,7 +4844,7 @@ class TestRunConversation:
         ]
 
         with (
-            patch("run_agent.handle_function_call", return_value="search result"),
+            patch("jacky_cli.run_agent.handle_function_call", return_value="search result"),
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
@@ -4881,7 +4881,7 @@ class TestRunConversation:
         agent.client.chat.completions.create.side_effect = [tool_turn, complete_stop]
 
         with (
-            patch("run_agent.handle_function_call", return_value="search result"),
+            patch("jacky_cli.run_agent.handle_function_call", return_value="search result"),
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
@@ -4914,7 +4914,7 @@ class TestRunConversation:
         agent.client.chat.completions.create.side_effect = [tool_turn, normal_stop]
 
         with (
-            patch("run_agent.handle_function_call", return_value="search result"),
+            patch("jacky_cli.run_agent.handle_function_call", return_value="search result"),
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
@@ -4951,7 +4951,7 @@ class TestRunConversation:
         agent.client.chat.completions.create.side_effect = [tool_turn, normal_stop]
 
         with (
-            patch("run_agent.handle_function_call", return_value="search result"),
+            patch("jacky_cli.run_agent.handle_function_call", return_value="search result"),
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
@@ -4989,7 +4989,7 @@ class TestRunConversation:
         ]
 
         with (
-            patch("run_agent.handle_function_call", return_value="search result"),
+            patch("jacky_cli.run_agent.handle_function_call", return_value="search result"),
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
@@ -5030,7 +5030,7 @@ class TestRunConversation:
         ]
 
         with (
-            patch("run_agent.handle_function_call", return_value="search result"),
+            patch("jacky_cli.run_agent.handle_function_call", return_value="search result"),
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
@@ -5067,7 +5067,7 @@ class TestRunConversation:
         agent.client.chat.completions.create.side_effect = [tool_turn, normal_stop]
 
         with (
-            patch("run_agent.handle_function_call", return_value="search result"),
+            patch("jacky_cli.run_agent.handle_function_call", return_value="search result"),
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
@@ -5134,7 +5134,7 @@ class TestRunConversation:
         agent.client.chat.completions.create.return_value = resp
 
         with (
-            patch("run_agent.handle_function_call") as mock_handle_function_call,
+            patch("jacky_cli.run_agent.handle_function_call") as mock_handle_function_call,
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
@@ -5169,7 +5169,7 @@ class TestRunConversation:
             content="", finish_reason="stop", tool_calls=[good_tc],
         )
         with (
-            patch("run_agent.handle_function_call", return_value='{"success":true}') as mock_hfc,
+            patch("jacky_cli.run_agent.handle_function_call", return_value='{"success":true}') as mock_hfc,
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
@@ -5191,7 +5191,7 @@ class TestRunConversation:
         retry up to 3 times rather than hard-failing after one — and recover
         if a retry produces a complete tool call. Regression for the false
         'model hit max output tokens' on Opus when the stream simply dropped."""
-        from jacky_constants import PARTIAL_STREAM_STUB_ID
+        from jacky_cli.jacky_constants import PARTIAL_STREAM_STUB_ID
 
         self._setup_agent(agent)
         agent.valid_tool_names.add("write_file")
@@ -5214,7 +5214,7 @@ class TestRunConversation:
         final_resp = _mock_response(content="Done!", finish_reason="stop")
 
         with (
-            patch("run_agent.handle_function_call", return_value='{"success":true}') as mock_hfc,
+            patch("jacky_cli.run_agent.handle_function_call", return_value='{"success":true}') as mock_hfc,
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
@@ -5245,7 +5245,7 @@ class TestRunConversation:
         agent.client.chat.completions.create.return_value = resp
 
         with (
-            patch("run_agent.handle_function_call") as mock_handle_function_call,
+            patch("jacky_cli.run_agent.handle_function_call") as mock_handle_function_call,
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
@@ -5292,7 +5292,7 @@ class TestRunConversation:
         mock_connect = MagicMock(return_value=MagicMock())
 
         with (
-            patch("run_agent.handle_function_call", return_value="ok"),
+            patch("jacky_cli.run_agent.handle_function_call", return_value="ok"),
             patch("jacky_cli.kanban_db._record_task_failure",
                   mock_record_failure),
             patch("jacky_cli.kanban_db.connect", mock_connect),
@@ -5342,7 +5342,7 @@ class TestRunConversation:
         mock_record_failure = MagicMock(return_value=False)
 
         with (
-            patch("run_agent.handle_function_call", return_value="ok"),
+            patch("jacky_cli.run_agent.handle_function_call", return_value="ok"),
             patch("jacky_cli.kanban_db._record_task_failure",
                   mock_record_failure),
             patch.object(agent, "_persist_session"),
@@ -5450,7 +5450,7 @@ class TestRetryExhaustion:
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
-            patch("run_agent.time", self._make_fast_time_mock()),
+            patch("jacky_cli.run_agent.time", self._make_fast_time_mock()),
             patch.object(_conv_loop, "time", self._make_fast_time_mock()),
             patch.object(_conv_loop, "jittered_backoff", lambda *a, **k: 0.0),
         ):
@@ -5513,7 +5513,7 @@ class TestRetryExhaustion:
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
-            patch("run_agent.time", self._make_fast_time_mock()),
+            patch("jacky_cli.run_agent.time", self._make_fast_time_mock()),
             patch.object(_conv_loop, "time", self._make_fast_time_mock()),
             patch.object(_conv_loop, "jittered_backoff", lambda *a, **k: 0.0),
         ):
@@ -5535,7 +5535,7 @@ class TestRetryExhaustion:
             patch.object(agent, "_persist_session"),
             patch.object(agent, "_save_trajectory"),
             patch.object(agent, "_cleanup_task_resources"),
-            patch("run_agent.time", self._make_fast_time_mock()),
+            patch("jacky_cli.run_agent.time", self._make_fast_time_mock()),
         ):
             result = agent.run_conversation("hello")
         # Must surface the real error, not UnboundLocalError
@@ -5623,7 +5623,7 @@ class TestNousCredentialRefresh:
         )
 
         agent.client = _ExistingClient()
-        with patch("run_agent.OpenAI", side_effect=_fake_openai):
+        with patch("jacky_cli.run_agent.OpenAI", side_effect=_fake_openai):
             ok = agent._try_refresh_nous_client_credentials(force=True)
 
         assert ok is True
@@ -6184,7 +6184,7 @@ class TestSafeWriter:
 
     def test_write_delegates_normally(self):
         """When stdout is healthy, _SafeWriter is transparent."""
-        from run_agent import _SafeWriter
+        from jacky_cli.run_agent import _SafeWriter
         from io import StringIO
         inner = StringIO()
         writer = _SafeWriter(inner)
@@ -6193,7 +6193,7 @@ class TestSafeWriter:
 
     def test_write_catches_oserror(self):
         """OSError on write is silently caught, returns len(data)."""
-        from run_agent import _SafeWriter
+        from jacky_cli.run_agent import _SafeWriter
         from unittest.mock import MagicMock
         inner = MagicMock()
         inner.write.side_effect = OSError(5, "Input/output error")
@@ -6203,7 +6203,7 @@ class TestSafeWriter:
 
     def test_flush_catches_oserror(self):
         """OSError on flush is silently caught."""
-        from run_agent import _SafeWriter
+        from jacky_cli.run_agent import _SafeWriter
         from unittest.mock import MagicMock
         inner = MagicMock()
         inner.flush.side_effect = OSError(5, "Input/output error")
@@ -6213,7 +6213,7 @@ class TestSafeWriter:
     def test_print_survives_broken_stdout(self, monkeypatch):
         """print() through _SafeWriter doesn't crash on broken pipe."""
         import sys
-        from run_agent import _SafeWriter
+        from jacky_cli.run_agent import _SafeWriter
         from unittest.mock import MagicMock
         broken = MagicMock()
         broken.write.side_effect = OSError(5, "Input/output error")
@@ -6227,7 +6227,7 @@ class TestSafeWriter:
     def test_installed_in_run_conversation(self, agent):
         """run_conversation installs _SafeWriter on stdio."""
         import sys
-        from run_agent import _SafeWriter
+        from jacky_cli.run_agent import _SafeWriter
         resp = _mock_response(content="Done", finish_reason="stop")
         agent.client.chat.completions.create.return_value = resp
         original_stdout = sys.stdout
@@ -6250,7 +6250,7 @@ class TestSafeWriter:
 
     def test_double_wrap_prevented(self):
         """Wrapping an already-wrapped stream doesn't add layers."""
-        from run_agent import _SafeWriter
+        from jacky_cli.run_agent import _SafeWriter
         from io import StringIO
         inner = StringIO()
         wrapped = _SafeWriter(inner)
@@ -6434,9 +6434,9 @@ class TestFallbackAnthropicProvider:
 
 def test_aiagent_uses_copilot_acp_client():
     with (
-        patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI") as mock_openai,
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI") as mock_openai,
         patch("agent.copilot_acp_client.CopilotACPClient") as mock_acp_client,
     ):
         acp_client = MagicMock()
@@ -6530,8 +6530,8 @@ class TestAnthropicBaseUrlPassthrough:
 
     def test_custom_proxy_base_url_passed_through(self):
         with (
-            patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
-            patch("run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
             patch("agent.anthropic_adapter.build_anthropic_client") as mock_build,
         ):
             mock_build.return_value = MagicMock()
@@ -6549,8 +6549,8 @@ class TestAnthropicBaseUrlPassthrough:
 
     def test_none_base_url_passed_as_none(self):
         with (
-            patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
-            patch("run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
             patch("agent.anthropic_adapter.build_anthropic_client") as mock_build,
         ):
             mock_build.return_value = MagicMock()
@@ -6570,8 +6570,8 @@ class TestAnthropicBaseUrlPassthrough:
 class TestAnthropicCredentialRefresh:
     def test_try_refresh_anthropic_client_credentials_rebuilds_client(self):
         with (
-            patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
-            patch("run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
             patch("agent.anthropic_adapter.build_anthropic_client") as mock_build,
         ):
             old_client = MagicMock()
@@ -6606,8 +6606,8 @@ class TestAnthropicCredentialRefresh:
 
     def test_try_refresh_anthropic_client_credentials_returns_false_when_token_unchanged(self):
         with (
-            patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
-            patch("run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
             patch("agent.anthropic_adapter.build_anthropic_client", return_value=MagicMock()),
         ):
             agent = AIAgent(
@@ -6634,8 +6634,8 @@ class TestAnthropicCredentialRefresh:
 
     def test_anthropic_messages_create_preflights_refresh(self):
         with (
-            patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
-            patch("run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
             patch("agent.anthropic_adapter.build_anthropic_client", return_value=MagicMock()),
         ):
             agent = AIAgent(
@@ -6663,8 +6663,8 @@ class TestAnthropicCredentialRefresh:
 
     def test_anthropic_messages_create_falls_back_when_stream_unavailable(self):
         with (
-            patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
-            patch("run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
             patch("agent.anthropic_adapter.build_anthropic_client", return_value=MagicMock()),
         ):
             agent = AIAgent(
@@ -6692,8 +6692,8 @@ class TestAnthropicCredentialRefresh:
 
     def test_anthropic_messages_create_honors_disable_streaming(self):
         with (
-            patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
-            patch("run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
             patch("agent.anthropic_adapter.build_anthropic_client", return_value=MagicMock()),
         ):
             agent = AIAgent(
@@ -6719,8 +6719,8 @@ class TestAnthropicCredentialRefresh:
 
     def test_anthropic_messages_create_does_not_mask_bedrock_stream_validation_errors(self):
         with (
-            patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
-            patch("run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
             patch("agent.anthropic_adapter.build_anthropic_client", return_value=MagicMock()),
         ):
             agent = AIAgent(
@@ -6746,8 +6746,8 @@ class TestAnthropicCredentialRefresh:
 
     def test_anthropic_messages_create_falls_back_for_bedrock_stream_access_denied(self):
         with (
-            patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
-            patch("run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
             patch("agent.anthropic_adapter.build_anthropic_client", return_value=MagicMock()),
         ):
             agent = AIAgent(
@@ -6856,7 +6856,7 @@ class TestStreamingApiCall:
         # (id=PARTIAL_STREAM_STUB_ID, tool_calls=None so it can't execute,
         # finish_reason=length so the loop's continuation machinery fires with
         # chunking guidance) rather than stamping a normal 'length' truncation.
-        from jacky_constants import PARTIAL_STREAM_STUB_ID
+        from jacky_cli.jacky_constants import PARTIAL_STREAM_STUB_ID
         chunks = [
             _make_chunk(tool_calls=[_make_tc_delta(0, "call_1", "write_file", '{"path":"x.txt","content":"hel')]),
         ]
@@ -7523,7 +7523,7 @@ class TestMemoryNudgeCounterPersistence:
 
     def test_counters_initialized_in_init(self):
         """Counters must exist on the agent after __init__."""
-        with patch("run_agent.get_tool_definitions", return_value=[]):
+        with patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]):
             a = AIAgent(
                 model="test", api_key="test-key", base_url="http://localhost:1234/v1",
                 provider="openrouter", skip_context_files=True, skip_memory=True,

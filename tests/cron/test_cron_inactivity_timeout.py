@@ -309,5 +309,5 @@ class TestSysPathOrdering:
 
     def test_jacky_constants_importable(self):
         """jacky_constants should be importable from cron context."""
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         assert callable(get_jacky_home)

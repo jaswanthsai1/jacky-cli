@@ -9,7 +9,7 @@ sentinel (403 without it).
 
 from unittest.mock import MagicMock, patch
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 from agent.context_compressor import ContextCompressor
 
 

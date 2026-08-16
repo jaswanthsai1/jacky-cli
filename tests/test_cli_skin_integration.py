@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
-from cli import JackyCLI, _build_compact_banner, _rich_text_from_ansi
+from jacky_cli.cli import JackyCLI, _build_compact_banner, _rich_text_from_ansi
 from jacky_cli.skin_engine import get_active_skin, set_active_skin
 
 
@@ -82,7 +82,7 @@ class TestCliSkinPromptIntegration:
     def test_handle_skin_command_refreshes_live_tui(self, capsys):
         cli = _make_cli_stub()
 
-        with patch("cli.save_config_value", return_value=True):
+        with patch("jacky_cli.cli.save_config_value", return_value=True):
             cli._handle_skin_command("/skin ares")
 
         output = capsys.readouterr().out
@@ -95,7 +95,7 @@ class TestCompactBannerSkinIntegration:
     def test_default_compact_banner_keeps_legacy_nous_hermes_branding(self):
         set_active_skin("default")
 
-        with patch("cli.shutil.get_terminal_size", return_value=SimpleNamespace(columns=90)), \
+        with patch("jacky_cli.cli.shutil.get_terminal_size", return_value=SimpleNamespace(columns=90)), \
              patch.dict(_build_compact_banner.__globals__, {"format_banner_version_label": lambda: "Jacky Agent v0.1.0 (test)"}):
             banner = _build_compact_banner()
 
@@ -104,7 +104,7 @@ class TestCompactBannerSkinIntegration:
     def test_poseidon_compact_banner_uses_skin_branding_instead_of_nous_hermes(self):
         set_active_skin("poseidon")
 
-        with patch("cli.shutil.get_terminal_size", return_value=SimpleNamespace(columns=90)), \
+        with patch("jacky_cli.cli.shutil.get_terminal_size", return_value=SimpleNamespace(columns=90)), \
              patch.dict(_build_compact_banner.__globals__, {"format_banner_version_label": lambda: "Jacky Agent v0.1.0 (test)"}):
             banner = _build_compact_banner()
 
@@ -115,7 +115,7 @@ class TestCompactBannerSkinIntegration:
         set_active_skin("poseidon")
         skin = get_active_skin()
 
-        with patch("cli.shutil.get_terminal_size", return_value=SimpleNamespace(columns=90)), \
+        with patch("jacky_cli.cli.shutil.get_terminal_size", return_value=SimpleNamespace(columns=90)), \
              patch.dict(_build_compact_banner.__globals__, {"format_banner_version_label": lambda: "Jacky Agent v0.1.0 (test)"}):
             banner = _build_compact_banner()
 
@@ -126,7 +126,7 @@ class TestCompactBannerSkinIntegration:
     def test_compact_banner_shows_version_label(self):
         set_active_skin("default")
 
-        with patch("cli.shutil.get_terminal_size", return_value=SimpleNamespace(columns=90)), \
+        with patch("jacky_cli.cli.shutil.get_terminal_size", return_value=SimpleNamespace(columns=90)), \
              patch.dict(_build_compact_banner.__globals__, {"format_banner_version_label": lambda: "Jacky Agent v1.0 (test) · upstream abc12345"}):
             banner = _build_compact_banner()
 

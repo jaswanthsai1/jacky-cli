@@ -14,7 +14,7 @@ Features:
 - Support for multiple model providers
 
 Usage:
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     
     agent = AIAgent(base_url="http://localhost:30000/v1", model="claude-opus-4-20250514")
     response = agent.run_conversation("Tell me about the latest Python updates")
@@ -23,7 +23,7 @@ Usage:
 # IMPORTANT: jacky_bootstrap must be the very first import — UTF-8 stdio
 # on Windows.  No-op on POSIX.  See jacky_bootstrap.py for full rationale.
 try:
-    import jacky_bootstrap  # noqa: F401
+    import jacky_cli.jacky_bootstrap as jacky_bootstrap  # noqa: F401
 except ModuleNotFoundError:
     # Graceful fallback when jacky_bootstrap isn't registered in the venv
     # yet — happens during partial ``jacky update`` where git-reset landed
@@ -51,7 +51,7 @@ from typing import List, Dict, Any, Optional, Callable
 # that imports the SDK on first call/isinstance check. This preserves:
 #   (a) the single in-module `OpenAI(**client_kwargs)` call site at
 #       _create_openai_client, and
-#   (b) `patch("run_agent.OpenAI", ...)` test patterns used by ~28 test files.
+#   (b) `patch("jacky_cli.run_agent.OpenAI", ...)` test patterns used by ~28 test files.
 #
 # NOTE: `fire` is ONLY used in the `__main__` block below (for running
 # run_agent.py directly as a CLI) — it is NOT needed for library usage.
@@ -62,7 +62,7 @@ from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 
 def _launch_cwd_for_session(source: str) -> Optional[str]:
@@ -103,13 +103,13 @@ def _session_source_for_agent(platform: Optional[str]) -> str:
 
 
 # OpenAI lazy proxy + safe stdio + proxy URL helpers — see agent/process_bootstrap.py.
-# `OpenAI` is re-exported here so `patch("run_agent.OpenAI", ...)` in tests works.
+# `OpenAI` is re-exported here so `patch("jacky_cli.run_agent.OpenAI", ...)` in tests works.
 # The other `# noqa: F401` re-exports below cover names accessed via
-# `mock.patch("run_agent.<X>")`, `from run_agent import <X>` in production
+# `mock.patch("jacky_cli.run_agent.<X>")`, `from run_agent import <X>` in production
 # siblings, or the `_ra().<X>` indirection in agent/system_prompt.py — none
 # of which ruff's in-module usage scan can see.
 from agent.process_bootstrap import (
-    OpenAI,  # noqa: F401  # re-exported for tests that mock.patch("run_agent.OpenAI")
+    OpenAI,  # noqa: F401  # re-exported for tests that mock.patch("jacky_cli.run_agent.OpenAI")
     _SafeWriter,  # noqa: F401  # re-exported for tests that `from run_agent import _SafeWriter`
     _get_proxy_for_base_url,
 )
@@ -123,7 +123,7 @@ from jacky_cli.timeouts import (
 )
 
 _jacky_home = get_jacky_home()
-_project_env = Path(__file__).parent / '.env'
+_project_env = Path(__file__).parent.parent / '.env'
 _loaded_env_paths = load_jacky_dotenv(jacky_home=_jacky_home, project_env=_project_env)
 if _loaded_env_paths:
     for _env_path in _loaded_env_paths:
@@ -133,11 +133,11 @@ else:
 
 
 # Import our tool system
-from model_tools import (
-    get_tool_definitions,  # noqa: F401  # re-exported for tests that mock.patch("run_agent.get_tool_definitions")
+from jacky_cli.model_tools import (
+    get_tool_definitions,  # noqa: F401  # re-exported for tests that mock.patch("jacky_cli.run_agent.get_tool_definitions")
     get_toolset_for_tool,
-    handle_function_call,  # noqa: F401  # re-exported for tests that mock.patch("run_agent.handle_function_call")
-    check_toolset_requirements,  # noqa: F401  # re-exported for tests that mock.patch("run_agent.check_toolset_requirements")
+    handle_function_call,  # noqa: F401  # re-exported for tests that mock.patch("jacky_cli.run_agent.handle_function_call")
+    check_toolset_requirements,  # noqa: F401  # re-exported for tests that mock.patch("jacky_cli.run_agent.check_toolset_requirements")
 )
 from tools.terminal_tool import cleanup_vm
 from tools.interrupt import set_interrupt as _set_interrupt
@@ -149,14 +149,14 @@ from agent.memory_manager import sanitize_context
 from agent.error_classifier import FailoverReason
 from agent.redact import redact_sensitive_text
 from agent.model_metadata import (
-    estimate_request_tokens_rough,  # noqa: F401  # re-exported for tests that mock.patch("run_agent.estimate_request_tokens_rough")
+    estimate_request_tokens_rough,  # noqa: F401  # re-exported for tests that mock.patch("jacky_cli.run_agent.estimate_request_tokens_rough")
     is_local_endpoint,
 )
 from agent.usage_pricing import normalize_usage
 # Re-exported for tests that monkeypatch these symbols on run_agent.
 from agent.context_compressor import ContextCompressor  # noqa: F401
 from agent.retry_utils import jittered_backoff  # noqa: F401
-from agent.prompt_builder import (  # noqa: F401  # re-exported via _ra() / mock.patch("run_agent.<name>") / from run_agent import <name>
+from agent.prompt_builder import (  # noqa: F401  # re-exported via _ra() / mock.patch("jacky_cli.run_agent.<name>") / from run_agent import <name>
     DEFAULT_AGENT_IDENTITY,
     build_skills_system_prompt,
     build_context_files_prompt,
@@ -210,7 +210,7 @@ from agent.tool_dispatch_helpers import (
     _extract_error_preview,
     _trajectory_normalize_msg,  # noqa: F401  # re-exported for tests that `from run_agent import _trajectory_normalize_msg`
 )
-from utils import atomic_json_write, base_url_host_matches, base_url_hostname, env_float, is_truthy_value, model_forces_max_completion_tokens
+from jacky_cli.utils import atomic_json_write, base_url_host_matches, base_url_hostname, env_float, is_truthy_value, model_forces_max_completion_tokens
 
 
 # Internal flags that mark a message as ephemeral empty-response/prefill
@@ -581,7 +581,7 @@ class AIAgent:
         if self._session_db is not None:
             return self._session_db
         try:
-            from jacky_state import SessionDB
+            from jacky_cli.jacky_state import SessionDB
 
             self._session_db = SessionDB()
             return self._session_db
@@ -5877,8 +5877,8 @@ def main(
     
     # Handle tool listing
     if list_tools:
-        from model_tools import get_all_tool_names, get_available_toolsets
-        from toolsets import get_all_toolsets, get_toolset_info
+        from jacky_cli.model_tools import get_all_tool_names, get_available_toolsets
+        from jacky_cli.toolsets import get_all_toolsets, get_toolset_info
         
         print("📋 Available Tools & Toolsets:")
         print("-" * 50)

@@ -75,7 +75,7 @@ logger = logging.getLogger("gateway.platforms.google_chat_user_oauth")
 # Use the project's JACKY_HOME helper so the token follows the user's
 # profile (e.g. tests can override via JACKY_HOME=/tmp/...).
 try:
-    from jacky_constants import display_jacky_home, get_jacky_home
+    from jacky_cli.jacky_constants import display_jacky_home, get_jacky_home
 except (ModuleNotFoundError, ImportError):
     # Fallback for environments where jacky_constants isn't importable
     # (mirrors the same fallback used by the google-workspace skill's
@@ -91,7 +91,7 @@ except (ModuleNotFoundError, ImportError):
         except ValueError:
             return str(home)
 
-from utils import atomic_replace
+from jacky_cli.utils import atomic_replace
 
 
 def _jacky_home() -> Path:

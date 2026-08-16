@@ -154,7 +154,7 @@ def _core_tool_names() -> frozenset[str]:
     and we don't want a hard cycle.
     """
     try:
-        from toolsets import _JACKY_CORE_TOOLS
+        from jacky_cli.toolsets import _JACKY_CORE_TOOLS
         return frozenset(_JACKY_CORE_TOOLS)
     except Exception:
         return frozenset()

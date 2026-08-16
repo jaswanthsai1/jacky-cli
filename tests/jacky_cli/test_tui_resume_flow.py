@@ -750,7 +750,7 @@ def test_oneshot_all_toolsets_warns_about_ignored_extra_entries(monkeypatch, cap
 
 
 def test_oneshot_accepts_plugin_toolset_after_discovery(monkeypatch):
-    import toolsets
+    import jacky_cli.toolsets as toolsets
 
     from jacky_cli.oneshot import _validate_explicit_toolsets
 
@@ -846,8 +846,8 @@ def test_oneshot_wires_session_db_for_recall(monkeypatch):
             setattr(module, key, value)
         return module
 
-    monkeypatch.setitem(sys.modules, "run_agent", mod("run_agent", AIAgent=FakeAgent))
-    monkeypatch.setitem(sys.modules, "jacky_state", mod("jacky_state", SessionDB=FakeSessionDB))
+    monkeypatch.setitem(sys.modules, "jacky_cli.run_agent", mod("jacky_cli.run_agent", AIAgent=FakeAgent))
+    monkeypatch.setitem(sys.modules, "jacky_cli.jacky_state", mod("jacky_cli.jacky_state", SessionDB=FakeSessionDB))
     monkeypatch.setitem(
         sys.modules,
         "jacky_cli.config",
@@ -1074,7 +1074,7 @@ def test_print_tui_exit_summary_includes_resume_and_token_totals(monkeypatch, ca
             return None
 
     monkeypatch.setitem(
-        sys.modules, "jacky_state", types.SimpleNamespace(SessionDB=lambda: _FakeDB())
+        sys.modules, "jacky_cli.jacky_state", types.SimpleNamespace(SessionDB=lambda: _FakeDB())
     )
 
     main_mod._print_tui_exit_summary("20260409_000001_abc123")
@@ -1114,7 +1114,7 @@ def test_print_tui_exit_summary_prefers_actual_active_session_file(
     active = tmp_path / "active.json"
     active.write_text('{"session_id":"actual_session"}', encoding="utf-8")
     monkeypatch.setitem(
-        sys.modules, "jacky_state", types.SimpleNamespace(SessionDB=lambda: _FakeDB())
+        sys.modules, "jacky_cli.jacky_state", types.SimpleNamespace(SessionDB=lambda: _FakeDB())
     )
 
     main_mod._print_tui_exit_summary("startup_resume", str(active))

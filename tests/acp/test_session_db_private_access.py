@@ -15,7 +15,7 @@ from unittest.mock import MagicMock, patch, call
 
 import pytest
 
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 from acp_adapter.session import SessionManager
 
 

@@ -45,7 +45,7 @@ from agent.prompt_builder import (
     drain_truncation_warnings,
 )
 from agent.runtime_cwd import resolve_context_cwd
-from utils import is_truthy_value
+from jacky_cli.utils import is_truthy_value
 
 
 def _ra():
@@ -55,11 +55,11 @@ def _ra():
     ``build_context_files_prompt``, ``build_nous_subscription_prompt``,
     ``build_skills_system_prompt`` and ``get_toolset_for_tool`` are
     imported into ``run_agent``'s namespace.  Many tests
-    ``patch("run_agent.load_soul_md", ...)``; if we imported them
+    ``patch("jacky_cli.run_agent.load_soul_md", ...)``; if we imported them
     directly here those patches would not reach us.  Looking them up
     through ``run_agent`` on every call preserves the patch contract.
     """
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     return run_agent
 
 
@@ -477,7 +477,7 @@ def build_system_prompt_parts(agent: Any, system_message: Optional[str] = None) 
         except Exception:
             pass
 
-    from jacky_time import now as _jacky_now
+    from jacky_cli.jacky_time import now as _jacky_now
     now = _jacky_now()
     # Date-only (not minute-precision) so the system prompt is byte-stable
     # for the full day.  Minute-precision changes invalidate prefix-cache KV

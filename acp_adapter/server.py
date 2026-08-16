@@ -827,7 +827,7 @@ class JackyACPAgent(acp.Agent):
             return
 
         try:
-            from model_tools import get_tool_definitions
+            from jacky_cli.model_tools import get_tool_definitions
             from agent.memory_manager import inject_memory_provider_tools
 
             enabled_toolsets = _expand_acp_enabled_toolsets(
@@ -1786,7 +1786,7 @@ class JackyACPAgent(acp.Agent):
 
     def _cmd_tools(self, args: str, state: SessionState) -> str:
         try:
-            from model_tools import get_tool_definitions
+            from jacky_cli.model_tools import get_tool_definitions
             from types import SimpleNamespace
             from agent.memory_manager import inject_memory_provider_tools
 

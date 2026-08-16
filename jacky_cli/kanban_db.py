@@ -90,7 +90,7 @@ from pathlib import Path
 from typing import Any, Iterable, Optional
 
 from jacky_cli.sqlite_util import add_column_if_missing as _add_column_if_missing
-from toolsets import get_toolset_names
+from jacky_cli.toolsets import get_toolset_names
 
 _log = logging.getLogger(__name__)
 
@@ -386,7 +386,7 @@ def kanban_home() -> Path:
     override = os.environ.get("JACKY_KANBAN_HOME", "").strip()
     if override:
         return Path(override).expanduser()
-    from jacky_constants import get_default_jacky_root
+    from jacky_cli.jacky_constants import get_default_jacky_root
     return get_default_jacky_root()
 
 
@@ -1723,7 +1723,7 @@ def connect(
         try:
             conn.row_factory = sqlite3.Row
             with _INIT_LOCK:
-                from jacky_state import apply_wal_with_fallback
+                from jacky_cli.jacky_state import apply_wal_with_fallback
                 apply_wal_with_fallback(conn, db_label=f"kanban.db ({path.name})")
                 conn.execute("PRAGMA synchronous=FULL")
                 conn.execute("PRAGMA wal_autocheckpoint=100")
@@ -1755,7 +1755,7 @@ def connect(
                 # WAL doesn't work on network filesystems (NFS/SMB/FUSE). Shared helper
                 # falls back to DELETE with one WARNING so kanban stays usable there.
                 # See jacky_state._WAL_INCOMPAT_MARKERS for detection logic.
-                from jacky_state import apply_wal_with_fallback
+                from jacky_cli.jacky_state import apply_wal_with_fallback
                 apply_wal_with_fallback(conn, db_label=f"kanban.db ({path.name})")
                 # FULL (was NORMAL): fsync before each checkpoint to narrow the
                 # crash window that can leave a b-tree page header torn.
@@ -7657,7 +7657,7 @@ def _resolve_worker_cli_toolsets(jacky_home: Optional[str]) -> Optional[list[str
     if not jacky_home:
         return None
     try:
-        from jacky_constants import reset_jacky_home_override, set_jacky_home_override
+        from jacky_cli.jacky_constants import reset_jacky_home_override, set_jacky_home_override
         from jacky_cli.config import load_config
         from jacky_cli.tools_config import _get_platform_tools
 
@@ -8578,7 +8578,7 @@ def list_profiles_on_disk() -> list[str]:
     path).
     """
     try:
-        from jacky_constants import get_default_jacky_root
+        from jacky_cli.jacky_constants import get_default_jacky_root
         default_root = get_default_jacky_root()
         profiles_dir = default_root / "profiles"
     except Exception:

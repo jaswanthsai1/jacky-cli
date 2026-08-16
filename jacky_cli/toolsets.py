@@ -14,7 +14,7 @@ Features:
 - Support for dynamic toolset resolution
 
 Usage:
-    from toolsets import get_toolset, resolve_toolset, get_all_toolsets
+    from jacky_cli.toolsets import get_toolset, resolve_toolset, get_all_toolsets
     
     # Get tools for a specific toolset
     tools = get_toolset("research")

@@ -459,7 +459,7 @@ def test_run_agent_dispatch_forces_background():
     background on for any top-level delegation (single OR batch) and off for a
     subagent."""
     from unittest.mock import patch
-    import run_agent
+    import jacky_cli.run_agent as run_agent
 
     class _FakeAgent:
         _delegate_depth = 0
@@ -492,7 +492,7 @@ def test_dispatch_never_forwards_model_toolsets():
     tool-call args, the live dispatch path must NOT forward it to
     delegate_task (which no longer accepts it) and must not crash."""
     from unittest.mock import patch
-    import run_agent
+    import jacky_cli.run_agent as run_agent
 
     class _FakeAgent:
         _delegate_depth = 0

@@ -41,18 +41,18 @@ from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from utils import base_url_host_matches, base_url_hostname
+from jacky_cli.utils import base_url_host_matches, base_url_hostname
 import fire
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn, TimeElapsedColumn, TimeRemainingColumn
 from rich.console import Console
-from jacky_constants import OPENROUTER_BASE_URL, get_jacky_home
+from jacky_cli.jacky_constants import OPENROUTER_BASE_URL, get_jacky_home
 from agent.retry_utils import jittered_backoff
 
 # Load .env from JACKY_HOME first, then project root as a dev fallback.
 from jacky_cli.env_loader import load_jacky_dotenv
 
 _jacky_home = get_jacky_home()
-_project_env = Path(__file__).parent / ".env"
+_project_env = Path(__file__).parent.parent / ".env"
 load_jacky_dotenv(jacky_home=_jacky_home, project_env=_project_env)
 
 

@@ -38,7 +38,7 @@ from acp.schema import (
 from acp_adapter.auth import TERMINAL_SETUP_AUTH_METHOD_ID
 from acp_adapter.server import JackyACPAgent, JACKY_VERSION
 from acp_adapter.session import SessionManager
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 
 
 @pytest.fixture()
@@ -983,7 +983,7 @@ class TestSessionConfiguration:
         )
         manager = SessionManager(db=SessionDB(tmp_path / "state.db"))
 
-        with patch("run_agent.AIAgent", side_effect=fake_agent):
+        with patch("jacky_cli.run_agent.AIAgent", side_effect=fake_agent):
             acp_agent = JackyACPAgent(session_manager=manager)
             state = manager.create_session(cwd="/tmp")
             result = await acp_agent.set_session_model(
@@ -1687,7 +1687,7 @@ class TestSlashCommands:
         )
         manager = SessionManager(db=SessionDB(tmp_path / "state.db"))
 
-        with patch("run_agent.AIAgent", side_effect=fake_agent):
+        with patch("jacky_cli.run_agent.AIAgent", side_effect=fake_agent):
             acp_agent = JackyACPAgent(session_manager=manager)
             state = manager.create_session(cwd="/tmp")
             result = acp_agent._cmd_model("anthropic:claude-sonnet-4-6", state)
@@ -1746,7 +1746,7 @@ class TestRegisterSessionMcpServers:
             return ["mcp_test_server_tool1"]
 
         with patch("tools.mcp_tool.register_mcp_servers", side_effect=capture_register), \
-             patch("model_tools.get_tool_definitions", return_value=[]):
+             patch("jacky_cli.model_tools.get_tool_definitions", return_value=[]):
             await agent._register_session_mcp_servers(state, [server])
 
         assert "test-server" in registered_config
@@ -1778,7 +1778,7 @@ class TestRegisterSessionMcpServers:
             return []
 
         with patch("tools.mcp_tool.register_mcp_servers", side_effect=capture_register), \
-             patch("model_tools.get_tool_definitions", return_value=[]):
+             patch("jacky_cli.model_tools.get_tool_definitions", return_value=[]):
             await agent._register_session_mcp_servers(state, [server])
 
         assert "http-server" in registered_config
@@ -1817,7 +1817,7 @@ class TestRegisterSessionMcpServers:
         ]
 
         with patch("tools.mcp_tool.register_mcp_servers", return_value=["mcp_srv_search"]), \
-             patch("model_tools.get_tool_definitions", return_value=fake_tools) as mock_defs:
+             patch("jacky_cli.model_tools.get_tool_definitions", return_value=fake_tools) as mock_defs:
             await agent._register_session_mcp_servers(state, [server])
 
         mock_defs.assert_called_once_with(

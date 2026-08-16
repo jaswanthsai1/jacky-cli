@@ -1,7 +1,7 @@
 import time
 
-import jacky_state
-from jacky_state import SessionDB
+import jacky_cli.jacky_state as jacky_state
+from jacky_cli.jacky_state import SessionDB
 
 
 def test_export_candidates_via_prune_filters_ended_old_sessions(tmp_path, monkeypatch):

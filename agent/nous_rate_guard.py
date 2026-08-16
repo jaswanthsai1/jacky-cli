@@ -18,7 +18,7 @@ import os
 import tempfile
 import time
 from typing import Any, Mapping, Optional
-from utils import atomic_replace
+from jacky_cli.utils import atomic_replace
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ _STATE_FILENAME = "nous.json"
 def _state_path() -> str:
     """Return the path to the Nous rate limit state file."""
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         base = get_jacky_home()
     except ImportError:
         base = os.path.join(os.path.expanduser("~"), ".jacky")

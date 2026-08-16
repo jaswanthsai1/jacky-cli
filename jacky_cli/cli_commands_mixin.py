@@ -27,7 +27,7 @@ from rich import box as rich_box
 from rich.markup import escape as _escape
 from rich.panel import Panel
 
-from jacky_constants import display_jacky_home, is_termux as _is_termux_environment
+from jacky_cli.jacky_constants import display_jacky_home, is_termux as _is_termux_environment
 from jacky_cli.browser_connect import (
     DEFAULT_BROWSER_CDP_URL,
     is_browser_debug_ready,
@@ -151,7 +151,7 @@ class CLICommandsMixin:
             create_quick_snapshot, list_quick_snapshots,
             restore_quick_snapshot, prune_quick_snapshots,
         )
-        from jacky_constants import display_jacky_home
+        from jacky_cli.jacky_constants import display_jacky_home
 
         parts = command.split()
         subcmd = parts[1].lower() if len(parts) > 1 else "list"
@@ -260,7 +260,7 @@ class CLICommandsMixin:
 
     def _handle_agents_command(self):
         """Handle /agents — show background processes and agent status."""
-        from cli import _cprint
+        from jacky_cli.cli import _cprint
         from tools.process_registry import format_uptime_short, process_registry
 
         processes = process_registry.list_sessions()
@@ -308,7 +308,7 @@ class CLICommandsMixin:
         import shlex
         from contextlib import redirect_stdout
 
-        from cli import _cprint
+        from jacky_cli.cli import _cprint
         from jacky_cli.journey import register_cli
 
         parser = argparse.ArgumentParser(prog="/journey", add_help=False)
@@ -339,7 +339,7 @@ class CLICommandsMixin:
         doesn't fire for image-only clipboard content (e.g., VSCode terminal,
         Windows Terminal with WSL2).
         """
-        from cli import _DIM, _RST, _cprint, _termux_example_image_path
+        from jacky_cli.cli import _DIM, _RST, _cprint, _termux_example_image_path
         if _is_termux_environment():
             _cprint(
                 f"  {_DIM}Clipboard image paste is not available on Termux — "
@@ -360,7 +360,7 @@ class CLICommandsMixin:
 
     def _handle_copy_command(self, cmd_original: str) -> None:
         """Handle /copy [number] — copy assistant output to clipboard."""
-        from cli import _assistant_copy_text, _cprint
+        from jacky_cli.cli import _assistant_copy_text, _cprint
         parts = cmd_original.split(maxsplit=1)
         arg = parts[1].strip() if len(parts) > 1 else ""
 
@@ -399,7 +399,7 @@ class CLICommandsMixin:
 
     def _handle_image_command(self, cmd_original: str):
         """Handle /image <path> — attach a local image file for the next prompt."""
-        from cli import _DIM, _IMAGE_EXTENSIONS, _RST, _cprint, _resolve_attachment_path, _split_path_input, _termux_example_image_path
+        from jacky_cli.cli import _DIM, _IMAGE_EXTENSIONS, _RST, _cprint, _resolve_attachment_path, _split_path_input, _termux_example_image_path
         raw_args = (cmd_original.split(None, 1)[1].strip() if " " in cmd_original else "")
         if not raw_args:
             hint = _termux_example_image_path() if _is_termux_environment() else "/path/to/image.png"
@@ -431,7 +431,7 @@ class CLICommandsMixin:
         the session so the new tool set takes effect cleanly (no
         prompt-cache breakage mid-conversation).
         """
-        from cli import _ACCENT, _DIM, _RST, _cprint
+        from jacky_cli.cli import _ACCENT, _DIM, _RST, _cprint
         import shlex
         from argparse import Namespace
         from contextlib import redirect_stdout
@@ -504,7 +504,7 @@ class CLICommandsMixin:
 
     def _handle_profile_command(self):
         """Display active profile name and home directory."""
-        from jacky_constants import display_jacky_home
+        from jacky_cli.jacky_constants import display_jacky_home
         from jacky_cli.profiles import get_active_profile_name
 
         display = display_jacky_home()
@@ -532,8 +532,8 @@ class CLICommandsMixin:
         Returns:
             False to signal CLI exit, True to keep going.
         """
-        from cli import _cprint
-        from jacky_state import format_session_db_unavailable
+        from jacky_cli.cli import _cprint
+        from jacky_cli.jacky_state import format_session_db_unavailable
 
         parts = cmd_original.split(maxsplit=1)
         if len(parts) < 2 or not parts[1].strip():
@@ -583,7 +583,7 @@ class CLICommandsMixin:
         # Make sure we have a SessionDB handle.
         if not self._session_db:
             try:
-                from jacky_state import SessionDB
+                from jacky_cli.jacky_state import SessionDB
                 self._session_db = SessionDB()
             except Exception:
                 pass
@@ -668,7 +668,7 @@ class CLICommandsMixin:
 
     def _handle_resume_command(self, cmd_original: str) -> None:
         """Handle /resume <session_id_or_title> — switch to a previous session mid-conversation."""
-        from cli import _cprint, _sync_process_session_id
+        from jacky_cli.cli import _cprint, _sync_process_session_id
         parts = cmd_original.split(None, 1)
         target = parts[1].strip() if len(parts) > 1 else ""
 
@@ -704,7 +704,7 @@ class CLICommandsMixin:
         self._pending_resume_sessions = None
 
         if not self._session_db:
-            from jacky_state import format_session_db_unavailable
+            from jacky_cli.jacky_state import format_session_db_unavailable
             _cprint(f"  {format_session_db_unavailable()}")
             return
 
@@ -839,7 +839,7 @@ class CLICommandsMixin:
         prints ``Unknown command: sessions`` even though the command is
         registered in the central COMMAND_REGISTRY.
         """
-        from cli import _cprint
+        from jacky_cli.cli import _cprint
         parts = cmd_original.split(None, 1)
         arg = parts[1].strip() if len(parts) > 1 else ""
         sub = arg.lower()
@@ -847,7 +847,7 @@ class CLICommandsMixin:
         # Bare /sessions or /sessions list — show recent sessions inline.
         if not arg or sub in {"list", "ls", "browse"}:
             if not self._session_db:
-                from jacky_state import format_session_db_unavailable
+                from jacky_cli.jacky_state import format_session_db_unavailable
                 _cprint(f"  {format_session_db_unavailable()}")
                 return
             if not self._show_recent_sessions(reason="sessions"):
@@ -864,13 +864,13 @@ class CLICommandsMixin:
         explore a different approach without losing the original session state.
         Inspired by Claude Code's /branch command.
         """
-        from cli import _cprint, _sync_process_session_id
+        from jacky_cli.cli import _cprint, _sync_process_session_id
         if not self.conversation_history:
             _cprint("  No conversation to branch — send a message first.")
             return
 
         if not self._session_db:
-            from jacky_state import format_session_db_unavailable
+            from jacky_cli.jacky_state import format_session_db_unavailable
             _cprint(f"  {format_session_db_unavailable()}")
             return
 
@@ -1004,7 +1004,7 @@ class CLICommandsMixin:
 
     def _handle_personality_command(self, cmd: str):
         """Handle the /personality command to set predefined personalities."""
-        from cli import save_config_value
+        from jacky_cli.cli import save_config_value
         parts = cmd.split(maxsplit=1)
         
         if len(parts) > 1:
@@ -1176,7 +1176,7 @@ class CLICommandsMixin:
 
     def _handle_cron_command(self, cmd: str):
         """Handle the /cron command to manage scheduled tasks."""
-        from cli import get_job
+        from jacky_cli.cli import get_job
         import shlex
         from tools.cronjob_tools import cronjob as cronjob_tool
 
@@ -1516,7 +1516,7 @@ class CLICommandsMixin:
 
     def _handle_skills_command(self, cmd: str):
         """Handle /skills slash command — delegates to jacky_cli.skills_hub."""
-        from cli import ChatConsole
+        from jacky_cli.cli import ChatConsole
         # Intercept write-approval review subcommands first (pending/approve/
         # reject/diff/mode); everything else goes to the skills hub.
         parts = cmd.strip().split()
@@ -1591,7 +1591,7 @@ class CLICommandsMixin:
 
     def _save_write_approval(self, subsystem: str, enabled: bool):
         """Persist <subsystem>.write_approval to config (for /memory|/skills approval)."""
-        from cli import save_config_value
+        from jacky_cli.cli import save_config_value
         save_config_value(f"{subsystem}.write_approval", bool(enabled))
 
     def _handle_background_command(self, cmd: str):
@@ -1601,7 +1601,7 @@ class CLICommandsMixin:
         When it completes, prints the result to the CLI without modifying
         the active session's conversation history.
         """
-        from cli import AIAgent, ChatConsole, _accent_hex, _cprint, _maybe_remap_for_light_mode, _render_final_assistant_content, set_approval_callback, set_secret_capture_callback, set_sudo_password_callback
+        from jacky_cli.cli import AIAgent, ChatConsole, _accent_hex, _cprint, _maybe_remap_for_light_mode, _render_final_assistant_content, set_approval_callback, set_secret_capture_callback, set_sudo_password_callback
         parts = cmd.strip().split(maxsplit=1)
         if len(parts) < 2 or not parts[1].strip():
             _cprint("  Usage: /background <prompt>")
@@ -1756,7 +1756,7 @@ class CLICommandsMixin:
         CLI so users can discover what's available without dropping out
         of their session. Bundles are loaded via ``/<bundle-name>``.
         """
-        from cli import ChatConsole, _BOLD, _DIM, _RST, _accent_hex, _cprint
+        from jacky_cli.cli import ChatConsole, _BOLD, _DIM, _RST, _accent_hex, _cprint
         try:
             from agent.skill_bundles import list_bundles, _bundles_dir
         except Exception as exc:
@@ -1997,7 +1997,7 @@ class CLICommandsMixin:
 
     def _handle_goal_command(self, cmd: str) -> None:
         """Dispatch /goal subcommands: set / draft / show / status / pause / resume / clear."""
-        from cli import _DIM, _RST, _cprint
+        from jacky_cli.cli import _DIM, _RST, _cprint
         parts = (cmd or "").strip().split(None, 1)
         arg = parts[1].strip() if len(parts) > 1 else ""
 
@@ -2129,7 +2129,7 @@ class CLICommandsMixin:
         """Draft a structured completion contract from a plain objective and
         set it as the active goal. Falls back to a bare goal if the aux model
         can't produce a contract."""
-        from cli import _DIM, _RST, _cprint
+        from jacky_cli.cli import _DIM, _RST, _cprint
         from jacky_cli.goals import draft_contract
 
         mgr = self._get_goal_manager()
@@ -2186,7 +2186,7 @@ class CLICommandsMixin:
         boundary. No special kick — the running turn finishes, the next
         judge call includes them.
         """
-        from cli import _DIM, _RST, _cprint
+        from jacky_cli.cli import _DIM, _RST, _cprint
         parts = (cmd or "").strip().split(None, 2)
         arg = " ".join(parts[1:]).strip() if len(parts) > 1 else ""
 
@@ -2249,7 +2249,7 @@ class CLICommandsMixin:
 
     def _handle_skin_command(self, cmd: str):
         """Handle /skin [name] — show or change the display skin."""
-        from cli import _ACCENT, save_config_value
+        from jacky_cli.cli import _ACCENT, save_config_value
         try:
             from jacky_cli.skin_engine import list_skins, set_active_skin, get_active_skin_name
         except ImportError:
@@ -2342,7 +2342,7 @@ class CLICommandsMixin:
         buffer as the next agent turn via the one-shot ``_pending_agent_seed``
         the interactive loop already consumes (same path as /blueprint).
         """
-        from cli import _DIM, _RST, _cprint
+        from jacky_cli.cli import _DIM, _RST, _cprint
 
         initial = ""
         parts = (cmd_original or "").strip().split(None, 1)
@@ -2371,7 +2371,7 @@ class CLICommandsMixin:
             /footer on|off    → explicit
             /footer status    → show current state
         """
-        from cli import _cprint, save_config_value
+        from jacky_cli.cli import _cprint, save_config_value
         from jacky_cli.config import load_config
         from jacky_cli.colors import Colors as _Colors
 
@@ -2428,7 +2428,7 @@ class CLICommandsMixin:
             /timestamps on|off    → explicit
             /timestamps status    → show current state
         """
-        from cli import _cprint, save_config_value
+        from jacky_cli.cli import _cprint, save_config_value
         from jacky_cli.colors import Colors as _Colors
 
         arg = ""
@@ -2477,7 +2477,7 @@ class CLICommandsMixin:
             /reasoning full         Show complete thinking (no 10-line clamp)
             /reasoning clamp        Collapse long thinking to the first 10 lines
         """
-        from cli import _ACCENT, _DIM, _RST, _cprint, _parse_reasoning_config, save_config_value
+        from jacky_cli.cli import _ACCENT, _DIM, _RST, _cprint, _parse_reasoning_config, save_config_value
         parts = cmd.strip().split(maxsplit=1)
 
         if len(parts) < 2:
@@ -2556,7 +2556,7 @@ class CLICommandsMixin:
             /busy steer         Inject Enter mid-run via /steer (after next tool call)
             /busy interrupt     Interrupt the current run on Enter (default)
         """
-        from cli import _ACCENT, _DIM, _RST, _cprint, save_config_value
+        from jacky_cli.cli import _ACCENT, _DIM, _RST, _cprint, save_config_value
         parts = cmd.strip().split(maxsplit=1)
         if len(parts) < 2 or parts[1].strip().lower() == "status":
             _cprint(f"  {_ACCENT}Busy input mode: {self.busy_input_mode}{_RST}")
@@ -2591,7 +2591,7 @@ class CLICommandsMixin:
 
     def _handle_fast_command(self, cmd: str):
         """Handle /fast — toggle fast mode (OpenAI Priority Processing / Anthropic Fast Mode)."""
-        from cli import _ACCENT, _DIM, _RST, _cprint, save_config_value
+        from jacky_cli.cli import _ACCENT, _DIM, _RST, _cprint, save_config_value
         if not self._fast_command_available():
             _cprint("  (._.) /fast is only available for models that support fast mode (OpenAI Priority Processing or Anthropic Fast Mode).")
             return
@@ -2713,7 +2713,7 @@ class CLICommandsMixin:
 
     def _handle_voice_command(self, command: str):
         """Handle /voice [on|off|tts|status] command."""
-        from cli import _cprint
+        from jacky_cli.cli import _cprint
         parts = command.strip().split(maxsplit=1)
         subcommand = parts[1].lower().strip() if len(parts) > 1 else ""
 

@@ -27,7 +27,7 @@ def _bare_agent():
     ``_sync_external_memory_for_turn`` touches — matches the bare-agent
     pattern used across ``tests/run_agent/test_interrupt_propagation.py``.
     """
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
 
     agent = AIAgent.__new__(AIAgent)
     agent._memory_manager = MagicMock()
@@ -191,7 +191,7 @@ class TestSyncExternalMemoryForTurn:
     def test_no_memory_manager_is_a_no_op(self):
         """Sessions without an external memory manager must not crash
         or try to call .sync_all on None."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent.__new__(AIAgent)
         agent._memory_manager = None

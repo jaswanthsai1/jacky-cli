@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from jacky_constants import get_default_jacky_root, get_jacky_home, display_jacky_home
+from jacky_cli.jacky_constants import get_default_jacky_root, get_jacky_home, display_jacky_home
 
 logger = logging.getLogger(__name__)
 

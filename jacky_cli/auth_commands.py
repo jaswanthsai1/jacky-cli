@@ -29,7 +29,7 @@ from agent.credential_pool import (
 )
 import jacky_cli.auth as auth_mod
 from jacky_cli.auth import PROVIDER_REGISTRY
-from jacky_constants import OPENROUTER_BASE_URL
+from jacky_cli.jacky_constants import OPENROUTER_BASE_URL
 from jacky_cli.secret_prompt import masked_secret_prompt
 
 

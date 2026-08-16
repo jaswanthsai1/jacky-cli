@@ -1057,13 +1057,13 @@ class TestWorktreeLockReaping:
         return p
 
     def test_live_locked_survives_at_any_age(self, git_repo):
-        import cli
+        import jacky_cli.cli as cli
         wt = self._mk(cli, git_repo, "jacky-live", pid=os.getpid())
         cli._prune_stale_worktrees(str(git_repo))
         assert wt.exists(), "live-locked worktree (this pid) must never be reaped"
 
     def test_dead_locked_clean_is_reaped(self, git_repo):
-        import cli
+        import jacky_cli.cli as cli
         wt = self._mk(cli, git_repo, "jacky-dead", pid=999999)
         # sanity: this is the accumulation bug — remove --force alone can't do it
         assert cli._worktree_lock_is_live(str(git_repo), str(wt)) == "dead"
@@ -1071,31 +1071,31 @@ class TestWorktreeLockReaping:
         assert not wt.exists(), "dead-locked clean worktree should be unlocked + reaped"
 
     def test_dead_locked_dirty_survives(self, git_repo):
-        import cli
+        import jacky_cli.cli as cli
         wt = self._mk(cli, git_repo, "jacky-deaddirty", pid=999999, dirty=True)
         cli._prune_stale_worktrees(str(git_repo))
         assert wt.exists(), "dead-locked worktree with uncommitted work must survive"
 
     def test_dead_locked_unpushed_survives(self, git_repo):
-        import cli
+        import jacky_cli.cli as cli
         wt = self._mk(cli, git_repo, "jacky-deadunp", pid=999999, unpushed=True)
         cli._prune_stale_worktrees(str(git_repo))
         assert wt.exists(), "dead-locked worktree with unpushed commits must survive"
 
     def test_unlocked_clean_stale_is_reaped(self, git_repo):
-        import cli
+        import jacky_cli.cli as cli
         wt = self._mk(cli, git_repo, "jacky-nolock", pid=None)
         cli._prune_stale_worktrees(str(git_repo))
         assert not wt.exists(), "clean unlocked stale worktree should be reaped"
 
     def test_dirty_survives_over_72h(self, git_repo):
-        import cli
+        import jacky_cli.cli as cli
         wt = self._mk(cli, git_repo, "jacky-dirty72", pid=None, dirty=True, age_h=100)
         cli._prune_stale_worktrees(str(git_repo))
         assert wt.exists(), "dirty worktree must survive even past the 72h tier"
 
     def test_recent_worktree_untouched(self, git_repo):
-        import cli
+        import jacky_cli.cli as cli
         wt = self._mk(cli, git_repo, "jacky-fresh", pid=None, age_h=1)
         cli._prune_stale_worktrees(str(git_repo))
         assert wt.exists(), "worktree under 24h must never be pruned"
@@ -1118,7 +1118,7 @@ class TestWorktreeLockPredicate:
         return p
 
     def test_unlocked_returns_none(self, git_repo):
-        import cli
+        import jacky_cli.cli as cli
         p = git_repo / ".worktrees" / "jacky-x"
         (git_repo / ".worktrees").mkdir(exist_ok=True)
         subprocess.run(
@@ -1128,21 +1128,21 @@ class TestWorktreeLockPredicate:
         assert cli._worktree_lock_is_live(str(git_repo), str(p)) is None
 
     def test_live_pid_returns_live(self, git_repo):
-        import cli
+        import jacky_cli.cli as cli
         p = self._mk_locked(git_repo, "jacky-live", f"jacky pid={os.getpid()}")
         assert cli._worktree_lock_is_live(str(git_repo), str(p)) == "live"
 
     def test_dead_pid_returns_dead(self, git_repo):
-        import cli
+        import jacky_cli.cli as cli
         p = self._mk_locked(git_repo, "jacky-dead", "jacky pid=999999")
         assert cli._worktree_lock_is_live(str(git_repo), str(p)) == "dead"
 
     def test_foreign_lock_reason_returns_dead(self, git_repo):
-        import cli
+        import jacky_cli.cli as cli
         p = self._mk_locked(git_repo, "jacky-foreign", "some other tool")
         assert cli._worktree_lock_is_live(str(git_repo), str(p)) == "dead"
 
     def test_bad_repo_root_fails_safe_to_live(self, tmp_path):
-        import cli
+        import jacky_cli.cli as cli
         # Not a git repo -> git query fails -> must report "live" (never delete)
         assert cli._worktree_lock_is_live(str(tmp_path), str(tmp_path / "x")) == "live"

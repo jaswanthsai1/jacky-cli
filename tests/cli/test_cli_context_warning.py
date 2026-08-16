@@ -20,12 +20,12 @@ def _isolate(tmp_path, monkeypatch):
 @pytest.fixture
 def cli_obj(_isolate):
     """Create a minimal JackyCLI instance for banner testing."""
-    with patch("cli.load_cli_config", return_value={
+    with patch("jacky_cli.cli.load_cli_config", return_value={
         "display": {"tool_progress": "new"},
         "terminal": {},
-    }), patch("cli.get_tool_definitions", return_value=[]), \
-         patch("cli.build_welcome_banner"):
-        from cli import JackyCLI
+    }), patch("jacky_cli.cli.get_tool_definitions", return_value=[]), \
+         patch("jacky_cli.cli.build_welcome_banner"):
+        from jacky_cli.cli import JackyCLI
         obj = JackyCLI.__new__(JackyCLI)
         obj.model = "test-model"
         obj.enabled_toolsets = ["jacky-core"]
@@ -49,8 +49,8 @@ class TestLowContextWarning:
     def test_warning_for_below_minimum_context(self, cli_obj):
         """Warning shown when context is below Jacky' minimum."""
         cli_obj.agent.context_compressor.context_length = 32768
-        with patch("cli.get_tool_definitions", return_value=[]), \
-             patch("cli.build_welcome_banner"):
+        with patch("jacky_cli.cli.get_tool_definitions", return_value=[]), \
+             patch("jacky_cli.cli.build_welcome_banner"):
             cli_obj.show_banner()
 
         calls = [str(c) for c in cli_obj.console.print.call_args_list]
@@ -62,8 +62,8 @@ class TestLowContextWarning:
     def test_warning_for_low_context(self, cli_obj):
         """Warning shown when context is 4096 (Ollama default)."""
         cli_obj.agent.context_compressor.context_length = 4096
-        with patch("cli.get_tool_definitions", return_value=[]), \
-             patch("cli.build_welcome_banner"):
+        with patch("jacky_cli.cli.get_tool_definitions", return_value=[]), \
+             patch("jacky_cli.cli.build_welcome_banner"):
             cli_obj.show_banner()
 
         calls = [str(c) for c in cli_obj.console.print.call_args_list]
@@ -74,8 +74,8 @@ class TestLowContextWarning:
     def test_warning_for_2048_context(self, cli_obj):
         """Warning shown for 2048 tokens (common LM Studio default)."""
         cli_obj.agent.context_compressor.context_length = 2048
-        with patch("cli.get_tool_definitions", return_value=[]), \
-             patch("cli.build_welcome_banner"):
+        with patch("jacky_cli.cli.get_tool_definitions", return_value=[]), \
+             patch("jacky_cli.cli.build_welcome_banner"):
             cli_obj.show_banner()
 
         calls = [str(c) for c in cli_obj.console.print.call_args_list]
@@ -85,8 +85,8 @@ class TestLowContextWarning:
     def test_no_warning_at_boundary(self, cli_obj):
         """No warning at exactly Jacky' minimum context length."""
         cli_obj.agent.context_compressor.context_length = MINIMUM_CONTEXT_LENGTH
-        with patch("cli.get_tool_definitions", return_value=[]), \
-             patch("cli.build_welcome_banner"):
+        with patch("jacky_cli.cli.get_tool_definitions", return_value=[]), \
+             patch("jacky_cli.cli.build_welcome_banner"):
             cli_obj.show_banner()
 
         calls = [str(c) for c in cli_obj.console.print.call_args_list]
@@ -96,8 +96,8 @@ class TestLowContextWarning:
     def test_no_warning_above_boundary(self, cli_obj):
         """No warning above Jacky' minimum context length."""
         cli_obj.agent.context_compressor.context_length = MINIMUM_CONTEXT_LENGTH + 1
-        with patch("cli.get_tool_definitions", return_value=[]), \
-             patch("cli.build_welcome_banner"):
+        with patch("jacky_cli.cli.get_tool_definitions", return_value=[]), \
+             patch("jacky_cli.cli.build_welcome_banner"):
             cli_obj.show_banner()
 
         calls = [str(c) for c in cli_obj.console.print.call_args_list]
@@ -108,8 +108,8 @@ class TestLowContextWarning:
         """Ollama-specific fix shown when port 11434 detected."""
         cli_obj.agent.context_compressor.context_length = 4096
         cli_obj.base_url = "http://localhost:11434/v1"
-        with patch("cli.get_tool_definitions", return_value=[]), \
-             patch("cli.build_welcome_banner"):
+        with patch("jacky_cli.cli.get_tool_definitions", return_value=[]), \
+             patch("jacky_cli.cli.build_welcome_banner"):
             cli_obj.show_banner()
 
         calls = [str(c) for c in cli_obj.console.print.call_args_list]
@@ -121,8 +121,8 @@ class TestLowContextWarning:
         """LM Studio-specific fix shown when port 1234 detected."""
         cli_obj.agent.context_compressor.context_length = 2048
         cli_obj.base_url = "http://localhost:1234/v1"
-        with patch("cli.get_tool_definitions", return_value=[]), \
-             patch("cli.build_welcome_banner"):
+        with patch("jacky_cli.cli.get_tool_definitions", return_value=[]), \
+             patch("jacky_cli.cli.build_welcome_banner"):
             cli_obj.show_banner()
 
         calls = [str(c) for c in cli_obj.console.print.call_args_list]
@@ -133,8 +133,8 @@ class TestLowContextWarning:
         """Generic fix shown for unknown servers."""
         cli_obj.agent.context_compressor.context_length = 4096
         cli_obj.base_url = "http://localhost:8080/v1"
-        with patch("cli.get_tool_definitions", return_value=[]), \
-             patch("cli.build_welcome_banner"):
+        with patch("jacky_cli.cli.get_tool_definitions", return_value=[]), \
+             patch("jacky_cli.cli.build_welcome_banner"):
             cli_obj.show_banner()
 
         calls = [str(c) for c in cli_obj.console.print.call_args_list]
@@ -144,8 +144,8 @@ class TestLowContextWarning:
     def test_no_warning_when_no_context_length(self, cli_obj):
         """No warning when context length is not yet known."""
         cli_obj.agent.context_compressor.context_length = None
-        with patch("cli.get_tool_definitions", return_value=[]), \
-             patch("cli.build_welcome_banner"):
+        with patch("jacky_cli.cli.get_tool_definitions", return_value=[]), \
+             patch("jacky_cli.cli.build_welcome_banner"):
             cli_obj.show_banner()
 
         calls = [str(c) for c in cli_obj.console.print.call_args_list]
@@ -157,7 +157,7 @@ class TestLowContextWarning:
         cli_obj.agent.context_compressor.context_length = 4096
 
         with patch("shutil.get_terminal_size", return_value=os.terminal_size((70, 40))), \
-             patch("cli._build_compact_banner", return_value="compact banner"):
+             patch("jacky_cli.cli._build_compact_banner", return_value="compact banner"):
             cli_obj.show_banner()
 
         calls = [str(c) for c in cli_obj.console.print.call_args_list]

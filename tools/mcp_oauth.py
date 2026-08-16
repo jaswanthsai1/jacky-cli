@@ -50,7 +50,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, urlparse
-from jacky_constants import secure_parent_dir
+from jacky_cli.jacky_constants import secure_parent_dir
 
 logger = logging.getLogger(__name__)
 
@@ -136,7 +136,7 @@ def _get_token_dir() -> Path:
     Layout: ``JACKY_HOME/mcp-tokens/``
     """
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         base = Path(get_jacky_home())
     except ImportError:
         base = Path(os.environ.get("JACKY_HOME", str(Path.home() / ".jacky")))

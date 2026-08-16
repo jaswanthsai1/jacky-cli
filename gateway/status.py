@@ -22,9 +22,9 @@ import threading
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from jacky_constants import get_jacky_home, _get_platform_default_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home, _get_platform_default_jacky_home
 from typing import Any, Optional
-from utils import atomic_json_write
+from jacky_cli.utils import atomic_json_write
 
 if sys.platform == "win32":
     import msvcrt

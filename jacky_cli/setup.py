@@ -23,8 +23,8 @@ from typing import Optional, Dict, Any
 
 from jacky_cli.nous_subscription import get_nous_subscription_features
 from tools.tool_backend_helpers import managed_nous_tools_enabled
-from utils import base_url_hostname
-from jacky_constants import get_optional_skills_dir
+from jacky_cli.utils import base_url_hostname
+from jacky_cli.jacky_constants import get_optional_skills_dir
 
 logger = logging.getLogger(__name__)
 
@@ -606,7 +606,7 @@ def _print_setup_summary(config: dict, jacky_home):
         print_warning(
             "Some tools are disabled. Run 'jacky setup tools' to configure them,"
         )
-        from jacky_constants import display_jacky_home as _dhh
+        from jacky_cli.jacky_constants import display_jacky_home as _dhh
         print_warning(f"or edit {_dhh()}/.env directly to add the missing API keys.")
         print()
 
@@ -630,7 +630,7 @@ def _print_setup_summary(config: dict, jacky_home):
     print()
 
     # Show file locations prominently
-    from jacky_constants import display_jacky_home as _dhh
+    from jacky_cli.jacky_constants import display_jacky_home as _dhh
     print(color(f"📁 All your files are in {_dhh()}/:", Colors.CYAN, Colors.BOLD))
     print()
     print(f"   {color('Settings:', Colors.YELLOW)}  {get_config_path()}")
@@ -1081,7 +1081,7 @@ def _setup_tts_provider(config: dict):
                     save_env_value("XAI_API_KEY", api_key)
                     print_success("xAI TTS API key saved")
                 else:
-                    from jacky_constants import display_jacky_home as _dhh
+                    from jacky_cli.jacky_constants import display_jacky_home as _dhh
                     print_warning(
                         "No xAI API key provided for TTS. Configure XAI_API_KEY "
                         f"via jacky setup model or {_dhh()}/.env to use xAI TTS. "
@@ -1931,7 +1931,7 @@ def _setup_webhooks():
     save_env_value("WEBHOOK_ENABLED", "true")
     print()
     print_success("Webhooks enabled! Next steps:")
-    from jacky_constants import display_jacky_home as _dhh
+    from jacky_cli.jacky_constants import display_jacky_home as _dhh
     print_info(f"   1. Define webhook routes in {_dhh()}/config.yaml")
     print_info("   2. Point your service (GitHub, GitLab, etc.) at:")
     print_info("      http://your-server:8644/webhooks/<route-name>")
@@ -2163,7 +2163,7 @@ def setup_gateway(config: dict):
                     print_info("  Or as a boot-time service: jacky gateway install --system")
                 print_info("  Or run in foreground:  jacky gateway")
         else:
-            from jacky_constants import is_container
+            from jacky_cli.jacky_constants import is_container
             if is_container():
                 print_info("Start the gateway to bring your bots online:")
                 print_info("   jacky gateway run          # Run as container main process")
@@ -3022,7 +3022,7 @@ def _blank_slate_minimal_toolsets(config: dict):
     config.setdefault("platform_toolsets", {})["cli"] = sorted(keep)
 
     try:
-        from toolsets import TOOLSETS
+        from jacky_cli.toolsets import TOOLSETS
         from jacky_cli.tools_config import CONFIGURABLE_TOOLSETS, _get_plugin_toolset_keys
 
         all_keys = set()

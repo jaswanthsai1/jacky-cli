@@ -223,7 +223,7 @@ from plugins.platforms.telegram.telegram_network import (
     discover_fallback_ips,
     parse_fallback_ip_env,
 )
-from utils import atomic_replace, env_float, env_int
+from jacky_cli.utils import atomic_replace, env_float, env_int
 
 _TELEGRAM_IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
 _TELEGRAM_IMAGE_MIME_TO_EXT = {
@@ -2756,7 +2756,7 @@ class TelegramAdapter(BasePlatformAdapter):
     ) -> None:
         """Save a newly created thread_id back into config.yaml so it persists across restarts."""
         try:
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             config_path = get_jacky_home() / "config.yaml"
             if not config_path.exists():
                 logger.warning("[%s] Config file not found at %s, cannot persist thread_id", self.name, config_path)
@@ -5661,7 +5661,7 @@ class TelegramAdapter(BasePlatformAdapter):
             pass  # non-fatal if edit fails
         # Write the response file
         try:
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             home = get_jacky_home()
             response_path = home / ".update_response"
             tmp = response_path.with_suffix(".tmp")
@@ -8157,7 +8157,7 @@ class TelegramAdapter(BasePlatformAdapter):
         recognized without a gateway restart.
         """
         try:
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             config_path = get_jacky_home() / "config.yaml"
             if not config_path.exists():
                 return

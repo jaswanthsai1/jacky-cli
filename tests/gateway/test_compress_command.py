@@ -78,7 +78,7 @@ async def test_compress_command_reports_noop_without_success_banner():
     with (
         patch("gateway.run._resolve_runtime_agent_kwargs", return_value={"api_key": "test-key"}),
         patch("gateway.run._resolve_gateway_model", return_value="test-model"),
-        patch("run_agent.AIAgent", return_value=agent_instance),
+        patch("jacky_cli.run_agent.AIAgent", return_value=agent_instance),
         patch("agent.model_metadata.estimate_request_tokens_rough", side_effect=_estimate),
     ):
         result = await runner._handle_compress_command(_make_event())
@@ -118,7 +118,7 @@ async def test_compress_command_explains_when_token_estimate_rises():
     with (
         patch("gateway.run._resolve_runtime_agent_kwargs", return_value={"api_key": "test-key"}),
         patch("gateway.run._resolve_gateway_model", return_value="test-model"),
-        patch("run_agent.AIAgent", return_value=agent_instance),
+        patch("jacky_cli.run_agent.AIAgent", return_value=agent_instance),
         patch("agent.model_metadata.estimate_request_tokens_rough", side_effect=_estimate),
     ):
         result = await runner._handle_compress_command(_make_event())
@@ -168,7 +168,7 @@ async def test_compress_command_appends_warning_when_compression_aborts():
     with (
         patch("gateway.run._resolve_runtime_agent_kwargs", return_value={"api_key": "***"}),
         patch("gateway.run._resolve_gateway_model", return_value="test-model"),
-        patch("run_agent.AIAgent", return_value=agent_instance),
+        patch("jacky_cli.run_agent.AIAgent", return_value=agent_instance),
         patch("agent.model_metadata.estimate_request_tokens_rough", side_effect=_estimate),
     ):
         result = await runner._handle_compress_command(_make_event())
@@ -230,7 +230,7 @@ async def test_compress_command_surfaces_aux_model_failure_even_when_recovered()
     with (
         patch("gateway.run._resolve_runtime_agent_kwargs", return_value={"api_key": "***"}),
         patch("gateway.run._resolve_gateway_model", return_value="test-model"),
-        patch("run_agent.AIAgent", return_value=agent_instance),
+        patch("jacky_cli.run_agent.AIAgent", return_value=agent_instance),
         patch("agent.model_metadata.estimate_request_tokens_rough", side_effect=_estimate),
     ):
         result = await runner._handle_compress_command(_make_event())
@@ -288,7 +288,7 @@ async def test_compress_command_passes_session_db_and_persists_rotated_session()
     with (
         patch("gateway.run._resolve_runtime_agent_kwargs", return_value={"api_key": "***"}),
         patch("gateway.run._resolve_gateway_model", return_value="test-model"),
-        patch("run_agent.AIAgent", return_value=agent_instance) as mock_agent_cls,
+        patch("jacky_cli.run_agent.AIAgent", return_value=agent_instance) as mock_agent_cls,
         patch("agent.model_metadata.estimate_request_tokens_rough", side_effect=_estimate),
     ):
         result = await runner._handle_compress_command(_make_event())
@@ -350,7 +350,7 @@ async def test_compress_command_does_not_repoint_session_when_transcript_write_f
     with (
         patch("gateway.run._resolve_runtime_agent_kwargs", return_value={"api_key": "***"}),
         patch("gateway.run._resolve_gateway_model", return_value="test-model"),
-        patch("run_agent.AIAgent", return_value=agent_instance),
+        patch("jacky_cli.run_agent.AIAgent", return_value=agent_instance),
         patch("agent.model_metadata.estimate_request_tokens_rough", side_effect=_estimate),
     ):
         result = await runner._handle_compress_command(_make_event())
@@ -409,7 +409,7 @@ async def test_compress_command_in_place_skips_destructive_rewrite():
     with (
         patch("gateway.run._resolve_runtime_agent_kwargs", return_value={"api_key": "***"}),
         patch("gateway.run._resolve_gateway_model", return_value="test-model"),
-        patch("run_agent.AIAgent", return_value=agent_instance),
+        patch("jacky_cli.run_agent.AIAgent", return_value=agent_instance),
         patch("agent.model_metadata.estimate_request_tokens_rough", side_effect=_estimate),
     ):
         result = await runner._handle_compress_command(_make_event())
@@ -444,7 +444,7 @@ async def test_compress_command_preserves_platform_and_gateway_session_key():
     with (
         patch("gateway.run._resolve_runtime_agent_kwargs", return_value={"api_key": "test-key"}),
         patch("gateway.run._resolve_gateway_model", return_value="test-model"),
-        patch("run_agent.AIAgent", return_value=agent_instance) as mock_agent,
+        patch("jacky_cli.run_agent.AIAgent", return_value=agent_instance) as mock_agent,
         patch("agent.model_metadata.estimate_request_tokens_rough", return_value=100),
     ):
         await runner._handle_compress_command(_make_event())
@@ -481,7 +481,7 @@ async def test_compress_command_overrides_stale_resolver_identity():
     with (
         patch("gateway.run._resolve_runtime_agent_kwargs", return_value=runtime),
         patch("gateway.run._resolve_gateway_model", return_value="test-model"),
-        patch("run_agent.AIAgent", return_value=agent_instance) as mock_agent,
+        patch("jacky_cli.run_agent.AIAgent", return_value=agent_instance) as mock_agent,
         patch("agent.model_metadata.estimate_request_tokens_rough", return_value=100),
     ):
         await runner._handle_compress_command(_make_event())  # must not raise
@@ -527,7 +527,7 @@ async def test_compress_command_passes_tool_messages_to_compressor():
     with (
         patch("gateway.run._resolve_runtime_agent_kwargs", return_value={"api_key": "test-key"}),
         patch("gateway.run._resolve_gateway_model", return_value="test-model"),
-        patch("run_agent.AIAgent", return_value=agent_instance),
+        patch("jacky_cli.run_agent.AIAgent", return_value=agent_instance),
         patch("agent.model_metadata.estimate_request_tokens_rough", return_value=100),
     ):
         await runner._handle_compress_command(_make_event())

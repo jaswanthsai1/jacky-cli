@@ -15,7 +15,7 @@ from pathlib import Path
 
 from jacky_cli.config import get_jacky_home, get_env_path, get_project_root, load_config
 from jacky_cli.env_loader import load_jacky_dotenv
-from jacky_constants import display_jacky_home
+from jacky_cli.jacky_constants import display_jacky_home
 from agent.skill_utils import is_excluded_skill_path
 
 

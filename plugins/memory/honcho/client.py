@@ -20,7 +20,7 @@ import hashlib
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from jacky_cli.profiles import _get_default_jacky_home
 from plugins.plugin_utils import SingletonSlot
 from typing import Any, TYPE_CHECKING

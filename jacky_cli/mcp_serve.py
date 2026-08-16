@@ -63,7 +63,7 @@ except ImportError:
 def _get_sessions_dir() -> Path:
     """Return the sessions directory using JACKY_HOME."""
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         return get_jacky_home() / "sessions"
     except ImportError:
         return Path(os.environ.get("JACKY_HOME", Path.home() / ".jacky")) / "sessions"
@@ -72,7 +72,7 @@ def _get_sessions_dir() -> Path:
 def _get_session_db():
     """Get a SessionDB instance for reading message transcripts."""
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         return SessionDB()
     except Exception as e:
         logger.debug("SessionDB unavailable: %s", e)
@@ -195,7 +195,7 @@ def _load_sessions_index_from_json() -> dict:
 def _load_channel_directory() -> dict:
     """Load the cached channel directory for available targets."""
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         directory_file = get_jacky_home() / "channel_directory.json"
     except ImportError:
         directory_file = Path(
@@ -451,7 +451,7 @@ class EventBridge:
         could drop brand-new conversations (#8925).
         """
         try:
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             db_file = get_jacky_home() / "state.db"
         except ImportError:
             db_file = Path(os.environ.get("JACKY_HOME", Path.home() / ".jacky")) / "state.db"

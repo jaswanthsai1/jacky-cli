@@ -154,9 +154,9 @@ class TestLoadCliConfigExpansion:
         config_file = tmp_path / "config.yaml"
         config_file.write_text("terminal:\n")
 
-        monkeypatch.setattr("cli._jacky_home", tmp_path)
+        monkeypatch.setattr("jacky_cli.cli._jacky_home", tmp_path)
 
-        from cli import load_cli_config
+        from jacky_cli.cli import load_cli_config
         config = load_cli_config()
 
         assert isinstance(config["terminal"], dict)
@@ -173,9 +173,9 @@ class TestLoadCliConfigExpansion:
 
         monkeypatch.setenv("TEST_VISION_KEY_XYZ", "vis-key-123")
         # Patch the jacky home so load_cli_config finds our test config
-        monkeypatch.setattr("cli._jacky_home", tmp_path)
+        monkeypatch.setattr("jacky_cli.cli._jacky_home", tmp_path)
 
-        from cli import load_cli_config
+        from jacky_cli.cli import load_cli_config
         config = load_cli_config()
 
         assert config["auxiliary"]["vision"]["api_key"] == "vis-key-123"
@@ -190,9 +190,9 @@ class TestLoadCliConfigExpansion:
         config_file.write_text(config_yaml)
 
         monkeypatch.delenv("UNSET_CLI_VAR_ABC", raising=False)
-        monkeypatch.setattr("cli._jacky_home", tmp_path)
+        monkeypatch.setattr("jacky_cli.cli._jacky_home", tmp_path)
 
-        from cli import load_cli_config
+        from jacky_cli.cli import load_cli_config
         config = load_cli_config()
 
         assert config["auxiliary"]["vision"]["api_key"] == "${UNSET_CLI_VAR_ABC}"

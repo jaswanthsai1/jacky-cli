@@ -41,7 +41,7 @@ def _make_runner(session_db=None, current_session_id="current_session_001",
     runner._voice_mode = {}
     # Gateway holds the async facade; the slash handlers await it.
     if session_db is not None:
-        from jacky_state import AsyncSessionDB
+        from jacky_cli.jacky_state import AsyncSessionDB
         session_db = AsyncSessionDB(session_db)
     runner._session_db = session_db
     runner._running_agents = {}
@@ -82,7 +82,7 @@ class TestHandleResumeCommand:
     @pytest.mark.asyncio
     async def test_list_named_sessions_when_no_arg(self, tmp_path):
         """With no argument, lists recently titled sessions."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("sess_001", "telegram", user_id="12345", chat_id="67890")
         db.create_session("sess_002", "telegram", user_id="12345", chat_id="67890")
@@ -103,7 +103,7 @@ class TestHandleResumeCommand:
     @pytest.mark.asyncio
     async def test_list_shows_usage_when_no_titled(self, tmp_path):
         """With no arg and no titled sessions, shows instructions."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("sess_001", "telegram", user_id="12345", chat_id="67890")  # No title
 
@@ -117,7 +117,7 @@ class TestHandleResumeCommand:
     @pytest.mark.asyncio
     async def test_resume_by_index(self, tmp_path):
         """Numeric argument resumes the indexed titled session from the list."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("sess_001", "telegram", user_id="12345", chat_id="67890")
         db.create_session("sess_002", "telegram", user_id="12345", chat_id="67890")
@@ -139,7 +139,7 @@ class TestHandleResumeCommand:
     @pytest.mark.asyncio
     async def test_resume_index_out_of_range(self, tmp_path):
         """Out-of-range numeric arguments show a helpful error."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("sess_001", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("sess_001", "Research")
@@ -158,7 +158,7 @@ class TestHandleResumeCommand:
     @pytest.mark.asyncio
     async def test_resume_by_name(self, tmp_path):
         """Resolves a title and switches to that session."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("old_session_abc", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("old_session_abc", "My Project")
@@ -181,7 +181,7 @@ class TestHandleResumeCommand:
     async def test_resume_clears_session_model_overrides(self, tmp_path):
         """Resume must not carry a previous session's /model override into the
         restored conversation, while leaving other chats' overrides intact (#10702)."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("old_session_abc", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("old_session_abc", "My Project")
@@ -218,7 +218,7 @@ class TestHandleResumeCommand:
         instead of a value cached before the switch (mirrors /new and the
         compression-exhausted auto-reset, #58403), while leaving other
         chats' cache entries intact."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("old_session_abc", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("old_session_abc", "My Project")
@@ -243,7 +243,7 @@ class TestHandleResumeCommand:
     @pytest.mark.asyncio
     async def test_resume_nonexistent_name(self, tmp_path):
         """Returns error for unknown session name."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("current_session_001", "telegram", user_id="12345", chat_id="67890")
 
@@ -256,7 +256,7 @@ class TestHandleResumeCommand:
     @pytest.mark.asyncio
     async def test_resume_already_on_session(self, tmp_path):
         """Returns friendly message when already on the requested session."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("current_session_001", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("current_session_001", "Active Project")
@@ -271,7 +271,7 @@ class TestHandleResumeCommand:
     @pytest.mark.asyncio
     async def test_resume_auto_lineage(self, tmp_path):
         """Asking for 'My Project' when 'My Project #2' exists gets the latest."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("sess_v1", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("sess_v1", "My Project")
@@ -293,7 +293,7 @@ class TestHandleResumeCommand:
     @pytest.mark.asyncio
     async def test_resume_follows_compression_continuation(self, tmp_path):
         """Gateway /resume should reopen the live descendant after compression."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("compressed_root", "telegram", user_id="12345", chat_id="67890")
@@ -327,7 +327,7 @@ class TestHandleResumeCommand:
     @pytest.mark.asyncio
     async def test_resume_clears_running_agent(self, tmp_path):
         """Switching sessions clears any cached running agent."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("old_session", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("old_session", "Old Work")
@@ -353,7 +353,7 @@ class TestHandleResumeCommand:
         writing into the wrong session. See #6672.
         """
         import threading
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("old_session", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("old_session", "Old Work")
@@ -380,7 +380,7 @@ class TestHandleResumeCommand:
         before lookup so ``/resume <abc123>`` works the same as
         ``/resume abc123``.
         """
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("abc123", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("abc123", "Bracketed")
@@ -409,7 +409,7 @@ class TestHandleResumeCommand:
         ``resolve_session_by_title``, so ``/resume <session_id>`` always
         returned "Session not found" even for valid IDs.
         """
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("unnamed_session_xyz", "telegram", user_id="12345", chat_id="67890")
         # Deliberately no title set — this session can ONLY be resolved by ID.
@@ -436,7 +436,7 @@ class TestHandleSessionsCommand:
 
     @pytest.mark.asyncio
     async def test_sessions_command_lists_current_platform_sessions(self, tmp_path):
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("tg_session", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("tg_session", "Telegram Work")
@@ -461,7 +461,7 @@ class TestHandleSessionsCommand:
         (the enumeration half of the /resume IDOR). Cross-origin listing is
         gated behind an explicitly-configured admin, which the default test
         config is not."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("tg_named", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("tg_named", "Telegram Work")
@@ -484,7 +484,7 @@ class TestHandleSessionsCommand:
     async def test_sessions_search_finds_older_titled_session(self, tmp_path):
         """`/sessions search <query>` matches titles beyond the recent-10 list
         and orders by activity, keeping the caller's own scope."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         # Bury the target under newer sessions so a plain listing misses it.
         db.create_session("target_an94", "telegram", user_id="12345", chat_id="67890")
@@ -505,7 +505,7 @@ class TestHandleSessionsCommand:
 
     @pytest.mark.asyncio
     async def test_sessions_search_missing_query_shows_usage(self, tmp_path):
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         event = _make_event(text="/sessions search")
         runner = _make_runner(session_db=db, event=event)
@@ -518,7 +518,7 @@ class TestHandleSessionsCommand:
     async def test_sessions_search_does_not_leak_other_users_sessions(self, tmp_path):
         """Search results honor the same owner-scoping guard as listing —
         a matching title owned by a different user/chat must not surface."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("mine", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("mine", "AN-94 mine")
@@ -539,7 +539,7 @@ class TestHandleSessionsCommand:
         """An identity-bearing caller cannot resume a session it can't prove it
         owns: a row owned by a different user, or a same-platform row with no
         recorded owner (NULL user_id) must both be denied (IDOR)."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("victim_other_uid", "telegram", user_id="99999")
         db.set_session_title("victim_other_uid", "Other User")
@@ -563,7 +563,7 @@ class TestHandleSessionsCommand:
         resume — the blank source fails closed exactly like a missing user_id
         (IDOR regression: an identified caller could otherwise bind to an
         unproven-origin transcript)."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("blank_source_same_uid", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("blank_source_same_uid", "Blank Source Same UID")
@@ -589,7 +589,7 @@ class TestHandleSessionsCommand:
         same-platform alone: the row has no chat_id to prove ownership, so a
         Telegram group caller in chat-a (user_id=None) cannot bind to a row
         owned by another chat/user (IDOR regression for the no-identity branch)."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("victim_chat_b_uid", "telegram", user_id="victim")
         db.set_session_title("victim_chat_b_uid", "Victim Chat B")
@@ -610,7 +610,7 @@ class TestHandleSessionsCommand:
     async def test_resume_target_allowed_blocks_no_identity_persisted(self, tmp_path):
         """Unit-level: the persisted-row fallback fails closed for an
         identity-less caller (no live origin resolvable)."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("victim_chat_b_uid", "telegram", user_id="victim")
         runner = _make_runner(session_db=db)
@@ -627,7 +627,7 @@ class TestHandleSessionsCommand:
         transcript from another chat into the current one. The row records its
         records origin chat_id, so a chat-a caller cannot resume a chat-b row even with
         a matching user_id (persisted-row chat-scope proof)."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("same_user_chat_b", "telegram", user_id="12345",
                           chat_id="chat-b")
@@ -650,7 +650,7 @@ class TestHandleSessionsCommand:
     async def test_resume_target_allowed_chat_scope(self, tmp_path):
         """Unit-level: identity-bearing persisted fallback requires the row's
         origin chat (and thread) to match the caller's."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("row_chat_a", "telegram", user_id="12345",
                           chat_id="chat-a")
@@ -678,7 +678,7 @@ class TestHandleSessionsCommand:
     async def test_resume_target_allowed_dm_no_chat_id_scopes_by_user(self, tmp_path):
         """A DM is keyed on user_id; a no-chat_id DM row is resumable by the same
         user (chat_id legitimately absent on both sides), unlike a group row."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("dm_row", "telegram", user_id="12345")  # DM, no chat_id
         runner = _make_runner(session_db=db)
@@ -697,7 +697,7 @@ class TestHandleSessionsCommand:
         session is shared, so a co-member (different user_id) in the SAME chat
         may resume it — same-chat/thread proof is sufficient, user equality is
         not required. Per-user groups (default) still require the same owner."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("shared_group_row", "telegram", user_id="bob",
                           chat_id="shared-chat", chat_type="group")
@@ -733,7 +733,7 @@ class TestHandleSessionsCommand:
         The live-origin guard already compares user_id_alt correctly; here the
         target is persisted-only, so the fallback fails closed whenever the
         caller keys on user_id_alt and the row can't prove that participant."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         # Persisted rows carry only user_id (no user_id_alt column).
         db.create_session("victim_alt_group", "signal", user_id="+15550001111",
@@ -778,7 +778,7 @@ class TestHandleSessionsCommand:
 
     @pytest.mark.asyncio
     async def test_gateway_dispatches_sessions_command(self, tmp_path):
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("tg_session", "telegram", user_id="12345", chat_id="67890")
         db.set_session_title("tg_session", "Telegram Work")

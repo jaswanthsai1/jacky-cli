@@ -19,7 +19,7 @@ import tempfile
 from pathlib import Path
 from typing import Optional
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 logger = logging.getLogger(__name__)
 

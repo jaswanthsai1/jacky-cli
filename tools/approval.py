@@ -24,7 +24,7 @@ from typing import Optional
 from jacky_cli.config import cfg_get
 
 from tools.interrupt import is_interrupted
-from utils import env_var_enabled, is_truthy_value
+from jacky_cli.utils import env_var_enabled, is_truthy_value
 
 logger = logging.getLogger(__name__)
 
@@ -950,7 +950,7 @@ def _rewrite_resolved_jacky_home(command: str) -> str:
     path can't be resolved or doesn't appear.
     """
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         home = get_jacky_home().expanduser()
         candidates = [
             str(home),

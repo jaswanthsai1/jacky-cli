@@ -289,7 +289,7 @@ def _candidate_node_command_names(command: str) -> list[str]:
 
 _JACKY_NODE_TARGET_MAJOR = int(os.environ.get("JACKY_NODE_TARGET_MAJOR", "22"))
 _managed_node_heal_attempted = False
-_NODE_BOOTSTRAP_SCRIPT = Path(__file__).resolve().parent / "scripts" / "lib" / "node-bootstrap.sh"
+_NODE_BOOTSTRAP_SCRIPT = Path(__file__).resolve().parent.parent / "scripts" / "lib" / "node-bootstrap.sh"
 
 
 def node_tool_runnable(path: str | None) -> bool:

@@ -22,7 +22,7 @@ from rich.table import Table
 
 # Lazy imports to avoid circular dependencies and slow startup.
 # tools.skills_hub and tools.skills_guard are imported inside functions.
-from jacky_constants import display_jacky_home
+from jacky_cli.jacky_constants import display_jacky_home
 from agent.skill_utils import is_excluded_skill_path
 
 _console = Console()

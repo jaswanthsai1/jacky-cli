@@ -41,7 +41,7 @@ from typing import Any, Awaitable, Dict, Optional
 from urllib.parse import urlparse
 import httpx
 from agent.auxiliary_client import async_call_llm, extract_content_or_reasoning
-from jacky_constants import get_jacky_dir
+from jacky_cli.jacky_constants import get_jacky_dir
 from tools.debug_helpers import DebugSession
 from tools.website_policy import check_website_access
 import sys

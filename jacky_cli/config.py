@@ -475,7 +475,7 @@ def detect_install_method(project_root: Optional[Path] = None) -> str:
 def _running_in_container() -> bool:
     """Thin wrapper around ``jacky_constants.is_container`` (import-safe)."""
     try:
-        from jacky_constants import is_container
+        from jacky_cli.jacky_constants import is_container
 
         return is_container()
     except Exception:
@@ -705,7 +705,7 @@ def get_container_exec_info() -> Optional[dict]:
     if os.environ.get("JACKY_DEV") == "1":
         return None
 
-    from jacky_constants import is_container
+    from jacky_cli.jacky_constants import is_container
     if is_container():
         return None
 
@@ -741,8 +741,8 @@ def get_container_exec_info() -> Optional[dict]:
 # =============================================================================
 
 # Re-export from jacky_constants — canonical definition lives there.
-from jacky_constants import get_jacky_home  # noqa: F811,E402
-from utils import atomic_replace, fast_safe_load
+from jacky_cli.jacky_constants import get_jacky_home  # noqa: F811,E402
+from jacky_cli.utils import atomic_replace, fast_safe_load
 
 def get_config_path() -> Path:
     """Get the main config file path."""
@@ -6087,7 +6087,7 @@ def migrate_config(interactive: bool = True, quiet: bool = False) -> Dict[str, A
     # returns [] for an unknown name, so the agent quietly loses tools with no
     # error or warning. Surface it loudly instead. See #38798.
     try:
-        from toolsets import validate_toolset
+        from jacky_cli.toolsets import validate_toolset
         from jacky_cli.toolset_validation import validate_platform_toolsets
 
         ts_warnings = validate_platform_toolsets(
@@ -6737,7 +6737,7 @@ def atomic_config_write(config_path: Path, data: Any, **kwargs: Any) -> None:
     ``kwargs`` are forwarded verbatim to ``atomic_yaml_write``
     (``sort_keys``, ``default_flow_style``, ``extra_content``, ...).
     """
-    from utils import atomic_yaml_write
+    from jacky_cli.utils import atomic_yaml_write
 
     require_readable_config_before_write(config_path)
     atomic_yaml_write(config_path, data, **kwargs)
@@ -7156,7 +7156,7 @@ def save_config(
                     f"(managed by your administrator): {', '.join(sorted(_stripped))}",
                     file=sys.stderr,
                 )
-        from utils import atomic_yaml_write
+        from jacky_cli.utils import atomic_yaml_write
 
         ensure_jacky_home()
         config_path = get_config_path()
@@ -8176,7 +8176,7 @@ def set_config_value(key: str, value: str):
         print("  (note: 'api_base' is an alias — saved as model.base_url)")
     # Write only user config back (not the full merged defaults)
     ensure_jacky_home()
-    from utils import atomic_yaml_write
+    from jacky_cli.utils import atomic_yaml_write
     atomic_yaml_write(config_path, user_config, sort_keys=False)
     
     # Keep .env in sync for keys that terminal_tool reads directly from env vars.

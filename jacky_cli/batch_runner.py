@@ -23,7 +23,7 @@ Usage:
 # IMPORTANT: jacky_bootstrap must be the very first import — UTF-8 stdio
 # on Windows.  No-op on POSIX.  See jacky_bootstrap.py for full rationale.
 try:
-    import jacky_bootstrap  # noqa: F401
+    import jacky_cli.jacky_bootstrap as jacky_bootstrap  # noqa: F401
 except ModuleNotFoundError:
     # Graceful fallback when jacky_bootstrap isn't registered in the venv
     # yet — happens during partial ``jacky update`` where git-reset landed
@@ -46,13 +46,13 @@ from rich.console import Console
 logger = logging.getLogger(__name__)
 import fire
 
-from run_agent import AIAgent
-from toolset_distributions import (
+from jacky_cli.run_agent import AIAgent
+from jacky_cli.toolset_distributions import (
     list_distributions, 
     sample_toolsets_from_distribution,
     validate_distribution
 )
-from model_tools import TOOL_TO_TOOLSET_MAP
+from jacky_cli.model_tools import TOOL_TO_TOOLSET_MAP
 
 
 # Global configuration for worker processes
@@ -722,7 +722,7 @@ class BatchRunner:
         """
         checkpoint_data["last_updated"] = datetime.now().isoformat()
 
-        from utils import atomic_json_write
+        from jacky_cli.utils import atomic_json_write
         if lock:
             with lock:
                 atomic_json_write(self.checkpoint_file, checkpoint_data)
@@ -1220,7 +1220,7 @@ def main(
     """
     # Handle list distributions
     if list_distributions:
-        from toolset_distributions import print_distribution_info
+        from jacky_cli.toolset_distributions import print_distribution_info
 
         print("📊 Available Toolset Distributions")
         print("=" * 70)

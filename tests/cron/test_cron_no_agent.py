@@ -29,7 +29,7 @@ def jacky_env(tmp_path, monkeypatch):
 
     # Reload modules that cache get_jacky_home() at import time.
     import importlib
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
     importlib.reload(jacky_constants)
     import cron.jobs
     importlib.reload(cron.jobs)
@@ -272,7 +272,7 @@ def test_run_job_no_agent_never_invokes_aiagent(jacky_env):
         prompt=None, schedule="every 5m", script="alert.sh", no_agent=True, deliver="local"
     )
 
-    with patch("run_agent.AIAgent") as ai_mock:
+    with patch("jacky_cli.run_agent.AIAgent") as ai_mock:
         from cron.scheduler import run_job
 
         run_job(job)

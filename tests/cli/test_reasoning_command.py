@@ -22,7 +22,7 @@ class TestParseReasoningConfig(unittest.TestCase):
     """Verify _parse_reasoning_config handles all effort levels."""
 
     def _parse(self, effort):
-        from cli import _parse_reasoning_config
+        from jacky_cli.cli import _parse_reasoning_config
         return _parse_reasoning_config(effort)
 
     def test_none_disables(self):
@@ -101,7 +101,7 @@ class TestHandleReasoningCommand(unittest.TestCase):
 
     def test_effort_level_sets_config(self):
         """Setting an effort level should update reasoning_config."""
-        from cli import _parse_reasoning_config
+        from jacky_cli.cli import _parse_reasoning_config
         stub = self._make_cli()
         arg = "high"
         parsed = _parse_reasoning_config(arg)
@@ -109,7 +109,7 @@ class TestHandleReasoningCommand(unittest.TestCase):
         self.assertEqual(stub.reasoning_config, {"enabled": True, "effort": "high"})
 
     def test_effort_none_disables_reasoning(self):
-        from cli import _parse_reasoning_config
+        from jacky_cli.cli import _parse_reasoning_config
         stub = self._make_cli()
         parsed = _parse_reasoning_config("none")
         stub.reasoning_config = parsed
@@ -117,7 +117,7 @@ class TestHandleReasoningCommand(unittest.TestCase):
 
     def test_invalid_argument_rejected(self):
         """Invalid arguments should be rejected (parsed returns None)."""
-        from cli import _parse_reasoning_config
+        from jacky_cli.cli import _parse_reasoning_config
         parsed = _parse_reasoning_config("turbo")
         self.assertIsNone(parsed)
 
@@ -306,7 +306,7 @@ class TestReasoningCallback(unittest.TestCase):
 
 class TestReasoningPreviewBuffering(unittest.TestCase):
     def _make_cli(self):
-        from cli import JackyCLI
+        from jacky_cli.cli import JackyCLI
 
         cli = JackyCLI.__new__(JackyCLI)
         cli.verbose = True
@@ -315,7 +315,7 @@ class TestReasoningPreviewBuffering(unittest.TestCase):
         cli._invalidate = lambda *args, **kwargs: None
         return cli
 
-    @patch("cli._cprint")
+    @patch("jacky_cli.cli._cprint")
     def test_streamed_reasoning_chunks_wait_for_boundary(self, mock_cprint):
         cli = self._make_cli()
 
@@ -331,7 +331,7 @@ class TestReasoningPreviewBuffering(unittest.TestCase):
         rendered = mock_cprint.call_args[0][0]
         self.assertIn("[thinking] Let me think about this.", rendered)
 
-    @patch("cli._cprint")
+    @patch("jacky_cli.cli._cprint")
     def test_pending_reasoning_flushes_when_thinking_stops(self, mock_cprint):
         cli = self._make_cli()
 
@@ -349,8 +349,8 @@ class TestReasoningPreviewBuffering(unittest.TestCase):
         rendered = mock_cprint.call_args[0][0]
         self.assertIn("[thinking] see how this plays out", rendered)
 
-    @patch("cli._cprint")
-    @patch("cli.shutil.get_terminal_size", return_value=SimpleNamespace(columns=50))
+    @patch("jacky_cli.cli._cprint")
+    @patch("jacky_cli.cli.shutil.get_terminal_size", return_value=SimpleNamespace(columns=50))
     def test_reasoning_preview_compacts_newlines_and_wraps_to_terminal(self, _mock_term, mock_cprint):
         cli = self._make_cli()
 
@@ -365,7 +365,7 @@ class TestReasoningPreviewBuffering(unittest.TestCase):
         self.assertIn("Second paragraph with more detail here.", normalized)
         self.assertNotIn("\n\n\n", plain)
 
-    @patch("cli.shutil.get_terminal_size", return_value=SimpleNamespace(columns=60))
+    @patch("jacky_cli.cli.shutil.get_terminal_size", return_value=SimpleNamespace(columns=60))
     def test_reasoning_flush_threshold_tracks_terminal_width(self, _mock_term):
         cli = self._make_cli()
 
@@ -376,7 +376,7 @@ class TestReasoningPreviewBuffering(unittest.TestCase):
 
 class TestReasoningDisplayModeSelection(unittest.TestCase):
     def _make_cli(self, *, show_reasoning=False, streaming_enabled=False, verbose=False):
-        from cli import JackyCLI
+        from jacky_cli.cli import JackyCLI
 
         cli = JackyCLI.__new__(JackyCLI)
         cli.show_reasoning = show_reasoning
@@ -414,7 +414,7 @@ class TestExtractReasoningFormats(unittest.TestCase):
     """Test _extract_reasoning with real provider response formats."""
 
     def _get_extractor(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         return AIAgent._extract_reasoning
 
     def test_openrouter_reasoning_details(self):
@@ -474,7 +474,7 @@ class TestInlineThinkBlockExtraction(unittest.TestCase):
 
     def _make_agent(self):
         """Create a minimal agent with _build_assistant_message."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         agent = MagicMock(spec=AIAgent)
         agent._build_assistant_message = AIAgent._build_assistant_message.__get__(agent)
         agent._extract_reasoning = AIAgent._extract_reasoning.__get__(agent)
@@ -572,7 +572,7 @@ class TestEndToEndPipeline(unittest.TestCase):
     """Simulate the full pipeline: extraction -> result dict -> display."""
 
     def test_openrouter_claude_pipeline(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         api_message = SimpleNamespace(
             role="assistant",
@@ -610,7 +610,7 @@ class TestEndToEndPipeline(unittest.TestCase):
         self.assertIn("Python list methods", result["last_reasoning"])
 
     def test_no_reasoning_model_pipeline(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         api_message = SimpleNamespace(content="Paris.", tool_calls=None)
         reasoning = AIAgent._extract_reasoning(None, api_message)
@@ -629,7 +629,7 @@ class TestReasoningDeltasFiredFlag(unittest.TestCase):
     reasoning was already streamed via _fire_reasoning_delta."""
 
     def _make_agent(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         agent = AIAgent.__new__(AIAgent)
         agent.reasoning_callback = None
         agent.stream_delta_callback = None
@@ -717,7 +717,7 @@ class TestReasoningShownThisTurnFlag(unittest.TestCase):
     was already shown during streaming in a tool-calling loop."""
 
     def _make_cli(self):
-        from cli import JackyCLI
+        from jacky_cli.cli import JackyCLI
         cli = JackyCLI.__new__(JackyCLI)
         cli.show_reasoning = True
         cli.streaming_enabled = True
@@ -734,14 +734,14 @@ class TestReasoningShownThisTurnFlag(unittest.TestCase):
         cli._reasoning_preview_buf = ""
         return cli
 
-    @patch("cli._cprint")
+    @patch("jacky_cli.cli._cprint")
     def test_streaming_reasoning_sets_turn_flag(self, mock_cprint):
         cli = self._make_cli()
         self.assertFalse(cli._reasoning_shown_this_turn)
         cli._stream_reasoning_delta("Thinking about it...")
         self.assertTrue(cli._reasoning_shown_this_turn)
 
-    @patch("cli._cprint")
+    @patch("jacky_cli.cli._cprint")
     def test_turn_flag_survives_reset_stream_state(self, mock_cprint):
         """_reasoning_shown_this_turn must NOT be cleared by
         _reset_stream_state (called at intermediate turn boundaries)."""
@@ -755,7 +755,7 @@ class TestReasoningShownThisTurnFlag(unittest.TestCase):
         # Flag must persist
         self.assertTrue(cli._reasoning_shown_this_turn)
 
-    @patch("cli._cprint")
+    @patch("jacky_cli.cli._cprint")
     def test_turn_flag_cleared_before_new_turn(self, mock_cprint):
         """The turn flag should be reset at the start of a new user turn.
         This happens outside _reset_stream_state, at the call site."""

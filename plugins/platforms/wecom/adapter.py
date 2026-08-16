@@ -68,7 +68,7 @@ from gateway.platforms.base import (
     cache_document_from_bytes,
     cache_image_from_bytes,
 )
-from utils import env_float
+from jacky_cli.utils import env_float
 
 logger = logging.getLogger(__name__)
 

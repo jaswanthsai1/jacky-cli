@@ -2,7 +2,7 @@
 
 import pytest
 
-from toolset_distributions import (
+from jacky_cli.toolset_distributions import (
     DISTRIBUTIONS,
     get_distribution,
     list_distributions,

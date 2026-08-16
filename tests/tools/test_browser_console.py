@@ -271,15 +271,15 @@ class TestBrowserConsoleToolsetWiring:
     """browser_console must be reachable via toolset resolution."""
 
     def test_in_browser_toolset(self):
-        from toolsets import TOOLSETS
+        from jacky_cli.toolsets import TOOLSETS
         assert "browser_console" in TOOLSETS["browser"]["tools"]
 
     def test_in_jacky_core_tools(self):
-        from toolsets import _JACKY_CORE_TOOLS
+        from jacky_cli.toolsets import _JACKY_CORE_TOOLS
         assert "browser_console" in _JACKY_CORE_TOOLS
 
     def test_in_legacy_toolset_map(self):
-        from model_tools import _LEGACY_TOOLSET_MAP
+        from jacky_cli.model_tools import _LEGACY_TOOLSET_MAP
         assert "browser_console" in _LEGACY_TOOLSET_MAP["browser_tools"]
 
     def test_in_registry(self):
@@ -362,7 +362,7 @@ class TestBrowserVisionConfig:
         mock_response.choices = [mock_choice]
 
         with (
-            patch("jacky_constants.get_jacky_dir", return_value=shots_dir),
+            patch("jacky_cli.jacky_constants.get_jacky_dir", return_value=shots_dir),
             patch("tools.browser_tool._cleanup_old_screenshots"),
             patch("tools.browser_tool._run_browser_command", return_value={"success": True, "data": {"path": str(screenshot)}}),
             patch("tools.browser_tool._get_vision_model", return_value="test-model"),
@@ -386,7 +386,7 @@ class TestBrowserVisionConfig:
         mock_response.choices = [mock_choice]
 
         with (
-            patch("jacky_constants.get_jacky_dir", return_value=shots_dir),
+            patch("jacky_cli.jacky_constants.get_jacky_dir", return_value=shots_dir),
             patch("tools.browser_tool._cleanup_old_screenshots"),
             patch("tools.browser_tool._run_browser_command", return_value={"success": True, "data": {"path": str(screenshot)}}),
             patch("tools.browser_tool._get_vision_model", return_value="test-model"),
@@ -410,7 +410,7 @@ class TestBrowserVisionConfig:
         set_runtime_main("brand-new-provider", "llava-v1.6")
         try:
             with (
-                patch("jacky_constants.get_jacky_dir", return_value=shots_dir),
+                patch("jacky_cli.jacky_constants.get_jacky_dir", return_value=shots_dir),
                 patch("tools.browser_tool._cleanup_old_screenshots"),
                 patch(
                     "tools.browser_tool._run_browser_command",
@@ -453,7 +453,7 @@ class TestBrowserVisionConfig:
         set_runtime_main("brand-new-provider", "llava-v1.6")
         try:
             with (
-                patch("jacky_constants.get_jacky_dir", return_value=shots_dir),
+                patch("jacky_cli.jacky_constants.get_jacky_dir", return_value=shots_dir),
                 patch("tools.browser_tool._cleanup_old_screenshots"),
                 patch(
                     "tools.browser_tool._run_browser_command",

@@ -30,7 +30,7 @@ import time
 from typing import Dict, Any, List, Optional, Tuple
 
 from tools.registry import discover_builtin_tools, registry
-from toolsets import resolve_toolset, validate_toolset
+from jacky_cli.toolsets import resolve_toolset, validate_toolset
 
 logger = logging.getLogger(__name__)
 
@@ -388,7 +388,7 @@ def _compute_tool_definitions(
                 print(f"⚠️  Unknown toolset: {toolset_name}")
     else:
         # Default: start with everything
-        from toolsets import get_all_toolsets
+        from jacky_cli.toolsets import get_all_toolsets
         for ts_name in get_all_toolsets():
             tools_to_include.update(resolve_toolset(ts_name))
 
@@ -399,7 +399,7 @@ def _compute_tool_definitions(
     if disabled_toolsets:
         for toolset_name in disabled_toolsets:
             if validate_toolset(toolset_name):
-                from toolsets import bundle_non_core_tools, get_toolset
+                from jacky_cli.toolsets import bundle_non_core_tools, get_toolset
                 if toolset_name.startswith("jacky-") or (get_toolset(toolset_name) or {}).get("posture"):
                     # Platform bundles (jacky-*) include _JACKY_CORE_TOOLS, and
                     # posture toolsets (`posture: True`, e.g. `coding`) re-list

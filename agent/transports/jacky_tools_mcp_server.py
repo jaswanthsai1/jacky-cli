@@ -117,7 +117,7 @@ def _build_server() -> Any:
         ) from exc
 
     # Discover Jacky tools so dispatch works.
-    from model_tools import (
+    from jacky_cli.model_tools import (
         get_tool_definitions,
         handle_function_call,
     )

@@ -30,10 +30,10 @@ import tempfile
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from typing import Dict, Any, List, Optional
 
-from utils import atomic_replace
+from jacky_cli.utils import atomic_replace
 
 # fcntl is Unix-only; on Windows use msvcrt for file locking
 msvcrt = None

@@ -13,8 +13,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-import cli as cli_mod
-from cli import JackyCLI
+import jacky_cli.cli as cli_mod
+from jacky_cli.cli import JackyCLI
 
 
 @pytest.fixture

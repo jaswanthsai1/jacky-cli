@@ -56,7 +56,7 @@ def _install_example_plugin(_isolate_jacky_home):
     all). User plugins are first in the discovery search order, so
     laying down the fixture here is enough.
     """
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     from jacky_cli import web_server
 
     user_plugins_dir = get_jacky_home() / "plugins"
@@ -249,8 +249,8 @@ class TestWebServerEndpoints:
         except ImportError:
             pytest.skip("fastapi/starlette not installed")
 
-        import jacky_state
-        from jacky_constants import get_jacky_home
+        import jacky_cli.jacky_state as jacky_state
+        from jacky_cli.jacky_constants import get_jacky_home
         from jacky_cli.web_server import app, _SESSION_HEADER_NAME, _SESSION_TOKEN
 
         monkeypatch.setattr(jacky_state, "DEFAULT_DB_PATH", get_jacky_home() / "state.db")
@@ -269,7 +269,7 @@ class TestWebServerEndpoints:
 
     def test_status_active_session_count_uses_read_only_db(self, monkeypatch, tmp_path):
         import jacky_cli.web_server as web_server
-        import jacky_state
+        import jacky_cli.jacky_state as jacky_state
 
         # Satisfy the fresh-install guard: read_only opens require the DB
         # file to already exist.
@@ -295,7 +295,7 @@ class TestWebServerEndpoints:
             def close(self):
                 captured["closed"] = True
 
-        monkeypatch.setattr("jacky_state.SessionDB", _FakeDB)
+        monkeypatch.setattr("jacky_cli.jacky_state.SessionDB", _FakeDB)
         monkeypatch.setattr(web_server.time, "time", lambda: 100)
 
         assert web_server._count_status_active_sessions() == 1
@@ -307,14 +307,14 @@ class TestWebServerEndpoints:
         """No state.db yet (fresh install): return 0 without attempting a
         read-only open, which would raise OperationalError on every poll."""
         import jacky_cli.web_server as web_server
-        import jacky_state
+        import jacky_cli.jacky_state as jacky_state
 
         monkeypatch.setattr(jacky_state, "DEFAULT_DB_PATH", tmp_path / "absent.db")
 
         def _boom(*a, **k):
             raise AssertionError("SessionDB must not be constructed when db file is absent")
 
-        monkeypatch.setattr("jacky_state.SessionDB", _boom)
+        monkeypatch.setattr("jacky_cli.jacky_state.SessionDB", _boom)
         assert web_server._count_status_active_sessions() == 0
 
     def test_get_status_degrades_when_active_session_count_fails(self, monkeypatch):
@@ -424,7 +424,7 @@ class TestWebServerEndpoints:
         assert resp.json()["can_update_jacky"] is False
 
     def test_dashboard_update_capability_detects_generic_container(self, monkeypatch):
-        import jacky_constants
+        import jacky_cli.jacky_constants as jacky_constants
         import jacky_cli.web_server as web_server
 
         monkeypatch.setattr(jacky_constants, "is_container", lambda: True)
@@ -436,7 +436,7 @@ class TestWebServerEndpoints:
     def test_dashboard_update_capability_allows_git_in_container(self, monkeypatch):
         """A git checkout inside a container (e.g. bind-mounted in jacky-webui)
         should still offer dashboard updates — the checkout is self-managed."""
-        import jacky_constants
+        import jacky_cli.jacky_constants as jacky_constants
         import jacky_cli.web_server as web_server
 
         monkeypatch.setattr(jacky_constants, "is_container", lambda: True)
@@ -446,7 +446,7 @@ class TestWebServerEndpoints:
 
     def test_dashboard_update_capability_blocks_pip_in_container(self, monkeypatch):
         """A pip install inside a container is still managed externally."""
-        import jacky_constants
+        import jacky_cli.jacky_constants as jacky_constants
         import jacky_cli.web_server as web_server
 
         monkeypatch.setattr(jacky_constants, "is_container", lambda: True)
@@ -631,7 +631,7 @@ class TestWebServerEndpoints:
         assert load_config().get("memory", {}).get("provider") != "retaindb"
 
     def test_put_memory_provider_config_writes_config_and_secret(self):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         from jacky_cli.config import load_config, load_env
 
         resp = self.client.put(
@@ -816,7 +816,7 @@ class TestWebServerEndpoints:
 
     def test_get_media_serves_image_in_root(self):
         """An image under the gateway's images dir is returned as a data URL."""
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         img_dir = get_jacky_home() / "images"
         img_dir.mkdir(parents=True, exist_ok=True)
@@ -836,7 +836,7 @@ class TestWebServerEndpoints:
         assert resp.status_code == 403
 
     def test_get_media_rejects_non_image_extension(self):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         img_dir = get_jacky_home() / "images"
         img_dir.mkdir(parents=True, exist_ok=True)
@@ -847,7 +847,7 @@ class TestWebServerEndpoints:
         assert resp.status_code == 415
 
     def test_get_media_404_for_missing_file(self):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         missing = get_jacky_home() / "images" / "nope.png"
         resp = self.client.get("/api/media", params={"path": str(missing)})
@@ -866,7 +866,7 @@ class TestWebServerEndpoints:
     # ── POST /api/chat/image-upload (browser clipboard/drop images) ─────
 
     def test_chat_image_upload_writes_to_default_profile_images(self):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         data_url = (
             "data:image/png;base64,"
@@ -1032,7 +1032,7 @@ class TestWebServerEndpoints:
         /api/sessions should reflect per-session DB state, not process/global
         cwd settings, so workspace grouping stays stable and deterministic.
         """
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         monkeypatch.setenv("TERMINAL_CWD", "/tmp/global-default")
 
@@ -1073,7 +1073,7 @@ class TestWebServerEndpoints:
             def close(self):
                 pass
 
-        monkeypatch.setattr("jacky_state.SessionDB", _FakeDB)
+        monkeypatch.setattr("jacky_cli.jacky_state.SessionDB", _FakeDB)
 
         resp = self.client.get("/api/sessions?limit=5&offset=0&min_messages=3")
         assert resp.status_code == 200
@@ -1081,7 +1081,7 @@ class TestWebServerEndpoints:
         assert captured["count"] == 3
 
     def _create_session_with_heavy_fields(self, session_id: str) -> None:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1147,7 +1147,7 @@ class TestWebServerEndpoints:
     def test_rename_session_updates_title(self):
         """PATCH /api/sessions/{id} renames a session (regression: the route
         was missing entirely, so the desktop rename dialog got a 405)."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1166,7 +1166,7 @@ class TestWebServerEndpoints:
             db.close()
 
     def test_rename_session_clears_title_when_empty(self):
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1191,7 +1191,7 @@ class TestWebServerEndpoints:
 
     def test_archive_session_via_patch(self):
         """PATCH archived=true soft-hides a session; archived=false restores it."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1217,7 +1217,7 @@ class TestWebServerEndpoints:
 
     def test_patch_session_without_fields_is_400(self):
         """An existing session + empty body is a bad request, not a 404."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1231,7 +1231,7 @@ class TestWebServerEndpoints:
     def test_profiles_sessions_tags_default_profile(self):
         """The cross-profile aggregator returns the default profile's rows
         tagged profile="default" (single-profile parity with /api/sessions)."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1255,7 +1255,7 @@ class TestWebServerEndpoints:
     def test_sessions_endpoint_reads_requested_profile(self):
         """The machine dashboard's global profile switcher must retarget
         the Sessions page, not just config/skills/model pages."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         from jacky_cli import profiles as profiles_mod
 
         worker_home = profiles_mod.get_profile_dir("worker")
@@ -1294,7 +1294,7 @@ class TestWebServerEndpoints:
 
     def test_latest_descendant_reads_requested_profile(self):
         """Chat resume must resolve compression tips in the chat profile DB."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         from jacky_cli import profiles as profiles_mod
 
         worker_home = profiles_mod.get_profile_dir("worker")
@@ -1331,7 +1331,7 @@ class TestWebServerEndpoints:
         """Regression for the #39140 CTE salvage: a corrupted parent chain
         that loops (a -> b -> a) must terminate (UNION dedup) instead of
         recursing forever like UNION ALL would."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1351,7 +1351,7 @@ class TestWebServerEndpoints:
         assert resp.json()["session_id"] == "cyc-b"
 
     def test_analytics_endpoints_read_requested_profile(self):
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         from jacky_cli import profiles as profiles_mod
 
         worker_home = profiles_mod.get_profile_dir("worker")
@@ -1404,7 +1404,7 @@ class TestWebServerEndpoints:
         first page by recency, listed under its live continuation id."""
         import time as _time
 
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1445,7 +1445,7 @@ class TestWebServerEndpoints:
         so the sidebar stops showing the same chat several times."""
         import time as _time
 
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1482,7 +1482,7 @@ class TestWebServerEndpoints:
         branch instead of being collapsed back to the parent/root."""
         import time as _time
 
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1515,7 +1515,7 @@ class TestWebServerEndpoints:
         live continuation, matching /resume behavior."""
         import time as _time
 
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1542,7 +1542,7 @@ class TestWebServerEndpoints:
         assert [m["content"] for m in payload["messages"]] == ["after compression"]
 
     def test_get_sessions_archived_is_boolean(self):
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1556,7 +1556,7 @@ class TestWebServerEndpoints:
 
     def test_rename_response_omits_archived_when_not_set(self):
         """Title-only PATCH keeps its legacy {ok, title} response shape."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -3790,8 +3790,8 @@ class TestNewEndpoints:
         except ImportError:
             pytest.skip("fastapi/starlette not installed")
 
-        import jacky_state
-        from jacky_constants import get_jacky_home
+        import jacky_cli.jacky_state as jacky_state
+        from jacky_cli.jacky_constants import get_jacky_home
         from jacky_cli.web_server import app, _SESSION_HEADER_NAME, _SESSION_TOKEN
 
         monkeypatch.setattr(jacky_state, "DEFAULT_DB_PATH", get_jacky_home() / "state.db")
@@ -3859,7 +3859,7 @@ class TestNewEndpoints:
     # --- Profiles ---
 
     def test_profiles_list_includes_default(self):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         get_jacky_home().mkdir(parents=True, exist_ok=True)
 
         resp = self.client.get("/api/profiles")
@@ -3868,7 +3868,7 @@ class TestNewEndpoints:
         assert "default" in names
 
     def test_profiles_list_falls_back_when_profile_listing_fails(self, monkeypatch):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         import jacky_cli.profiles as profiles_mod
 
         jacky_home = get_jacky_home()
@@ -3923,7 +3923,7 @@ class TestNewEndpoints:
         assert "test-prof-2" not in names
 
     def test_profile_setup_command_uses_named_profile_wrapper(self):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         (get_jacky_home() / "profiles" / "coder").mkdir(parents=True)
 
@@ -3933,7 +3933,7 @@ class TestNewEndpoints:
         assert resp.json()["command"] == "coder setup"
 
     def test_profile_setup_command_uses_jacky_for_default_profile(self):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         get_jacky_home().mkdir(parents=True, exist_ok=True)
 
@@ -3966,7 +3966,7 @@ class TestNewEndpoints:
             assert lines == ["#!/bin/sh", 'exec /opt/jacky/bin/jacky -p writer "$@"']
 
     def test_profiles_create_with_clone_from_copies_source_skills(self, monkeypatch):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         import jacky_cli.profiles as profiles_mod
 
         monkeypatch.setattr(profiles_mod, "create_wrapper_script", lambda name: None)
@@ -3993,7 +3993,7 @@ class TestNewEndpoints:
         assert profiles["cloned"]["skill_count"] == 1
 
     def test_profiles_create_with_clone_from_duplicates_source(self, monkeypatch):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         import jacky_cli.profiles as profiles_mod
 
         monkeypatch.setattr(profiles_mod, "create_wrapper_script", lambda name: None)
@@ -4017,7 +4017,7 @@ class TestNewEndpoints:
         assert cloned_skill.exists()
 
     def test_profiles_create_clone_all_from_named_source(self, monkeypatch):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         import jacky_cli.profiles as profiles_mod
 
         monkeypatch.setattr(profiles_mod, "create_wrapper_script", lambda name: None)
@@ -4039,7 +4039,7 @@ class TestNewEndpoints:
         assert (target_dir / "workspace" / "artifact.txt").read_text(encoding="utf-8") == "copied"
 
     def test_profiles_create_without_clone_seeds_bundled_skills(self, monkeypatch):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         import jacky_cli.profiles as profiles_mod
 
         monkeypatch.setattr(profiles_mod, "create_wrapper_script", lambda name: None)
@@ -4067,7 +4067,7 @@ class TestNewEndpoints:
         """Profile-builder create: model + MCP servers + keep-skills selection
         all land in the NEW profile's config, and hub installs are spawned
         scoped to that profile via ``-p <name>``."""
-        from jacky_constants import (
+        from jacky_cli.jacky_constants import (
             get_jacky_home,
             set_jacky_home_override,
             reset_jacky_home_override,
@@ -4146,7 +4146,7 @@ class TestNewEndpoints:
             reset_jacky_home_override(token)
 
     def test_profile_open_terminal_uses_macos_terminal(self, monkeypatch):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         import jacky_cli.web_server as web_server
 
         (get_jacky_home() / "profiles" / "coder").mkdir(parents=True)
@@ -4162,7 +4162,7 @@ class TestNewEndpoints:
         assert "coder setup" in " ".join(calls[0])
 
     def test_profile_open_terminal_uses_windows_cmd(self, monkeypatch):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         import jacky_cli.web_server as web_server
 
         (get_jacky_home() / "profiles" / "coder").mkdir(parents=True)
@@ -4216,7 +4216,7 @@ class TestNewEndpoints:
     # --- New profiles endpoints: active / description / model / describe-auto ---
 
     def test_profiles_active_defaults(self):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         get_jacky_home().mkdir(parents=True, exist_ok=True)
 
         resp = self.client.get("/api/profiles/active")
@@ -4266,7 +4266,7 @@ class TestNewEndpoints:
         assert resp.status_code == 404
 
     def test_profile_model_round_trip(self, monkeypatch):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         import jacky_cli.profiles as profiles_mod
         monkeypatch.setattr(profiles_mod, "create_wrapper_script", lambda name: None)
 
@@ -4401,7 +4401,7 @@ class TestNewEndpoints:
 
     def test_toolsets_list_matches_cli_enabled_state(self, monkeypatch):
         import jacky_cli.tools_config as tools_config
-        import toolsets as toolsets_module
+        import jacky_cli.toolsets as toolsets_module
         import jacky_cli.web_server as web_server
 
         monkeypatch.setattr(
@@ -4710,7 +4710,7 @@ class TestNewEndpoints:
         ``billing_provider``. The Models dashboard should show one provider
         card, not a real card plus a misleading duplicate empty card.
         """
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -4753,7 +4753,7 @@ class TestNewEndpoints:
         assert row["avg_tokens_per_session"] == 13_550
 
     def test_analytics_usage_includes_skill_breakdown(self):
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -5864,8 +5864,8 @@ class TestDeleteSessionEndpoint:
         except ImportError:
             pytest.skip("fastapi/starlette not installed")
 
-        import jacky_state
-        from jacky_constants import get_jacky_home
+        import jacky_cli.jacky_state as jacky_state
+        from jacky_cli.jacky_constants import get_jacky_home
         from jacky_cli.web_server import app, _SESSION_HEADER_NAME, _SESSION_TOKEN
 
         monkeypatch.setattr(
@@ -5876,7 +5876,7 @@ class TestDeleteSessionEndpoint:
         self.auth_client.headers[_SESSION_HEADER_NAME] = _SESSION_TOKEN
 
     def _seed(self, ids):
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -5886,7 +5886,7 @@ class TestDeleteSessionEndpoint:
             db.close()
 
     def _exists(self, sid) -> bool:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -5941,8 +5941,8 @@ class TestBulkDeleteSessionsEndpoint:
         except ImportError:
             pytest.skip("fastapi/starlette not installed")
 
-        import jacky_state
-        from jacky_constants import get_jacky_home
+        import jacky_cli.jacky_state as jacky_state
+        from jacky_cli.jacky_constants import get_jacky_home
         from jacky_cli.web_server import app, _SESSION_HEADER_NAME, _SESSION_TOKEN
 
         monkeypatch.setattr(
@@ -5954,7 +5954,7 @@ class TestBulkDeleteSessionsEndpoint:
         self.auth_client.headers[_SESSION_HEADER_NAME] = _SESSION_TOKEN
 
     def _seed(self, ids):
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -5968,7 +5968,7 @@ class TestBulkDeleteSessionsEndpoint:
         assert resp.status_code == 401
 
     def test_deletes_listed_sessions_only(self):
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         self._seed(["a", "b", "c"])
         resp = self.auth_client.post(
@@ -6065,8 +6065,8 @@ class TestDeleteEmptySessionsEndpoint:
         except ImportError:
             pytest.skip("fastapi/starlette not installed")
 
-        import jacky_state
-        from jacky_constants import get_jacky_home
+        import jacky_cli.jacky_state as jacky_state
+        from jacky_cli.jacky_constants import get_jacky_home
         from jacky_cli.web_server import app, _SESSION_HEADER_NAME, _SESSION_TOKEN
 
         # Pin the SessionDB to the isolated JACKY_HOME so each test
@@ -6087,7 +6087,7 @@ class TestDeleteEmptySessionsEndpoint:
         * ``live``    — un-ended, empty → must survive (active)
         * ``archived``— ended, empty, archived → must survive
         """
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -6135,7 +6135,7 @@ class TestDeleteEmptySessionsEndpoint:
         """DELETE returns the deleted count and removes only the
         empty-ended-unarchived rows — same shape contract as the
         DB-level method's unit tests."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         self._seed()
         resp = self.auth_client.delete("/api/sessions/empty")
@@ -6201,8 +6201,8 @@ class TestPluginAPIAuth:
         except ImportError:
             pytest.skip("fastapi/starlette not installed")
 
-        import jacky_state
-        from jacky_constants import get_jacky_home
+        import jacky_cli.jacky_state as jacky_state
+        from jacky_cli.jacky_constants import get_jacky_home
         from jacky_cli.web_server import app, _SESSION_HEADER_NAME, _SESSION_TOKEN
 
         monkeypatch.setattr(jacky_state, "DEFAULT_DB_PATH", get_jacky_home() / "state.db")

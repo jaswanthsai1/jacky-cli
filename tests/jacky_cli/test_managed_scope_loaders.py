@@ -96,7 +96,7 @@ def test_tui_loader_does_not_persist_managed_back(homes, monkeypatch):
 def test_logging_config_honors_managed(homes, monkeypatch):
     home, managed = homes
     _seed(home, managed, user="logging:\n  level: INFO\n", mgd="logging:\n  level: DEBUG\n")
-    import jacky_logging
+    import jacky_cli.jacky_logging as jacky_logging
 
     level, _max, _bk = jacky_logging._read_logging_config()
     assert level == "DEBUG"
@@ -108,7 +108,7 @@ def test_timezone_honors_managed(homes, monkeypatch):
     monkeypatch.delenv("JACKY_TIMEZONE", raising=False)
     monkeypatch.delenv("TZ", raising=False)
     _seed(home, managed, user="timezone: America/New_York\n", mgd="timezone: Asia/Tokyo\n")
-    import jacky_time
+    import jacky_cli.jacky_time as jacky_time
 
     assert jacky_time._resolve_timezone_name() == "Asia/Tokyo"
 

@@ -119,7 +119,7 @@ def _setup_isolated_home(tmp_path, monkeypatch, model_yaml_value):
         lambda *a, **k: 272000,
     )
     # save_config writes to ``get_jacky_home() / config.yaml`` — point it here.
-    monkeypatch.setattr("jacky_constants.get_jacky_home", lambda: jacky_home)
+    monkeypatch.setattr("jacky_cli.jacky_constants.get_jacky_home", lambda: jacky_home)
     monkeypatch.setattr("jacky_cli.config.get_jacky_home", lambda: jacky_home)
     return cfg_path
 

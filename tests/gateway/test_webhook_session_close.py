@@ -190,7 +190,7 @@ async def test_webhook_session_closed_even_when_agent_run_raises(tmp_path):
 @pytest.mark.asyncio
 async def test_end_webhook_session_awaits_async_session_db(tmp_path):
     """The close path handles the gateway's real AsyncSessionDB facade."""
-    from jacky_state import AsyncSessionDB
+    from jacky_cli.jacky_state import AsyncSessionDB
 
     store = _make_store(tmp_path)
     runner = _FakeRunner(store)

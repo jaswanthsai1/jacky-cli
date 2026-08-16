@@ -214,7 +214,7 @@ def _media_cache_roots() -> list:
     downloaded inbound media and the tools' own URL-download temp dirs. Covers
     the consolidated ``cache/`` layout and the legacy flat directories.
     """
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     home = get_jacky_home()
     return [

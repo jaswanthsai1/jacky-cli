@@ -21,7 +21,7 @@ from jacky_cli.nous_account import (
 )
 from jacky_cli.nous_subscription import get_nous_subscription_features
 from jacky_cli.runtime_provider import resolve_requested_provider
-from jacky_constants import OPENROUTER_MODELS_URL
+from jacky_cli.jacky_constants import OPENROUTER_MODELS_URL
 from tools.tool_backend_helpers import managed_nous_tools_enabled
 
 def check_mark(ok: bool) -> str:
@@ -99,7 +99,7 @@ def _effective_provider_label() -> str:
     return provider_label(effective)
 
 
-from jacky_constants import is_termux as _is_termux
+from jacky_cli.jacky_constants import is_termux as _is_termux
 
 
 def show_status(args):
@@ -547,7 +547,7 @@ def show_status(args):
     # fall back to sessions.json for pre-migration installs.
     _session_count = None
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         _db = SessionDB()
         try:
             _lister = getattr(_db, "list_gateway_sessions", None)

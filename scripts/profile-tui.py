@@ -38,7 +38,7 @@ from typing import Any
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_PROJECT_ROOT))
 try:
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 except ImportError:
     def get_jacky_home() -> Path:  # type: ignore[misc]
         val = (os.environ.get("JACKY_HOME") or "").strip()

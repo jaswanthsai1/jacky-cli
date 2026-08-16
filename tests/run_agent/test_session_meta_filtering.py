@@ -7,7 +7,7 @@ _sanitize_api_messages() and the CLI session-restore paths.
 
 import logging
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 # ---------------------------------------------------------------------------

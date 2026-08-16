@@ -26,7 +26,7 @@ import time
 from pathlib import Path
 
 from agent.memory_manager import sanitize_context
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from typing import Any, Callable, Dict, List, Optional, Tuple, TypeVar
 
 logger = logging.getLogger(__name__)

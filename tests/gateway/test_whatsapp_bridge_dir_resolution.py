@@ -35,7 +35,7 @@ def test_writable_install_returns_install_dir(tmp_path, monkeypatch):
         str(install_root / "gateway" / "platforms" / "whatsapp_common.py"),
     )
     monkeypatch.setattr(
-        "jacky_constants.get_jacky_home", lambda: jacky_home
+        "jacky_cli.jacky_constants.get_jacky_home", lambda: jacky_home
     )
 
     resolved = whatsapp_common.resolve_whatsapp_bridge_dir()
@@ -58,7 +58,7 @@ def test_readonly_install_mirrors_to_jacky_home(tmp_path, monkeypatch):
         str(install_root / "gateway" / "platforms" / "whatsapp_common.py"),
     )
     monkeypatch.setattr(
-        "jacky_constants.get_jacky_home", lambda: jacky_home
+        "jacky_cli.jacky_constants.get_jacky_home", lambda: jacky_home
     )
 
     # Simulate a read-only install tree. chmod(0o555) is unreliable under
@@ -101,7 +101,7 @@ def test_readonly_install_reuses_existing_mirror(tmp_path, monkeypatch):
         str(install_root / "gateway" / "platforms" / "whatsapp_common.py"),
     )
     monkeypatch.setattr(
-        "jacky_constants.get_jacky_home", lambda: jacky_home
+        "jacky_cli.jacky_constants.get_jacky_home", lambda: jacky_home
     )
 
     _real_touch = Path.touch

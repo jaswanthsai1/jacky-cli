@@ -36,7 +36,7 @@ def _run_memory_reset(target="all", yes=False, monkeypatch=None, confirm_input="
 
     Simulates what happens when `jacky memory reset` is run.
     """
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     mem_dir = get_jacky_home() / "memories"
     files_to_reset = []

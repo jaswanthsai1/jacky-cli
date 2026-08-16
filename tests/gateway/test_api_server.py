@@ -337,7 +337,7 @@ class TestAdapterInit:
             def __init__(self, **kwargs):
                 captured.update(kwargs)
 
-        monkeypatch.setattr("run_agent.AIAgent", FakeAgent)
+        monkeypatch.setattr("jacky_cli.run_agent.AIAgent", FakeAgent)
         monkeypatch.setattr(
             "gateway.run._resolve_runtime_agent_kwargs",
             lambda: {
@@ -373,7 +373,7 @@ class TestAdapterInit:
             def __init__(self, **kwargs):
                 captured.update(kwargs)
 
-        monkeypatch.setattr("run_agent.AIAgent", FakeAgent)
+        monkeypatch.setattr("jacky_cli.run_agent.AIAgent", FakeAgent)
         monkeypatch.setattr(
             "gateway.run._resolve_runtime_agent_kwargs",
             lambda: {
@@ -412,7 +412,7 @@ class TestAdapterInit:
             def __init__(self, **kwargs):
                 captured.update(kwargs)
 
-        monkeypatch.setattr("run_agent.AIAgent", FakeAgent)
+        monkeypatch.setattr("jacky_cli.run_agent.AIAgent", FakeAgent)
         monkeypatch.setattr(
             "gateway.run._resolve_runtime_agent_kwargs",
             lambda: {
@@ -451,7 +451,7 @@ class TestAdapterInit:
             def __init__(self, **kwargs):
                 captured.update(kwargs)
 
-        monkeypatch.setattr("run_agent.AIAgent", FakeAgent)
+        monkeypatch.setattr("jacky_cli.run_agent.AIAgent", FakeAgent)
         monkeypatch.setattr(
             "gateway.run._resolve_runtime_agent_kwargs",
             lambda: {
@@ -1024,7 +1024,7 @@ class TestToolsetsEndpoint:
             "jacky_cli.tools_config._toolset_has_keys",
             return_value=True,
         ), patch(
-            "toolsets.resolve_toolset",
+            "jacky_cli.toolsets.resolve_toolset",
             side_effect=lambda name: {
                 "default": ["terminal", "read_file"],
                 "web": ["web_search"],
@@ -1067,7 +1067,7 @@ class TestToolsetsEndpoint:
             "jacky_cli.tools_config._toolset_has_keys",
             return_value=False,
         ), patch(
-            "toolsets.resolve_toolset",
+            "jacky_cli.toolsets.resolve_toolset",
             side_effect=_resolve,
         ):
             app = _create_app(adapter)
@@ -3650,7 +3650,7 @@ class TestSessionIdHeader:
         app = _create_app(auth_adapter)
         async with TestClient(TestServer(app)) as cli:
             with patch.object(auth_adapter, "_run_agent", new_callable=AsyncMock) as mock_run, \
-                 patch("jacky_state.SessionDB", side_effect=Exception("DB unavailable")):
+                 patch("jacky_cli.jacky_state.SessionDB", side_effect=Exception("DB unavailable")):
                 mock_run.return_value = (mock_result, {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0})
 
                 resp = await cli.post(
@@ -3859,7 +3859,7 @@ def _make_routing_adapter(routes) -> APIServerAdapter:
 
 def _patch_create_agent_runtime(monkeypatch, captured: dict, fake_agent_cls):
     """Stub out every external dependency of _create_agent."""
-    monkeypatch.setattr("run_agent.AIAgent", fake_agent_cls)
+    monkeypatch.setattr("jacky_cli.run_agent.AIAgent", fake_agent_cls)
     monkeypatch.setattr(
         "gateway.run._resolve_runtime_agent_kwargs",
         lambda: {

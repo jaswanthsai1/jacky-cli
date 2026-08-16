@@ -49,9 +49,9 @@ from jacky_cli.config import (
     read_raw_config,
     require_readable_config_before_write,
 )
-from jacky_constants import OPENROUTER_BASE_URL, secure_parent_dir
+from jacky_cli.jacky_constants import OPENROUTER_BASE_URL, secure_parent_dir
 from agent.credential_persistence import sanitize_borrowed_credential_payload
-from utils import atomic_replace, atomic_yaml_write, env_float, is_truthy_value
+from jacky_cli.utils import atomic_replace, atomic_yaml_write, env_float, is_truthy_value
 
 logger = logging.getLogger(__name__)
 
@@ -924,7 +924,7 @@ def _global_auth_file_path() -> Optional[Path]:
     See issue #18594 follow-up (credential_pool shadowing).
     """
     try:
-        from jacky_constants import get_default_jacky_root
+        from jacky_cli.jacky_constants import get_default_jacky_root
         global_root = get_default_jacky_root()
     except Exception:
         return None
@@ -4642,7 +4642,7 @@ def _nous_shared_auth_dir() -> Path:
     override = os.getenv("JACKY_SHARED_AUTH_DIR", "").strip()
     if override:
         return Path(override).expanduser()
-    from jacky_constants import get_default_jacky_root
+    from jacky_cli.jacky_constants import get_default_jacky_root
     return get_default_jacky_root() / "shared"
 
 
@@ -4655,7 +4655,7 @@ def _nous_shared_store_path() -> Path:
     # so forgetting to set it fails loudly instead of writing to the real
     # shared store).
     if os.environ.get("PYTEST_CURRENT_TEST"):
-        from jacky_constants import get_default_jacky_root
+        from jacky_cli.jacky_constants import get_default_jacky_root
         real_home_shared = (
             get_default_jacky_root() / "shared" / NOUS_SHARED_STORE_FILENAME
         ).resolve(strict=False)
@@ -6986,7 +6986,7 @@ def _login_openai_codex(
     config_path = _update_config_for_provider("openai-codex", creds.get("base_url", DEFAULT_CODEX_BASE_URL))
     print()
     print("Login successful!")
-    from jacky_constants import display_jacky_home as _dhh
+    from jacky_cli.jacky_constants import display_jacky_home as _dhh
     print(f"  Auth state: {_dhh()}/auth.json")
     print(f"  Config updated: {config_path} (model.provider=openai-codex)")
 
@@ -7054,7 +7054,7 @@ def _login_xai_oauth(
     config_path = _update_config_for_provider("xai-oauth", creds.get("base_url", DEFAULT_XAI_OAUTH_BASE_URL))
     print()
     print("Login successful!")
-    from jacky_constants import display_jacky_home as _dhh
+    from jacky_cli.jacky_constants import display_jacky_home as _dhh
     print(f"  Auth state: {_dhh()}/auth.json")
     print(f"  Config updated: {config_path} (model.provider=xai-oauth)")
 

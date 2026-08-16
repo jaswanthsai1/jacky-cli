@@ -15,7 +15,7 @@ def _make_cli():
     Uses ``__new__`` to skip the heavy __init__; only sets the attributes
     the /exit branch touches.
     """
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
     cli = JackyCLI.__new__(JackyCLI)
     cli.config = {}
     cli.console = MagicMock()

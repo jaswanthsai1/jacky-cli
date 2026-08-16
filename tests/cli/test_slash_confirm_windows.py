@@ -26,7 +26,7 @@ import pytest
 
 def _make_cli():
     """Minimal JackyCLI shell exposing the prompt/modal helpers."""
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
 
     obj = object.__new__(cli_mod.JackyCLI)
     obj._app = MagicMock()
@@ -275,7 +275,7 @@ class TestConfirmDestructiveSlashWindows:
         """On native Windows, the bare /new confirm drives the modal (not stdin)
         and returns the chosen outcome — the bug #33961 froze this path."""
         cli = self._make_interactive_cli()
-        with patch("cli.load_cli_config", return_value={"approvals": {"destructive_slash_confirm": True}}):
+        with patch("jacky_cli.cli.load_cli_config", return_value={"approvals": {"destructive_slash_confirm": True}}):
             outcome = _run_on_daemon(
                 lambda: cli._confirm_destructive_slash(
                     "new",

@@ -7,11 +7,11 @@ const config: Config = {
   tagline: 'The self-improving AI agent',
   favicon: 'img/favicon.ico',
 
-  url: 'https://jacky-agent.nousresearch.com',
-  baseUrl: '/docs/',
+  url: 'https://jaswanthsai1.github.io',
+  baseUrl: '/jacky-cli/',
 
-  organizationName: 'NousResearch',
-  projectName: 'jacky-agent',
+  organizationName: 'jaswanthsai1',
+  projectName: 'jacky-cli',
 
   onBrokenLinks: 'warn',
 
@@ -137,7 +137,7 @@ const config: Config = {
           position: 'left',
         },
         {
-          href: 'https://jacky-agent.nousresearch.com/',
+          href: 'https://github.com/jaswanthsai1/jacky-cli#quick-start',
           label: 'Download',
           position: 'left',
         },
@@ -146,7 +146,7 @@ const config: Config = {
           position: 'right',
         },
         {
-          href: 'https://jacky-agent.nousresearch.com',
+          href: 'https://jaswanthsai1.github.io/jacky-cli/',
           label: 'Home',
           position: 'right',
         },
@@ -185,13 +185,13 @@ const config: Config = {
         {
           title: 'More',
           items: [
-            { label: 'Desktop Download', href: 'https://jacky-agent.nousresearch.com/' },
+            { label: 'Quick Start', href: 'https://github.com/jaswanthsai1/jacky-cli#quick-start' },
             { label: 'GitHub', href: 'https://github.com/jaswanthsai1/jacky-cli' },
             { label: 'Nous Research', href: 'https://nousresearch.com' },
           ],
         },
       ],
-      copyright: `Built by <a href="https://nousresearch.com">Nous Research</a> · MIT License · ${new Date().getFullYear()}`,
+      copyright: `Jacky CLI · a fork of <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research · MIT License · ${new Date().getFullYear()}`,
     },
     prism: {
       theme: prismThemes.github,

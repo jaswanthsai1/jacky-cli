@@ -15,7 +15,7 @@ the GUI.
 import json
 import os
 
-from utils import env_var_enabled
+from jacky_cli.utils import env_var_enabled
 
 from tools.process_registry import process_registry
 from tools.registry import registry, tool_error

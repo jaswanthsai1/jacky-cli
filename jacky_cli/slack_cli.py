@@ -166,7 +166,7 @@ def slack_manifest_command(args) -> int:
         if isinstance(write_target, bool) and write_target:
             # --write with no value → default location
             try:
-                from jacky_constants import get_jacky_home
+                from jacky_cli.jacky_constants import get_jacky_home
 
                 target = Path(get_jacky_home()) / "slack-manifest.json"
             except Exception:

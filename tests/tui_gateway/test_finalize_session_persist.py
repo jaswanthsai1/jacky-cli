@@ -195,7 +195,7 @@ class TestFinalizeSessionPersistE2E:
 
     @staticmethod
     def _real_agent(db, session_id, session_messages):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = object.__new__(AIAgent)
         agent._session_db = db
@@ -223,7 +223,7 @@ class TestFinalizeSessionPersistE2E:
         never written to the DB) must be flushed to state.db when the WS
         disconnect tears the session down."""
         monkeypatch.setenv("JACKY_HOME", str(tmp_path / ".jacky"))
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         import tui_gateway.server as srv
 
         db = SessionDB(db_path=tmp_path / "state.db")
@@ -256,7 +256,7 @@ class TestFinalizeSessionPersistE2E:
         """A resumed session torn down before any new turn (its transcript is
         already durable in the DB) must NOT re-append duplicate rows."""
         monkeypatch.setenv("JACKY_HOME", str(tmp_path / ".jacky"))
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         import tui_gateway.server as srv
 
         db = SessionDB(db_path=tmp_path / "state.db")
@@ -293,7 +293,7 @@ class TestFinalizeSessionPersistE2E:
         can't catch a duplicate-write regression; this one drives a real flush.
         """
         monkeypatch.setenv("JACKY_HOME", str(tmp_path / ".jacky"))
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         import tui_gateway.server as srv
 
         db = SessionDB(db_path=tmp_path / "state.db")

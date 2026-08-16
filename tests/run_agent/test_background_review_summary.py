@@ -7,7 +7,7 @@ history before the review started (e.g. an earlier "Cron job '...' created.").
 
 import json
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 _summarize = AIAgent._summarize_background_review_actions

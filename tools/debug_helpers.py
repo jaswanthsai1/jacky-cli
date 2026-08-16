@@ -28,7 +28,7 @@ import os
 import uuid
 from typing import Any, Dict
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 logger = logging.getLogger(__name__)
 

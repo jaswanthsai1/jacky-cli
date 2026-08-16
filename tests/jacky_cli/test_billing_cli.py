@@ -14,7 +14,7 @@ import pytest
 
 import agent.billing_view as bv
 from agent.billing_view import BillingState, CardInfo, MonthlyCap
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 
 
 @pytest.fixture

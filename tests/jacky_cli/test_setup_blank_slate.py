@@ -51,7 +51,7 @@ class TestBlankSlateMinimalToolsets:
         share a tool with a kept toolset — it would silently strip that tool
         from the blank-slate agent (#57315, #58281).
         """
-        from toolsets import resolve_toolset
+        from jacky_cli.toolsets import resolve_toolset
         cfg = {}
         _blank_slate_minimal_toolsets(cfg)
         kept_tools = set()
@@ -74,7 +74,7 @@ class TestBlankSlateMinimalToolsets:
 
     def test_tool_schema_builder_yields_only_file_and_terminal_tools(self):
         # End-to-end: the exact schema set the agent would send to the model.
-        import model_tools
+        import jacky_cli.model_tools as model_tools
         from jacky_cli.tools_config import _get_platform_tools
         cfg = {}
         _blank_slate_minimal_toolsets(cfg)
@@ -95,7 +95,7 @@ class TestBlankSlateMinimalToolsets:
         like ``coding`` in disabled_toolsets caused model_tools to subtract
         terminal, read_file, write_file, etc. (#57315).
         """
-        import model_tools
+        import jacky_cli.model_tools as model_tools
         from jacky_cli.tools_config import _get_platform_tools
         cfg = {}
         _blank_slate_minimal_toolsets(cfg)

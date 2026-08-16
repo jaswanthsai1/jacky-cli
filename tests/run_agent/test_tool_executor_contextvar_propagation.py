@@ -151,7 +151,7 @@ def test_run_agent_concurrent_executor_wraps_submit_with_copy_context():
     import ast
     import inspect
 
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     from agent import tool_executor as tool_executor_module
 
     # Source for both modules — the concurrent-executor body lives in

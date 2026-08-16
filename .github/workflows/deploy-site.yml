@@ -39,11 +39,20 @@ jobs:
     # main commit needs to ship live before the next release tag — e.g.
     # a skills-index PR that doesn't touch website/** paths and so
     # doesn't auto-deploy via the deploy-docs path.
+    # Runs on release/manual dispatch; the step itself no-ops cleanly (exit 0)
+    # if VERCEL_DEPLOY_HOOK isn't configured, so forks without a Vercel
+    # project (repo Settings -> Secrets and variables -> Actions) never see
+    # this as a failure.
     if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Vercel Deploy
-        run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
+        run: |
+          if [ -z "${{ secrets.VERCEL_DEPLOY_HOOK }}" ]; then
+            echo "VERCEL_DEPLOY_HOOK not set — skipping Vercel deploy (this fork has no Vercel project configured)."
+            exit 0
+          fi
+          curl -f -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
 
   deploy-docs:
     if: github.repository == 'jaswanthsai1/jacky-cli'

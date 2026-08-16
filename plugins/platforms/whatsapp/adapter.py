@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Dict, Optional, Any
 
 from jacky_cli._subprocess_compat import windows_detach_popen_kwargs
-from jacky_constants import (
+from jacky_cli.jacky_constants import (
     find_node_executable,
     get_jacky_dir,
     with_jacky_node_path,
@@ -274,7 +274,7 @@ from gateway.platforms.base import (
     cache_image_from_url,
     cache_audio_from_url,
 )
-from utils import env_int
+from jacky_cli.utils import env_int
 
 
 def _is_allowed_bridge_path(url: str) -> bool:

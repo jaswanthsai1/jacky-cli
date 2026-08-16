@@ -16,7 +16,7 @@ description: "大规模生成 agent 轨迹——并行处理、断点续跑与�
 
 ```bash
 # 基本批量运行
-python batch_runner.py \
+python -m jacky_cli.batch_runner \
     --dataset_file=data/prompts.jsonl \
     --batch_size=10 \
     --run_name=my_first_run \
@@ -24,14 +24,14 @@ python batch_runner.py \
     --num_workers=4
 
 # 恢复中断的运行
-python batch_runner.py \
+python -m jacky_cli.batch_runner \
     --dataset_file=data/prompts.jsonl \
     --batch_size=10 \
     --run_name=my_first_run \
     --resume
 
 # 列出可用的工具集分布
-python batch_runner.py --list_distributions
+python -m jacky_cli.batch_runner --list_distributions
 ```
 
 :::tip 大规模运行下的可预测成本
@@ -193,7 +193,7 @@ data/my_run/
 生成多样化的工具使用轨迹用于微调：
 
 ```bash
-python batch_runner.py \
+python -m jacky_cli.batch_runner \
     --dataset_file=data/coding_prompts.jsonl \
     --batch_size=20 \
     --run_name=coding_v1 \
@@ -208,7 +208,7 @@ python batch_runner.py \
 在标准化 prompt 集上评估模型的工具使用能力：
 
 ```bash
-python batch_runner.py \
+python -m jacky_cli.batch_runner \
     --dataset_file=data/eval_suite.jsonl \
     --batch_size=10 \
     --run_name=eval_gpt4 \

@@ -38,7 +38,7 @@ from typing import Optional, Dict, Any
 from urllib.parse import urljoin
 
 from jacky_cli._subprocess_compat import windows_hide_flags
-from utils import is_truthy_value
+from jacky_cli.utils import is_truthy_value
 from tools.managed_tool_gateway import resolve_managed_tool_gateway
 from tools.tool_backend_helpers import (
     managed_nous_tools_enabled,

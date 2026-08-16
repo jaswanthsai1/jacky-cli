@@ -26,7 +26,7 @@ class TestRegisterServerTools:
         server = MCPServerTask("my_srv")
         server._tools = [_make_mcp_tool("my_tool", "desc")]
         server.session = MagicMock()
-        from toolsets import resolve_toolset, validate_toolset
+        from jacky_cli.toolsets import resolve_toolset, validate_toolset
 
         with patch("tools.registry.registry", mock_registry):
             registered = _register_server_tools("my_srv", server, {})
@@ -49,7 +49,7 @@ class TestRefreshTools:
         server = MCPServerTask("live_srv")
         server._refresh_lock = asyncio.Lock()
         server._config = {}
-        from toolsets import resolve_toolset
+        from jacky_cli.toolsets import resolve_toolset
 
         # Seed initial state: one old tool registered
         mock_registry.register(

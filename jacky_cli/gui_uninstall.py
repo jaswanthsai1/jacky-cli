@@ -40,7 +40,7 @@ import shutil
 import sys
 from pathlib import Path
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 from jacky_cli.colors import Colors, color
 
