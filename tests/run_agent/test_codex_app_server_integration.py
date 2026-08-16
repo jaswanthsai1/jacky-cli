@@ -560,7 +560,7 @@ class TestReviewForkApiModeDowngrade:
                 return None
             self.close = _no_op_close
 
-        with _patch("run_agent.AIAgent.__init__", _capture_init):
+        with _patch("jacky_cli.run_agent.AIAgent.__init__", _capture_init):
             agent._spawn_background_review(
                 messages_snapshot=[{"role": "user", "content": "x"}],
                 review_memory=True,

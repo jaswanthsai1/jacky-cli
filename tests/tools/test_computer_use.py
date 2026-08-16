@@ -2706,7 +2706,7 @@ class TestSessionLifecycle:
         # jacky-{12 hex chars} — short enough to surface in logs
         # without being a privacy hazard, unique enough for concurrent runs.
         assert backend._session_id.startswith("jacky-")
-        assert len(backend._session_id) == 7 + 12
+        assert len(backend._session_id) == len("jacky-") + 12
 
     def test_session_id_unique_per_backend(self):
         from tools.computer_use.cua_backend import CuaDriverBackend

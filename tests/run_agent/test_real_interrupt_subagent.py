@@ -103,9 +103,20 @@ class TestRealSubagentInterrupt(unittest.TestCase):
                             child_started.set()
                             return original_run(self_agent, *args, **kwargs)
 
-                        with patch.object(AIAgent, 'run_conversation', patched_run):
+                        with patch.object(AIAgent, 'run_conversation', patched_run), \
+                             patch(
+                                 "agent.model_metadata.get_model_context_length",
+                                 return_value=128_000,
+                             ), patch(
+                                 "agent.context_compressor.get_model_context_length",
+                                 return_value=128_000,
+                             ):
                             # Build a real child agent (AIAgent is NOT patched here,
-                            # only run_conversation and _build_system_prompt are)
+                            # only run_conversation and _build_system_prompt are).
+                            # base_url is a real localhost socket the OS never
+                            # listens on — the context-length prober would
+                            # otherwise make a real (slow-to-refuse) network
+                            # call during __init__, so it's mocked out above.
                             child = AIAgent(
                                 base_url="http://localhost:1",
                                 api_key="test-key",

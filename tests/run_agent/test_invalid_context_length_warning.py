@@ -3,7 +3,7 @@
 from unittest.mock import patch
 
 
-def _build_agent(model_cfg, custom_providers=None, model="anthropic/claude-opus-4.6"):
+def _build_agent(model_cfg, custom_providers=None, model="gpt5.4"):
     """Build an AIAgent with the given model config."""
     cfg = {"model": model_cfg}
     if custom_providers is not None:
@@ -14,6 +14,16 @@ def _build_agent(model_cfg, custom_providers=None, model="anthropic/claude-opus-
     with (
         patch("jacky_cli.config.load_config", return_value=cfg),
         patch("agent.model_metadata.get_model_context_length", return_value=128_000),
+        # ContextCompressor imports get_model_context_length into its own
+        # module namespace at import time, so patching agent.model_metadata's
+        # copy alone doesn't cover it — without this, agent init falls
+        # through to a real (slow-to-refuse) network probe against the
+        # localhost base_url.
+        patch("agent.context_compressor.get_model_context_length", return_value=128_000),
+        # agent_init also probes the local base_url to detect an Ollama
+        # server (query_ollama_num_ctx -> detect_local_server_type), a real
+        # network call that's slow to fail against a non-listening test URL.
+        patch("agent.agent_init.query_ollama_num_ctx", return_value=None),
         patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
         patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
         patch("jacky_cli.run_agent.OpenAI"),

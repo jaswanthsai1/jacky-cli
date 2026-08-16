@@ -52,6 +52,16 @@ jacky
 `.env.example` → `.env`, links the `jacky` command onto your `PATH`, and — before
 declaring success — actually runs `jacky --help` to prove the install works.
 
+**Windows (native, PowerShell):**
+
+```powershell
+git clone https://github.com/jaswanthsai1/jacky-cli.git
+cd jacky-cli
+powershell -ExecutionPolicy ByPass -File scripts\install.ps1
+```
+
+See [`website/docs/user-guide/windows-native.md`](website/docs/user-guide/windows-native.md) for the native Windows feature matrix.
+
 📖 **[Full documentation →](website/docs/)** &nbsp;|&nbsp; 🎯 **[Hunt-loop methodology →](docs/METHODOLOGY.md)**
 
 <img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00E5FF,100:9D00FF" alt="divider"/>
