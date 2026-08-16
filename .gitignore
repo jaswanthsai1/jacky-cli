@@ -27,6 +27,7 @@ __pycache__/model_tools.cpython-310.pyc
 __pycache__/web_tools.cpython-310.pyc
 logs/
 data/
+!website/src/data/
 .pytest_cache/
 test_durations.json
 .pytest-cache/
