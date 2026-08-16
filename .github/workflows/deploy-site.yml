@@ -142,7 +142,7 @@ jobs:
 
           echo "Downloading currently live skills index"
           if curl -fsSL --retry 3 --retry-delay 5 \
-            "https://jaswanthsai1.github.io/jacky-cli/docs/api/skills-index.json" \
+            "https://jaswanthsai1.github.io/jacky-cli/api/skills-index.json" \
             -o "$INDEX_PATH" && validate_index; then
             exit 0
           fi
@@ -168,18 +168,14 @@ jobs:
 
       - name: Stage deployment
         run: |
-          mkdir -p _site/docs
-          cp -r website/build/* _site/docs/
-          # llms.txt / llms-full.txt are also published at the site root
-          # (https://jaswanthsai1.github.io/jacky-cli/llms.txt) because some
-          # agents and IDE plugins probe the classic root-level path rather
-          # than /docs/llms.txt. Same file, two URLs, one source of truth.
-          if [ -f website/build/llms.txt ]; then
-            cp website/build/llms.txt _site/llms.txt
-          fi
-          if [ -f website/build/llms-full.txt ]; then
-            cp website/build/llms-full.txt _site/llms-full.txt
-          fi
+          # docusaurus.config.ts's baseUrl is '/jacky-cli/' (this fork's
+          # GitHub Pages project-site root), so the built site must land at
+          # _site/ directly -- not _site/docs/. The upstream project served
+          # its docs under a /docs/ subpath because its custom domain root
+          # was a separate marketing page; this fork has no such page, so
+          # the docs site IS the root.
+          mkdir -p _site
+          cp -r website/build/* _site/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa  # v3
