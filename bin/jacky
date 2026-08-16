@@ -1,0 +1,330 @@
+#!/usr/bin/env bash
+# ┌──────────────────────────────────────────────────────────────────────────┐
+# │  jacky — dedicated CLI for the Jacky offensive-security agent             │
+# │  (Hermes core · local JACKY model · offline-capable · shared-state aware) │
+# └──────────────────────────────────────────────────────────────────────────┘
+set -uo pipefail
+export PATH="$HOME/.local/bin:$HOME/go/bin:/usr/local/bin:/usr/bin:/bin:/usr/lib/wsl/lib:$PATH"
+
+# ── load user API keys (each key set here lights up that provider in /model) ──
+KEYS_FILE="$HOME/.hermes/jacky-keys.env"
+if [ -f "$KEYS_FILE" ]; then
+  set -a; . "$KEYS_FILE"; set +a
+  # auto-wire OpenAI-compatible providers (nvidia/together/fireworks/…) from keys
+  # jacky-sync-providers disabled (cloud-only)
+fi
+
+JACKY_MODEL="${JACKY_MODEL:-JACKY:latest}"
+PLUGIN_DIR="$HOME/.hermes/plugins"
+PRELOAD_SKILLS="jacky-doctrine"
+
+# ── colors ────────────────────────────────────────────────────────────────────
+if [ -t 1 ]; then
+  R=$'\e[0m'; B=$'\e[1m'; DIM=$'\e[2m'
+  RED=$'\e[38;5;196m'; ORG=$'\e[38;5;208m'; YEL=$'\e[38;5;226m'
+  GRN=$'\e[38;5;46m'; CYN=$'\e[38;5;51m'; PUR=$'\e[38;5;141m'; GRY=$'\e[38;5;245m'
+else
+  R= B= DIM= RED= ORG= YEL= GRN= CYN= PUR= GRY=
+fi
+
+banner() {
+cat <<EOF
+${RED}     ▄▄▄██████▄▄▄${R}
+${RED}   ▄█${ORG}▀▀${R}      ${ORG}▀▀${RED}█▄${R}      ${B}${CYN}J A C K Y${R}  ${GRY}// offensive-security agent${R}
+${ORG}  ██${YEL}  ▄█████▄  ${ORG}██${R}     ${GRY}octopus doctrine · 28 tools · 113-repo arsenal${R}
+${ORG}  ██${YEL}  ██▀ ▀██  ${ORG}██${R}     ${GRY}brain ▸ hands ▸ memory ▸ evolve${R}
+${RED}   ▀█▄${ORG}  ▀█▀  ▄█${RED}▀${R}      ${DIM}owner: Jashu · model: ${JACKY_MODEL}${R}
+${RED}     ▀▀▀██████▀▀▀${R}
+EOF
+}
+
+# ── model selection — ONE local model in VRAM at a time (16GB GPU) ────────────
+# JACKY:latest        = Qwen2.5-Coder-7B-Instruct-OBLITERATED Q5_K_M (local, uncensored tool-caller — default)
+# JACKY-CODER:latest  = same Qwen-OBLITERATED (explicit alias)
+ALL_LOCAL_MODELS=(JACKY:latest JACKY-CODER:latest)
+
+# unload every local JACKY model EXCEPT the one we're about to run (no GPU overload)
+only_model() {
+  : # cloud-only mode
+}
+
+# provider args (local model unless --cloud); set after flag parsing
+PROVIDER_ARGS=(--provider custom:orcarouter --model "${JACKY_CLOUD_MODEL:-deepseek/deepseek-v4-pro-free}")
+USE_CLOUD=1
+
+# bring the offensive surface up (idempotent, best-effort, silent)
+surface_up() {
+  : # cloud-only mode
+}
+
+# call a jacky-offensive plugin handler directly (no model, instant)
+engine() {  # engine <handler_suffix> <json-args>
+  python3 - "$@" <<'PY'
+import sys, json, importlib.util, os
+sys.path.insert(0, os.path.expanduser("~/.hermes/plugins"))
+spec = importlib.util.spec_from_file_location("jacky_offensive_pkg",
+    os.path.expanduser("~/.hermes/plugins/jacky-offensive/__init__.py"),
+    submodule_search_locations=[os.path.expanduser("~/.hermes/plugins/jacky-offensive")])
+mod = importlib.util.module_from_spec(spec); sys.modules["jacky_offensive_pkg"]=mod
+spec.loader.exec_module(mod)
+from jacky_offensive_pkg import tools as T
+try:
+    from jacky_offensive_pkg import engine as E
+except Exception:
+    E = None
+suffix = sys.argv[1]
+args = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+fn = getattr(T, "_handle_jacky_" + suffix, None) or (getattr(E, "_handle_jacky_" + suffix, None) if E else None)
+print(fn(args) if fn else f"[jacky] no handler '{suffix}'")
+PY
+}
+
+usage() {
+  banner
+cat <<EOF
+
+${B}USAGE${R}  ${CYN}jacky${R} ${GRY}[--cloud]${R} ${YEL}<command>${R} [args]
+
+${B}HUNT${R}
+  ${YEL}hunt${R} ${GRY}<target>${R}       start/resume an engagement — drives the ${B}jacky_ptt${R} loop
+  ${YEL}resume${R} ${GRY}<target>${R}     resume from shared NOTEBOOK + latest handoff
+  ${YEL}ptt${R} ${GRY}<t> [act..]${R}    hunt ENGINE direct: ${DIM}init|show|next|done|fail|add|decide|ladder${R}
+  ${YEL}chain${R} ${GRY}<t> [scan]${R}   CHAINING engine: escalate leads → higher-impact chains
+  ${YEL}report${R} ${GRY}<t> "<f>"${R}    REPORT pipeline: ledger+evidence → impact-first draft
+  ${YEL}plan${R} ${GRY}<target>${R}       print the Octopus task tree + ledger snapshot
+
+${B}HANDS (direct, no model)${R}
+  ${YEL}arsenal${R} ${GRY}<...>${R}       universal arsenal: ${DIM}list | search <q> | info <r> | run <r> [-- args]${R}
+  ${YEL}kb${R} ${GRY}<class>${R}          distilled winning techniques for a vuln class (bbk -k)
+  ${YEL}recall${R} ${GRY}<query>${R}      cross-session memory from the shared hive
+
+${B}CHAT${R}
+  ${YEL}chat${R} ${GRY}[args..]${R}       interactive session (default if no command)
+  ${YEL}ask${R} ${GRY}"..."${R}           one-shot question
+
+${B}AGENT${R}
+  ${YEL}up${R}                  start the offensive surface (camofox + Caido)
+  ${YEL}status${R}              shared-bridge status (target/mode/claims)
+  ${YEL}tools${R}               list Jacky's toolset
+  ${YEL}skills${R}              list installed skills
+  ${YEL}doctor${R}              health check (model, surface, bridge, plugin)
+  ${YEL}version${R} · ${YEL}help${R}
+
+${B}BRAINS${R}
+  ${GRY}(default)${R} cloud API model (opencodezen, nemotron-3-ultra-free) ${DIM}(no GPU)${R}
+  ${YEL}--local${R}/${YEL}--coder${R}    local Qwen2.5-Coder-7B-OBLITERATED, uncensored tool-caller ${DIM}[JACKY-CODER:latest]${R}
+  ${YEL}keys${R}      add/see API keys (Claude/GPT/OpenRouter/Gemini/Grok…) → unlocks /model
+  ${DIM}in any session type ${R}${YEL}/model${R}${DIM} to switch to ANY provider+model that has a key${R}
+
+${B}FLAGS${R}  ${GRY}--cloud${R} (default) · ${GRY}--local${R} run fully offline on GPU
+${DIM}Examples:${R}
+  ${GRY}jacky hunt acme.com${R}          ${GRY}jacky ptt acme.com next${R}
+  ${GRY}jacky kb ssrf${R}                ${GRY}jacky arsenal run lfimap -- -u 'http://x/?f='${R}
+  ${GRY}jacky ask "test cors on https://api.x.com"${R}
+EOF
+}
+
+# ── leading flags: model selection + cloud (any order, before the command) ────
+while :; do
+  case "${1:-}" in
+    --cloud|--minimax)  USE_CLOUD=1; shift ;;
+    --local|--coder)    USE_CLOUD=0; JACKY_MODEL="JACKY-CODER:latest"; shift ;;
+    --model)            JACKY_MODEL="${2:-$JACKY_MODEL}"; shift 2 ;;
+    *) break ;;
+  esac
+done
+# Toggle the Caido MCP server (66 tools) in config.yaml. Hermes injects every
+# CONNECTED MCP server's tools regardless of --toolsets, so the only way to keep
+# the local 14B's prompt small enough to tool-call is to disable the caido MCP for
+# local runs. Cloud (MiniMax, huge ctx) keeps it. Atomic write; default-safe = off.
+caido_mcp() {  # caido_mcp on|off
+  python3 - "$1" <<'PY'
+import sys,os,re,tempfile
+want = sys.argv[1] == "on"; newval = "true" if want else "false"
+cfg = os.path.expanduser("~/.hermes/config.yaml")
+lines = open(cfg).read().splitlines(keepends=True)
+changed=False
+for i,l in enumerate(lines):
+    if "CAIDO_URL" in l:
+        for j in range(i+1, min(i+4, len(lines))):
+            m = re.match(r'^(\s+enabled:\s*)(true|false)(\s*)$', lines[j])
+            if m:
+                if m.group(2) != newval:
+                    lines[j] = m.group(1)+newval+m.group(3); changed=True
+                break
+        break
+if changed:
+    fd,tmp = tempfile.mkstemp(dir=os.path.dirname(cfg))
+    with os.fdopen(fd,'w') as f: f.write(''.join(lines))
+    os.replace(tmp,cfg)
+PY
+}
+
+# Temporarily disable global fallback models (like big-pickle) for jacky --cloud runs,
+# keeping it enabled for direct hermes commands (like hermes --resume).
+disable_fallbacks() {
+  python3 <<'PY'
+import os, re, tempfile
+cfg = os.path.expanduser("~/.hermes/config.yaml")
+bak = os.path.expanduser("~/.hermes/config.yaml.bak.fallbacks")
+if os.path.exists(cfg):
+    # Back up first
+    open(bak, "w").write(open(cfg).read())
+    # Modify
+    content = open(cfg).read()
+    # Locate fallback_providers block and replace it with []
+    pattern = r"(fallback_providers:\s*\n)(-\s+model:.*\n\s+provider:.*\n\s+base_url:.*\n?)*"
+    modified = re.sub(pattern, "fallback_providers: []\n", content)
+    # Write back
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(cfg))
+    with os.fdopen(fd, 'w') as f: f.write(modified)
+    os.replace(tmp, cfg)
+PY
+}
+
+enable_fallbacks() {
+  bak=~/.hermes/config.yaml.bak.fallbacks
+  if [ -f "$bak" ]; then
+    mv "$bak" ~/.hermes/config.yaml
+  fi
+}
+if [ "$USE_CLOUD" = "1" ]; then
+  # Disable fallbacks for this cloud session and restore on exit
+  disable_fallbacks
+  trap enable_fallbacks EXIT INT TERM
+
+  # cloud: use the model chosen in jacky-keys.env if set, else orcarouter deepseek-v4-pro-free
+  if [ -n "${JACKY_CLOUD_PROVIDER:-}" ] && [ -n "${JACKY_CLOUD_MODEL:-}" ]; then
+    PROVIDER_ARGS=(--provider "custom:${JACKY_CLOUD_PROVIDER}" --model "${JACKY_CLOUD_MODEL}")
+  else
+    PROVIDER_ARGS=(--provider custom:orcarouter --model "deepseek/deepseek-v4-pro-free")
+  fi
+  # cloud has the big context window — keep ALL tools incl Caido's 66-tool MCP
+  TOOLSET_ARGS=()
+  caido_mcp on
+else
+  PROVIDER_ARGS=(--provider custom:ollama-local --model "$JACKY_MODEL")
+  # local models have a 64K ctx — full tool dump (120 tools/~42K tok) overflows input and
+  # kills tool-calling. Lean toolset (hermes-cli + jacky) + Caido MCP off -> ~33K in -> works.
+  TOOLSET_ARGS=()
+  caido_mcp off
+fi
+
+CMD="${1:-chat}"; [ $# -gt 0 ] && shift || true
+
+case "$CMD" in
+  help|-h|--help)        usage ;;
+  version|-V|--version)  banner; echo; hermes --version 2>/dev/null | sed "s/^/${GRY}hermes ${R}/"; echo "${GRY}plugin ${R}$(grep -m1 '^version:' "$PLUGIN_DIR/jacky-offensive/plugin.yaml" | awk '{print $2}')" ;;
+
+  up)      echo "${CYN}» bringing offensive surface up...${R}"; surface_up; echo "${GRN}✓ camofox + Caido (best-effort)${R}" ;;
+  status)  agent-sync status 2>/dev/null || echo "${RED}bridge unavailable${R}" ;;
+  tools)   echo "${B}${CYN}Jacky toolset${R}"; hermes tools list 2>/dev/null | grep -iE "jacky" || echo "(run 'hermes plugins enable jacky-offensive')" ;;
+  skills)  hermes skills list 2>/dev/null ;;
+  keys)
+    echo "${B}${CYN}Jacky API keys${R}  ${DIM}$KEYS_FILE${R}"
+    echo "${DIM}edit the file, add a key, relaunch jacky, then type /model to pick that provider's models${R}"
+    echo "${B}configured providers:${R}"
+    found=0
+    for v in ANTHROPIC_API_KEY OPENAI_API_KEY OPENROUTER_API_KEY GOOGLE_API_KEY XAI_API_KEY DEEPSEEK_API_KEY MISTRAL_API_KEY GROQ_API_KEY GLM_API_KEY NOVITA_API_KEY HERMES_API_KEY \
+             NVIDIA_API_KEY TOKENROUTER_API_KEY TOGETHER_API_KEY FIREWORKS_API_KEY CEREBRAS_API_KEY DEEPINFRA_API_KEY HYPERBOLIC_API_KEY SAMBANOVA_API_KEY PERPLEXITY_API_KEY MOONSHOT_API_KEY AI21_API_KEY COHERE_API_KEY OPENPIPE_API_KEY NEBIUS_API_KEY LAMBDA_API_KEY GITHUB_MODELS_TOKEN; do
+      eval "val=\${$v:-}"; [ -n "$val" ] && { echo "  ${GRN}✓${R} ${v%_API_KEY}"; found=1; }
+    done
+    echo "  ${GRN}✓${R} tokenrouter/DeepSeek-V4-Flash-Free ${GRY}(preconfigured in config.yaml)${R}"
+    [ "$found" = "0" ] && echo "  ${YEL}(no extra keys yet — open $KEYS_FILE and add one)${R}"
+    echo "${DIM}open it:  nano $KEYS_FILE   (or:  ! nano ~/.hermes/jacky-keys.env)${R}" ;;
+  models)
+    echo "${B}${CYN}Jacky brains${R} ${DIM}(one runs at a time — selecting evicts the other)${R}"
+    loaded=$(ollama ps 2>/dev/null | awk 'NR>1{print $1}')
+    for m in "${ALL_LOCAL_MODELS[@]}"; do
+      tag=""; [ "$m" = "JACKY:latest" ] && tag="${GRY}Qwen3-14B-Pentest · hunt-tuned tool-caller @40K (default)${R}" || tag="${GRY}Qwen3-14B-Pentest · alias${R}"
+      mk="  "; echo "$loaded" | grep -q "^$m" && mk="${GRN}▶ ${R}"
+      built=$(ollama list 2>/dev/null | grep -q "^${m%%:*}" && echo "${GRN}ready${R}" || echo "${YEL}not built${R}")
+      printf "  %s%-22s %s  %s\n" "$mk" "$m" "$built" "$tag"
+    done
+    echo "${DIM}  use:  jacky --wrn   |   jacky --local   |   jacky --cloud${R}" ;;
+
+  kb)      [ $# -ge 1 ] && engine kb "$(python3 -c 'import json,sys;print(json.dumps({"query":sys.argv[1],"kind":"class"}))' "$1")" || echo "usage: jacky kb <class>" ;;
+  recall)  [ $# -ge 1 ] && engine recall "$(python3 -c 'import json,sys;print(json.dumps({"query":" ".join(sys.argv[1:])}))' "$@")" || echo "usage: jacky recall <query>" ;;
+  plan)    [ $# -ge 1 ] && engine plan "$(python3 -c 'import json,sys;print(json.dumps({"target":sys.argv[1]}))' "$1")" || echo "usage: jacky plan <target>" ;;
+
+  chain)
+    [ $# -ge 1 ] || { echo "usage: jacky chain <target> [scan|add pattern=<id>|patterns]"; exit 1; }
+    T="$1"; ACT="${2:-scan}"; shift; [ $# -ge 1 ] && shift || true
+    engine chain "$(python3 - "$T" "$ACT" "$@" <<'PY'
+import json,sys
+d={"target":sys.argv[1],"action":sys.argv[2]}
+for kv in sys.argv[3:]:
+    if "=" in kv: k,v=kv.split("=",1); d[k]=v
+print(json.dumps(d))
+PY
+)" ;;
+
+  report)
+    [ $# -ge 2 ] || { echo 'usage: jacky report <target> "<finding>" [class=<c>] [severity=<s>]'; exit 1; }
+    T="$1"; F="$2"; shift 2
+    engine report "$(python3 - "$T" "$F" "$@" <<'PY'
+import json,sys
+d={"target":sys.argv[1],"finding":sys.argv[2]}
+for kv in sys.argv[3:]:
+    if "=" in kv: k,v=kv.split("=",1); d[k]=v
+print(json.dumps(d))
+PY
+)" ;;
+
+  ptt)
+    [ $# -ge 2 ] || { echo "usage: jacky ptt <target> <init|show|next|done|fail|add|decide|ladder> [k=v ...]"; exit 1; }
+    T="$1"; ACT="$2"; shift 2
+    engine ptt "$(python3 - "$T" "$ACT" "$@" <<'PY'
+import json,sys
+d={"target":sys.argv[1],"action":sys.argv[2]}
+for kv in sys.argv[3:]:
+    if "=" in kv: k,v=kv.split("=",1); d[k]=v
+print(json.dumps(d))
+PY
+)" ;;
+
+  arsenal)
+    [ $# -ge 1 ] || { echo "usage: jacky arsenal <list|search|info|run> [repo/query] [-- args]"; exit 1; }
+    ACT="$1"; shift
+    engine arsenal "$(python3 - "$ACT" "$@" <<'PY'
+import json,sys
+act=sys.argv[1]; rest=sys.argv[2:]
+d={"action":act}
+if act=="search": d["query"]=" ".join(rest)
+elif act in ("info","run"):
+    if rest:
+        d["repo"]=rest[0]
+        if "--" in rest: d["args"]=" ".join(rest[rest.index("--")+1:])
+        elif len(rest)>1: d["args"]=" ".join(rest[1:])
+print(json.dumps(d))
+PY
+)" ;;
+
+  hunt|resume)
+    [ $# -ge 1 ] || { echo "usage: jacky $CMD <target>"; exit 1; }
+    TARGET="$1"; shift
+    echo "${CYN}» ${CMD} ${B}$TARGET${R}${DIM} — bringing surface up…${R}"
+    surface_up
+    command -v hunt-workspace >/dev/null 2>&1 && hunt-workspace "$TARGET" >/dev/null 2>&1 || true
+    agent-sync presence --actor hermes --status running --target "$TARGET" >/dev/null 2>&1 || true
+    hermes chat "${PROVIDER_ARGS[@]}" "${TOOLSET_ARGS[@]}" --skills "$PRELOAD_SKILLS" "$@" \
+      -q "Hunt target '$TARGET'. First run agent-sync status and read ~/engagements/$TARGET/NOTEBOOK.md + the latest handoff. Then DRIVE THE ENGINE: jacky_ptt init $TARGET (or show if it exists), then loop jacky_ptt next -> run the recommended tool -> jacky_ptt done/fail, never repeating tried attacks, until findings are validated. Continue from the documented next action if resuming."
+    ;;
+
+  ask)
+    [ $# -ge 1 ] || { echo 'usage: jacky ask "..."'; exit 1; }
+    surface_up; hermes chat "${PROVIDER_ARGS[@]}" "${TOOLSET_ARGS[@]}" --skills "$PRELOAD_SKILLS" -q "$*" ;;
+
+  doctor)
+    banner; echo
+    echo "${B}model${R}    $(ollama list 2>/dev/null | grep -qi "${JACKY_MODEL%%:*}" && echo "${GRN}✓ $JACKY_MODEL${R}" || echo "${RED}✗ not found${R}")"
+    echo "${B}plugin${R}   $(hermes tools list 2>/dev/null | grep -qi 'enabled.*jacky' && echo "${GRN}✓ enabled${R}" || echo "${RED}✗ disabled${R}")"
+    echo "${B}camofox${R}  $(curl -s -m2 -o /dev/null -w '%{http_code}' http://localhost:9377/ 2>/dev/null | grep -qE '[2-4]' && echo "${GRN}✓ up${R}" || echo "${YEL}- down (jacky up)${R}")"
+    echo "${B}caido${R}    $(curl -s -m2 -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/ 2>/dev/null | grep -qE '[2-4]' && echo "${GRN}✓ up${R}" || echo "${YEL}- down (jacky up)${R}")"
+    echo "${B}bridge${R}   $(agent-sync status >/dev/null 2>&1 && echo "${GRN}✓ ok${R}" || echo "${YEL}- unavailable${R}")"
+    echo "${B}tools${R}    $(hermes tools list 2>/dev/null | grep -ci jacky) jacky entries"
+    ;;
+
+  chat)    surface_up; hermes chat "${PROVIDER_ARGS[@]}" "${TOOLSET_ARGS[@]}" --skills "$PRELOAD_SKILLS" "$@" ;;
+  *)       surface_up; hermes chat "${PROVIDER_ARGS[@]}" "${TOOLSET_ARGS[@]}" --skills "$PRELOAD_SKILLS" -q "$CMD $*" ;;
+esac

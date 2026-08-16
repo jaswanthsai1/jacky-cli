@@ -1,0 +1,56 @@
+#!/command/with-contenv sh
+# shellcheck shell=sh
+# Dashboard service. Always declared so s6 has a supervised slot; if
+# JACKY_DASHBOARD isn't truthy the run script exits cleanly and the
+# companion finish script returns 125 (s6's "permanent failure, do
+# not restart" marker), so s6-svstat reports the slot as down. See
+# also docker/s6-rc.d/dashboard/finish.
+
+case "${JACKY_DASHBOARD:-}" in
+    1|true|TRUE|True|yes|YES|Yes) ;;
+    *)
+        # Exit 0; the finish script will exit 125 → s6-supervise won't
+        # restart us and the slot reports down. Using a clean exit
+        # (rather than `exec sleep infinity`) means s6-svstat reflects
+        # reality: when JACKY_DASHBOARD is unset, the service is NOT
+        # running, just supervised-with-permanent-failure. See PR
+        # #30136 review item I3.
+        exit 0
+        ;;
+esac
+
+# with-contenv repopulates HOME from /init as /root. Reset it before
+# dropping privileges so HOME-anchored state lands under /opt/data.
+export HOME=/opt/data
+
+cd /opt/data
+# shellcheck disable=SC1091
+. /opt/jacky/.venv/bin/activate
+
+dash_host="${JACKY_DASHBOARD_HOST:-0.0.0.0}"
+dash_port="${JACKY_DASHBOARD_PORT:-9119}"
+
+# The dashboard's auth gate engages automatically on non-loopback binds and
+# REQUIRES a DashboardAuthProvider to be registered, else start_server fails
+# closed. Two zero-infra ways to satisfy it in a container:
+#   • Password: set JACKY_DASHBOARD_BASIC_AUTH_USERNAME + _PASSWORD (bundled
+#     dashboard_auth/basic provider — no external IDP).
+#   • OAuth:    set JACKY_DASHBOARD_OAUTH_CLIENT_ID (bundled nous provider).
+#
+# JACKY_DASHBOARD_INSECURE no longer disables the gate (June 2026 hardening:
+# unauthenticated public dashboards were the entry point for the MCP-config
+# persistence campaign). It is accepted but ignored; warn if set so operators
+# migrate to a real provider.
+case "${JACKY_DASHBOARD_INSECURE:-}" in
+    1|true|TRUE|True|yes|YES|Yes)
+        echo "[dashboard] JACKY_DASHBOARD_INSECURE no longer disables the auth gate." >&2
+        echo "[dashboard] A non-loopback dashboard requires an auth provider:" >&2
+        echo "[dashboard]   set JACKY_DASHBOARD_BASIC_AUTH_USERNAME + _PASSWORD (password)" >&2
+        echo "[dashboard]   or JACKY_DASHBOARD_OAUTH_CLIENT_ID (OAuth)." >&2
+        ;;
+esac
+
+# Skip the drop when already non-root.
+[ "$(id -u)" = 0 ] || exec jacky dashboard --host "$dash_host" --port "$dash_port" --no-open
+exec s6-setuidgid jacky jacky dashboard \
+    --host "$dash_host" --port "$dash_port" --no-open

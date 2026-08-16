@@ -1,0 +1,38 @@
+#
+# docker-compose.windows.yml — Windows Docker Desktop compatible
+#
+# Differences from docker-compose.yml:
+#   - Removes `network_mode: host` (not supported on Docker Desktop for Windows)
+#   - Uses explicit port mappings instead
+#   - Uses Windows-style volume path for ~/.jacky
+#
+# Usage:
+#   docker compose -f docker-compose.windows.yml up -d
+#
+services:
+  gateway:
+    image: jaswanthsai1/jacky-cli:latest
+    container_name: jacky
+    restart: unless-stopped
+    volumes:
+      - ${USERPROFILE}/.jacky:/opt/data
+    environment:
+      - JACKY_UID=10000
+      - JACKY_GID=10000
+    command: ["gateway", "run"]
+
+  dashboard:
+    image: jaswanthsai1/jacky-cli:latest
+    container_name: jacky-dashboard
+    restart: unless-stopped
+    depends_on:
+      - gateway
+    volumes:
+      - ${USERPROFILE}/.jacky:/opt/data
+    environment:
+      - JACKY_UID=10000
+      - JACKY_GID=10000
+      - JACKY_DASHBOARD_HOST=0.0.0.0
+    ports:
+      - "127.0.0.1:9119:9119"
+    command: ["dashboard", "--host", "0.0.0.0", "--port", "9119", "--no-open", "--insecure"]

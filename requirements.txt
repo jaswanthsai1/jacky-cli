@@ -1,0 +1,44 @@
+# Core runtime dependencies for Jacky CLI.
+#
+# The canonical dependency list lives in `pyproject.toml` under
+# `[project.dependencies]` (with `uv.lock` as the fully-resolved lockfile).
+# This file mirrors that core list 1:1 for anyone who prefers plain
+# `pip install -r requirements.txt` over `pip install -e .` / `uv sync`.
+# If you edit dependencies, update `pyproject.toml` first and regenerate
+# this file to match — see `setup.sh` for the recommended install path.
+#
+# Optional feature sets (Anthropic provider, Telegram/Discord/Slack/Matrix
+# gateways, voice/TTS, cloud memory providers, dashboard, etc.) are declared
+# as extras in `pyproject.toml` (`pip install -e ".[web,messaging,...]"` or
+# `pip install -e ".[all]"`) and are intentionally NOT included here to keep
+# the base install lean.
+openai==2.24.0
+certifi==2026.5.20
+python-dotenv==1.2.2
+fire==0.7.1
+httpx[socks]==0.28.1
+rich==14.3.3
+tenacity==9.1.4
+pyyaml==6.0.3
+ruamel.yaml==0.18.17
+requests==2.33.0
+jinja2==3.1.6
+pydantic==2.13.4
+prompt_toolkit==3.0.52
+croniter==6.0.0
+packaging==26.0
+Markdown==3.10.2
+PyJWT[crypto]==2.13.0
+urllib3>=2.7.0,<3
+cryptography==46.0.7
+tzdata==2025.3; sys_platform == "win32"
+psutil==7.2.2
+websockets==15.0.1
+pathspec==1.1.1
+fastapi>=0.104.0,<1
+uvicorn[standard]>=0.24.0,<1
+python-multipart>=0.0.9,<1
+ptyprocess>=0.7.0,<1; sys_platform != "win32"
+pywinpty>=2.0.0,<3; sys_platform == "win32"
+Pillow==12.2.0
+concurrent-log-handler==0.9.29; sys_platform == "win32"
