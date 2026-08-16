@@ -599,4 +599,4 @@ test(tools): añadir tests unitarios para file_operations
 
 ## Licencia
 
-Al contribuir, aceptas que tus contribuciones serán licenciadas bajo la [Licencia MIT](LICENSE).
+Al contribuir, aceptas que tus contribuciones serán licenciadas bajo la [Licencia MIT](../../LICENSE).
