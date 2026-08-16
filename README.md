@@ -2,13 +2,23 @@
   <img src="assets/banner.jpeg" alt="Jacky CLI" width="600">
 </p>
 
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:00FF41,50:00E5FF,100:9D00FF&height=120&section=header&animation=fadeIn" alt="divider"/>
+
 <h1 align="center">Jacky CLI</h1>
 <p align="center"><i>AI CLI, Automate.</i></p>
 
 <p align="center">
-  <a href="https://github.com/jaswanthsai1/jacky-cli/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
-  <a href="https://github.com/jaswanthsai1"><img src="https://img.shields.io/badge/Author-jaswanthsai1-blueviolet?style=for-the-badge" alt="Author"></a>
-  <a href="https://github.com/NousResearch/hermes-agent"><img src="https://img.shields.io/badge/Fork%20of-Hermes%20Agent-FFD700?style=for-the-badge" alt="Fork of Hermes Agent"></a>
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&duration=2500&pause=800&color=00FF41&center=true&vCenter=true&width=600&lines=jacky+%24+whoami;%3E+AI+agent+CLI+%E2%80%94+local+or+cloud;%3E+bug-bounty+hunt-loop+built+in;%3E+git+clone+%26%26+.%2Fsetup.sh+%26%26+jacky;%3E+status%3A+ONLINE" alt="Typing SVG" />
+</p>
+
+<p align="center">
+  <a href="https://github.com/jaswanthsai1/jacky-cli/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-00FF41?style=for-the-badge&logo=opensourceinitiative&logoColor=black" alt="License: MIT"></a>
+  <a href="https://github.com/jaswanthsai1"><img src="https://img.shields.io/badge/Author-jaswanthsai1-9D00FF?style=for-the-badge&logo=github&logoColor=white" alt="Author"></a>
+  <a href="https://github.com/NousResearch/hermes-agent"><img src="https://img.shields.io/badge/Fork%20of-Hermes%20Agent-00E5FF?style=for-the-badge&logo=nintendogamecube&logoColor=black" alt="Fork of Hermes Agent"></a>
+  <img src="https://img.shields.io/badge/status-ONLINE-00FF41?style=for-the-badge&logo=statuspage&logoColor=black" alt="status">
+  <img src="https://komarev.com/ghpvc/?username=jacky-cli&repo=jacky-cli&label=repo+views&color=00FF41&style=for-the-badge" alt="views">
+</p>
+<p align="center">
   <a href="README.zh-CN.md"><img src="https://img.shields.io/badge/Lang-中文-red?style=for-the-badge" alt="中文"></a>
   <a href="README.ur-pk.md"><img src="https://img.shields.io/badge/Lang-اردو-green?style=for-the-badge" alt="اردو"></a>
   <a href="README.es.md"><img src="https://img.shields.io/badge/Lang-Español-orange?style=for-the-badge" alt="Español"></a>
@@ -27,22 +37,28 @@ and CLI ergonomics tuned around dual local + cloud model use. If you're
 looking for the upstream project, it's at
 [github.com/NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent).
 
----
+<img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00FF41,100:00E5FF" alt="divider"/>
 
 ## Quick Start
 
-```bash
-git clone https://github.com/jaswanthsai1/jacky-cli.git
-cd jacky-cli
-./setup.sh
-jacky
+```console
+┌─[jacky@localhost]─[~]
+└──╼ $ git clone https://github.com/jaswanthsai1/jacky-cli.git
+┌─[jacky@localhost]─[~/jacky-cli]
+└──╼ $ ./setup.sh
+[✓] venv created
+[✓] jacky-cli installed
+[✓] jacky --help ........................ OK
+┌─[jacky@localhost]─[~/jacky-cli]
+└──╼ $ jacky
+  ⌖ JACKY ONLINE — model: local(ollama) | cloud(any) — ready.
 ```
 
 `setup.sh` creates a virtual environment, installs Jacky CLI into it, copies
 `.env.example` → `.env`, links the `jacky` command onto your `PATH`, and — before
 declaring success — actually runs `jacky --help` to prove the install works.
 
----
+<img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00E5FF,100:9D00FF" alt="divider"/>
 
 ## What Jacky can do
 
@@ -58,7 +74,7 @@ declaring success — actually runs `jacky --help` to prove the install works.
 <tr><td><b>Runs anywhere</b></td><td>Six terminal backends — local, Docker, SSH, Singularity, Modal, and Daytona. Daytona and Modal offer serverless persistence — your agent's environment hibernates when idle and wakes on demand.</td></tr>
 </table>
 
----
+<img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:9D00FF,100:00FF41" alt="divider"/>
 
 ## Local model (Ollama) vs. cloud provider setup
 
@@ -89,7 +105,7 @@ jacky model            # pick your provider and model
 
 Full provider reference: [`website/docs/integrations/providers.md`](website/docs/integrations/providers.md).
 
----
+<img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00FF41,100:00E5FF" alt="divider"/>
 
 ## Getting Started
 
@@ -184,3 +200,5 @@ Jacky CLI is a fork of [Hermes Agent](https://github.com/NousResearch/hermes-age
 © Nous Research, used and modified under the MIT License. Jacky-specific
 additions © Maturi Jaswanth Sai Madhu Mohan. See [LICENSE](LICENSE) for the
 full dual attribution.
+
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:9D00FF,50:00E5FF,100:00FF41&height=100&section=footer" alt="footer"/>
