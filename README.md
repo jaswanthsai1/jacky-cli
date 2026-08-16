@@ -56,8 +56,7 @@ declaring success — actually runs `jacky --help` to prove the install works.
 
 <img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00E5FF,100:9D00FF" alt="divider"/>
 
-<details>
-<summary><h2 style="display:inline">📦 What Jacky can do</h2></summary>
+## What Jacky can do
 
 <table>
 <tr><td><b>Dual local + cloud model support</b></td><td>Run entirely offline against <a href="https://ollama.com">Ollama</a> and any GGUF model — zero API cost, nothing leaves your machine — or point it at any OpenAI-compatible cloud provider (OpenRouter, direct OpenAI/Anthropic, Google AI Studio, and more). Switch providers any time with <code>jacky model</code>, no code changes.</td></tr>
@@ -71,10 +70,9 @@ declaring success — actually runs `jacky --help` to prove the install works.
 <tr><td><b>Runs anywhere</b></td><td>Six terminal backends — local, Docker, SSH, Singularity, Modal, and Daytona. Daytona and Modal offer serverless persistence — your agent's environment hibernates when idle and wakes on demand.</td></tr>
 </table>
 
-</details>
+<img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:9D00FF,100:00FF41" alt="divider"/>
 
-<details>
-<summary><h2 style="display:inline">🖥️ Local model (Ollama) vs. cloud provider setup</h2></summary>
+## Local model (Ollama) vs. cloud provider setup
 
 Jacky supports both, and switching between them is a one-line config change.
 
@@ -103,10 +101,9 @@ jacky model            # pick your provider and model
 
 Full provider reference: [`website/docs/integrations/providers.md`](website/docs/integrations/providers.md).
 
-</details>
+<img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00FF41,100:00E5FF" alt="divider"/>
 
-<details>
-<summary><h2 style="display:inline">⚙️ Getting Started — command reference</h2></summary>
+## Getting Started
 
 ```bash
 jacky              # Interactive CLI — start a conversation
@@ -119,10 +116,11 @@ jacky update       # Update to the latest version
 jacky doctor       # Diagnose any issues
 ```
 
-</details>
+📖 **[Full documentation →](website/docs/)** &nbsp;|&nbsp; 🎯 **[Hunt-loop methodology →](METHODOLOGY.md)**
 
-<details>
-<summary><h2 style="display:inline">💬 CLI vs Messaging quick reference</h2></summary>
+---
+
+## CLI vs Messaging Quick Reference
 
 Jacky has two entry points: start the terminal UI with `jacky`, or run the gateway and talk to it from Telegram, Discord, Slack, WhatsApp, Signal, or Email. Once you're in a conversation, many slash commands are shared across both interfaces.
 
@@ -140,10 +138,9 @@ Jacky has two entry points: start the terminal UI with `jacky`, or run the gatew
 
 For the full command lists, see [`website/docs/user-guide/cli.md`](website/docs/user-guide/cli.md) and [`website/docs/user-guide/messaging/`](website/docs/user-guide/messaging/).
 
-</details>
+---
 
-<details>
-<summary><h2 style="display:inline">📚 Documentation index</h2></summary>
+## Documentation
 
 Source docs live under [`website/docs/`](website/docs/):
 
@@ -167,10 +164,9 @@ Source docs live under [`website/docs/`](website/docs/):
 | [Environment Variables](website/docs/reference/environment-variables.md)       | Complete env var reference                                  |
 | **[Hunt-Loop Methodology](METHODOLOGY.md)**                                    | **Bundled bug-bounty/offensive-security doctrine and skills** |
 
-</details>
+---
 
-<details>
-<summary><h2 style="display:inline">🤝 Contributing & Community</h2></summary>
+## Contributing
 
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and PR process.
 
@@ -182,11 +178,13 @@ cd jacky-cli
 scripts/run_tests.sh
 ```
 
+---
+
+## Community
+
 - 🐛 [Issues](https://github.com/jaswanthsai1/jacky-cli/issues)
 - 📚 [Skills Hub (agentskills.io)](https://agentskills.io)
 - 🔌 [computer-use-linux](https://github.com/avifenesh/computer-use-linux) — Linux desktop-control MCP server for Jacky and other MCP hosts, with AT-SPI accessibility trees, Wayland/X11 input, screenshots, and compositor window targeting.
-
-</details>
 
 <img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:9D00FF,100:00FF41" alt="divider"/>
 
