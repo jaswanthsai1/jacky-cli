@@ -70,9 +70,12 @@ environments/benchmarks/evals/
 jacky_cli/web_dist/
 apps/desktop/build/
 
-# Plugin dashboard build output (vite bundles regenerated at build time;
-# not covered by the specific dist/ entries above)
-plugins/*/dashboard/dist/
+# NOTE: plugins/*/dashboard/dist/ (e.g. plugins/kanban, plugins/jacky-achievements)
+# is intentionally NOT ignored. These plugins ship no source tree in this repo
+# (no package.json/src under plugins/*/dashboard/) -- the committed dist/ IS the
+# artifact, hand-authored/patched directly, with no build step to regenerate it.
+# A prior pass wrongly assumed this was disposable build output and deleting it
+# broke the plugin (and its tests) entirely -- do not re-add this ignore rule.
 apps/desktop/dist/
 apps/desktop/release/
 apps/desktop/*.tsbuildinfo
