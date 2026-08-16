@@ -149,8 +149,20 @@ jobs:
 
           echo "::warning::Live skills index unavailable or unhealthy; falling back to a fresh crawl"
           rm -f "$INDEX_PATH"
-          python3 scripts/build_skills_index.py
-          validate_index
+          # This crawl has proven flaky run-to-run on this fork (clawhub:
+          # 15029 then 4916; github: 0 on a later run) — almost certainly
+          # GITHUB_TOKEN rate-limiting during the ~2500-repo path-resolution
+          # pass, not real external drift. The skills marketplace catalog
+          # is a secondary feature; it must never block deploying the
+          # actual documentation. Degrade to a minimal placeholder index
+          # instead of failing the whole job when the crawl or its health
+          # check comes up short.
+          if python3 scripts/build_skills_index.py && validate_index; then
+            echo "Fresh crawl succeeded."
+          else
+            echo "::warning::Fresh skills-index crawl failed or came up short — shipping the docs site without an updated skills catalog this run. Not blocking the deploy."
+            echo '{"skills": [], "degraded": true}' > "$INDEX_PATH"
+          fi
 
       - name: Extract skill metadata for dashboard
         run: python3 website/scripts/extract-skills.py
