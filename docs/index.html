@@ -817,16 +817,14 @@
     var built = "";
     var typeSpeed = 32;
     var lineDelay = 500;
-    var loopDelay = 3200;
 
     function step() {
       if (lineIndex >= lines.length) {
-        setTimeout(function () {
-          built = "";
-          lineIndex = 0;
-          charIndex = 0;
-          step();
-        }, loopDelay);
+        // Done — leave the final line in place with a steady blinking
+        // caret instead of clearing and retyping on a loop. A terminal
+        // that keeps wiping itself every few seconds reads as broken/
+        // unstable, not lively.
+        target.innerHTML = built + '<span class="caret">&nbsp;</span>';
         return;
       }
       var line = lines[lineIndex];
