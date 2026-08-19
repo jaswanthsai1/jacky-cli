@@ -9639,6 +9639,28 @@ async def delete_empty_sessions_endpoint(profile: Optional[str] = None):
         db.close()
 
 
+@app.get("/api/agents/delegations")
+async def list_agent_delegations():
+    """Background ``delegate_task(background=true)`` delegations (running +
+    recently completed), for a dashboard "Agents" panel.
+
+    Mirrors the CLI's ``/agents`` listing. Each entry now carries
+    ``session_id``/``session_ids`` — the child agent's real, SessionDB-backed
+    session id(s), assigned at dispatch — so the dashboard can link straight
+    to a live session (``jacky --resume <session_id>``) instead of only
+    showing a status line for a delegation that's still running. Best-effort:
+    the async-delegation module is optional in some embed contexts, so an
+    import failure degrades to an empty list rather than a 500.
+    """
+    try:
+        from tools.async_delegation import list_async_delegations
+        delegations = list_async_delegations()
+    except Exception:
+        delegations = []
+    running = [d for d in delegations if d.get("status") == "running"]
+    return {"delegations": delegations, "running_count": len(running)}
+
+
 @app.get("/api/sessions/stats")
 async def get_session_stats(profile: Optional[str] = None):
     """Session-store statistics for the Sessions page (mirrors `jacky sessions stats`).
