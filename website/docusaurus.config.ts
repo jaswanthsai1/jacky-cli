@@ -3,10 +3,23 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'Jacky Agent',
-  tagline: 'The self-improving AI agent',
+  title: 'Jacky CLI',
+  tagline: 'The AI CLI built for hunting and building',
   favicon: 'img/favicon.ico',
 
+  // Deployed today at https://jaswanthsai1.github.io/jacky-cli/ (a GitHub
+  // Pages *project* site), so `url` is the Pages domain and `baseUrl` is
+  // the repo subpath. If this site is later pointed at a custom domain
+  // (e.g. jacky-cli.dev) as a Pages *user/org* site or via Vercel/Netlify,
+  // change BOTH of the following:
+  //   1. `url`: the new domain, e.g. 'https://jacky-cli.dev'
+  //   2. `baseUrl`: '/' (root — no more /jacky-cli/ subpath)
+  // ...and add a `website/static/CNAME` file containing the domain (for
+  // GitHub Pages specifically; not needed for Vercel/Netlify custom
+  // domains, which are configured in their dashboards instead). Do NOT
+  // add a CNAME file while still deploying to the jaswanthsai1.github.io
+  // subpath — GitHub Pages will start redirecting the project site to the
+  // (unconfigured) custom domain and break the current deployment.
   url: 'https://jaswanthsai1.github.io',
   baseUrl: '/jacky-cli/',
 
@@ -119,9 +132,9 @@ const config: Config = {
       },
     },
     navbar: {
-      title: 'Jacky Agent',
+      title: 'Jacky CLI',
       logo: {
-        alt: 'Jacky Agent',
+        alt: 'Jacky CLI — hooded AI hacker-bot mascot',
         src: 'img/logo.png',
       },
       items: [
@@ -132,12 +145,17 @@ const config: Config = {
           label: 'Docs',
         },
         {
+          to: '/methodology/',
+          label: 'Methodology',
+          position: 'left',
+        },
+        {
           to: '/skills',
           label: 'Skills',
           position: 'left',
         },
         {
-          href: 'https://github.com/jaswanthsai1/jacky-cli#quick-start',
+          to: '/#quick-start',
           label: 'Download',
           position: 'left',
         },
@@ -146,7 +164,7 @@ const config: Config = {
           position: 'right',
         },
         {
-          href: 'https://jaswanthsai1.github.io/jacky-cli/',
+          to: '/',
           label: 'Home',
           position: 'right',
         },
@@ -169,6 +187,7 @@ const config: Config = {
           title: 'Docs',
           items: [
             { label: 'Getting Started', to: '/getting-started/quickstart' },
+            { label: 'Methodology', to: '/methodology/' },
             { label: 'User Guide', to: '/user-guide/cli' },
             { label: 'Developer Guide', to: '/developer-guide/architecture' },
             { label: 'Reference', to: '/reference/cli-commands' },

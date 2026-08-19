@@ -73,6 +73,19 @@ npm install -g jacky-cli-agent
 npm installs won't miss new releases either — Jacky checks for updates on
 startup and tells you when `npm update -g jacky-cli-agent` is worth running.
 
+**Or via pip (any OS with Python 3.11–3.13):**
+
+```bash
+pip install jacky-cli
+```
+
+Live on PyPI. Prefer to track `main` instead of a tagged release, without a
+PyPI install at all?
+
+```bash
+pip install git+https://github.com/jaswanthsai1/jacky-cli.git
+```
+
 **Windows (native, PowerShell):**
 
 ```powershell
