@@ -14,7 +14,20 @@ Provides subcommands for:
 import os
 import sys
 
-__version__ = "0.18.3"
+# Resolve __version__ from the installed package's own metadata (which is
+# generated from pyproject.toml's `version` field at build time) instead of
+# a second hardcoded string here. Two independent version strings can drift
+# — pyproject.toml gets bumped for a release, this literal doesn't, and
+# `jacky --version` silently reports the old number even though the newly
+# published package is otherwise correct. Falls back to a hardcoded string
+# only when the package truly isn't installed (e.g. running the bare
+# jacky_cli/ source tree directly with no pip/editable install at all).
+try:
+    from importlib.metadata import version as _pkg_version
+
+    __version__ = _pkg_version("jacky-cli")
+except Exception:
+    __version__ = "0.18.5"
 __release_date__ = "2026.8.16"
 
 
