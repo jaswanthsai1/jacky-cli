@@ -14,7 +14,6 @@
 <p align="center">
   <a href="https://github.com/jaswanthsai1/jacky-cli/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-00FF41?style=for-the-badge&logo=opensourceinitiative&logoColor=black" alt="License: MIT"></a>
   <a href="https://github.com/jaswanthsai1"><img src="https://img.shields.io/badge/Author-jaswanthsai1-9D00FF?style=for-the-badge&logo=github&logoColor=white" alt="Author"></a>
-  <a href="https://github.com/NousResearch/hermes-agent"><img src="https://img.shields.io/badge/Fork%20of-Hermes%20Agent-00E5FF?style=for-the-badge&logo=nintendogamecube&logoColor=black" alt="Fork of Hermes Agent"></a>
   <img src="https://img.shields.io/badge/status-ONLINE-00FF41?style=for-the-badge&logo=statuspage&logoColor=black" alt="status">
   <img src="https://komarev.com/ghpvc/?username=jacky-cli&repo=jacky-cli&label=repo+views&color=00FF41&style=for-the-badge" alt="views">
 </p>
@@ -25,17 +24,6 @@
 </p>
 
 **Designer / Author:** [Maturi Jaswanth Sai Madhu Mohan](https://github.com/jaswanthsai1)
-
-**Built on Hermes Agent by [Nous Research](https://nousresearch.com).** Jacky CLI
-is a personalized, distinct distribution of Nous Research's MIT-licensed
-[Hermes Agent](https://github.com/NousResearch/hermes-agent) — full credit and
-thanks to the Nous Research team for the original agent, its tool-calling
-architecture, and its self-improving skill system. This fork keeps that
-foundation and adds: a bundled offensive-security / bug-bounty hunt-loop
-methodology (`skills/`, `METHODOLOGY.md`), a one-command `setup.sh` bootstrap,
-and CLI ergonomics tuned around dual local + cloud model use. If you're
-looking for the upstream project, it's at
-[github.com/NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent).
 
 <img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00FF41,100:00E5FF" alt="divider"/>
 
@@ -63,6 +51,19 @@ powershell -ExecutionPolicy ByPass -File scripts\install.ps1
 See [`website/docs/user-guide/windows-native.md`](website/docs/user-guide/windows-native.md) for the native Windows feature matrix.
 
 📖 **[Full documentation →](website/docs/)** &nbsp;|&nbsp; 🎯 **[Hunt-loop methodology →](docs/METHODOLOGY.md)**
+
+<img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00E5FF,100:9D00FF" alt="divider"/>
+
+## Requirements
+
+- **Python** 3.11, 3.12, or 3.13 (checked and auto-offered for install by `setup.sh`)
+- **OS**: Linux, macOS, or Windows (native via `scripts/install.ps1`, or WSL)
+- **Optional, for local models**: [Ollama](https://ollama.com) or another
+  OpenAI-compatible local server, plus a GPU for anything beyond small models
+  (CPU-only inference works, just slower)
+- **Optional, for cloud models**: an API key for any OpenAI-compatible or
+  Anthropic-compatible provider (OpenRouter, OpenAI, Anthropic, Google AI
+  Studio, and others — bring your own key)
 
 <img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00E5FF,100:9D00FF" alt="divider"/>
 
@@ -127,6 +128,24 @@ jacky doctor       # Diagnose any issues
 ```
 
 📖 **[Full documentation →](website/docs/)** &nbsp;|&nbsp; 🎯 **[Hunt-loop methodology →](docs/METHODOLOGY.md)**
+
+---
+
+## Manual install (without setup.sh)
+
+`./setup.sh` is the recommended path, but if you'd rather do it by hand:
+
+```bash
+git clone https://github.com/jaswanthsai1/jacky-cli.git
+cd jacky-cli
+python3 -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install --upgrade pip
+pip install -e .                 # core install
+# or: pip install -e ".[all]"    # everything eager-installable
+cp .env.example .env             # then edit .env with your provider config
+jacky --help                     # verify it worked
+```
 
 ---
 

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jacky CLI — The AI CLI built for hunting</title>
+<meta name="description" content="Jacky CLI — an AI agent CLI for bug bounty, pentesting, and full-stack coding automation. Local or cloud. Yours to run anywhere.">
+<link rel="icon" href="https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/assets/banner.jpeg" type="image/jpeg">
+<style>
+  :root {
+    --bg: #05070a;
+    --bg-alt: #0a0f14;
+    --neon: #00ff41;
+    --cyan: #00e5ff;
+    --purple: #9d00ff;
+    --text: #d8ffe0;
+    --muted: #8aa392;
+    --border: #14261a;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    scroll-behavior: smooth;
+  }
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { color: var(--neon); text-decoration: underline; }
+
+  .bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,65,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,65,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 64px 20px 40px;
+  }
+
+  .banner {
+    width: 100%;
+    max-width: 260px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 0 40px rgba(0,255,65,0.25);
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    margin: 0 0 8px;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, var(--neon), var(--cyan), var(--purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .tagline {
+    color: var(--muted);
+    font-size: 1.1rem;
+    max-width: 640px;
+    margin: 0 auto 28px;
+    line-height: 1.6;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    border: 1px solid var(--neon);
+    transition: all 0.15s ease;
+  }
+  .btn-primary {
+    background: var(--neon);
+    color: #04140a;
+  }
+  .btn-primary:hover {
+    background: transparent;
+    color: var(--neon);
+    text-decoration: none;
+    box-shadow: 0 0 20px rgba(0,255,65,0.4);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--neon);
+  }
+  .btn-secondary:hover {
+    background: rgba(0,255,65,0.08);
+    text-decoration: none;
+  }
+
+  .terminal {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 32px auto 0;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: left;
+    box-shadow: 0 0 30px rgba(0,229,255,0.12);
+  }
+  .terminal-bar {
+    display: flex;
+    gap: 6px;
+    padding: 10px 14px;
+    background: #0e1a12;
+    border-bottom: 1px solid var(--border);
+  }
+  .terminal-bar span {
+    width: 11px; height: 11px; border-radius: 50%;
+  }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .terminal pre {
+    margin: 0;
+    padding: 18px 20px;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--neon);
+    white-space: pre-wrap;
+  }
+  .terminal pre .muted { color: var(--muted); }
+  .terminal pre .cyan { color: var(--cyan); }
+
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  section { margin-bottom: 56px; }
+
+  h2 {
+    font-size: 1.5rem;
+    color: var(--neon);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+  }
+
+  .card {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .card h3 {
+    margin: 0 0 8px;
+    color: var(--cyan);
+    font-size: 1.05rem;
+  }
+  .card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  .loop {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    font-size: 0.95rem;
+  }
+  .loop span.stage {
+    background: rgba(0,255,65,0.08);
+    border: 1px solid var(--border);
+    color: var(--neon);
+    padding: 8px 16px;
+    border-radius: 20px;
+  }
+  .loop span.arrow { color: var(--muted); align-self: center; }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 32px 20px 60px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+  }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--neon); }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<header>
+  <img class="banner" src="https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/assets/banner.jpeg" alt="Jacky CLI logo">
+  <h1>JACKY</h1>
+  <p class="tagline">
+    The AI CLI built for hunting — bug bounty, pentesting, and full-stack
+    coding automation. Local or cloud. Yours to run anywhere.
+  </p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="https://github.com/jaswanthsai1/jacky-cli#quick-start">Get Started</a>
+    <a class="btn btn-secondary" href="https://github.com/jaswanthsai1/jacky-cli">View on GitHub</a>
+  </div>
+
+  <div class="terminal">
+    <div class="terminal-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+    <pre><span class="cyan">$</span> git clone https://github.com/jaswanthsai1/jacky-cli.git
+<span class="cyan">$</span> cd jacky-cli
+<span class="cyan">$</span> ./setup.sh
+<span class="muted"># ...installs, links `jacky` onto PATH, verifies `jacky --help`...</span>
+<span class="cyan">$</span> jacky
+<span class="muted">status: ONLINE</span></pre>
+  </div>
+</header>
+
+<main>
+  <section>
+    <h2>What makes it different</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Local or cloud, your choice</h3>
+        <p>Run fully offline against Ollama/llama.cpp and any tool-calling-capable model, or point it at any OpenAI-compatible / Anthropic-compatible cloud provider with your own API key. Switch any time, no code changes.</p>
+      </div>
+      <div class="card">
+        <h3>Bundled hunt-loop methodology</h3>
+        <p>Ships with a real offensive-security doctrine: scope → recon → rank → enumerate → test → validate → chain → report, plus per-vulnerability-class playbooks and a finding-validation gate.</p>
+      </div>
+      <div class="card">
+        <h3>Self-improving skill system</h3>
+        <p>The agent writes and refines reusable skills as it works, building procedural memory instead of starting from zero every session.</p>
+      </div>
+      <div class="card">
+        <h3>Full tool-calling agent loop</h3>
+        <p>A real terminal interface, MCP client for any external tool server, persistent memory, and context compression that scales to large context windows.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The hunt loop</h2>
+    <div class="loop">
+      <span class="stage">scope</span><span class="arrow">→</span>
+      <span class="stage">recon</span><span class="arrow">→</span>
+      <span class="stage">rank</span><span class="arrow">→</span>
+      <span class="stage">enumerate</span><span class="arrow">→</span>
+      <span class="stage">test</span><span class="arrow">→</span>
+      <span class="stage">validate</span><span class="arrow">→</span>
+      <span class="stage">chain</span><span class="arrow">→</span>
+      <span class="stage">report</span>
+    </div>
+    <p style="text-align:center; color: var(--muted); margin-top: 20px;">
+      Class playbooks cover SSRF, IDOR, XSS, SQLi, SSTI, auth bypass, business
+      logic, race conditions, CORS, subdomain takeover, JWT/OAuth, API
+      misconfiguration, cloud/K8s misconfiguration, and more.
+    </p>
+  </section>
+
+  <section>
+    <h2>Quick links</h2>
+    <div class="grid">
+      <div class="card">
+        <h3><a href="https://github.com/jaswanthsai1/jacky-cli#readme">README / Quick Start</a></h3>
+        <p>Clone, run <code>./setup.sh</code>, then <code>jacky</code>.</p>
+      </div>
+      <div class="card">
+        <h3><a href="https://github.com/jaswanthsai1/jacky-cli/blob/main/docs/METHODOLOGY.md">Hunt-Loop Methodology</a></h3>
+        <p>The full bundled offensive-security doctrine and skill index.</p>
+      </div>
+      <div class="card">
+        <h3><a href="https://github.com/jaswanthsai1/jacky-cli/blob/main/.github/CONTRIBUTING.md">Contributing</a></h3>
+        <p>Development setup, code style, and PR process.</p>
+      </div>
+      <div class="card">
+        <h3><a href="https://github.com/jaswanthsai1/jacky-cli/blob/main/LICENSE">License</a></h3>
+        <p>MIT — open source, forkable, yours to run anywhere.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Designed and maintained by <a href="https://github.com/jaswanthsai1">Maturi Jaswanth Sai Madhu Mohan</a>.
+  Jacky CLI is MIT licensed and built on the open-source Hermes Agent foundation.
+</footer>
+</body>
+</html>

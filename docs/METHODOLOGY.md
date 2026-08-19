@@ -61,6 +61,12 @@ reusable methodology — not tied to any specific engagement or target:
 - **`report-writing`** — templates, tone guidelines, and formulas for
   writing an impact-first report that a triager will actually read and
   act on.
+- **`vuln-classes`** — one short reference file per major vulnerability
+  class (SSRF, IDOR, XSS, SQLi, SSTI, XXE, CSRF, auth bypass, business
+  logic, race conditions, CORS, subdomain takeover, JWT/OAuth, open
+  redirect, file upload, GraphQL, API misconfig, cloud/K8s misconfig)
+  with a generic detect / escalate / tools structure — see
+  [`skills/vuln-classes/README.md`](../skills/vuln-classes/README.md).
 
 ## How this fits the rest of Jacky CLI
 

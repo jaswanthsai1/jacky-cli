@@ -156,3 +156,9 @@ apps/desktop/demo/
 # PR body is the archive. See the jacky-agent-dev skill's
 # pr-infographic-workflow reference (storage rule + lapse #8 / #COMMIT-1).
 infographic/
+
+# --- opensource-sanitizer additions (verification pass, 2026-08-19) ---
+# Root setuptools build output (setup.py build), never committed
+/build/
+# JetBrains IDE folder
+.idea/
