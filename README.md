@@ -29,16 +29,41 @@
 
 ## Quick Start
 
+**One line (Linux/macOS):**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
+```
+
+This clones the repo to `~/.jacky-cli`, runs `setup.sh` for you, and leaves
+`jacky` on your `PATH`. Re-running it later updates your install in place.
+Prefer to inspect the script first, or already have the repo cloned? Same
+result, one extra step:
+
 ```bash
 git clone https://github.com/jaswanthsai1/jacky-cli.git
 cd jacky-cli
 ./setup.sh
+```
+
+Either way, finish with:
+
+```bash
 jacky
 ```
 
 `setup.sh` creates a virtual environment, installs Jacky CLI into it, copies
 `.env.example` → `.env`, links the `jacky` command onto your `PATH`, and — before
 declaring success — actually runs `jacky --help` to prove the install works.
+
+**Or via npm (any OS with Node.js):**
+
+```bash
+npm install -g jacky-cli-agent
+```
+
+npm installs won't miss new releases either — Jacky checks for updates on
+startup and tells you when `npm update -g jacky-cli-agent` is worth running.
 
 **Windows (native, PowerShell):**
 

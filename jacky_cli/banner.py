@@ -262,6 +262,32 @@ def _version_tuple(v: str) -> tuple[int, ...]:
     return tuple(parts)
 
 
+def _operator_name() -> str:
+    """Resolve the banner's OPERATOR field — every clone of Jacky ships with
+    no hardcoded owner. Resolution order: $JACKY_OPERATOR env var, then
+    ``operator_name`` in config.yaml, then the OS login name, then a plain
+    'you' fallback if even that fails."""
+    import os as _os
+    env_name = _os.environ.get("JACKY_OPERATOR", "").strip()
+    if env_name:
+        return env_name
+    try:
+        from jacky_cli.config import load_config
+        cfg_name = str((load_config() or {}).get("operator_name") or "").strip()
+        if cfg_name:
+            return cfg_name
+    except Exception:
+        pass
+    try:
+        import getpass
+        login_name = getpass.getuser().strip()
+        if login_name:
+            return login_name
+    except Exception:
+        pass
+    return "you"
+
+
 def _fetch_pypi_latest(package: str = "jacky-agent") -> Optional[str]:
     """Fetch the latest version of a package from PyPI. Returns None on failure."""
     try:
@@ -281,6 +307,40 @@ def check_via_pypi() -> Optional[int]:
     Returns 0 if up-to-date, 1 if behind, None on failure.
     """
     latest = _fetch_pypi_latest()
+    if latest is None:
+        return None
+    if latest == VERSION:
+        return 0
+    try:
+        if _version_tuple(latest) > _version_tuple(VERSION):
+            return 1
+        return 0
+    except Exception:
+        return 1 if latest != VERSION else 0
+
+
+def _fetch_npm_latest(package: str = "jacky-cli-agent") -> Optional[str]:
+    """Fetch the latest published version from the npm registry. None on failure."""
+    try:
+        import urllib.request
+        url = f"https://registry.npmjs.org/{package}/latest"
+        req = urllib.request.Request(url, headers={"Accept": "application/json"})
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read())
+            return data.get("version")
+    except Exception:
+        return None
+
+
+def check_via_npm() -> Optional[int]:
+    """Compare installed version against the npm registry's latest `jacky-cli-agent`.
+
+    Returns 0 if up-to-date, 1 if behind, None on failure. This is the
+    primary update channel for npm installs (`npm install -g jacky-cli-agent`) —
+    the Python `jacky-agent` PyPI package (see check_via_pypi) is a separate,
+    not-yet-published channel; npm installers should prefer this check.
+    """
+    latest = _fetch_npm_latest()
     if latest is None:
         return None
     if latest == VERSION:
@@ -355,7 +415,14 @@ def check_for_updates() -> Optional[int]:
         if not (repo_dir / ".git").exists():
             repo_dir = jacky_home / "jacky-agent"
         if not (repo_dir / ".git").exists():
-            behind = check_via_pypi()
+            # No local git checkout — this is a package-manager install.
+            # Prefer npm (the live, published channel) and only fall back to
+            # PyPI if the npm check fails (offline, registry unreachable, or
+            # this genuinely was a pip install of the not-yet-published
+            # PyPI package).
+            behind = check_via_npm()
+            if behind is None:
+                behind = check_via_pypi()
         else:
             behind = _check_via_local_git(repo_dir)
 
@@ -622,7 +689,7 @@ def _render_jacky_console(console, skin, model: str, cwd: str, session_id: str =
     )
     sess = (session_id or "—")
     info = (
-        f"[{lbl}]OPERATOR[/]  [{txt}]Jashu[/]\n"
+        f"[{lbl}]OPERATOR[/]  [{txt}]{_operator_name()}[/]\n"
         f"[{lbl}]MODEL[/]     [{txt}]{_jacky_model_alias(model)}[/]\n"
         f"[{lbl}]DOCTRINE[/]  [{txt}]Octopus — brain ▸ hands ▸ memory ▸ evolve[/]\n"
         f"[{lbl}]SESSION[/]   [{dimc}]{sess}[/]\n"

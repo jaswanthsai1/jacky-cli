@@ -2246,11 +2246,68 @@ def _resolve_use_tui(args) -> bool:
         return False
 
 
+# The bundled skill (skills/jacky-doctrine/) that gives every session the
+# Jacky persona: banner, self-identification as "Jacky", offensive-security
+# doctrine. This is preloaded by default for every `jacky` invocation --
+# any model/provider, local Ollama or cloud -- so there is exactly ONE
+# `jacky` experience regardless of how it was installed or configured.
+# Making this a property of cmd_chat()'s own startup path (rather than an
+# external shell wrapper like the old bin/jacky script, which could be
+# bypassed, shadowed by a different `jacky` on PATH, or simply drift out of
+# sync) guarantees it can't be silently dropped. Escape hatches:
+# `--no-persona` or `--skills none`.
+_PERSONA_SKILL = "jacky-doctrine"
+
+
+def _resolve_persona_skills(args) -> object:
+    """Return the ``skills`` value for this session with the Jacky persona
+    guaranteed to be preloaded, unless explicitly disabled.
+
+    Explicit disable paths:
+      * ``--no-persona``
+      * ``--skills none`` (case-insensitive; also strips a literal "none"
+        entry out of any other requested skills)
+
+    Otherwise the persona skill is prepended to whatever the user already
+    requested via ``-s/--skills`` (or is the sole skill if none were given).
+    """
+    if getattr(args, "no_persona", False):
+        return getattr(args, "skills", None)
+
+    raw = getattr(args, "skills", None)
+    if raw is None:
+        values: list[str] = []
+    elif isinstance(raw, (list, tuple)):
+        values = [str(v) for v in raw]
+    else:
+        values = [str(raw)]
+
+    flat_parts = [part.strip() for value in values for part in value.split(",")]
+    flat_parts = [part for part in flat_parts if part]
+
+    if any(part.lower() == "none" for part in flat_parts):
+        # Explicit opt-out via `--skills none`: disable ALL preloaded
+        # skills, including the persona. Strip the "none" sentinel itself
+        # so it never reaches skill resolution as an unknown skill name.
+        kept = [part for part in flat_parts if part.lower() != "none"]
+        return kept or None
+
+    if any(part == _PERSONA_SKILL for part in flat_parts):
+        return raw  # Already requested explicitly -- pass through as-is.
+
+    return [_PERSONA_SKILL, *flat_parts]
+
+
 def cmd_chat(args):
     """Run interactive chat CLI."""
     use_tui = _resolve_use_tui(args)
 
     _apply_safe_mode(args)
+
+    # Guarantee the Jacky persona loads by default (see
+    # `_resolve_persona_skills` docstring). Applies uniformly to the TUI
+    # launch path and the classic CLI path below, and to every provider.
+    args.skills = _resolve_persona_skills(args)
 
     # Resolve --continue into --resume with the latest session or by name
     continue_val = getattr(args, "continue_last", None)
