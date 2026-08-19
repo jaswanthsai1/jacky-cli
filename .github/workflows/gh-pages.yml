@@ -20,8 +20,16 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  # Deliberately its OWN group, distinct from deploy-site.yml's "pages"
+  # group. deploy-site.yml builds the much larger website/ Docusaurus site
+  # and can run long (skills-index crawl, Vercel deploy); sharing its
+  # concurrency group would queue this simple docs/ landing-page deploy
+  # behind it for no reason. Both target the same github-pages GitHub
+  # Actions environment, so this is safe: GitHub Pages just serves
+  # whichever deployment finishes most recently, regardless of which
+  # workflow produced it.
+  group: gh-pages-docs
+  cancel-in-progress: true
 
 jobs:
   deploy:
