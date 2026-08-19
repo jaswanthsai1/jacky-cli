@@ -23,6 +23,12 @@
   <a href="docs/translations/README.es.md"><img src="https://img.shields.io/badge/Lang-Español-orange?style=for-the-badge" alt="Español"></a>
 </p>
 
+Jacky is an AI agent CLI built to run wherever you want it — local model or
+cloud, your choice of provider — with a bug-bounty/offensive-security
+hunt-loop methodology built in from day one. One-command install, a full
+tool-calling agent loop, a self-improving skill system, and live visibility
+into every background agent it spawns.
+
 **Designer / Author:** [Maturi Jaswanth Sai Madhu Mohan](https://github.com/jaswanthsai1)
 
 <img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00FF41,100:00E5FF" alt="divider"/>
