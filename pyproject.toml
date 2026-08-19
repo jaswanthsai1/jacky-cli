@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "jacky-cli"
 version = "0.18.3"
-description = "The self-improving AI agent — creates skills from experience, improves them during use, and runs anywhere"
+description = "Jacky — a self-improving AI agent CLI with a built-in bug-bounty/offensive-security hunt-loop methodology. Local model or cloud, your choice of provider."
 readme = "README.md"
 # Upper bound is load-bearing, not cosmetic. uv resolves the project's
 # Python from `requires-python`, and an inherited `UV_PYTHON` env var (or a
@@ -18,7 +18,7 @@ readme = "README.md"
 # <3.14 makes uv refuse 3.14 with a clear error instead of attempting that
 # build. Raise the ceiling once our Rust transitives ship cp314 wheels.
 requires-python = ">=3.11,<3.14"
-authors = [{ name = "Nous Research" }]
+authors = [{ name = "Maturi Jaswanth Sai Madhu Mohan", email = "136046529+jaswanthsai1@users.noreply.github.com" }]
 license = "MIT"
 license-files = ["LICENSE"]
 dependencies = [
@@ -139,6 +139,11 @@ dependencies = [
   # / pywin32 tree) ships only where it's actually used.
   "concurrent-log-handler==0.9.29; sys_platform == 'win32'",
 ]
+
+[project.urls]
+Homepage = "https://jaswanthsai1.github.io/jacky-cli/"
+Repository = "https://github.com/jaswanthsai1/jacky-cli"
+Issues = "https://github.com/jaswanthsai1/jacky-cli/issues"
 
 [project.optional-dependencies]
 # Native Anthropic provider — only needed when provider=anthropic (not via
