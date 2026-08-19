@@ -1,0 +1,44 @@
+name: Deploy GitHub Pages (docs/)
+
+# Publishes the self-contained landing page at docs/index.html to
+# https://<owner>.github.io/jacky-cli/ — separate from deploy-site.yml,
+# which builds the full website/ Docusaurus docs site to Vercel. This one
+# is deliberately minimal: no build step, docs/ is uploaded as-is.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/index.html'
+      - 'assets/banner.jpeg'
+      - '.github/workflows/gh-pages.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stage Pages site
+        run: |
+          mkdir -p _site
+          cp docs/index.html _site/index.html
+          mkdir -p _site/assets
+          cp assets/banner.jpeg _site/assets/banner.jpeg
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa  # v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e  # v4

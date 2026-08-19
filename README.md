@@ -242,13 +242,18 @@ scripts/run_tests.sh
 
 <img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:9D00FF,100:00FF41" alt="divider"/>
 
+## About
+
+Jacky is an AI agent CLI built to run wherever you want it — local model or
+cloud, your choice of provider — with a bug-bounty/offensive-security
+hunt-loop methodology built in from day one, not bolted on. It ships with a
+one-command install, a full tool-calling agent loop, a self-improving skill
+system, and live visibility into every background agent it spawns.
+
+**Designed and maintained by [Maturi Jaswanth Sai Madhu Mohan](https://github.com/jaswanthsai1).**
+
 ## License
 
-MIT — see [LICENSE](LICENSE).
-
-Jacky CLI is a fork of [Hermes Agent](https://github.com/NousResearch/hermes-agent),
-© Nous Research, used and modified under the MIT License. Jacky-specific
-additions © Maturi Jaswanth Sai Madhu Mohan. See [LICENSE](LICENSE) for the
-full dual attribution.
+MIT — see [LICENSE](LICENSE) for full attribution details.
 
 <img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:9D00FF,50:00E5FF,100:00FF41&height=100&section=footer" alt="footer"/>
