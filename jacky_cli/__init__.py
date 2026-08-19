@@ -27,7 +27,7 @@ try:
 
     __version__ = _pkg_version("jacky-cli")
 except Exception:
-    __version__ = "0.18.5"
+    __version__ = "0.18.7"
 __release_date__ = "2026.8.16"
 
 

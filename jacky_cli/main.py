@@ -9439,13 +9439,13 @@ def _cmd_update_pip(args):
             print("✗ Detected a uv-tool install but managed uv install failed.")
             print("  Install uv manually: https://docs.astral.sh/uv/getting-started/installation/")
             sys.exit(1)
-        cmd = [uv, "tool", "upgrade", "jacky-agent"]
+        cmd = [uv, "tool", "upgrade", "jacky-cli"]
     elif pipx_managed and pipx:
         # pipx owns its own venv; ``pipx upgrade`` is the only correct path.
         # Matches scripts/auto-update.sh, which already uses pipx upgrade.
-        cmd = [pipx, "upgrade", "jacky-agent"]
+        cmd = [pipx, "upgrade", "jacky-cli"]
     elif uv:
-        cmd = [uv, "pip", "install", "--upgrade", "jacky-agent"]
+        cmd = [uv, "pip", "install", "--upgrade", "jacky-cli"]
         if in_venv:
             # Launcher shim runs the venv interpreter but doesn't export
             # VIRTUAL_ENV; without it uv errors "No virtual environment found".
@@ -9455,7 +9455,7 @@ def _cmd_update_pip(args):
             # interpreter, matching pip's default behaviour.
             cmd.insert(3, "--system")
     else:
-        cmd = [sys.executable, "-m", "pip", "install", "--upgrade", "jacky-agent"]
+        cmd = [sys.executable, "-m", "pip", "install", "--upgrade", "jacky-cli"]
 
     print(f"→ Running: {' '.join(cmd)}")
     run_kwargs = {}

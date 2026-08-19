@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jacky-cli"
-version = "0.18.5"
+version = "0.18.7"
 description = "Jacky — a self-improving AI agent CLI with a built-in bug-bounty/offensive-security hunt-loop methodology. Local model or cloud, your choice of provider."
 readme = "README.md"
 # Upper bound is load-bearing, not cosmetic. uv resolves the project's
@@ -347,6 +347,13 @@ locales = ["locales/*.yaml"]
 [tool.setuptools.package-data]
 jacky_cli = ["web_dist/**/*", "tui_dist/**/*", "scripts/install.sh", "scripts/install.ps1"]
 gateway = ["assets/**/*"]
+# jacky-doctrine (the default persona skill, always preloaded — see
+# jacky_cli/main.py::_resolve_persona_skills) lives here. Without this, the
+# wheel/sdist ship zero files from skills/ (it's a bare data directory with
+# no __init__.py, invisible to setuptools without an explicit package-data
+# entry), so EVERY fresh install crashes on first launch with "Unknown
+# skill(s): jacky-doctrine" the moment cmd_chat() tries to preload it.
+skills = ["**/*"]
 plugins = [
   "*/dashboard/manifest.json",
   "*/dashboard/dist/*",
@@ -363,7 +370,7 @@ plugins = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["agent", "agent.*", "tools", "tools.*", "jacky_cli", "jacky_cli.*", "gateway", "gateway.*", "tui_gateway", "tui_gateway.*", "cron", "cron.*", "acp_adapter", "plugins", "plugins.*", "providers", "providers.*"]
+include = ["agent", "agent.*", "tools", "tools.*", "jacky_cli", "jacky_cli.*", "gateway", "gateway.*", "tui_gateway", "tui_gateway.*", "cron", "cron.*", "acp_adapter", "plugins", "plugins.*", "providers", "providers.*", "skills"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

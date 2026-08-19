@@ -33,7 +33,21 @@ EXCLUDED_SKILL_DIRS = frozenset(
         ".venv",
         "venv",
         "node_modules",
-        "site-packages",
+        # NOTE: "site-packages" deliberately NOT in this set. It was here to
+        # avoid wandering into a stray nested venv while scanning arbitrary
+        # directories (external_dirs config, etc.), but it silently broke
+        # skill discovery for every pip/npm install: the canonical bundled
+        # skills location for a packaged install (see
+        # jacky_constants.get_bundled_skills_dir /
+        # _get_packaged_data_dir, which resolves to
+        # sysconfig.get_path("purelib") / "skills") is ALWAYS inside
+        # site-packages/ by construction. Excluding it meant
+        # _discover_bundled_skills() found zero skills on every fresh
+        # pip/npm install, and jacky-doctrine (the always-preloaded persona
+        # skill) crashed cmd_chat() with "Unknown skill(s): jacky-doctrine"
+        # on first launch, every time. venv/.venv/node_modules above still
+        # catch the actual "wandered into a dependency tree" case this was
+        # meant to guard against.
         "__pycache__",
         ".tox",
         ".nox",
