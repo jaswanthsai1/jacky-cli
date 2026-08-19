@@ -1,1 +1,0 @@
-# Jacky plugins package

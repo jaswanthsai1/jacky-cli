@@ -26,11 +26,17 @@ const VENV_BIN_DIR = path.join(VENV_DIR, IS_WINDOWS ? 'Scripts' : 'bin');
 const VENV_PYTHON = path.join(VENV_BIN_DIR, IS_WINDOWS ? 'python.exe' : 'python');
 const VENV_JACKY = path.join(VENV_BIN_DIR, IS_WINDOWS ? 'jacky.exe' : 'jacky');
 
-// Bundled Python source, shipped inside this npm package's own tarball
-// (see npm/scripts/prepack.js). Once jacky-cli is published to PyPI, swap
-// the pip install target below from PYSRC_DIR to `jacky-cli==${PKG_VERSION}`
-// and this bundling can be dropped entirely.
-const PYSRC_DIR = path.join(__dirname, '..', 'pysrc');
+// jacky-cli is now published to PyPI (pypi.org/project/jacky-cli/), so this
+// shim installs the exact matching version from there instead of bundling a
+// private copy of the Python source in the npm tarball. The bundled-source
+// approach (npm/pysrc/, npm/scripts/prepack.js) is kept around as dead code
+// for now rather than deleted outright, but is no longer used on this path —
+// it silently went stale relative to the real source tree the one time it
+// mattered (a version-drift fix landed in jacky_cli/__init__.py, PyPI got
+// republished, but the bundled pysrc/ copy and the npm package were never
+// re-synced), so a fresh, un-cacheable pip install straight from PyPI is the
+// version of this that can't drift.
+const PYPI_SPEC = `jacky-cli==${PKG_VERSION}`;
 
 const MIN_PY_MAJOR = 3;
 const MIN_PY_MINOR = 11;
@@ -129,17 +135,10 @@ re-run \`jacky\`.
 }
 
 function pipInstall() {
-  if (!fs.existsSync(PYSRC_DIR)) {
-    fail(`Bundled Python source not found at ${PYSRC_DIR}.`);
-    process.stderr.write('This npm package looks corrupted — try reinstalling it.\n');
-    return false;
-  }
-  log('installing jacky-cli into the virtual environment (this can take a minute) ...');
-  // Once published to PyPI this becomes:
-  //   pip install "jacky-cli==${PKG_VERSION}"
+  log(`installing ${PYPI_SPEC} from PyPI into the virtual environment (this can take a minute) ...`);
   const result = spawnSync(
     VENV_PYTHON,
-    ['-m', 'pip', 'install', '--upgrade', '--quiet', '--disable-pip-version-check', PYSRC_DIR],
+    ['-m', 'pip', 'install', '--upgrade', '--quiet', '--disable-pip-version-check', '--no-cache-dir', PYPI_SPEC],
     { stdio: 'inherit' }
   );
   if (result.error || result.status !== 0) {
