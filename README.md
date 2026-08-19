@@ -25,6 +25,8 @@
 
 **Designer / Author:** [Maturi Jaswanth Sai Madhu Mohan](https://github.com/jaswanthsai1)
 
+Thanks to partner [Aluri Hruthik](https://github.com/darkknight268/) for support along the way.
+
 Jacky is an AI agent CLI built to run wherever you want it — local model or
 cloud, your choice of provider — with a bug-bounty/offensive-security
 hunt-loop methodology built in from day one. One-command install, a full

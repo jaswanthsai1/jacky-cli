@@ -162,3 +162,9 @@ infographic/
 /build/
 # JetBrains IDE folder
 .idea/
+
+# npm auth tokens (written locally by `npm config set` / `npm login`) and
+# packed tarballs — never belong in the repo.
+.npmrc
+npm/.npmrc
+npm/*.tgz
