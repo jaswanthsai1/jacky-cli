@@ -2869,17 +2869,13 @@ def run_setup_wizard(args):
         setup_mode = prompt_choice(
             "How would you like to set up Jacky?",
             [
-                "Quick Setup (Nous Portal) — free OAuth login, no API keys, model + tools (recommended)",
-                "Full setup — configure every provider, tool & option yourself (bring your own keys)",
+                "Full setup — configure every provider, tool & option yourself (bring your own keys) (recommended)",
                 "Blank Slate — everything off except the bare minimum; opt in to each capability",
             ],
             0,
         )
 
-        if setup_mode == 0:
-            _run_first_time_quick_setup(config, jacky_home, is_existing)
-            return
-        if setup_mode == 2:
+        if setup_mode == 1:
             _run_blank_slate_setup(config, jacky_home, is_existing)
             return
 
