@@ -83,6 +83,13 @@ CONFIGURABLE_TOOLSETS = [
     ("discord_admin",   "🛡️  Discord Server Admin",    "list channels/roles, pin, assign roles"),
     ("yuanbao",          "🤖 Yuanbao",                  "group info, member queries, DM"),
     ("computer_use",     "🖱️  Computer Use (macOS/Windows/Linux)", "background desktop control via cua-driver"),
+    ("http_client",      "🌐 HTTP / API Client",         "raw request/response inspection for API testing"),
+    ("secret_scan",      "🔑 Secret Scanner",            "detect hardcoded credentials, keys, and tokens in code"),
+    ("dependency_audit", "📦 Dependency Audit",          "SCA scan of package manifests against OSV.dev advisories"),
+    ("severity_calc",    "📊 Severity Calculator",       "CVSS v3.1 scoring + Bugcrowd VRT lookup"),
+    ("evidence",         "🗂️  Evidence Bundler",         "package reproducible proof for a finding"),
+    ("static_analysis",  "🩻 Static Analysis",           "AST-based source scan for injection/deserialization/SSRF patterns"),
+    ("passive_recon",    "🛰️  Passive Recon",           "CT-log + DNS subdomain enumeration (no active probing)"),
 ]
 
 
@@ -449,22 +456,40 @@ TOOL_CATEGORIES = {
         # Per-provider rows for Browserbase, Browser Use, and Firecrawl are
         # injected at runtime from plugins.browser.<vendor>.provider via
         # _plugin_browser_providers() in _visible_providers(). Only
-        # non-provider UX setup-flow rows remain here. "Local Browser" is
-        # listed FIRST so it is the default-highlighted (index 0) choice on a
-        # fresh install — pressing Enter must land on the free, no-key local
-        # backend, never on the paid Nous Subscription gateway row:
-        #   - "Local Browser" — non-cloud option, no CloudBrowserProvider.
+        # non-provider UX setup-flow rows remain here. "Camofox" is listed
+        # FIRST so it is the default-highlighted (index 0) choice on a fresh
+        # install — pressing Enter must land on the free, no-key, anti-
+        # detection local backend, never on the paid Nous Subscription
+        # gateway row. Camofox no longer requires the user to read the
+        # module docstring and run `npx @askjo/camofox-browser` by hand
+        # first: selecting it here (or just doing nothing and hitting the
+        # zero-config default) auto-bootstraps the local server on first
+        # actual browser tool call via
+        # tools.browser_camofox.maybe_autostart_camofox_server(), reusing
+        # this row's own `post_setup: "camofox"` installer for the npm step.
+        #   - "Camofox" — anti-detection local Firefox; short-circuits the
+        #     cloud-provider dispatch path via _is_camofox_mode(). Default.
+        #   - "Local Browser" — plain headless Chromium, no anti-detection.
         #   - "Nous Subscription (Browser Use cloud)" — managed Browser Use
         #     billed via Nous subscription (requires_nous_auth +
         #     override_env_vars). Uses the browser-use plugin as the
         #     underlying backend but has a distinct setup UX.
-        #   - "Camofox" — anti-detection local Firefox; short-circuits the
-        #     cloud-provider dispatch path via _is_camofox_mode().
         "providers": [
             {
+                "name": "Camofox",
+                "badge": "★ recommended · free · local",
+                "tag": "Anti-detection browser (Firefox/Camoufox) — auto-installs on first use",
+                "env_vars": [
+                    {"key": "CAMOFOX_URL", "prompt": "Camofox server URL", "default": "http://localhost:9377",
+                     "url": "https://github.com/jo-inc/camofox-browser"},
+                ],
+                "browser_provider": "camofox",
+                "post_setup": "camofox",
+            },
+            {
                 "name": "Local Browser",
-                "badge": "★ recommended · free",
-                "tag": "Headless Chromium, no API key needed",
+                "badge": "free",
+                "tag": "Headless Chromium, no API key needed, no anti-detection",
                 "env_vars": [],
                 "browser_provider": "local",
                 "post_setup": "agent_browser",
@@ -479,17 +504,6 @@ TOOL_CATEGORIES = {
                 "managed_nous_feature": "browser",
                 "override_env_vars": ["BROWSER_USE_API_KEY"],
                 "post_setup": "agent_browser",
-            },
-            {
-                "name": "Camofox",
-                "badge": "free · local",
-                "tag": "Anti-detection browser (Firefox/Camoufox)",
-                "env_vars": [
-                    {"key": "CAMOFOX_URL", "prompt": "Camofox server URL", "default": "http://localhost:9377",
-                     "url": "https://github.com/jo-inc/camofox-browser"},
-                ],
-                "browser_provider": "camofox",
-                "post_setup": "camofox",
             },
         ],
     },
@@ -639,7 +653,7 @@ def _pip_install(
         try:
             result = subprocess.run(
                 [uv_bin, "pip", "install", *args],
-                capture_output=capture_output, text=True, timeout=timeout,
+                capture_output=capture_output, text=True, encoding="utf-8", errors="replace", timeout=timeout,
                 env=uv_env,
             )
             if result.returncode == 0:
@@ -654,7 +668,7 @@ def _pip_install(
         # Probe for pip; bootstrap via ensurepip if missing (uv venv lacks it).
         probe = subprocess.run(
             pip_cmd + ["--version"],
-            capture_output=True, text=True, timeout=15,
+            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=15,
         )
         if probe.returncode != 0:
             raise FileNotFoundError("pip not in venv")
@@ -662,7 +676,7 @@ def _pip_install(
         try:
             subprocess.run(
                 [sys.executable, "-m", "ensurepip", "--upgrade", "--default-pip"],
-                capture_output=True, text=True, timeout=120, check=True,
+                capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120, check=True,
             )
         except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
             # Synthesize a result so callers see a clean failure path.
@@ -673,7 +687,7 @@ def _pip_install(
 
     return subprocess.run(
         pip_cmd + ["install", *args],
-        capture_output=capture_output, text=True, timeout=timeout,
+        capture_output=capture_output, text=True, encoding="utf-8", errors="replace", timeout=timeout,
     )
 
 
@@ -782,7 +796,7 @@ def install_cua_driver(upgrade: bool = False) -> bool:
         try:
             version = subprocess.run(
                 [driver_cmd, "--version"],
-                capture_output=True, text=True, timeout=5, env=_cua_driver_env(),
+                capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5, env=_cua_driver_env(),
             ).stdout.strip()
             _print_success(f"    {driver_cmd} already installed: {version or 'unknown version'}")
         except Exception:
@@ -839,7 +853,7 @@ def install_cua_driver(upgrade: bool = False) -> bool:
         try:
             before = subprocess.run(
                 [driver_cmd, "--version"],
-                capture_output=True, text=True, timeout=5, env=_cua_driver_env(),
+                capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5, env=_cua_driver_env(),
             ).stdout.strip()
         except Exception:
             before = ""
@@ -851,7 +865,7 @@ def install_cua_driver(upgrade: bool = False) -> bool:
         try:
             after = subprocess.run(
                 [driver_cmd, "--version"],
-                capture_output=True, text=True, timeout=5, env=_cua_driver_env(),
+                capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5, env=_cua_driver_env(),
             ).stdout.strip()
             if after and after != before:
                 _print_success(f"    {driver_cmd} upgraded: {before} → {after}")
@@ -995,7 +1009,7 @@ def _run_cua_driver_installer(label: str = "Installing", verbose: bool = True) -
         try:
             dl = subprocess.run(
                 ["curl", "-fsSL", "-o", script_path, install_url],
-                capture_output=True, text=True, timeout=120,
+                capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120,
             )
         except (subprocess.TimeoutExpired, OSError) as e:
             _print_warning(f"    cua-driver installer download failed: {e}")
@@ -1159,7 +1173,7 @@ def _run_post_setup(post_setup_key: str):
                 # only, avoiding the apps/* glob which would pull in
                 # apps/desktop (Electron + node-pty) unnecessarily. See #38772.
                 [npm_bin, "install", "--silent", "--workspaces=false"],
-                capture_output=True, text=True, cwd=str(PROJECT_ROOT)
+                capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=str(PROJECT_ROOT)
             )
             if result.returncode == 0:
                 _print_success("    Node.js dependencies installed")
@@ -1234,7 +1248,7 @@ def _run_post_setup(post_setup_key: str):
         try:
             result = subprocess.run(
                 install_cmd,
-                capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=600,
+                capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=str(PROJECT_ROOT), timeout=600,
             )
             if result.returncode == 0:
                 _print_success("    Chromium installed")
@@ -1265,7 +1279,7 @@ def _run_post_setup(post_setup_key: str):
             result = subprocess.run(
                 # --workspaces=false avoids resolving apps/desktop. See #38772.
                 [_npm_bin, "install", "--silent", "--workspaces=false"],
-                capture_output=True, text=True, cwd=str(PROJECT_ROOT)
+                capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=str(PROJECT_ROOT)
             )
             if result.returncode == 0:
                 _print_success("    Camofox installed")
@@ -3980,7 +3994,7 @@ def tools_command(args=None, first_install: bool = False, config: dict = None):
     # Non-interactive summary mode for CLI usage
     if getattr(args, "summary", False):
         total = len(_get_effective_configurable_toolsets())
-        print(color("⚕ Tool Summary", Colors.CYAN, Colors.BOLD))
+        print(color(">_ Tool Summary", Colors.CYAN, Colors.BOLD))
         print()
         summary = _platform_toolset_summary(config, enabled_platforms)
         for pkey in enabled_platforms:
@@ -3996,10 +4010,10 @@ def tools_command(args=None, first_install: bool = False, config: dict = None):
                 print(color("    (none enabled)", Colors.DIM))
         print()
         return
-    print(color("⚕ Jacky Tool Configuration", Colors.CYAN, Colors.BOLD))
+    print(color(">_ Jacky Tool Configuration", Colors.CYAN, Colors.BOLD))
     print(color("  Enable or disable tools per platform.", Colors.DIM))
     print(color("  Tools that need API keys will be configured when enabled.", Colors.DIM))
-    print(color("  Guide: https://jacky-agent.nousresearch.com/docs/user-guide/features/tools", Colors.DIM))
+    print(color("  Guide: https://jaswanthsai1.github.io/jacky-cli/user-guide/features/tools", Colors.DIM))
     print()
 
     # ── First-time install: linear flow, no platform menu ──

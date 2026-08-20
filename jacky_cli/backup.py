@@ -260,8 +260,8 @@ def _safe_copy_db(src: Path, dst: Path) -> bool:
     the DB is being written to.  Falls back to raw copy on failure.
     """
     try:
-        conn = sqlite3.connect(f"file:{src}?mode=ro", uri=True)
-        backup_conn = sqlite3.connect(str(dst))
+        conn = sqlite3.connect(f"file:{src}?mode=ro", uri=True, timeout=30.0)
+        backup_conn = sqlite3.connect(str(dst), timeout=30.0)
         conn.backup(backup_conn)
         backup_conn.close()
         conn.close()

@@ -8,21 +8,6 @@ description: "Your first conversation with Jacky Agent — from install to chatt
 
 This guide gets you from zero to a working Jacky setup that survives real use. Install, choose a provider, verify a working chat, and know exactly what to do when something breaks.
 
-## Prefer to watch?
-
-**Onchain AI Garage** put together a Masterclass walkthrough of installation, setup, and basic commands — a good companion to this page if you'd rather follow along on video. For more, see the full [Jacky Agent Tutorials & Use Cases](https://www.youtube.com/playlist?list=PLmpUb_PWAkDxewld5ZYyKifuHxgIbiq2d) playlist.
-
-<div style={{position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', maxWidth: '100%', marginBottom: '1.5rem'}}>
-  <iframe
-    style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}}
-    src="https://www.youtube-nocookie.com/embed/R3YOGfTBcQg"
-    title="Jacky Agent Masterclass: Installation, Setup, Basic Commands"
-    frameBorder="0"
-    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowFullScreen
-  ></iframe>
-</div>
-
 ## Who this is for
 
 - Brand new and want the shortest path to a working setup
@@ -48,21 +33,21 @@ Pick the row that matches your goal:
 
 ## 1. Install Jacky Agent
 ### With the Jacky Desktop installer on macOS or Windows (recommended)
-To easily install the command-line and desktop applications, [download the Jacky Desktop installer](https://jacky-agent.nousresearch.com/) from our website and run it.
+To easily install the command-line and desktop applications, [download the Jacky Desktop installer](https://jaswanthsai1.github.io/jacky-cli/) from our website and run it.
 
 ### Without Jacky Desktop:
 For a command-line only install without Jacky Desktop, run:
 
 #### Linux / macOS / WSL2 / Android (Termux)
 ```bash
-curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
 ```
 
 #### Windows (native)
 
 Run in powershell:
 ```powershell
-iex (irm https://jacky-agent.nousresearch.com/install.ps1) 
+iex (irm https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.ps1) 
 ```
 
 :::tip Android / Termux
@@ -96,10 +81,9 @@ That logs you in, sets Nous as your provider, and turns on the Tool Gateway in o
 :::
 
 :::info Setup modes
-On a fresh install, `jacky setup` offers three modes:
+On a fresh install, `jacky setup` offers two modes:
 
-- **Quick Setup (Nous Portal)** — free OAuth login, no API keys; sets up a model plus the Tool Gateway tools. The recommended fast path.
-- **Full Setup** — walk through every provider, tool, and option yourself (bring your own keys).
+- **Full Setup (recommended)** — walk through every provider, tool, and option yourself (bring your own keys). Prefer Nous Portal instead? Run `jacky setup --portal` any time to do that one-shot setup directly, no need to go through the wizard.
 - **Blank Slate** — everything starts **off** except the bare minimum needed to run an agent: **provider & model, the File Operations toolset, and the Terminal toolset**. No web, browser, code execution, vision, memory, delegation, cron, skills, plugins, or MCP servers — and compression, checkpoints, smart routing, and memory capture are all disabled. After the minimal baseline is applied, you choose one of two paths: **start with everything disabled** (finish now with the minimal agent), or **walk through all configurations** (opt in to tools, skills, plugins, MCP, and messaging). Pick this when you want a minimal, fully-controlled agent and intend to enable only exactly what you need.
 
 Blank Slate writes an explicit `platform_toolsets.cli` list plus `agent.disabled_toolsets`, so nothing you didn't choose ever loads — not even after `jacky update`. Re-enable anything later with `jacky tools`, seed skills with `jacky skills opt-in --sync`, or tune settings with `jacky setup agent`.

@@ -508,7 +508,7 @@ def _db_opens_cleanly(db_path: Path) -> Optional[str]:
     through the FTS triggers — is reported as unhealthy rather than slipping
     past as a false "ok" (#50502).
     """
-    conn = sqlite3.connect(str(db_path), isolation_level=None)
+    conn = sqlite3.connect(str(db_path), isolation_level=None, timeout=30.0)
     try:
         conn.execute("PRAGMA journal_mode").fetchone()
         rows = conn.execute("PRAGMA integrity_check").fetchall()
@@ -606,7 +606,7 @@ def repair_state_db_schema(db_path: Path, *, backup: bool = True) -> Dict[str, A
     # content table. This is the recommended, least-destructive recovery for a
     # corrupt FTS index that rejects message writes while reads still succeed.
     try:
-        conn = sqlite3.connect(str(db_path), isolation_level=None)
+        conn = sqlite3.connect(str(db_path), isolation_level=None, timeout=30.0)
         try:
             for table_name in ("messages_fts", "messages_fts_trigram"):
                 try:
@@ -631,7 +631,7 @@ def repair_state_db_schema(db_path: Path, *, backup: bool = True) -> Dict[str, A
 
     # ── Strategy 1: de-duplicate sqlite_master (keeps FTS index) ──
     try:
-        conn = sqlite3.connect(str(db_path), isolation_level=None)
+        conn = sqlite3.connect(str(db_path), isolation_level=None, timeout=30.0)
         try:
             conn.execute("PRAGMA writable_schema=ON")
             dupes = conn.execute(
@@ -661,7 +661,7 @@ def repair_state_db_schema(db_path: Path, *, backup: bool = True) -> Dict[str, A
 
     # ── Strategy 2: drop all FTS schema, VACUUM, rebuild on next open ──
     try:
-        conn = sqlite3.connect(str(db_path), isolation_level=None)
+        conn = sqlite3.connect(str(db_path), isolation_level=None, timeout=30.0)
         try:
             conn.execute("PRAGMA writable_schema=ON")
             conn.execute("DELETE FROM sqlite_master WHERE name LIKE 'messages_fts%'")

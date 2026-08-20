@@ -127,7 +127,7 @@ A nightly backlog triage on Sonnet costs roughly $0.02-0.05. A monitoring check 
 Jacky Agent is open source and free. The automation infrastructure — cron scheduler, webhook platform, skill system, multi-platform delivery — is built in.
 
 ```bash
-curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
 jacky setup
 ```
 
@@ -149,9 +149,9 @@ jacky webhook subscribe pr-review \
   --deliver github_comment
 ```
 
-Full automation blueprints gallery: [jacky-agent.nousresearch.com/docs/reference/automation-blueprints-catalog](https://jacky-agent.nousresearch.com/docs/reference/automation-blueprints-catalog)
+Full automation blueprints gallery: [jaswanthsai1.github.io/jacky-cli/reference/automation-blueprints-catalog](https://jaswanthsai1.github.io/jacky-cli/reference/automation-blueprints-catalog)
 
-Documentation: [jacky-agent.nousresearch.com](https://jacky-agent.nousresearch.com)
+Documentation: [jaswanthsai1.github.io/jacky-cli](https://jaswanthsai1.github.io/jacky-cli)
 
 GitHub: [github.com/jaswanthsai1/jacky-cli](https://github.com/jaswanthsai1/jacky-cli)
 

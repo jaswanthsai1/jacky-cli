@@ -1,14 +1,14 @@
 # PEP 639 SPDX license expression (`license = "MIT"` below) requires
 # setuptools>=77. Keep this floor in lockstep with the `license` form in
-# [project]; an older build backend rejects the string form.
+# [project].
 [build-system]
-requires = ["setuptools>=77.0,<83"]
+requires = ["setuptools>=83.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "jacky-cli"
-version = "0.18.3"
-description = "The self-improving AI agent — creates skills from experience, improves them during use, and runs anywhere"
+version = "0.18.15"
+description = "Jacky — a self-improving AI agent CLI with a built-in bug-bounty/offensive-security hunt-loop methodology. Local model or cloud, your choice of provider."
 readme = "README.md"
 # Upper bound is load-bearing, not cosmetic. uv resolves the project's
 # Python from `requires-python`, and an inherited `UV_PYTHON` env var (or a
@@ -18,7 +18,7 @@ readme = "README.md"
 # <3.14 makes uv refuse 3.14 with a clear error instead of attempting that
 # build. Raise the ceiling once our Rust transitives ship cp314 wheels.
 requires-python = ">=3.11,<3.14"
-authors = [{ name = "Nous Research" }]
+authors = [{ name = "Maturi Jaswanth Sai Madhu Mohan", email = "136046529+jaswanthsai1@users.noreply.github.com" }]
 license = "MIT"
 license-files = ["LICENSE"]
 dependencies = [
@@ -89,7 +89,7 @@ dependencies = [
   "urllib3>=2.7.0,<3",
   # cryptography is pulled in transitively by PyJWT[crypto]; pin it explicitly
   # so the WeCom/Weixin crypto paths can't drift below the CVE-fixed floor.
-  "cryptography==46.0.7",  # CVE-2026-39892, CVE-2026-34073
+  "cryptography==50.0.0",  # CVE-2026-39892, CVE-2026-34073
   # Windows has no IANA tzdata shipped with the OS, so Python's ``zoneinfo``
   # (PEP 615) raises ``ZoneInfoNotFoundError`` for every non-UTC timezone
   # out of the box.  ``tzdata`` ships the Olson database as a data package
@@ -123,7 +123,7 @@ dependencies = [
   # libs required for the codecs we use, so it's safe to ship in the base
   # install rather than gating it behind an extra + a mid-session lazy install
   # (which deadlocked the CLI under prompt_toolkit — see #40490).
-  "Pillow==12.2.0",
+  "Pillow==12.3.0",
   # Windows log rotation. Stdlib ``RotatingFileHandler.doRollover()`` uses
   # ``os.rename()`` which fails with ``PermissionError [WinError 32]`` on
   # Windows whenever any other process holds an append-mode handle on
@@ -139,6 +139,11 @@ dependencies = [
   # / pywin32 tree) ships only where it's actually used.
   "concurrent-log-handler==0.9.29; sys_platform == 'win32'",
 ]
+
+[project.urls]
+Homepage = "https://jaswanthsai1.github.io/jacky-cli/"
+Repository = "https://github.com/jaswanthsai1/jacky-cli"
+Issues = "https://github.com/jaswanthsai1/jacky-cli/issues"
 
 [project.optional-dependencies]
 # Native Anthropic provider — only needed when provider=anthropic (not via
@@ -157,11 +162,11 @@ edge-tts = ["edge-tts==7.2.7"]
 modal = ["modal==1.3.4"]
 daytona = ["daytona==0.155.0"]
 hindsight = ["hindsight-client==0.6.1"]
-dev = ["debugpy==1.8.20", "pytest==9.0.2", "pytest-asyncio==1.3.0", "mcp==1.26.0", "starlette==1.0.1", "ty==0.0.21", "ruff==0.15.10", "setuptools==81.0.0"]  # starlette: CVE-2026-48710; setuptools: latest <82 (torch >=2.11 caps setuptools<82)
-messaging = ["python-telegram-bot[webhooks]==22.6", "discord.py[voice]==2.7.1", "aiohttp==3.14.1", "brotlicffi==1.2.0.1", "slack-bolt==1.27.0", "slack-sdk==3.40.1", "qrcode==7.4.2"]  # aiohttp 3.14.1: CVE-2026-34513/34518/34519/34520/34525 + 34993(RCE)/47265
+dev = ["debugpy==1.8.20", "pytest==9.0.3", "pytest-asyncio==1.3.0", "mcp==1.29.0", "starlette==1.6.0", "ty==0.0.21", "ruff==0.15.10", "setuptools==83.0.0"]  # starlette: CVE-2026-48710
+messaging = ["python-telegram-bot[webhooks]==22.6", "discord.py[voice]==2.7.1", "aiohttp==3.14.3", "brotlicffi==1.2.0.1", "slack-bolt==1.27.0", "slack-sdk==3.40.1", "qrcode==7.4.2"]  # aiohttp 3.14.3: patched floor for CVE-2026-34513/34518/34519/34520/34525/34993(RCE)/47265
 cron = []  # croniter is now a core dependency; this extra kept for back-compat
-slack = ["slack-bolt==1.27.0", "slack-sdk==3.40.1", "aiohttp==3.14.1"]
-matrix = ["mautrix[encryption]==0.21.0", "aiosqlite==0.22.1", "asyncpg==0.31.0", "aiohttp-socks==0.11.0", "aiohttp==3.14.1"]  # aiohttp 3.14.1: CVE-2026-34993(RCE)/47265 + 34513/34518/34519/34520/34525 (mautrix/aiohttp-socks only cap aiohttp<4 / >=3.10, so pin the patched floor directly)
+slack = ["slack-bolt==1.27.0", "slack-sdk==3.40.1", "aiohttp==3.14.3"]
+matrix = ["mautrix[encryption]==0.21.0", "aiosqlite==0.22.1", "asyncpg==0.31.0", "aiohttp-socks==0.11.0", "aiohttp==3.14.3"]  # aiohttp 3.14.1: CVE-2026-34993(RCE)/47265 + 34513/34518/34519/34520/34525 (mautrix/aiohttp-socks only cap aiohttp<4 / >=3.10, so pin the patched floor directly)
 # WeCom callback-mode adapter — parses untrusted XML POST bodies from
 # WeCom-controlled callback endpoints, so we use defusedxml (drop-in
 # replacement for stdlib xml.etree.ElementTree) to block billion-laughs
@@ -204,16 +209,16 @@ vision = []
 # `request.url` can be bypassed. We pin a patched Starlette directly in every
 # extra that exposes a Starlette-backed server surface so pip/uv can't resolve
 # a vulnerable pre-1.0.1 transitive. Bump in lockstep with uv.lock.
-mcp = ["mcp==1.26.0", "starlette==1.0.1"]  # starlette: CVE-2026-48710
+mcp = ["mcp==1.29.0", "starlette==1.6.0"]  # starlette: CVE-2026-48710
 nemo-relay = ["nemo-relay==0.3"]
-homeassistant = ["aiohttp==3.14.1"]
-sms = ["aiohttp==3.14.1"]
-teams = ["microsoft-teams-apps==2.0.13.4", "aiohttp==3.14.1"]  # aiohttp 3.14.1: CVE-2026-34993(RCE)/47265 + 34513/34518/34519/34520/34525
+homeassistant = ["aiohttp==3.14.3"]
+sms = ["aiohttp==3.14.3"]
+teams = ["microsoft-teams-apps==2.0.13.4", "aiohttp==3.14.3"]  # aiohttp 3.14.1: CVE-2026-34993(RCE)/47265 + 34513/34518/34519/34520/34525
 # Computer use — macOS background desktop control via cua-driver (MCP stdio).
 # The cua-driver binary itself is installed via `jacky tools` post-setup
 # (curl install script); this extra just pins the MCP client used to talk
 # to it, which is already provided by the `mcp` extra.
-computer-use = ["mcp==1.26.0", "starlette==1.0.1"]  # starlette: CVE-2026-48710
+computer-use = ["mcp==1.29.0", "starlette==1.6.0"]  # starlette: CVE-2026-48710
 acp = ["agent-client-protocol==0.9.0"]
 # mistral: Voxtral STT + TTS. Pinned to an exact verified-clean version.
 # The `mistralai` PyPI project was quarantined 2026-05-12 after the malicious
@@ -269,7 +274,7 @@ youtube = [
 # `jacky dashboard` (localhost SPA + API).  Not in core to keep the default install lean.
 # starlette==1.0.1 pinned for CVE-2026-48710 (BadHost) — fastapi pulls Starlette
 # transitively and pre-1.0.1 is the vulnerable range. See the mcp extra above.
-web = ["fastapi==0.133.1", "uvicorn[standard]==0.41.0", "starlette==1.0.1", "python-multipart==0.0.27"]
+web = ["fastapi==0.133.1", "uvicorn[standard]==0.41.0", "starlette==1.6.0", "python-multipart==0.0.32"]
 all = [
   # Policy (2026-05-12): `[all]` includes only extras that genuinely
   # CAN'T be lazy-installed via `tools/lazy_deps.py` — i.e. things every
@@ -342,6 +347,19 @@ locales = ["locales/*.yaml"]
 [tool.setuptools.package-data]
 jacky_cli = ["web_dist/**/*", "tui_dist/**/*", "scripts/install.sh", "scripts/install.ps1"]
 gateway = ["assets/**/*"]
+# Bundled data for the security toolsets (severity_calculator's Bugcrowd VRT
+# extract, static_analysis's offline semgrep rule pack). Without this, the
+# wheel/sdist ship zero files from tools/data/ (same "invisible non-Python
+# data" gap as skills/ above) -- severity_calculator's lookup mode silently
+# returns 0 entries on every real install.
+tools = ["data/**/*"]
+# jacky-doctrine (the default persona skill, always preloaded — see
+# jacky_cli/main.py::_resolve_persona_skills) lives here. Without this, the
+# wheel/sdist ship zero files from skills/ (it's a bare data directory with
+# no __init__.py, invisible to setuptools without an explicit package-data
+# entry), so EVERY fresh install crashes on first launch with "Unknown
+# skill(s): jacky-doctrine" the moment cmd_chat() tries to preload it.
+skills = ["**/*"]
 plugins = [
   "*/dashboard/manifest.json",
   "*/dashboard/dist/*",
@@ -358,7 +376,7 @@ plugins = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["agent", "agent.*", "tools", "tools.*", "jacky_cli", "jacky_cli.*", "gateway", "gateway.*", "tui_gateway", "tui_gateway.*", "cron", "cron.*", "acp_adapter", "plugins", "plugins.*", "providers", "providers.*"]
+include = ["agent", "agent.*", "tools", "tools.*", "jacky_cli", "jacky_cli.*", "gateway", "gateway.*", "tui_gateway", "tui_gateway.*", "cron", "cron.*", "acp_adapter", "plugins", "plugins.*", "providers", "providers.*", "skills"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

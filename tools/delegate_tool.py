@@ -2876,6 +2876,15 @@ def delegate_task(
                     pass
 
         _goals = [t["goal"] for t in task_list]
+        # Each child already has a real, SessionDB-backed session_id (assigned
+        # at construction in _build_child_agent) and, when a display/progress
+        # channel exists on the parent, a live entry in
+        # tools.delegate_tool._active_subagents. Both ride on the delegation
+        # record so a still-RUNNING background delegation can be watched —
+        # via `jacky --resume <session_id>` or `jacky agents attach
+        # <delegation_id>` — instead of only being visible once it completes.
+        _child_session_ids = [getattr(c, "session_id", "") or "" for c in _child_agents]
+        _child_subagent_ids = [getattr(c, "_subagent_id", "") or "" for c in _child_agents]
         dispatch = dispatch_async_delegation_batch(
             goals=_goals,
             context=context,
@@ -2890,6 +2899,8 @@ def delegate_task(
             runner=_batch_runner,
             interrupt_fn=_batch_interrupt,
             max_async_children=_get_max_async_children(),
+            session_ids=_child_session_ids,
+            subagent_ids=_child_subagent_ids,
         )
 
         if dispatch.get("status") == "dispatched":

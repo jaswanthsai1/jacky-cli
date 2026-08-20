@@ -204,7 +204,11 @@ def test_cmd_chat_tui_forwards_chat_flags(monkeypatch, main_mod):
             )
         )
 
-    assert captured["skills"] == ["foo,bar"]
+    # jacky-doctrine (the default persona skill) is now always prepended
+    # unless --no-persona is passed, and "foo,bar" is split into its two
+    # comma-separated entries by the same normalization — matches
+    # _resolve_persona_skills()'s documented behavior, not a regression.
+    assert captured["skills"] == ["jacky-doctrine", "foo", "bar"]
     assert captured["verbose"] is True
     assert captured["quiet"] is True
     assert captured["query"] == "hello"

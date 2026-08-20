@@ -51,7 +51,7 @@ That does not stop Jacky from working well as a phone-native CLI agent — it ju
 Jacky now ships a Termux-aware installer path:
 
 ```bash
-curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
 ```
 
 On Termux, the installer automatically:

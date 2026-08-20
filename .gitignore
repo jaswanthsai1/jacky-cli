@@ -28,6 +28,7 @@ __pycache__/web_tools.cpython-310.pyc
 logs/
 data/
 !website/src/data/
+!tools/data/
 .pytest_cache/
 test_durations.json
 .pytest-cache/
@@ -156,3 +157,18 @@ apps/desktop/demo/
 # PR body is the archive. See the jacky-agent-dev skill's
 # pr-infographic-workflow reference (storage rule + lapse #8 / #COMMIT-1).
 infographic/
+
+# --- opensource-sanitizer additions (verification pass, 2026-08-19) ---
+# Root setuptools build output (setup.py build), never committed
+/build/
+# JetBrains IDE folder
+.idea/
+
+# npm auth tokens (written locally by `npm config set` / `npm login`) and
+# packed tarballs — never belong in the repo.
+.npmrc
+npm/.npmrc
+npm/*.tgz
+
+# Release build artifacts (scripts/release.py) — never commit built wheels
+/dist/

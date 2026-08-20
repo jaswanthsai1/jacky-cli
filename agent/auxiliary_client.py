@@ -508,7 +508,7 @@ _PROVIDERS_WITHOUT_VISION: frozenset = frozenset({
 # `X-Title` is the canonical attribution header OpenRouter's dashboard
 # reads; the previous `X-OpenRouter-Title` label was not recognized there.
 _OR_HEADERS_BASE = {
-    "HTTP-Referer": "https://jacky-agent.nousresearch.com",
+    "HTTP-Referer": "https://jaswanthsai1.github.io/jacky-cli",
     "X-Title": "Jacky Agent",
     "X-OpenRouter-Categories": "productivity,cli-agent",
 }
@@ -1995,7 +1995,13 @@ def _try_nous(vision: bool = False) -> Tuple[Optional[OpenAI], Optional[str]]:
     nous = _read_nous_auth()
     runtime = _resolve_nous_runtime_api(force_refresh=False)
     if runtime is None and not nous:
-        logger.warning(
+        # Demoted from logger.warning to debug: _try_nous() is probed on
+        # every "auto" fallback-chain walk (e.g. check_vision_requirements()
+        # runs it just to decide whether to advertise the vision tool at
+        # all), so an unconfigured Nous Portal is a routine, expected
+        # outcome for users who never intend to use Nous — not something
+        # that should print to stderr on every unrelated command.
+        logger.debug(
             "Auxiliary Nous client unavailable: no Nous authentication found "
             "(run: jacky auth)."
         )
@@ -2043,7 +2049,9 @@ def _try_nous(vision: bool = False) -> Tuple[Optional[OpenAI], Optional[str]]:
     else:
         api_key = _nous_api_key(nous or {})
         if not api_key:
-            logger.warning(
+            # Same rationale as the earlier demotion above — routine "auto"
+            # chain probe outcome, not an exceptional condition.
+            logger.debug(
                 "Auxiliary Nous client unavailable: no usable inference JWT found "
                 "(run: jacky auth add nous)."
             )

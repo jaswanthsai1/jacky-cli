@@ -4,10 +4,10 @@
 
 # Jacky Agent ☤
 <p align="center">
-  <a href="https://jacky-agent.nousresearch.com/">Jacky Agent</a> | <a href="https://jacky-agent.nousresearch.com/">Jacky Desktop</a>
+  <a href="https://jaswanthsai1.github.io/jacky-cli/">Jacky Agent</a> | <a href="https://jaswanthsai1.github.io/jacky-cli/">Jacky Desktop</a>
 </p>
 <p align="center">
-  <a href="https://jacky-agent.nousresearch.com/docs/"><img src="https://img.shields.io/badge/Docs-jacky--agent.nousresearch.com-FFD700?style=for-the-badge" alt="Documentación"></a>
+  <a href="https://jaswanthsai1.github.io/jacky-cli/"><img src="https://img.shields.io/badge/Docs-jacky--agent.nousresearch.com-FFD700?style=for-the-badge" alt="Documentación"></a>
   <a href="https://discord.gg/NousResearch"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"></a>
   <a href="https://github.com/jaswanthsai1/jacky-cli/blob/main/LICENSE"><img src="https://img.shields.io/badge/Licencia-MIT-green?style=for-the-badge" alt="Licencia: MIT"></a>
   <a href="https://nousresearch.com"><img src="https://img.shields.io/badge/Creado%20por-Nous%20Research-blueviolet?style=for-the-badge" alt="Creado por Nous Research"></a>
@@ -37,7 +37,7 @@ Usa cualquier modelo que quieras — [Nous Portal](https://portal.nousresearch.c
 ### Linux, macOS, WSL2, Termux
 
 ```bash
-curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
 ```
 
 ### Windows (nativo, PowerShell)
@@ -47,14 +47,14 @@ curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
 Ejecuta esto en PowerShell:
 
 ```powershell
-iex (irm https://jacky-agent.nousresearch.com/install.ps1)
+iex (irm https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.ps1)
 ```
 
 El instalador se encarga de todo: uv, Python 3.11, Node.js, ripgrep, ffmpeg, **y un Git Bash portátil** (MinGit, descomprimido en `%LOCALAPPDATA%\jacky\git` — no requiere administrador, completamente aislado de cualquier instalación de Git del sistema). Jacky usa este Git Bash incluido para ejecutar comandos de shell.
 
 Si ya tienes Git instalado, el instalador lo detecta y lo usa en su lugar. De lo contrario, una descarga de ~45MB de MinGit es todo lo que necesitas — no tocará ni interferirá con ningún Git del sistema.
 
-> **Android / Termux:** La ruta manual probada está documentada en la [guía de Termux](https://jacky-agent.nousresearch.com/docs/getting-started/termux). En Termux, Jacky instala el extra `.[termux]` curado porque el extra completo `.[all]` actualmente incluye dependencias de voz incompatibles con Android.
+> **Android / Termux:** La ruta manual probada está documentada en la [guía de Termux](https://jaswanthsai1.github.io/jacky-cli/getting-started/termux). En Termux, Jacky instala el extra `.[termux]` curado porque el extra completo `.[all]` actualmente incluye dependencias de voz incompatibles con Android.
 >
 > **Windows:** Windows nativo es totalmente compatible — el comando de PowerShell de arriba instala todo. Si prefieres usar WSL2, el comando de Linux también funciona allí. La instalación nativa de Windows se encuentra en `%LOCALAPPDATA%\jacky`; WSL2 instala en `~/.jacky` como en Linux.
 
@@ -81,7 +81,7 @@ jacky update       # Actualiza a la última versión
 jacky doctor       # Diagnostica cualquier problema
 ```
 
-📖 **[Documentación completa →](https://jacky-agent.nousresearch.com/docs/)**
+📖 **[Documentación completa →](https://jaswanthsai1.github.io/jacky-cli/)**
 
 ---
 
@@ -98,7 +98,7 @@ Un comando desde una instalación nueva:
 jacky setup --portal
 ```
 
-Esto te autentica vía OAuth, establece Nous como tu proveedor y activa el Tool Gateway. Comprueba qué está conectado en cualquier momento con `jacky portal info`. Detalles completos en la [página de documentación del Tool Gateway](https://jacky-agent.nousresearch.com/docs/user-guide/features/tool-gateway).
+Esto te autentica vía OAuth, establece Nous como tu proveedor y activa el Tool Gateway. Comprueba qué está conectado en cualquier momento con `jacky portal info`. Detalles completos en la [página de documentación del Tool Gateway](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/tool-gateway).
 
 Puedes seguir usando tus propias claves por herramienta cuando quieras — el gateway es por backend, no todo o nada.
 
@@ -120,31 +120,31 @@ Jacky tiene dos puntos de entrada: inicia la interfaz de terminal con `jacky`, o
 | Interrumpir trabajo actual          | `Ctrl+C` o enviar un nuevo mensaje            | `/stop` o enviar un nuevo mensaje                                                 |
 | Estado específico de plataforma     | `/platforms`                                  | `/status`, `/sethome`                                                             |
 
-Para las listas de comandos completas, consulta la [guía de CLI](https://jacky-agent.nousresearch.com/docs/user-guide/cli) y la [guía del Gateway de Mensajería](https://jacky-agent.nousresearch.com/docs/user-guide/messaging).
+Para las listas de comandos completas, consulta la [guía de CLI](https://jaswanthsai1.github.io/jacky-cli/user-guide/cli) y la [guía del Gateway de Mensajería](https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging).
 
 ---
 
 ## Documentación
 
-Toda la documentación está en **[jacky-agent.nousresearch.com/docs](https://jacky-agent.nousresearch.com/docs/)**:
+Toda la documentación está en **[jaswanthsai1.github.io/jacky-cli](https://jaswanthsai1.github.io/jacky-cli/)**:
 
 | Sección                                                                                             | Contenido                                                    |
 | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [Inicio rápido](https://jacky-agent.nousresearch.com/docs/getting-started/quickstart)              | Instalar → configurar → primera conversación en 2 minutos   |
-| [Uso de CLI](https://jacky-agent.nousresearch.com/docs/user-guide/cli)                             | Comandos, atajos de teclado, personalidades, sesiones        |
-| [Configuración](https://jacky-agent.nousresearch.com/docs/user-guide/configuration)               | Archivo de configuración, proveedores, modelos, todas las opciones |
-| [Gateway de Mensajería](https://jacky-agent.nousresearch.com/docs/user-guide/messaging)           | Telegram, Discord, Slack, WhatsApp, Signal, Home Assistant   |
-| [Seguridad](https://jacky-agent.nousresearch.com/docs/user-guide/security)                        | Aprobación de comandos, emparejamiento por DM, aislamiento en contenedor |
-| [Herramientas y Toolsets](https://jacky-agent.nousresearch.com/docs/user-guide/features/tools)   | Más de 40 herramientas, sistema de toolsets, backends de terminal |
-| [Sistema de Habilidades](https://jacky-agent.nousresearch.com/docs/user-guide/features/skills)   | Memoria procedimental, Skills Hub, creación de habilidades   |
-| [Memoria](https://jacky-agent.nousresearch.com/docs/user-guide/features/memory)                   | Memoria persistente, perfiles de usuario, mejores prácticas  |
-| [Integración MCP](https://jacky-agent.nousresearch.com/docs/user-guide/features/mcp)              | Conecta cualquier servidor MCP para capacidades extendidas   |
-| [Programación Cron](https://jacky-agent.nousresearch.com/docs/user-guide/features/cron)           | Tareas programadas con entrega a plataforma                  |
-| [Archivos de Contexto](https://jacky-agent.nousresearch.com/docs/user-guide/features/context-files) | Contexto de proyecto que da forma a cada conversación      |
-| [Arquitectura](https://jacky-agent.nousresearch.com/docs/developer-guide/architecture)            | Estructura del proyecto, bucle del agente, clases principales |
-| [Contribuir](https://jacky-agent.nousresearch.com/docs/developer-guide/contributing)              | Configuración de desarrollo, proceso de PR, estilo de código |
-| [Referencia de CLI](https://jacky-agent.nousresearch.com/docs/reference/cli-commands)             | Todos los comandos y flags                                   |
-| [Variables de Entorno](https://jacky-agent.nousresearch.com/docs/reference/environment-variables) | Referencia completa de variables de entorno                  |
+| [Inicio rápido](https://jaswanthsai1.github.io/jacky-cli/getting-started/quickstart)              | Instalar → configurar → primera conversación en 2 minutos   |
+| [Uso de CLI](https://jaswanthsai1.github.io/jacky-cli/user-guide/cli)                             | Comandos, atajos de teclado, personalidades, sesiones        |
+| [Configuración](https://jaswanthsai1.github.io/jacky-cli/user-guide/configuration)               | Archivo de configuración, proveedores, modelos, todas las opciones |
+| [Gateway de Mensajería](https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging)           | Telegram, Discord, Slack, WhatsApp, Signal, Home Assistant   |
+| [Seguridad](https://jaswanthsai1.github.io/jacky-cli/user-guide/security)                        | Aprobación de comandos, emparejamiento por DM, aislamiento en contenedor |
+| [Herramientas y Toolsets](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/tools)   | Más de 40 herramientas, sistema de toolsets, backends de terminal |
+| [Sistema de Habilidades](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/skills)   | Memoria procedimental, Skills Hub, creación de habilidades   |
+| [Memoria](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/memory)                   | Memoria persistente, perfiles de usuario, mejores prácticas  |
+| [Integración MCP](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/mcp)              | Conecta cualquier servidor MCP para capacidades extendidas   |
+| [Programación Cron](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/cron)           | Tareas programadas con entrega a plataforma                  |
+| [Archivos de Contexto](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/context-files) | Contexto de proyecto que da forma a cada conversación      |
+| [Arquitectura](https://jaswanthsai1.github.io/jacky-cli/developer-guide/architecture)            | Estructura del proyecto, bucle del agente, clases principales |
+| [Contribuir](https://jaswanthsai1.github.io/jacky-cli/developer-guide/contributing)              | Configuración de desarrollo, proceso de PR, estilo de código |
+| [Referencia de CLI](https://jaswanthsai1.github.io/jacky-cli/reference/cli-commands)             | Todos los comandos y flags                                   |
+| [Variables de Entorno](https://jaswanthsai1.github.io/jacky-cli/reference/environment-variables) | Referencia completa de variables de entorno                  |
 
 ---
 

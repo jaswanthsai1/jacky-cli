@@ -132,19 +132,33 @@ jobs:
         with:
           pattern: test-durations-slice-*
           path: durations
-          merge-multiple: true
+          # NOT merge-multiple: every slice's artifact contains a file with
+          # the identical name (test_durations.json), so merging them flat
+          # into one directory races 8 parallel writers onto the same path
+          # -- observed corrupting the file into two concatenated JSON
+          # documents (JSONDecodeError: Extra data). Downloading each
+          # artifact into its own subdirectory (the default) avoids the
+          # collision entirely; the glob below already walks subdirs.
 
       - name: Merge into single durations file
         run: |
           python3 -c "
           import json, glob, os
           merged = {}
-          for f in glob.glob('durations/*test_durations.json'):
+          skipped = []
+          for f in glob.glob('durations/**/*test_durations.json', recursive=True):
             with open(f) as fh:
-              merged.update(json.load(fh))
+              try:
+                merged.update(json.load(fh))
+              except json.JSONDecodeError as e:
+                skipped.append((f, str(e)))
           with open('test_durations.json', 'w') as fh:
             json.dump(merged, fh, indent=2, sort_keys=True)
           print(f'Merged {len(merged)} file durations')
+          if skipped:
+            print(f'Skipped {len(skipped)} malformed duration file(s):')
+            for f, err in skipped:
+              print(f'  {f}: {err}')
           "
 
       - name: Save merged duration cache

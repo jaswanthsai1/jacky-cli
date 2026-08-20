@@ -74,7 +74,14 @@ AUTH_LOCK_TIMEOUT_SECONDS = 15.0
 # Nous Portal defaults
 DEFAULT_NOUS_PORTAL_URL = "https://portal.nousresearch.com"
 DEFAULT_NOUS_INFERENCE_URL = "https://inference-api.nousresearch.com/v1"
-DEFAULT_NOUS_CLIENT_ID = "jacky-cli"
+DEFAULT_NOUS_CLIENT_ID = "hermes-cli"  # Registered client_id on Nous Portal's OAuth
+# server -- this is an external third-party API identifier, not a branding
+# string. Nous Portal's device-code endpoint validates client_id against its
+# own whitelist and 400s with "Unsupported OAuth client_id" for anything not
+# already registered there (verified directly: "jacky-cli" -> 400
+# invalid_client, "hermes-cli" -> 200 with a real device_code). Renaming this
+# during the fork's de-branding pass broke the entire Nous Portal OAuth login
+# flow -- the default, no-API-key-needed "Quick Setup" path -- for every user.
 NOUS_INFERENCE_INVOKE_SCOPE = "inference:invoke"
 NOUS_BILLING_MANAGE_SCOPE = "billing:manage"
 DEFAULT_NOUS_SCOPE = NOUS_INFERENCE_INVOKE_SCOPE
@@ -124,11 +131,11 @@ QWEN_ACCESS_TOKEN_REFRESH_SKEW_SECONDS = 120
 DEFAULT_SPOTIFY_ACCOUNTS_BASE_URL = "https://accounts.spotify.com"
 DEFAULT_SPOTIFY_API_BASE_URL = "https://api.spotify.com/v1"
 DEFAULT_SPOTIFY_REDIRECT_URI = "http://127.0.0.1:43827/spotify/callback"
-SPOTIFY_DOCS_URL = "https://jacky-agent.nousresearch.com/docs/user-guide/features/spotify"
+SPOTIFY_DOCS_URL = "https://jaswanthsai1.github.io/jacky-cli/user-guide/features/spotify"
 SPOTIFY_DASHBOARD_URL = "https://developer.spotify.com/dashboard"
 SPOTIFY_ACCESS_TOKEN_REFRESH_SKEW_SECONDS = 120
 
-OAUTH_OVER_SSH_DOCS_URL = "https://jacky-agent.nousresearch.com/docs/guides/oauth-over-ssh"
+OAUTH_OVER_SSH_DOCS_URL = "https://jaswanthsai1.github.io/jacky-cli/guides/oauth-over-ssh"
 DEFAULT_SPOTIFY_SCOPE = " ".join((
     "user-modify-playback-state",
     "user-read-playback-state",

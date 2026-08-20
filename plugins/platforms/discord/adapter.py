@@ -5852,7 +5852,7 @@ class DiscordAdapter(BasePlatformAdapter):
 
             default_hint = f" (default: {default})" if default else ""
             embed = discord.Embed(
-                title="⚕ Update Needs Your Input",
+                title=">_ Update Needs Your Input",
                 description=f"{prompt}{default_hint}",
                 color=discord.Color.gold(),
             )
@@ -5864,7 +5864,7 @@ class DiscordAdapter(BasePlatformAdapter):
             # Mirror the prompt in plain content — embeds are invisible on
             # some clients (see send_exec_approval).
             content = self._self_contained_prompt_content(
-                "⚕ **Update Needs Your Input**", f"{prompt}{default_hint}"
+                ">_ **Update Needs Your Input**", f"{prompt}{default_hint}"
             )
             msg = await channel.send(content=content, embed=embed, view=view)
             view._message = msg  # store for on_timeout expiration editing

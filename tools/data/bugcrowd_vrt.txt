@@ -1,0 +1,2627 @@
+================================================================================
+BUGCROWD VULNERABILITY RATING TAXONOMY (VRT) - COMPLETE EXTRACT
+Release Date: 2026-07-08T00:00:00+00:00
+================================================================================
+
+Entry #1
+Category:                      AI Application Security
+Vulnerability Name:            Adversarial Example Injection
+Variant / Affected Function:   AI Misclassification Attacks
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #2
+Category:                      AI Application Security
+Vulnerability Name:            AI Safety
+Variant / Affected Function:   Misinformation / Wrong Factual Data
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #3
+Category:                      AI Application Security
+Vulnerability Name:            Denial-of-Service (DoS)
+Variant / Affected Function:   Application-Wide
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #4
+Category:                      AI Application Security
+Vulnerability Name:            Denial-of-Service (DoS)
+Variant / Affected Function:   Tenant-Scoped
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #5
+Category:                      AI Application Security
+Vulnerability Name:            Improper Input Handling
+Variant / Affected Function:   ANSI Escape Codes
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #6
+Category:                      AI Application Security
+Vulnerability Name:            Improper Input Handling
+Variant / Affected Function:   RTL Overrides
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #7
+Category:                      AI Application Security
+Vulnerability Name:            Improper Input Handling
+Variant / Affected Function:   Unicode Confusables
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #8
+Category:                      AI Application Security
+Vulnerability Name:            Improper Output Handling
+Variant / Affected Function:   Cross-Site Scripting (XSS)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #9
+Category:                      AI Application Security
+Vulnerability Name:            Improper Output Handling
+Variant / Affected Function:   Markdown/HTML Injection
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #10
+Category:                      AI Application Security
+Vulnerability Name:            Insufficient Rate Limiting
+Variant / Affected Function:   Query Flooding / API Token Abuse
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #11
+Category:                      AI Application Security
+Vulnerability Name:            Model Extraction
+Variant / Affected Function:   API Query-Based Model Reconstruction
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #12
+Category:                      AI Application Security
+Vulnerability Name:            Prompt Injection
+Variant / Affected Function:   System Prompt Leakage
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #13
+Category:                      AI Application Security
+Vulnerability Name:            Remote Code Execution
+Variant / Affected Function:   Full System Compromise
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #14
+Category:                      AI Application Security
+Vulnerability Name:            Remote Code Execution
+Variant / Affected Function:   Sandboxed Container Code Execution
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #15
+Category:                      AI Application Security
+Vulnerability Name:            Sensitive Information Disclosure
+Variant / Affected Function:   Cross-Tenant PII Leakage/Exposure
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #16
+Category:                      AI Application Security
+Vulnerability Name:            Sensitive Information Disclosure
+Variant / Affected Function:   Key Leak
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #17
+Category:                      AI Application Security
+Vulnerability Name:            Training Data Poisoning
+Variant / Affected Function:   Backdoor Injection / Bias Manipulation
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #18
+Category:                      AI Application Security
+Vulnerability Name:            Vector and Embedding Weaknesses
+Variant / Affected Function:   Embedding Exfiltration / Model Extraction
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #19
+Category:                      AI Application Security
+Vulnerability Name:            Vector and Embedding Weaknesses
+Variant / Affected Function:   Semantic Indexing
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #20
+Category:                      Algorithmic Biases
+Vulnerability Name:            Aggregation Bias
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #21
+Category:                      Algorithmic Biases
+Vulnerability Name:            Processing Bias
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #22
+Category:                      Application-Level Denial-of-Service (DoS)
+Vulnerability Name:            App Crash
+Variant / Affected Function:   Malformed Android Intents
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #23
+Category:                      Application-Level Denial-of-Service (DoS)
+Vulnerability Name:            App Crash
+Variant / Affected Function:   Malformed iOS URL Schemes
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #24
+Category:                      Application-Level Denial-of-Service (DoS)
+Vulnerability Name:            Critical Impact and/or Easy Difficulty
+Variant / Affected Function:   N/A
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #25
+Category:                      Application-Level Denial-of-Service (DoS)
+Vulnerability Name:            Excessive Resource Consumption
+Variant / Affected Function:   Injection (Prompt)
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #26
+Category:                      Application-Level Denial-of-Service (DoS)
+Vulnerability Name:            High Impact and/or Medium Difficulty
+Variant / Affected Function:   N/A
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #27
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Automatic Braking System (ABS)
+Variant / Affected Function:   Unintended Acceleration / Brake
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #28
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Battery Management System
+Variant / Affected Function:   Firmware Dump
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #29
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Battery Management System
+Variant / Affected Function:   Fraudulent Interface
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #30
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            CAN
+Variant / Affected Function:   Injection (Basic Safety Message)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #31
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            CAN
+Variant / Affected Function:   Injection (Battery Management System)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #32
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            CAN
+Variant / Affected Function:   Injection (Disallowed Messages)
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #33
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            CAN
+Variant / Affected Function:   Injection (DoS)
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #34
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            CAN
+Variant / Affected Function:   Injection (Headlights)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #35
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            CAN
+Variant / Affected Function:   Injection (Powertrain)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #36
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            CAN
+Variant / Affected Function:   Injection (Pyrotechnical Device Deployment Tool)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #37
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            CAN
+Variant / Affected Function:   Injection (Sensors)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #38
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            CAN
+Variant / Affected Function:   Injection (Steering Control)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #39
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            CAN
+Variant / Affected Function:   Injection (Vehicle Anti-theft Systems)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #40
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            GNSS / GPS
+Variant / Affected Function:   Spoofing
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #41
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Immobilizer
+Variant / Affected Function:   Engine Start
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #42
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Infotainment, Radio Head Unit
+Variant / Affected Function:   Code Execution (CAN Bus Pivot)
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #43
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Infotainment, Radio Head Unit
+Variant / Affected Function:   Code Execution (No CAN Bus Pivot)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #44
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Infotainment, Radio Head Unit
+Variant / Affected Function:   Default Credentials
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #45
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Infotainment, Radio Head Unit
+Variant / Affected Function:   Denial of Service (DoS / Brick)
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #46
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Infotainment, Radio Head Unit
+Variant / Affected Function:   OTA Firmware Manipulation
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #47
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Infotainment, Radio Head Unit
+Variant / Affected Function:   Sensitive data Leakage/Exposure
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #48
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Infotainment, Radio Head Unit
+Variant / Affected Function:   Source Code Dump
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #49
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Infotainment, Radio Head Unit
+Variant / Affected Function:   Unauthorized Access to Services (API / Endpoints)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #50
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            RF Hub
+Variant / Affected Function:   CAN Injection / Interaction
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #51
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            RF Hub
+Variant / Affected Function:   Data Leakage / Pull Encryption Mechanism
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #52
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            RF Hub
+Variant / Affected Function:   Key Fob Cloning
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #53
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            RF Hub
+Variant / Affected Function:   Relay
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #54
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            RF Hub
+Variant / Affected Function:   Replay
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #55
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            RF Hub
+Variant / Affected Function:   Roll Jam
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #56
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            RF Hub
+Variant / Affected Function:   Unauthorized Access / Turn On
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #57
+Category:                      Automotive Security Misconfiguration
+Vulnerability Name:            Roadside Unit (RSU)
+Variant / Affected Function:   Sybil Attack
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #58
+Category:                      Blockchain Infrastructure Misconfiguration
+Vulnerability Name:            Improper Bridge Validation and Verification Logic
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #59
+Category:                      Broken Access Control (BAC)
+Vulnerability Name:            Bypass of Password Confirmation
+Variant / Affected Function:   Change Password
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #60
+Category:                      Broken Access Control (BAC)
+Vulnerability Name:            Exposed Sensitive Android Intent
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #61
+Category:                      Broken Access Control (BAC)
+Vulnerability Name:            Exposed Sensitive iOS URL Scheme
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #62
+Category:                      Broken Access Control (BAC)
+Vulnerability Name:            Insecure Direct Object References (IDOR)
+Variant / Affected Function:   Modify Sensitive Information(Iterable Object Identifiers)
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #63
+Category:                      Broken Access Control (BAC)
+Vulnerability Name:            Insecure Direct Object References (IDOR)
+Variant / Affected Function:   Modify/View Sensitive Information(Complex Object Identifiers GUID/UUID)
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #64
+Category:                      Broken Access Control (BAC)
+Vulnerability Name:            Insecure Direct Object References (IDOR)
+Variant / Affected Function:   Modify/View Sensitive Information(Iterable Object Identifiers)
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #65
+Category:                      Broken Access Control (BAC)
+Vulnerability Name:            Insecure Direct Object References (IDOR)
+Variant / Affected Function:   View Non-Sensitive Information
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #66
+Category:                      Broken Access Control (BAC)
+Vulnerability Name:            Insecure Direct Object References (IDOR)
+Variant / Affected Function:   View Sensitive Information(Iterable Object Identifiers)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #67
+Category:                      Broken Access Control (BAC)
+Vulnerability Name:            Privilege Escalation
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #68
+Category:                      Broken Access Control (BAC)
+Vulnerability Name:            Username/Email Enumeration
+Variant / Affected Function:   Non-Brute Force
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #69
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Authentication Bypass
+Variant / Affected Function:   N/A
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #70
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Cleartext Transmission of Session Token
+Variant / Affected Function:   N/A
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #71
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Concurrent Logins
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #72
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Failure to Invalidate Session
+Variant / Affected Function:   Concurrent Sessions On Logout
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #73
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Failure to Invalidate Session
+Variant / Affected Function:   Long Timeout
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #74
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Failure to Invalidate Session
+Variant / Affected Function:   On Email Change
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #75
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Failure to Invalidate Session
+Variant / Affected Function:   On Logout (Client and Server-Side)
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #76
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Failure to Invalidate Session
+Variant / Affected Function:   On Logout (Server-Side Only)
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #77
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Failure to Invalidate Session
+Variant / Affected Function:   On Password Reset and/or Change
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #78
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Failure to Invalidate Session
+Variant / Affected Function:   On 2FA Activation/Change
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #79
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Failure to Invalidate Session
+Variant / Affected Function:   On Permission Change
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #80
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            SAML Replay
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #81
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Session Fixation
+Variant / Affected Function:   Local Attack Vector
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #82
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Session Fixation
+Variant / Affected Function:   Remote Attack Vector
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #83
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Second Factor Authentication (2FA) Bypass
+Variant / Affected Function:   N/A
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #84
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Weak Login Function
+Variant / Affected Function:   Not Operational or Intended Public Access
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #85
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Weak Login Function
+Variant / Affected Function:   Other Plaintext Protocol with no Secure Alternative
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #86
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Weak Login Function
+Variant / Affected Function:   Over HTTP
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #87
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Weak Registration Implementation
+Variant / Affected Function:   Over HTTP
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #88
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Excessive JSON Web Token (JWT) Lifetime
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #89
+Category:                      Broken Authentication and Session Management
+Vulnerability Name:            Secret Questions Used for Account Verification
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #90
+Category:                      Client-Side Injection
+Vulnerability Name:            Binary Planting
+Variant / Affected Function:   No Privilege Escalation
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #91
+Category:                      Client-Side Injection
+Vulnerability Name:            Binary Planting
+Variant / Affected Function:   Non-Default Folder Privilege Escalation
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #92
+Category:                      Client-Side Injection
+Vulnerability Name:            Binary Planting
+Variant / Affected Function:   Default Folder Privilege Escalation
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #93
+Category:                      Cloud Security
+Vulnerability Name:            Identity and Access Management (IAM) Misconfigurations
+Variant / Affected Function:   Overly Permissive IAM Roles
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #94
+Category:                      Cloud Security
+Vulnerability Name:            Identity and Access Management (IAM) Misconfigurations
+Variant / Affected Function:   Publicly Accessible IAM Credentials
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #95
+Category:                      Cloud Security
+Vulnerability Name:            Logging and Monitoring Issues
+Variant / Affected Function:   Disabled or Insufficient Logging
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #96
+Category:                      Cloud Security
+Vulnerability Name:            Misconfigured Services and APIs
+Variant / Affected Function:   Exposed Debug or Admin Interfaces
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #97
+Category:                      Cloud Security
+Vulnerability Name:            Misconfigured Services and APIs
+Variant / Affected Function:   Insecure API Endpoints
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #98
+Category:                      Cloud Security
+Vulnerability Name:            Network Configuration Issues
+Variant / Affected Function:   Lack of Network Segmentation
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #99
+Category:                      Cloud Security
+Vulnerability Name:            Network Configuration Issues
+Variant / Affected Function:   Open Management Ports to the Internet
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #100
+Category:                      Cloud Security
+Vulnerability Name:            Storage Misconfigurations
+Variant / Affected Function:   Publicly Accessible Cloud Storage
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #101
+Category:                      Cloud Security
+Vulnerability Name:            Storage Misconfigurations
+Variant / Affected Function:   Unencrypted Sensitive Data at Rest
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #102
+Category:                      Cross-Site Request Forgery (CSRF)
+Vulnerability Name:            Action-Specific
+Variant / Affected Function:   Authenticated Action
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #103
+Category:                      Cross-Site Request Forgery (CSRF)
+Vulnerability Name:            Action-Specific
+Variant / Affected Function:   Logout
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #104
+Category:                      Cross-Site Request Forgery (CSRF)
+Vulnerability Name:            Action-Specific
+Variant / Affected Function:   Unauthenticated Action
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #105
+Category:                      Cross-Site Request Forgery (CSRF)
+Vulnerability Name:            Application-Wide
+Variant / Affected Function:   N/A
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #106
+Category:                      Cross-Site Request Forgery (CSRF)
+Vulnerability Name:            CSRF Token Not Unique Per Request
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #107
+Category:                      Cross-Site Request Forgery (CSRF)
+Vulnerability Name:            Flash-Based
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #108
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            Cookie-Based
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #109
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            Flash-Based
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #110
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            IE-Only
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #111
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            Off-Domain
+Variant / Affected Function:   Data URI
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #112
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            Referer
+Variant / Affected Function:   N/A
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #113
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            Reflected
+Variant / Affected Function:   Non-Self
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #114
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            Reflected
+Variant / Affected Function:   Self
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #115
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            Stored
+Variant / Affected Function:   Non-Privileged User to Anyone
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #116
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            Stored
+Variant / Affected Function:   Privileged User to No Privilege Elevation
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #117
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            Stored
+Variant / Affected Function:   Privileged User to Privilege Elevation
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #118
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            Stored
+Variant / Affected Function:   Self
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #119
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            Stored
+Variant / Affected Function:   CSRF/URL-Based
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #120
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            TRACE Method
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #121
+Category:                      Cross-Site Scripting (XSS)
+Vulnerability Name:            Universal (UXSS)
+Variant / Affected Function:   N/A
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #122
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Broken Cryptography
+Variant / Affected Function:   Use of Broken Cryptographic Primitive
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #123
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Broken Cryptography
+Variant / Affected Function:   Use of Vulnerable Cryptographic Library
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #124
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Incomplete Cleanup of Keying Material
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #125
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insecure Implementation
+Variant / Affected Function:   Improper Following of Specification (Other)
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #126
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insecure Implementation
+Variant / Affected Function:   Missing Cryptographic Step
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #127
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insecure Key Generation
+Variant / Affected Function:   Improper Asymmetric Exponent Selection
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #128
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insecure Key Generation
+Variant / Affected Function:   Improper Asymmetric Prime Selection
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #129
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insecure Key Generation
+Variant / Affected Function:   Insufficient Key Space
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #130
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insecure Key Generation
+Variant / Affected Function:   Insufficient Key Stretching
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #131
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insecure Key Generation
+Variant / Affected Function:   Key Exchage Without Entity Authentication
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #132
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insufficient Entropy
+Variant / Affected Function:   Initialization Vector (IV) Reuse
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #133
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insufficient Entropy
+Variant / Affected Function:   Limited Random Number Generator (RNG) Entropy Source
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #134
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insufficient Entropy
+Variant / Affected Function:   Predictable Initialization Vector (IV)
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #135
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insufficient Entropy
+Variant / Affected Function:   Predictable Pseudo-Random Number Generator (PRNG) Seed
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #136
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insufficient Entropy
+Variant / Affected Function:   Pseudo-Random Number Generator (PRNG) Seed Reuse
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #137
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insufficient Entropy
+Variant / Affected Function:   Small Seed Space in Pseudo-Random Number Generator (PRNG)
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #138
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insufficient Entropy
+Variant / Affected Function:   Use of True Random Number Generator (TRNG) for Non-Security Purpose
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #139
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insufficient Verification of Data Authenticity
+Variant / Affected Function:   Cryptographic Signature
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #140
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Insufficient Verification of Data Authenticity
+Variant / Affected Function:   Integrity Check Value (ICV)
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #141
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Key Reuse
+Variant / Affected Function:   Inter-Environment
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #142
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Key Reuse
+Variant / Affected Function:   Intra-Environment
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #143
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Key Reuse
+Variant / Affected Function:   Lack of Perfect Forward Secrecy
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #144
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Side-Channel Attack
+Variant / Affected Function:   Differential Fault Analysis
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #145
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Side-Channel Attack
+Variant / Affected Function:   Emanations Attack
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #146
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Side-Channel Attack
+Variant / Affected Function:   Padding Oracle Attack
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #147
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Side-Channel Attack
+Variant / Affected Function:   Power Analysis Attack
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #148
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Side-Channel Attack
+Variant / Affected Function:   Timing Attack
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #149
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Use of Expired Cryptographic Key (or Certificate)
+Variant / Affected Function:   N/A
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #150
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Weak Hash
+Variant / Affected Function:   Lack of Salt
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #151
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Weak Hash
+Variant / Affected Function:   Predictable Hash Collision
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #152
+Category:                      Cryptographic Weakness
+Vulnerability Name:            Weak Hash
+Variant / Affected Function:   Use of Predictable Salt
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #153
+Category:                      Data Biases
+Vulnerability Name:            Pre-existing Bias
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #154
+Category:                      Data Biases
+Vulnerability Name:            Representation Bias
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #155
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            DeFi Security
+Variant / Affected Function:   Flash Loan Attack
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #156
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            DeFi Security
+Variant / Affected Function:   Function-Level Accounting Error
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #157
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            DeFi Security
+Variant / Affected Function:   Improper Implementation of Governance
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #158
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            DeFi Security
+Variant / Affected Function:   Pricing Oracle Manipulation
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #159
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Improper Authorization
+Variant / Affected Function:   Insufficient Signature Validation
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #160
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Insecure Data Storage
+Variant / Affected Function:   Plaintext Private Key
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #161
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Insecure Data Storage
+Variant / Affected Function:   Sensitive Information Exposure
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #162
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Marketplace Security
+Variant / Affected Function:   Denial of Service
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #163
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Marketplace Security
+Variant / Affected Function:   Improper Validation and Checks For Deposits and Withdrawals
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #164
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Marketplace Security
+Variant / Affected Function:   Malicious Order Offer
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #165
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Marketplace Security
+Variant / Affected Function:   Miscalculated Accounting Logic
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #166
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Marketplace Security
+Variant / Affected Function:   OFAC Bypass
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #167
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Marketplace Security
+Variant / Affected Function:   Orderbook Manipulation
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #168
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Marketplace Security
+Variant / Affected Function:   Price or Fee Manipulation
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #169
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Marketplace Security
+Variant / Affected Function:   Signer Account Takeover
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #170
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Marketplace Security
+Variant / Affected Function:   Unauthorized Asset Transfer
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #171
+Category:                      Decentralized Application Misconfiguration
+Vulnerability Name:            Protocol Security Misconfiguration
+Variant / Affected Function:   Node-level Denial of Service
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #172
+Category:                      Developer Biases
+Vulnerability Name:            Implicit Bias
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #173
+Category:                      External Behavior
+Vulnerability Name:            Browser Feature
+Variant / Affected Function:   Aggressive Offline Caching
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #174
+Category:                      External Behavior
+Vulnerability Name:            Browser Feature
+Variant / Affected Function:   Autocomplete Enabled
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #175
+Category:                      External Behavior
+Vulnerability Name:            Browser Feature
+Variant / Affected Function:   Autocorrect Enabled
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #176
+Category:                      External Behavior
+Vulnerability Name:            Browser Feature
+Variant / Affected Function:   Plaintext Password Field
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #177
+Category:                      External Behavior
+Vulnerability Name:            Browser Feature
+Variant / Affected Function:   Save Password
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #178
+Category:                      External Behavior
+Vulnerability Name:            Captcha Bypass
+Variant / Affected Function:   Crowdsourcing
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #179
+Category:                      External Behavior
+Vulnerability Name:            CSV Injection
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #180
+Category:                      External Behavior
+Vulnerability Name:            System Clipboard Leak
+Variant / Affected Function:   Shared Links
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #181
+Category:                      External Behavior
+Vulnerability Name:            User Password Persisted in Memory
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #182
+Category:                      Indicators of Compromise
+Vulnerability Name:            Indicators of Compromise
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #183
+Category:                      Insecure Data Storage
+Vulnerability Name:            Non-Sensitive Application Data Stored Unencrypted
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #184
+Category:                      Insecure Data Storage
+Vulnerability Name:            Screen Caching Enabled
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #185
+Category:                      Insecure Data Storage
+Vulnerability Name:            Sensitive Application Data Stored Unencrypted
+Variant / Affected Function:   On External Storage
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #186
+Category:                      Insecure Data Storage
+Vulnerability Name:            Sensitive Application Data Stored Unencrypted
+Variant / Affected Function:   On Internal Storage
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #187
+Category:                      Insecure Data Storage
+Vulnerability Name:            Server-Side Credentials Storage
+Variant / Affected Function:   Plaintext
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #188
+Category:                      Insecure Data Transport
+Vulnerability Name:            Cleartext Transmission of Sensitive Data
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #189
+Category:                      Insecure Data Transport
+Vulnerability Name:            Executable Download
+Variant / Affected Function:   No Secure Integrity Check
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #190
+Category:                      Insecure Data Transport
+Vulnerability Name:            Executable Download
+Variant / Affected Function:   Secure Integrity Check
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #191
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Command Injection
+Variant / Affected Function:   N/A
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #192
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Data not encrypted at rest
+Variant / Affected Function:   Non sensitive
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #193
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Data not encrypted at rest
+Variant / Affected Function:   Sensitive
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #194
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Failure to Remove Sensitive Artifacts from Disk
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #195
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Hardcoded Password
+Variant / Affected Function:   Non-Privileged User
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #196
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Hardcoded Password
+Variant / Affected Function:   Privileged User
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #197
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Kiosk Escape or Breakout
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #198
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Local Administrator on default environment
+Variant / Affected Function:   N/A
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #199
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Over-Permissioned Credentials on Storage
+Variant / Affected Function:   N/A
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #200
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Poorly Configured Disk Encryption
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #201
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Poorly Configured Operating System Security
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #202
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Recovery of Disk Contains Sensitive Material
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #203
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Shared Credentials on Storage
+Variant / Affected Function:   N/A
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #204
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Weakness in Firmware Updates
+Variant / Affected Function:   Firmware cannot be updated
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #205
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Weakness in Firmware Updates
+Variant / Affected Function:   Firmware does not validate update integrity
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #206
+Category:                      Insecure OS/Firmware
+Vulnerability Name:            Weakness in Firmware Updates
+Variant / Affected Function:   Firmware is not encrypted
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #207
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Lack of Notification Email
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #208
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            No Password Policy
+Variant / Affected Function:   N/A
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #209
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Password Policy Bypass
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #210
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Verification of Contact Method not Required
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #211
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak Password Policy
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #212
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak Password Reset Implementation
+Variant / Affected Function:   Token Has Long Timed Expiry
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #213
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak Password Reset Implementation
+Variant / Affected Function:   Token is Not Invalidated After Email Change
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #214
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak Password Reset Implementation
+Variant / Affected Function:   Token is Not Invalidated After Login
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #215
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak Password Reset Implementation
+Variant / Affected Function:   Token is Not Invalidated After New Token is Requested
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #216
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak Password Reset Implementation
+Variant / Affected Function:   Token is Not Invalidated After Password Change
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #217
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak Password Reset Implementation
+Variant / Affected Function:   Token is Not Invalidated After Use
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #218
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak Registration Implementation
+Variant / Affected Function:   Allows Disposable Email Addresses
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #219
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak 2FA Implementation
+Variant / Affected Function:   Missing Failsafe
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #220
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak 2FA Implementation
+Variant / Affected Function:   Old 2FA Code is Not Invalidated After New Code is Generated
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #221
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak 2FA Implementation
+Variant / Affected Function:   2FA Code is Not Updated After New Code is Requested
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #222
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak 2FA Implementation
+Variant / Affected Function:   2FA Secret Cannot be Rotated
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #223
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak 2FA Implementation
+Variant / Affected Function:   2FA Secret Remains Obtainable After 2FA is Enabled
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #224
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            No 2FA Implementation
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #225
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            No Account Lockout
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #226
+Category:                      Insufficient Security Configurability
+Vulnerability Name:            Weak JSON Web Token (JWT) Hashing Algorithm
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #227
+Category:                      Lack of Binary Hardening
+Vulnerability Name:            Lack of Exploit Mitigations
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #228
+Category:                      Lack of Binary Hardening
+Vulnerability Name:            Lack of Jailbreak Detection
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #229
+Category:                      Lack of Binary Hardening
+Vulnerability Name:            Lack of Obfuscation
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #230
+Category:                      Lack of Binary Hardening
+Vulnerability Name:            Runtime Instrumentation-Based
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #231
+Category:                      Misinterpretation Biases
+Vulnerability Name:            Context Ignorance
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #232
+Category:                      Mobile Security Misconfiguration
+Vulnerability Name:            Auto Backup Allowed by Default
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #233
+Category:                      Mobile Security Misconfiguration
+Vulnerability Name:            Clipboard Enabled
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #234
+Category:                      Mobile Security Misconfiguration
+Vulnerability Name:            SSL Certificate Pinning
+Variant / Affected Function:   Absent
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #235
+Category:                      Mobile Security Misconfiguration
+Vulnerability Name:            SSL Certificate Pinning
+Variant / Affected Function:   Defeatable
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #236
+Category:                      Mobile Security Misconfiguration
+Vulnerability Name:            Tapjacking
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #237
+Category:                      Network Security Misconfiguration
+Vulnerability Name:            Telnet Enabled
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #238
+Category:                      Physical Security Issues
+Vulnerability Name:            Bypass of physical access control
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #239
+Category:                      Physical Security Issues
+Vulnerability Name:            Weakness in physical access control
+Variant / Affected Function:   Cloneable Key
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #240
+Category:                      Physical Security Issues
+Vulnerability Name:            Weakness in physical access control
+Variant / Affected Function:   Commonly Keyed System
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #241
+Category:                      Physical Security Issues
+Vulnerability Name:            Weakness in physical access control
+Variant / Affected Function:   Master Key Identification
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #242
+Category:                      Privacy Concerns
+Vulnerability Name:            Unnecessary Data Collection
+Variant / Affected Function:   WiFi SSID+Password
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #243
+Category:                      Protocol Specific Misconfiguration
+Vulnerability Name:            Frontrunning-Enabled Attack
+Variant / Affected Function:   N/A
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #244
+Category:                      Protocol Specific Misconfiguration
+Vulnerability Name:            Improper Validation and Finalization Logic
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #245
+Category:                      Protocol Specific Misconfiguration
+Vulnerability Name:            Misconfigured Staking Logic
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #246
+Category:                      Protocol Specific Misconfiguration
+Vulnerability Name:            Sandwich-Enabled Attack
+Variant / Affected Function:   N/A
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #247
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Disclosure of Known Public Information
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #248
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Disclosure of Secrets
+Variant / Affected Function:   Data/Traffic Spam
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #249
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Disclosure of Secrets
+Variant / Affected Function:   For Internal Asset
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #250
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Disclosure of Secrets
+Variant / Affected Function:   For Publicly Accessible Asset
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #251
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Disclosure of Secrets
+Variant / Affected Function:   Intentionally Public, Sample or Invalid
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #252
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Disclosure of Secrets
+Variant / Affected Function:   Non-Corporate User
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #253
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Disclosure of Secrets
+Variant / Affected Function:   Pay-Per-Use Abuse
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #254
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Disclosure of Secrets
+Variant / Affected Function:   PII Leakage/Exposure
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #255
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Disclosure of Secrets
+Variant / Affected Function:   Sensitive Information Disclosed in JSON Web Token (JWT)
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #256
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Disclosure of Secrets
+Variant / Affected Function:   Publicly accessible Robots.txt
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #257
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            EXIF Geolocation Data Not Stripped From Uploaded Images
+Variant / Affected Function:   Automatic User Enumeration
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #258
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            EXIF Geolocation Data Not Stripped From Uploaded Images
+Variant / Affected Function:   Manual User Enumeration
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #259
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            GraphQL Introspection Enabled
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #260
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Internal IP Disclosure
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #261
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            JSON Hijacking
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #262
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Mixed Content (HTTPS Sourcing HTTP)
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #263
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Non-Sensitive Token in URL
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #264
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Sensitive Data Hardcoded
+Variant / Affected Function:   File Paths
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #265
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Sensitive Data Hardcoded
+Variant / Affected Function:   OAuth Secret
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #266
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Sensitive Token in URL
+Variant / Affected Function:   In the Background
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #267
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Sensitive Token in URL
+Variant / Affected Function:   On Password Reset
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #268
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Sensitive Token in URL
+Variant / Affected Function:   User Facing
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #269
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Token Leakage via Referer
+Variant / Affected Function:   Over HTTP
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #270
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Token Leakage via Referer
+Variant / Affected Function:   Password Reset Token
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #271
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Token Leakage via Referer
+Variant / Affected Function:   Trusted 3rd Party
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #272
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Token Leakage via Referer
+Variant / Affected Function:   Untrusted 3rd Party
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #273
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Via localStorage/sessionStorage
+Variant / Affected Function:   Non-Sensitive Token
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #274
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Via localStorage/sessionStorage
+Variant / Affected Function:   Sensitive Token
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #275
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Visible Detailed Error/Debug Page
+Variant / Affected Function:   Descriptive Stack Trace
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #276
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Visible Detailed Error/Debug Page
+Variant / Affected Function:   Detailed Server Configuration
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #277
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Visible Detailed Error/Debug Page
+Variant / Affected Function:   Full Path Disclosure
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #278
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Weak Password Reset Implementation
+Variant / Affected Function:   Password Reset Token Sent Over HTTP
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #279
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Weak Password Reset Implementation
+Variant / Affected Function:   Token Leakage via Host Header Poisoning
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #280
+Category:                      Sensitive Data Exposure
+Vulnerability Name:            Cross Site Script Inclusion (XSSI)
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #281
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Bitsquatting
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #282
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Cache Deception
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #283
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Cache Poisoning
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #284
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            CAPTCHA
+Variant / Affected Function:   Brute Force
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #285
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            CAPTCHA
+Variant / Affected Function:   Implementation Vulnerability
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #286
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            CAPTCHA
+Variant / Affected Function:   Missing
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #287
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Clickjacking
+Variant / Affected Function:   Form Input
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #288
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Clickjacking
+Variant / Affected Function:   Non-Sensitive Action
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #289
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Clickjacking
+Variant / Affected Function:   Sensitive Click-Based Action
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #290
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Cookie Scoped to Parent Domain
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #291
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Database Management System (DBMS) Misconfiguration
+Variant / Affected Function:   Excessively Privileged User / DBA
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #292
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Directory Listing Enabled
+Variant / Affected Function:   Non-Sensitive Data Exposure
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #293
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Directory Listing Enabled
+Variant / Affected Function:   Sensitive Data Exposure
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #294
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Email Verification Bypass
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #295
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Exposed Portal
+Variant / Affected Function:   Admin Portal
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #296
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Exposed Portal
+Variant / Affected Function:   Non-Admin Portal
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #297
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Exposed Portal
+Variant / Affected Function:   Protected
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #298
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Fingerprinting/Banner Disclosure
+Variant / Affected Function:   Software Versions Disclosed in Response Headers
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #299
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Insecure SSL
+Variant / Affected Function:   Certificate Error
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #300
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Insecure SSL
+Variant / Affected Function:   Insecure Cipher Suite
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #301
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Insecure SSL
+Variant / Affected Function:   Lack of Forward Secrecy
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #302
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Password Confirmation
+Variant / Affected Function:   Change Email Address
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #303
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Password Confirmation
+Variant / Affected Function:   Change Password
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #304
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Password Confirmation
+Variant / Affected Function:   Delete Account
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #305
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Password Confirmation
+Variant / Affected Function:   Manage 2FA
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #306
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Security Headers
+Variant / Affected Function:   Cache-Control for a Non-Sensitive Page
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #307
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Security Headers
+Variant / Affected Function:   Cache-Control for a Sensitive Page
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #308
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Security Headers
+Variant / Affected Function:   Content-Security-Policy
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #309
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Security Headers
+Variant / Affected Function:   Content-Security-Policy-Report-Only
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #310
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Security Headers
+Variant / Affected Function:   Public-Key-Pins
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #311
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Security Headers
+Variant / Affected Function:   Strict-Transport-Security
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #312
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Security Headers
+Variant / Affected Function:   X-Content-Security-Policy
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #313
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Security Headers
+Variant / Affected Function:   X-Content-Type-Options
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #314
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Security Headers
+Variant / Affected Function:   X-Frame-Options
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #315
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Security Headers
+Variant / Affected Function:   X-Webkit-CSP
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #316
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Lack of Security Headers
+Variant / Affected Function:   X-XSS-Protection
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #317
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Mail Server Misconfiguration
+Variant / Affected Function:   Email Spoofing on Non-Email Domain
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #318
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Mail Server Misconfiguration
+Variant / Affected Function:   Email Spoofing to Inbox due to Missing or Misconfigured DMARC on Email Domain
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #319
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Mail Server Misconfiguration
+Variant / Affected Function:   Email Spoofing to Spam Folder
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #320
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Mail Server Misconfiguration
+Variant / Affected Function:   Missing or Misconfigured SPF and/or DKIM
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #321
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Mail Server Misconfiguration
+Variant / Affected Function:   No Spoofing Protection on Email Domain
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #322
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Misconfigured DNS
+Variant / Affected Function:   Missing Certification Authority Authorization (CAA) Record
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #323
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Misconfigured DNS
+Variant / Affected Function:   Subdomain Takeover
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #324
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Misconfigured DNS
+Variant / Affected Function:   Zone Transfer
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #325
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Missing DNSSEC
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #326
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Missing Secure or HTTPOnly Cookie Flag
+Variant / Affected Function:   Non-Session Cookie
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #327
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Missing Secure or HTTPOnly Cookie Flag
+Variant / Affected Function:   Session Token
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #328
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Missing Subresource Integrity
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #329
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            No Rate Limiting on Form
+Variant / Affected Function:   Change Password
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #330
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            No Rate Limiting on Form
+Variant / Affected Function:   Email-Triggering
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #331
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            No Rate Limiting on Form
+Variant / Affected Function:   Login
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #332
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            No Rate Limiting on Form
+Variant / Affected Function:   Registration
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #333
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            No Rate Limiting on Form
+Variant / Affected Function:   SMS-Triggering
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #334
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            OAuth Misconfiguration
+Variant / Affected Function:   Account Squatting
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #335
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            OAuth Misconfiguration
+Variant / Affected Function:   Account Takeover
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #336
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            OAuth Misconfiguration
+Variant / Affected Function:   Insecure Redirect URI
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #337
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            OAuth Misconfiguration
+Variant / Affected Function:   Missing/Broken State Parameter
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #338
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Path Traversal
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #339
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Potentially Unsafe HTTP Method Enabled
+Variant / Affected Function:   OPTIONS
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #340
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Potentially Unsafe HTTP Method Enabled
+Variant / Affected Function:   TRACE
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #341
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Race Condition
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #342
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            HTTP Request Smuggling
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #343
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Reflected File Download (RFD)
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #344
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Same-Site Scripting
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #345
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Server-Side Request Forgery (SSRF)
+Variant / Affected Function:   External - DNS Query Only
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #346
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Server-Side Request Forgery (SSRF)
+Variant / Affected Function:   External - Low impact
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #347
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Server-Side Request Forgery (SSRF)
+Variant / Affected Function:   Internal Secrets Exposure
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #348
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Server-Side Request Forgery (SSRF)
+Variant / Affected Function:   Internal Data Exposure
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #349
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Server-Side Request Forgery (SSRF)
+Variant / Affected Function:   Internal Port Service Scan
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #350
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Server-Side Request Forgery (SSRF)
+Variant / Affected Function:   Internal Exposure of the Presence of Data/Secrets
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #351
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Server-Side Request Forgery (SSRF)
+Variant / Affected Function:   Internal Port Scan Only
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #352
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Software Package Takeover
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #353
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            SSL Attack (BREACH, POODLE etc.)
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #354
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Unsafe Cross-Origin Resource Sharing
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #355
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Unsafe File Upload
+Variant / Affected Function:   File Extension Filter Bypass
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #356
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Unsafe File Upload
+Variant / Affected Function:   No Antivirus
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #357
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Unsafe File Upload
+Variant / Affected Function:   No Size Limit
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #358
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Username/Email Enumeration
+Variant / Affected Function:   Brute Force
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #359
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Using Default Credentials
+Variant / Affected Function:   N/A
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #360
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Web Application Firewall (WAF) Bypass
+Variant / Affected Function:   Direct Server Access
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #361
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Misconfigured File Share
+Variant / Affected Function:   Anonymous FTP Enabled
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #362
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Misconfigured File Share
+Variant / Affected Function:   Anonymous SMB Enabled
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #363
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Misconfigured File Share
+Variant / Affected Function:   Non-Sensitive Data Exposure via Anonymous FTP/SMB Enabled
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #364
+Category:                      Server Security Misconfiguration
+Vulnerability Name:            Misconfigured Security Headers
+Variant / Affected Function:   Insecure Content-Security-Policy
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #365
+Category:                      Server-Side Injection
+Vulnerability Name:            Content Spoofing
+Variant / Affected Function:   Email HTML Injection
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #366
+Category:                      Server-Side Injection
+Vulnerability Name:            Content Spoofing
+Variant / Affected Function:   Email Hyperlink Injection Based on Email Provider
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #367
+Category:                      Server-Side Injection
+Vulnerability Name:            Content Spoofing
+Variant / Affected Function:   External Authentication Injection
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #368
+Category:                      Server-Side Injection
+Vulnerability Name:            Content Spoofing
+Variant / Affected Function:   Flash Based External Authentication Injection
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #369
+Category:                      Server-Side Injection
+Vulnerability Name:            Content Spoofing
+Variant / Affected Function:   Homograph/IDN-Based
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #370
+Category:                      Server-Side Injection
+Vulnerability Name:            Content Spoofing
+Variant / Affected Function:   HTML Content Injection
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #371
+Category:                      Server-Side Injection
+Vulnerability Name:            Content Spoofing
+Variant / Affected Function:   iframe Injection
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #372
+Category:                      Server-Side Injection
+Vulnerability Name:            Content Spoofing
+Variant / Affected Function:   Impersonation via Broken Link Hijacking
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #373
+Category:                      Server-Side Injection
+Vulnerability Name:            Content Spoofing
+Variant / Affected Function:   Right-to-Left Override (RTLO)
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #374
+Category:                      Server-Side Injection
+Vulnerability Name:            Content Spoofing
+Variant / Affected Function:   Text Injection
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #375
+Category:                      Server-Side Injection
+Vulnerability Name:            Content Spoofing
+Variant / Affected Function:   Self Email HTML Injection
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #376
+Category:                      Server-Side Injection
+Vulnerability Name:            Exposed Data
+Variant / Affected Function:   Non Sensitive Data
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #377
+Category:                      Server-Side Injection
+Vulnerability Name:            Exposed Data
+Variant / Affected Function:   Sensitive Data
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #378
+Category:                      Server-Side Injection
+Vulnerability Name:            File Inclusion
+Variant / Affected Function:   Local
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #379
+Category:                      Server-Side Injection
+Vulnerability Name:            HTTP Response Manipulation
+Variant / Affected Function:   Response Splitting (CRLF)
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #380
+Category:                      Server-Side Injection
+Vulnerability Name:            LDAP Injection
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #381
+Category:                      Server-Side Injection
+Vulnerability Name:            Parameter Pollution
+Variant / Affected Function:   Social Media Sharing Buttons
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #382
+Category:                      Server-Side Injection
+Vulnerability Name:            Remote Code Execution (RCE)
+Variant / Affected Function:   N/A
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #383
+Category:                      Server-Side Injection
+Vulnerability Name:            SQL Injection
+Variant / Affected Function:   N/A
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #384
+Category:                      Server-Side Injection
+Vulnerability Name:            Server-Side Template Injection (SSTI)
+Variant / Affected Function:   Basic
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #385
+Category:                      Server-Side Injection
+Vulnerability Name:            Server-Side Template Injection (SSTI)
+Variant / Affected Function:   Custom
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #386
+Category:                      Server-Side Injection
+Vulnerability Name:            XML External Entity Injection (XXE)
+Variant / Affected Function:   N/A
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #387
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Bypass of Function Modifiers and Checks
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #388
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Function-level Denial of Service
+Variant / Affected Function:   N/A
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #389
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Improper Decimals Implementation
+Variant / Affected Function:   N/A
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #390
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Improper Fee Implementation
+Variant / Affected Function:   N/A
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #391
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Improper Use of Modifier
+Variant / Affected Function:   N/A
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #392
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Inaccurate Rounding Calculation
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #393
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Integer Overflow / Underflow
+Variant / Affected Function:   N/A
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #394
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Irreversible Function Call
+Variant / Affected Function:   N/A
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #395
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Malicious Superuser Risk
+Variant / Affected Function:   N/A
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #396
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Reentrancy Attack
+Variant / Affected Function:   N/A
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #397
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Smart Contract Owner Takeover
+Variant / Affected Function:   N/A
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #398
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Unauthorized Smart Contract Approval
+Variant / Affected Function:   N/A
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #399
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Unauthorized Transfer of Funds
+Variant / Affected Function:   N/A
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #400
+Category:                      Smart Contract Misconfiguration
+Vulnerability Name:            Uninitialized Variables
+Variant / Affected Function:   N/A
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #401
+Category:                      Societal Biases
+Vulnerability Name:            Confirmation Bias
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #402
+Category:                      Societal Biases
+Vulnerability Name:            Systemic Bias
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #403
+Category:                      Unvalidated Redirects and Forwards
+Vulnerability Name:            Lack of Security Speed Bump Page
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #404
+Category:                      Unvalidated Redirects and Forwards
+Vulnerability Name:            Open Redirect
+Variant / Affected Function:   Flash-Based
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #405
+Category:                      Unvalidated Redirects and Forwards
+Vulnerability Name:            Open Redirect
+Variant / Affected Function:   GET-Based
+Severity:                      P4
+--------------------------------------------------------------------------------
+Entry #406
+Category:                      Unvalidated Redirects and Forwards
+Vulnerability Name:            Open Redirect
+Variant / Affected Function:   Header-Based
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #407
+Category:                      Unvalidated Redirects and Forwards
+Vulnerability Name:            Open Redirect
+Variant / Affected Function:   POST-Based
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #408
+Category:                      Unvalidated Redirects and Forwards
+Vulnerability Name:            Tabnabbing
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #409
+Category:                      Using Components with Known Vulnerabilities
+Vulnerability Name:            Captcha Bypass
+Variant / Affected Function:   OCR (Optical Character Recognition)
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #410
+Category:                      Using Components with Known Vulnerabilities
+Vulnerability Name:            Outdated Software Version
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #411
+Category:                      Using Components with Known Vulnerabilities
+Vulnerability Name:            Rosetta Flash
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #412
+Category:                      Using Components with Known Vulnerabilities
+Vulnerability Name:            Unpatched Javascript Libraries
+Variant / Affected Function:   N/A
+Severity:                      P5
+--------------------------------------------------------------------------------
+Entry #413
+Category:                      Zero Knowledge Security Misconfiguration
+Vulnerability Name:            Deanonymization of Data
+Variant / Affected Function:   N/A
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #414
+Category:                      Zero Knowledge Security Misconfiguration
+Vulnerability Name:            Improper Proof Validation and Finalization Logic
+Variant / Affected Function:   N/A
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #415
+Category:                      Zero Knowledge Security Misconfiguration
+Vulnerability Name:            Misconfigured Trusted Setup
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #416
+Category:                      Zero Knowledge Security Misconfiguration
+Vulnerability Name:            Mismatching Bit Lengths
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #417
+Category:                      Zero Knowledge Security Misconfiguration
+Vulnerability Name:            Missing Constraint
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #418
+Category:                      Zero Knowledge Security Misconfiguration
+Vulnerability Name:            Missing Range Check
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #419
+Category:                      Active Directory (AD)
+Vulnerability Name:            SCCM Abuse
+Variant / Affected Function:   PXE Boot Media Theft
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #420
+Category:                      Active Directory (AD)
+Vulnerability Name:            SCCM Abuse
+Variant / Affected Function:   Distribution Point Permits Anonymous Access
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #421
+Category:                      Active Directory (AD)
+Vulnerability Name:            SCCM Abuse
+Variant / Affected Function:   Automatic Device Approval Enabled
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #422
+Category:                      Active Directory (AD)
+Vulnerability Name:            SCCM Abuse
+Variant / Affected Function:   NTLM Relay From Management Point to Site Database
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #423
+Category:                      Active Directory (AD)
+Vulnerability Name:            SCCM Abuse
+Variant / Affected Function:   NTLM Relay From Site Server To Site Systems
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #424
+Category:                      Active Directory (AD)
+Vulnerability Name:            SCCM Abuse
+Variant / Affected Function:   NTLM Relay Via Automatic Client Push Installation
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #425
+Category:                      Active Directory (AD)
+Vulnerability Name:            SCCM Abuse
+Variant / Affected Function:   Privileged Credentials Exposed In Task Sequences, Collection Variables or Network Access Account
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #426
+Category:                      Active Directory (AD)
+Vulnerability Name:            Kerberos Abuse
+Variant / Affected Function:   Domain Compromise via Unconstrained Delegated
+Severity:                      P1
+--------------------------------------------------------------------------------
+Entry #427
+Category:                      Active Directory (AD)
+Vulnerability Name:            Kerberos Abuse
+Variant / Affected Function:   Insecure Service Account Management (Kerberoasting)
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #428
+Category:                      Active Directory (AD)
+Vulnerability Name:            Kerberos Abuse
+Variant / Affected Function:   User Does Not Require Pre-authentication (ASREPRoasting)
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #429
+Category:                      Active Directory (AD)
+Vulnerability Name:            Misconfigured Active Directory Certificate Services (ADCS)
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #430
+Category:                      Active Directory (AD)
+Vulnerability Name:            Configuration Weaknesses
+Variant / Affected Function:   Passwords Found within Domain User Account Description
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #431
+Category:                      Active Directory (AD)
+Vulnerability Name:            Configuration Weaknesses
+Variant / Affected Function:   Weak Domain Password Policy
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #432
+Category:                      Active Directory (AD)
+Vulnerability Name:            Configuration Weaknesses
+Variant / Affected Function:   Shared Administrator Passwords
+Severity:                      P2
+--------------------------------------------------------------------------------
+Entry #433
+Category:                      Active Directory (AD)
+Vulnerability Name:            Configuration Weaknesses
+Variant / Affected Function:   Excessive Domain Admin Membership
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #434
+Category:                      Active Directory (AD)
+Vulnerability Name:            Configuration Weaknesses
+Variant / Affected Function:   Dormant / Inactive User Accounts Enabled in the Domain
+Severity:                      P3
+--------------------------------------------------------------------------------
+Entry #435
+Category:                      Active Directory (AD)
+Vulnerability Name:            Sensitive Data Exposure
+Variant / Affected Function:   LDAP Anonymous Bind Enabled
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #436
+Category:                      Active Directory (AD)
+Vulnerability Name:            Sensitive Data Exposure
+Variant / Affected Function:   Sensitive Data in Open File Shares
+Severity:                      Varies
+--------------------------------------------------------------------------------
+Entry #437
+Category:                      Active Directory (AD)
+Vulnerability Name:            DACL Abuse
+Variant / Affected Function:   N/A
+Severity:                      Varies
+--------------------------------------------------------------------------------

@@ -14,7 +14,6 @@
 <p align="center">
   <a href="https://github.com/jaswanthsai1/jacky-cli/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-00FF41?style=for-the-badge&logo=opensourceinitiative&logoColor=black" alt="License: MIT"></a>
   <a href="https://github.com/jaswanthsai1"><img src="https://img.shields.io/badge/Author-jaswanthsai1-9D00FF?style=for-the-badge&logo=github&logoColor=white" alt="Author"></a>
-  <a href="https://github.com/NousResearch/hermes-agent"><img src="https://img.shields.io/badge/Fork%20of-Hermes%20Agent-00E5FF?style=for-the-badge&logo=nintendogamecube&logoColor=black" alt="Fork of Hermes Agent"></a>
   <img src="https://img.shields.io/badge/status-ONLINE-00FF41?style=for-the-badge&logo=statuspage&logoColor=black" alt="status">
   <img src="https://komarev.com/ghpvc/?username=jacky-cli&repo=jacky-cli&label=repo+views&color=00FF41&style=for-the-badge" alt="views">
 </p>
@@ -26,31 +25,66 @@
 
 **Designer / Author:** [Maturi Jaswanth Sai Madhu Mohan](https://github.com/jaswanthsai1)
 
-**Built on Hermes Agent by [Nous Research](https://nousresearch.com).** Jacky CLI
-is a personalized, distinct distribution of Nous Research's MIT-licensed
-[Hermes Agent](https://github.com/NousResearch/hermes-agent) — full credit and
-thanks to the Nous Research team for the original agent, its tool-calling
-architecture, and its self-improving skill system. This fork keeps that
-foundation and adds: a bundled offensive-security / bug-bounty hunt-loop
-methodology (`skills/`, `METHODOLOGY.md`), a one-command `setup.sh` bootstrap,
-and CLI ergonomics tuned around dual local + cloud model use. If you're
-looking for the upstream project, it's at
-[github.com/NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent).
+Thanks to partner [Aluri Hruthik](https://github.com/darkknight268/) for support along the way.
+
+Jacky is an AI agent CLI built to run wherever you want it — local model or
+cloud, your choice of provider — with a bug-bounty/offensive-security
+hunt-loop methodology built in from day one. One-command install, a full
+tool-calling agent loop, a self-improving skill system, and live visibility
+into every background agent it spawns.
 
 <img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00FF41,100:00E5FF" alt="divider"/>
 
 ## Quick Start
 
+**One line (Linux/macOS):**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
+```
+
+This clones the repo to `~/.jacky-cli`, runs `setup.sh` for you, and leaves
+`jacky` on your `PATH`. Re-running it later updates your install in place.
+Prefer to inspect the script first, or already have the repo cloned? Same
+result, one extra step:
+
 ```bash
 git clone https://github.com/jaswanthsai1/jacky-cli.git
 cd jacky-cli
 ./setup.sh
+```
+
+Either way, finish with:
+
+```bash
 jacky
 ```
 
 `setup.sh` creates a virtual environment, installs Jacky CLI into it, copies
 `.env.example` → `.env`, links the `jacky` command onto your `PATH`, and — before
 declaring success — actually runs `jacky --help` to prove the install works.
+
+**Or via npm (any OS with Node.js):**
+
+```bash
+npm install -g jacky-cli-agent
+```
+
+npm installs won't miss new releases either — Jacky checks for updates on
+startup and tells you when `npm update -g jacky-cli-agent` is worth running.
+
+**Or via pip (any OS with Python 3.11–3.13):**
+
+```bash
+pip install jacky-cli
+```
+
+Live on PyPI. Prefer to track `main` instead of a tagged release, without a
+PyPI install at all?
+
+```bash
+pip install git+https://github.com/jaswanthsai1/jacky-cli.git
+```
 
 **Windows (native, PowerShell):**
 
@@ -63,6 +97,19 @@ powershell -ExecutionPolicy ByPass -File scripts\install.ps1
 See [`website/docs/user-guide/windows-native.md`](website/docs/user-guide/windows-native.md) for the native Windows feature matrix.
 
 📖 **[Full documentation →](website/docs/)** &nbsp;|&nbsp; 🎯 **[Hunt-loop methodology →](docs/METHODOLOGY.md)**
+
+<img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00E5FF,100:9D00FF" alt="divider"/>
+
+## Requirements
+
+- **Python** 3.11, 3.12, or 3.13 (checked and auto-offered for install by `setup.sh`)
+- **OS**: Linux, macOS, or Windows (native via `scripts/install.ps1`, or WSL)
+- **Optional, for local models**: [Ollama](https://ollama.com) or another
+  OpenAI-compatible local server, plus a GPU for anything beyond small models
+  (CPU-only inference works, just slower)
+- **Optional, for cloud models**: an API key for any OpenAI-compatible or
+  Anthropic-compatible provider (OpenRouter, OpenAI, Anthropic, Google AI
+  Studio, and others — bring your own key)
 
 <img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:00E5FF,100:9D00FF" alt="divider"/>
 
@@ -127,6 +174,24 @@ jacky doctor       # Diagnose any issues
 ```
 
 📖 **[Full documentation →](website/docs/)** &nbsp;|&nbsp; 🎯 **[Hunt-loop methodology →](docs/METHODOLOGY.md)**
+
+---
+
+## Manual install (without setup.sh)
+
+`./setup.sh` is the recommended path, but if you'd rather do it by hand:
+
+```bash
+git clone https://github.com/jaswanthsai1/jacky-cli.git
+cd jacky-cli
+python3 -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install --upgrade pip
+pip install -e .                 # core install
+# or: pip install -e ".[all]"    # everything eager-installable
+cp .env.example .env             # then edit .env with your provider config
+jacky --help                     # verify it worked
+```
 
 ---
 
@@ -198,13 +263,18 @@ scripts/run_tests.sh
 
 <img width="100%" height="4" src="https://capsule-render.vercel.app/api?type=rect&color=0:9D00FF,100:00FF41" alt="divider"/>
 
+## About
+
+Jacky is an AI agent CLI built to run wherever you want it — local model or
+cloud, your choice of provider — with a bug-bounty/offensive-security
+hunt-loop methodology built in from day one, not bolted on. It ships with a
+one-command install, a full tool-calling agent loop, a self-improving skill
+system, and live visibility into every background agent it spawns.
+
+**Designed and maintained by [Maturi Jaswanth Sai Madhu Mohan](https://github.com/jaswanthsai1).**
+
 ## License
 
-MIT — see [LICENSE](LICENSE).
-
-Jacky CLI is a fork of [Hermes Agent](https://github.com/NousResearch/hermes-agent),
-© Nous Research, used and modified under the MIT License. Jacky-specific
-additions © Maturi Jaswanth Sai Madhu Mohan. See [LICENSE](LICENSE) for the
-full dual attribution.
+MIT — see [LICENSE](LICENSE) for full attribution details.
 
 <img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:9D00FF,50:00E5FF,100:00FF41&height=100&section=footer" alt="footer"/>

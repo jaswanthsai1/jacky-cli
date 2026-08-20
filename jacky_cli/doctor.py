@@ -1228,7 +1228,7 @@ def run_doctor(args):
     if state_db_path.exists():
         try:
             import sqlite3
-            conn = sqlite3.connect(str(state_db_path))
+            conn = sqlite3.connect(str(state_db_path), timeout=30.0)
             cursor = conn.execute("SELECT COUNT(*) FROM sessions")
             count = cursor.fetchone()[0]
             conn.close()
@@ -1289,7 +1289,7 @@ def run_doctor(args):
                     report = repair_state_db_schema(state_db_path)
                     if report.get("repaired"):
                         try:
-                            conn = sqlite3.connect(str(state_db_path))
+                            conn = sqlite3.connect(str(state_db_path), timeout=30.0)
                             count = conn.execute(
                                 "SELECT COUNT(*) FROM sessions"
                             ).fetchone()[0]
@@ -1336,7 +1336,7 @@ def run_doctor(args):
                 )
                 if should_fix:
                     import sqlite3
-                    conn = sqlite3.connect(str(state_db_path))
+                    conn = sqlite3.connect(str(state_db_path), timeout=30.0)
                     conn.execute("PRAGMA wal_checkpoint(PASSIVE)")
                     conn.close()
                     new_size = wal_path.stat().st_size if wal_path.exists() else 0
@@ -1509,7 +1509,7 @@ def run_doctor(args):
                 result = subprocess.run(
                     cmd,
                     capture_output=True,
-                    text=True,
+                    text=True, encoding="utf-8", errors="replace",
                     timeout=15
                 )
             except subprocess.TimeoutExpired:
@@ -1673,7 +1673,7 @@ def run_doctor(args):
                 audit_result = subprocess.run(
                     [_npm_bin, "audit", "--json", *audit_extra],
                     cwd=str(npm_dir),
-                    capture_output=True, text=True, timeout=30,
+                    capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=30,
                 )
                 import json as _json
                 audit_data = _json.loads(audit_result.stdout) if audit_result.stdout.strip() else {}

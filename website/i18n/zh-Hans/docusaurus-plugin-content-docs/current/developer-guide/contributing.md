@@ -43,7 +43,7 @@ description: "如何为 Jacky Agent 做贡献 — 开发环境配置、代码风
 对大多数贡献者来说，最好的开发启动方式和用户安装方式相同：运行标准安装器，然后在它克隆出的仓库里开发。安装器会创建 Jacky venv、配置 `jacky` 命令、为 `jacky update` 写入安装方式标记，并把完整 git 项目克隆到 `$JACKY_HOME/jacky-agent`（通常是 `~/.jacky/jacky-agent`）。这样你的开发环境会和 CLI、updater、lazy dependency installer、gateway、docs 默认假设的布局一致。
 
 ```bash
-curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
 cd "${JACKY_HOME:-$HOME/.jacky}/jacky-agent"
 
 # 在标准安装基础上添加开发/测试 extras。

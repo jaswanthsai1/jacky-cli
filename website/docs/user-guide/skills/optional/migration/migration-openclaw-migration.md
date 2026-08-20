@@ -21,7 +21,7 @@ Migrate a user's OpenClaw customization footprint into Jacky Agent. Imports Jack
 | License | MIT |
 | Platforms | linux, macos, windows |
 | Tags | `Migration`, `OpenClaw`, `Jacky`, `Memory`, `Persona`, `Import` |
-| Related skills | [`jacky-agent`](/docs/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-jacky-agent) |
+| Related skills | [`jacky-agent`](/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-jacky-agent) |
 
 ## Reference: full SKILL.md
 

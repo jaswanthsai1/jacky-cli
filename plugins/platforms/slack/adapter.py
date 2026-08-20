@@ -4439,7 +4439,7 @@ def interactive_setup() -> None:
     print_info("   3. Install to Workspace: Settings → Install App")
     print_info("   4. After installing, invite the bot to channels: /invite @YourBot")
     print()
-    print_info("   Full guide: https://jacky-agent.nousresearch.com/docs/user-guide/messaging/slack/")
+    print_info("   Full guide: https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/slack/")
     print()
 
     # Generate and write manifest up-front so the user can paste it into

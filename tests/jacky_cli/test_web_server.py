@@ -2474,7 +2474,7 @@ class TestWebServerEndpoints:
         assert "personal WeChat" in weixin["description"]
         assert "Official Account" not in f"{weixin['name']} {weixin['description']}"
         assert weixin["docs_url"] == (
-            "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/weixin/"
+            "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/weixin/"
         )
 
         fields = {field["key"]: field for field in weixin["env_vars"]}
@@ -2492,7 +2492,7 @@ class TestWebServerEndpoints:
 
         teams = _build_catalog_entry("teams")
         assert teams["docs_url"] == (
-            "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/teams"
+            "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/teams"
         )
 
     def test_google_chat_messaging_metadata_links_setup_guide(self):
@@ -2505,7 +2505,7 @@ class TestWebServerEndpoints:
         google_chat = _build_catalog_entry("google_chat")
         assert google_chat["name"] == "Google Chat"
         assert google_chat["docs_url"] == (
-            "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/google_chat"
+            "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/google_chat"
         )
 
     def test_messaging_catalog_covers_gateway_platforms(self):
