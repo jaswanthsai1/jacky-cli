@@ -33,7 +33,7 @@ def test_agent_json_matches_official_registry_required_fields():
     assert data["name"] == "Jacky Agent"
     assert data["description"]
     assert data["repository"] == "https://github.com/jaswanthsai1/jacky-cli"
-    assert data["website"].startswith("https://jacky-agent.nousresearch.com/")
+    assert data["website"].startswith("https://jaswanthsai1.github.io/jacky-cli/")
     assert data["authors"] == ["Nous Research"]
     assert data["license"] == "MIT"
     assert set(data["distribution"]) <= ALLOWED_DISTRIBUTIONS
@@ -47,7 +47,7 @@ def test_agent_json_uses_uvx_distribution_without_local_command_fields():
     # Schema allows {package, args, env}; we use {package, args}.
     assert set(uvx) <= {"package", "args", "env"}
     assert "package" in uvx
-    assert uvx["package"] == f"jacky-agent[acp]=={data['version']}"
+    assert uvx["package"] == f"jacky-cli[acp]=={data['version']}"
     assert uvx["args"] == ["jacky-acp"]
     # Old command-shape fields must not leak back in.
     assert "type" not in data["distribution"]
@@ -62,7 +62,7 @@ def test_agent_json_pins_uvx_package_to_pyproject_version():
     """The registry CI rejects ``@latest`` and floating pins; the manifest must
     always reference the exact PyPI version listed in pyproject.toml."""
     assert _manifest()["distribution"]["uvx"]["package"] == (
-        f"jacky-agent[acp]=={_pyproject_version()}"
+        f"jacky-cli[acp]=={_pyproject_version()}"
     )
 
 

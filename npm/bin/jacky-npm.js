@@ -19,7 +19,21 @@ const PKG = require('../package.json');
 const PKG_VERSION = PKG.version;
 
 const IS_WINDOWS = process.platform === 'win32';
-const JACKY_HOME = path.join(os.homedir(), '.jacky');
+
+// Must match jacky_cli/jacky_constants.py's _get_platform_default_jacky_home()
+// on Windows: %LOCALAPPDATA%\jacky (falling back to ~/AppData/Local/jacky if
+// LOCALAPPDATA isn't set). If these two ever diverge, anything the npm
+// shim's venv writes (skills/config/sessions) becomes invisible to the
+// actual Python app. POSIX stays ~/.jacky, unchanged.
+function getJackyHome() {
+  if (IS_WINDOWS) {
+    const localAppData = process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local');
+    return path.join(localAppData, 'jacky');
+  }
+  return path.join(os.homedir(), '.jacky');
+}
+
+const JACKY_HOME = getJackyHome();
 const VENV_DIR = path.join(JACKY_HOME, 'venv');
 const MARKER_FILE = path.join(VENV_DIR, '.jacky-npm-version');
 const VENV_BIN_DIR = path.join(VENV_DIR, IS_WINDOWS ? 'Scripts' : 'bin');
@@ -40,6 +54,12 @@ const PYPI_SPEC = `jacky-cli==${PKG_VERSION}`;
 
 const MIN_PY_MAJOR = 3;
 const MIN_PY_MINOR = 11;
+// KEEP IN SYNC with pyproject.toml's `requires-python = ">=3.11,<3.14"`.
+// MAX_PY_MINOR is the last minor version still accepted (i.e. the upper
+// bound is exclusive of MAX_PY_MINOR + 1). No single-source-of-truth read
+// is done here (this script must run before any Python is available), so
+// this is a hardcoded mirror of the pyproject.toml bound.
+const MAX_PY_MINOR = 13;
 
 function log(msg) {
   process.stderr.write(`[jacky] ${msg}\n`);
@@ -59,7 +79,9 @@ function tryVersion(cmd, args) {
   if (!m) return null;
   const major = parseInt(m[1], 10);
   const minor = parseInt(m[2], 10);
-  if (major > MIN_PY_MAJOR || (major === MIN_PY_MAJOR && minor >= MIN_PY_MINOR)) {
+  const atLeastMin = major > MIN_PY_MAJOR || (major === MIN_PY_MAJOR && minor >= MIN_PY_MINOR);
+  const atMostMax = major < MIN_PY_MAJOR || (major === MIN_PY_MAJOR && minor <= MAX_PY_MINOR);
+  if (atLeastMin && atMostMax) {
     return { cmd, args, major, minor };
   }
   return null;
@@ -68,6 +90,12 @@ function tryVersion(cmd, args) {
 function findPython() {
   const candidates = IS_WINDOWS
     ? [
+        // Prefer explicit version pins on Windows so the `py` launcher
+        // can't hand us an out-of-range interpreter (e.g. `py -3` resolving
+        // to 3.14 when 3.14 is installed alongside an in-range version).
+        ['py', ['-3.13']],
+        ['py', ['-3.12']],
+        ['py', ['-3.11']],
         ['py', ['-3']],
         ['python', []],
         ['python3', []],
@@ -84,9 +112,12 @@ function findPython() {
 }
 
 function printNoPythonError() {
-  fail(`Python ${MIN_PY_MAJOR}.${MIN_PY_MINOR}+ is required to run Jacky, but it wasn't found on your PATH.`);
+  fail(
+    `Python ${MIN_PY_MAJOR}.${MIN_PY_MINOR}-${MIN_PY_MAJOR}.${MAX_PY_MINOR} is required to run Jacky, but no ` +
+      `matching interpreter was found on your PATH (only a version outside that range, or nothing at all).`
+  );
   process.stderr.write(`
-Install Python ${MIN_PY_MAJOR}.${MIN_PY_MINOR} or newer, then re-run \`jacky\` (or \`npm install -g ${PKG.name}\` again):
+Install a Python between ${MIN_PY_MAJOR}.${MIN_PY_MINOR} and ${MIN_PY_MAJOR}.${MAX_PY_MINOR} inclusive, then re-run \`jacky\` (or \`npm install -g ${PKG.name}\` again):
 
   * Official installers:      https://www.python.org/downloads/
   * Debian/Ubuntu:            sudo apt update && sudo apt install python3.11 python3.11-venv

@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
-_DOCS_BASE = "https://jacky-agent.nousresearch.com/docs"
+_DOCS_BASE = "https://jaswanthsai1.github.io/jacky-cli"
 
 
 def _model_config_dict(config: Dict[str, Any]) -> Dict[str, Any]:
@@ -181,7 +181,7 @@ def is_interactive_stdin() -> bool:
 def print_noninteractive_setup_guidance(reason: str | None = None) -> None:
     """Print guidance for headless/non-interactive setup flows."""
     print()
-    print(color("⚕ Jacky Setup — Non-interactive mode", Colors.CYAN, Colors.BOLD))
+    print(color(">_ Jacky Setup — Non-interactive mode", Colors.CYAN, Colors.BOLD))
     print()
     if reason:
         print_info(reason)
@@ -1427,7 +1427,7 @@ def setup_terminal_backend(config: dict):
                 ssh_cmd.extend(["-p", port])
             ssh_cmd.append(f"{user}@{host}" if user else host)
             ssh_cmd.append("echo ok")
-            result = subprocess.run(ssh_cmd, capture_output=True, text=True, timeout=10)
+            result = subprocess.run(ssh_cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=10)
             if result.returncode == 0:
                 print_success("  SSH connection successful!")
             else:
@@ -1910,7 +1910,7 @@ def _setup_webhooks():
     print_warning("   internet. For security, run the gateway in a sandboxed environment")
     print_warning("   (Docker, VM, etc.) to limit blast radius from prompt injection.")
     print()
-    print_info("   Full guide: https://jacky-agent.nousresearch.com/docs/user-guide/messaging/webhooks/")
+    print_info("   Full guide: https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/webhooks/")
     print()
 
     port = prompt("Webhook port (default 8644)")
@@ -1937,7 +1937,7 @@ def _setup_webhooks():
     print_info("      http://your-server:8644/webhooks/<route-name>")
     print()
     print_info("   Route configuration guide:")
-    print_info("   https://jacky-agent.nousresearch.com/docs/user-guide/messaging/webhooks/#configuring-routes")
+    print_info("   https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/webhooks/#configuring-routes")
     print()
     print_info("   Open config in your editor:  jacky config edit")
     print_info("   Open config in your editor:  jacky config edit")
@@ -2636,7 +2636,7 @@ def _run_portal_one_shot(config: dict) -> None:
             Colors.MAGENTA,
         )
     )
-    print(color("│     ⚕ Jacky Setup — Nous Portal (one-shot)             │", Colors.MAGENTA))
+    print(color("│     > Jacky Setup — Nous Portal (one-shot)             │", Colors.MAGENTA))
     print(
         color(
             "└─────────────────────────────────────────────────────────┘",
@@ -2766,7 +2766,7 @@ def run_setup_wizard(args):
                         Colors.MAGENTA,
                     )
                 )
-                print(color(f"│     ⚕ Jacky Setup — {label:<34s} │", Colors.MAGENTA))
+                print(color(f"│     > Jacky Setup — {label:<34s} │", Colors.MAGENTA))
                 print(
                     color(
                         "└─────────────────────────────────────────────────────────┘",
@@ -2802,7 +2802,7 @@ def run_setup_wizard(args):
     )
     print(
         color(
-            "│             ⚕ Jacky Agent Setup Wizard                │", Colors.MAGENTA
+            "│             > Jacky Agent Setup Wizard                │", Colors.MAGENTA
         )
     )
     print(

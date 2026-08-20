@@ -46,13 +46,13 @@ People use Jacky for software development, research, system administration, data
 
 **This skill helps you work with Jacky Agent effectively** — setting it up, configuring features, spawning additional agent instances, troubleshooting issues, finding the right commands and settings, and understanding how the system works when you need to extend or contribute to it.
 
-**Docs:** https://jacky-agent.nousresearch.com/docs/
+**Docs:** https://jaswanthsai1.github.io/jacky-cli/
 
 ## Quick Start
 
 ```bash
 # Install
-curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
 
 # Interactive chat (default)
 jacky
@@ -174,7 +174,7 @@ jacky gateway setup        Configure platforms
 
 Supported platforms: Telegram, Discord, Slack, WhatsApp, Signal, Email, SMS, Matrix, Mattermost, Home Assistant, DingTalk, Feishu, WeCom, BlueBubbles (iMessage), Weixin (WeChat), API Server, Webhooks. Open WebUI connects via the API Server adapter.
 
-Platform docs: https://jacky-agent.nousresearch.com/docs/user-guide/messaging/
+Platform docs: https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/
 
 ### Sessions
 
@@ -256,7 +256,7 @@ jacky uninstall            Uninstall Jacky
 
 Type these during an interactive chat session. New commands land fairly
 often; if something below looks stale, run `/help` in-session for the
-authoritative list or see the [live slash commands reference](https://jacky-agent.nousresearch.com/docs/reference/slash-commands).
+authoritative list or see the [live slash commands reference](https://jaswanthsai1.github.io/jacky-cli/reference/slash-commands).
 The registry of record is `jacky_cli/commands.py` — every consumer
 (autocomplete, Telegram menu, Slack mapping, `/help`) derives from it.
 
@@ -388,7 +388,7 @@ Edit with `jacky config edit` or `jacky config set section.key value`.
 | `delegation` | `model`, `provider`, `base_url`, `api_key`, `max_iterations` (50), `reasoning_effort` |
 | `checkpoints` | `enabled`, `max_snapshots` (50) |
 
-Full config reference: https://jacky-agent.nousresearch.com/docs/user-guide/configuration
+Full config reference: https://jaswanthsai1.github.io/jacky-cli/user-guide/configuration
 
 ### Providers
 
@@ -418,7 +418,7 @@ Full config reference: https://jacky-agent.nousresearch.com/docs/user-guide/conf
 | Custom endpoint | Config | `model.base_url` + `model.api_key` in config.yaml |
 | GitHub Copilot ACP | External | `COPILOT_CLI_PATH` or Copilot CLI |
 
-Full provider docs: https://jacky-agent.nousresearch.com/docs/integrations/providers
+Full provider docs: https://jaswanthsai1.github.io/jacky-cli/integrations/providers
 
 ### Toolsets
 
@@ -677,7 +677,7 @@ the `cronjob` tool, the `jacky cron` CLI (`list`, `add`, `edit`,
   header/footer instead of being mirrored into the target gateway
   session (keeps role alternation intact).
 
-User docs: https://jacky-agent.nousresearch.com/docs/user-guide/features/cron
+User docs: https://jaswanthsai1.github.io/jacky-cli/user-guide/features/cron
 
 ### Curator (skill lifecycle)
 
@@ -698,7 +698,7 @@ so nothing is lost.
 
 Config: `curator.*` (`enabled`, `interval_hours`, `min_idle_hours`,
 `stale_after_days`, `archive_after_days`, `backup.*`).
-User docs: https://jacky-agent.nousresearch.com/docs/user-guide/features/curator
+User docs: https://jaswanthsai1.github.io/jacky-cli/user-guide/features/curator
 
 ### Kanban (multi-agent work queue)
 
@@ -727,7 +727,7 @@ sessions still have zero `kanban_*` schema footprint unless configured.
   `JACKY_KANBAN_BOARD` pinned in env); tenant is a soft namespace
   within a board for workspace-path + memory-key isolation.
 
-User docs: https://jacky-agent.nousresearch.com/docs/user-guide/features/kanban
+User docs: https://jaswanthsai1.github.io/jacky-cli/user-guide/features/kanban
 
 ---
 
@@ -894,18 +894,18 @@ multi-source resolution chain (highest priority first):
 
 | Looking for... | Location |
 |----------------|----------|
-| Config options | `jacky config edit` or [Configuration docs](https://jacky-agent.nousresearch.com/docs/user-guide/configuration) |
-| Available tools | `jacky tools list` or [Tools reference](https://jacky-agent.nousresearch.com/docs/reference/tools-reference) |
-| Slash commands | `/help` in session or [Slash commands reference](https://jacky-agent.nousresearch.com/docs/reference/slash-commands) |
-| Skills catalog | `jacky skills browse` or [Skills catalog](https://jacky-agent.nousresearch.com/docs/reference/skills-catalog) |
-| Provider setup | `jacky model` or [Providers guide](https://jacky-agent.nousresearch.com/docs/integrations/providers) |
-| Platform setup | `jacky gateway setup` or [Messaging docs](https://jacky-agent.nousresearch.com/docs/user-guide/messaging/) |
-| MCP servers | `jacky mcp list` or [MCP guide](https://jacky-agent.nousresearch.com/docs/user-guide/features/mcp) |
-| Profiles | `jacky profile list` or [Profiles docs](https://jacky-agent.nousresearch.com/docs/user-guide/profiles) |
-| Cron jobs | `jacky cron list` or [Cron docs](https://jacky-agent.nousresearch.com/docs/user-guide/features/cron) |
-| Memory | `jacky memory status` or [Memory docs](https://jacky-agent.nousresearch.com/docs/user-guide/features/memory) |
-| Env variables | `jacky config env-path` or [Env vars reference](https://jacky-agent.nousresearch.com/docs/reference/environment-variables) |
-| CLI commands | `jacky --help` or [CLI reference](https://jacky-agent.nousresearch.com/docs/reference/cli-commands) |
+| Config options | `jacky config edit` or [Configuration docs](https://jaswanthsai1.github.io/jacky-cli/user-guide/configuration) |
+| Available tools | `jacky tools list` or [Tools reference](https://jaswanthsai1.github.io/jacky-cli/reference/tools-reference) |
+| Slash commands | `/help` in session or [Slash commands reference](https://jaswanthsai1.github.io/jacky-cli/reference/slash-commands) |
+| Skills catalog | `jacky skills browse` or [Skills catalog](https://jaswanthsai1.github.io/jacky-cli/reference/skills-catalog) |
+| Provider setup | `jacky model` or [Providers guide](https://jaswanthsai1.github.io/jacky-cli/integrations/providers) |
+| Platform setup | `jacky gateway setup` or [Messaging docs](https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/) |
+| MCP servers | `jacky mcp list` or [MCP guide](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/mcp) |
+| Profiles | `jacky profile list` or [Profiles docs](https://jaswanthsai1.github.io/jacky-cli/user-guide/profiles) |
+| Cron jobs | `jacky cron list` or [Cron docs](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/cron) |
+| Memory | `jacky memory status` or [Memory docs](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/memory) |
+| Env variables | `jacky config env-path` or [Env vars reference](https://jaswanthsai1.github.io/jacky-cli/reference/environment-variables) |
+| CLI commands | `jacky --help` or [CLI reference](https://jaswanthsai1.github.io/jacky-cli/reference/cli-commands) |
 | Gateway logs | `~/.jacky/logs/gateway.log` |
 | Session files | `jacky sessions browse` (reads state.db) |
 | Source code | `~/.jacky/jacky-agent/` |
@@ -914,7 +914,7 @@ multi-source resolution chain (highest priority first):
 
 ## Contributor Quick Reference
 
-For occasional contributors and PR authors. Full developer docs: https://jacky-agent.nousresearch.com/docs/developer-guide/
+For occasional contributors and PR authors. Full developer docs: https://jaswanthsai1.github.io/jacky-cli/developer-guide/
 
 ### Project Layout
 

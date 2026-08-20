@@ -9,8 +9,8 @@ Outputs:
                                     comments separating files.
 
 Both publish at:
-  https://jacky-agent.nousresearch.com/docs/llms.txt
-  https://jacky-agent.nousresearch.com/docs/llms-full.txt
+  https://jaswanthsai1.github.io/jacky-cli/llms.txt
+  https://jaswanthsai1.github.io/jacky-cli/llms-full.txt
 
 The `/docs/` prefix is not a mistake — Docusaurus serves `website/static/`
 at the `docs/` base path. Clients and IDE plugins that probe the classic
@@ -31,7 +31,7 @@ WEBSITE = SCRIPT_DIR.parent
 DOCS = WEBSITE / "docs"
 STATIC = WEBSITE / "static"
 
-SITE_BASE = "https://jacky-agent.nousresearch.com/docs"
+SITE_BASE = "https://jaswanthsai1.github.io/jacky-cli"
 
 # Curated sections for llms.txt — mirrors the product story, not the filesystem.
 # Each entry: (docs-relative path without .md, display title, optional short desc).
@@ -248,8 +248,8 @@ def emit_llms_full() -> str:
             "Started, Using Jacky, Features, Messaging, Integrations, Guides, "
             "Developer Guide, Reference, then everything else.\n"
         ),
-        "Canonical site: https://jacky-agent.nousresearch.com/docs\n",
-        "Short index: https://jacky-agent.nousresearch.com/docs/llms.txt\n",
+        "Canonical site: https://jaswanthsai1.github.io/jacky-cli\n",
+        "Short index: https://jaswanthsai1.github.io/jacky-cli/llms.txt\n",
         "\n---\n\n",
     ]
 

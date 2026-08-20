@@ -18,7 +18,7 @@ class TestBuildOrHeaders:
         from agent.auxiliary_client import build_or_headers
 
         headers = build_or_headers(or_config={"response_cache": False})
-        assert headers["HTTP-Referer"] == "https://jacky-agent.nousresearch.com"
+        assert headers["HTTP-Referer"] == "https://jaswanthsai1.github.io/jacky-cli"
         assert headers["X-Title"] == "Jacky Agent"
         assert headers["X-OpenRouter-Categories"] == "productivity,cli-agent"
 

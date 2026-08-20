@@ -41,7 +41,7 @@ def _ensure_utf8():
     - Linux hosts with a latin-1 / C / POSIX locale (common on minimal Debian
       installs and Raspberry Pi) select latin-1 or ASCII.
 
-    The CLI prints box-drawing characters (┌│├└─) and the ⚕ glyph in the setup
+    The CLI prints box-drawing characters (┌│├└─) and the >_ glyph in the setup
     wizard, doctor, and status banners. Encoding those under a non-UTF-8 codec
     raises an unhandled UnicodeEncodeError that crashes the command before it
     can even start — e.g. `jacky setup` on a fresh Pi.

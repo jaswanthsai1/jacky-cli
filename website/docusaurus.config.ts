@@ -173,11 +173,6 @@ const config: Config = {
           label: 'GitHub',
           position: 'right',
         },
-        {
-          href: 'https://discord.gg/NousResearch',
-          label: 'Discord',
-          position: 'right',
-        },
       ],
     },
     footer: {
@@ -196,7 +191,6 @@ const config: Config = {
         {
           title: 'Community',
           items: [
-            { label: 'Discord', href: 'https://discord.gg/NousResearch' },
             { label: 'GitHub Issues', href: 'https://github.com/jaswanthsai1/jacky-cli/issues' },
             { label: 'Skills Hub', href: 'https://agentskills.io' },
           ],
@@ -206,7 +200,6 @@ const config: Config = {
           items: [
             { label: 'Quick Start', href: 'https://github.com/jaswanthsai1/jacky-cli#quick-start' },
             { label: 'GitHub', href: 'https://github.com/jaswanthsai1/jacky-cli' },
-            { label: 'Nous Research', href: 'https://nousresearch.com' },
           ],
         },
       ],

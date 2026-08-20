@@ -48,21 +48,21 @@ Pick the row that matches your goal:
 
 ## 1. Install Jacky Agent
 ### With the Jacky Desktop installer on macOS or Windows (recommended)
-To easily install the command-line and desktop applications, [download the Jacky Desktop installer](https://jacky-agent.nousresearch.com/) from our website and run it.
+To easily install the command-line and desktop applications, [download the Jacky Desktop installer](https://jaswanthsai1.github.io/jacky-cli/) from our website and run it.
 
 ### Without Jacky Desktop:
 For a command-line only install without Jacky Desktop, run:
 
 #### Linux / macOS / WSL2 / Android (Termux)
 ```bash
-curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
 ```
 
 #### Windows (native)
 
 Run in powershell:
 ```powershell
-iex (irm https://jacky-agent.nousresearch.com/install.ps1) 
+iex (irm https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.ps1) 
 ```
 
 :::tip Android / Termux

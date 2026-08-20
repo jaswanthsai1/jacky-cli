@@ -6359,7 +6359,7 @@ class GatewayRunner(GatewayAuthorizationMixin, GatewayKanbanWatchersMixin, Gatew
                     out = subprocess.run(
                         [systemctl, *scope_flags, "show", service_name,
                          "--property=MainPID", "--value"],
-                        capture_output=True, text=True, timeout=2,
+                        capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=2,
                     )
                     return (out.stdout or "").strip()
                 except Exception:
@@ -14669,7 +14669,7 @@ class GatewayRunner(GatewayAuthorizationMixin, GatewayKanbanWatchersMixin, Gatew
                             _p = getattr(adapter, "typed_command_prefix", "/")
                             await adapter.send(
                                 chat_id,
-                                f"⚕ **Update needs your input:**\n\n"
+                                f">_ **Update needs your input:**\n\n"
                                 f"{prompt_text}{default_hint}\n\n"
                                 f"Reply `{_p}approve` (yes) or `{_p}deny` (no), "
                                 f"or type your answer directly.",

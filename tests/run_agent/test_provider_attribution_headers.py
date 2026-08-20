@@ -20,7 +20,7 @@ def test_openrouter_base_url_applies_or_headers(mock_openai):
     agent._apply_client_headers_for_base_url("https://openrouter.ai/api/v1")
 
     headers = agent._client_kwargs["default_headers"]
-    assert headers["HTTP-Referer"] == "https://jacky-agent.nousresearch.com"
+    assert headers["HTTP-Referer"] == "https://jaswanthsai1.github.io/jacky-cli"
     assert headers["X-Title"] == "Jacky Agent"
 
 
@@ -196,7 +196,7 @@ def test_openrouter_headers_include_response_cache_when_enabled(mock_openai):
         agent._apply_client_headers_for_base_url("https://openrouter.ai/api/v1")
 
     headers = agent._client_kwargs["default_headers"]
-    assert headers["HTTP-Referer"] == "https://jacky-agent.nousresearch.com"
+    assert headers["HTTP-Referer"] == "https://jaswanthsai1.github.io/jacky-cli"
     assert headers["X-OpenRouter-Cache"] == "true"
     assert headers["X-OpenRouter-Cache-TTL"] == "600"
 
@@ -251,7 +251,7 @@ def test_user_default_headers_win_over_provider_defaults(mock_openai):
 
     headers = agent._client_kwargs["default_headers"]
     assert headers["X-Title"] == "MyApp"  # user override wins
-    assert headers["HTTP-Referer"] == "https://jacky-agent.nousresearch.com"  # default preserved
+    assert headers["HTTP-Referer"] == "https://jaswanthsai1.github.io/jacky-cli"  # default preserved
 
 
 @patch("jacky_cli.run_agent.OpenAI")
@@ -270,7 +270,7 @@ def test_no_user_default_headers_leaves_provider_defaults_untouched(mock_openai)
         agent._apply_client_headers_for_base_url("https://openrouter.ai/api/v1")
 
     headers = agent._client_kwargs["default_headers"]
-    assert headers["HTTP-Referer"] == "https://jacky-agent.nousresearch.com"
+    assert headers["HTTP-Referer"] == "https://jaswanthsai1.github.io/jacky-cli"
     assert "User-Agent" not in headers  # nothing injected when unconfigured
 
 
@@ -317,7 +317,7 @@ def test_openrouter_headers_no_cache_when_disabled(mock_openai):
         agent._apply_client_headers_for_base_url("https://openrouter.ai/api/v1")
 
     headers = agent._client_kwargs["default_headers"]
-    assert headers["HTTP-Referer"] == "https://jacky-agent.nousresearch.com"
+    assert headers["HTTP-Referer"] == "https://jaswanthsai1.github.io/jacky-cli"
     assert "X-OpenRouter-Cache" not in headers
     assert "X-OpenRouter-Cache-TTL" not in headers
 
