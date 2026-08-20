@@ -693,7 +693,7 @@ attempt_install_git() {
                 command -v sudo >/dev/null 2>&1 && sudo_cmd="sudo"
             fi
             case "$DISTRO" in
-                ubuntu|debian)
+                ubuntu|debian|raspbian|pop|linuxmint|elementary|zorin|kali|parrot)
                     log_info "Installing Git via apt..."
                     $sudo_cmd env DEBIAN_FRONTEND=noninteractive apt-get update -qq >/dev/null 2>&1 || true
                     $sudo_cmd env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq git >/dev/null 2>&1 || true
@@ -752,7 +752,7 @@ check_git() {
     case "$OS" in
         linux)
             case "$DISTRO" in
-                ubuntu|debian)
+                ubuntu|debian|raspbian|pop|linuxmint|elementary|zorin|kali|parrot)
                     log_info "  sudo apt update && sudo apt install git"
                     ;;
                 fedora)
@@ -1062,7 +1062,7 @@ install_system_packages() {
     # ── Linux: resolve package manager command ──
     local pkg_install=""
     case "$DISTRO" in
-        ubuntu|debian) pkg_install="apt install -y"   ;;
+        ubuntu|debian|raspbian|pop|linuxmint|elementary|zorin|kali|parrot) pkg_install="apt install -y"   ;;
         fedora)        pkg_install="dnf install -y"   ;;
         arch)          pkg_install="pacman -S --noconfirm" ;;
     esac
@@ -1072,7 +1072,7 @@ install_system_packages() {
 
         # Prevent needrestart/whiptail dialogs from blocking non-interactive installs
         case "$DISTRO" in
-            ubuntu|debian) export DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a ;;
+            ubuntu|debian|raspbian|pop|linuxmint|elementary|zorin|kali|parrot) export DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a ;;
         esac
 
         # Already root — just install
@@ -1155,7 +1155,7 @@ show_manual_install_hint() {
     case "$OS" in
         linux)
             case "$DISTRO" in
-                ubuntu|debian) log_info "  sudo apt install $pkg" ;;
+                ubuntu|debian|raspbian|pop|linuxmint|elementary|zorin|kali|parrot) log_info "  sudo apt install $pkg" ;;
                 fedora)        log_info "  sudo dnf install $pkg" ;;
                 arch)          log_info "  sudo pacman -S $pkg"   ;;
                 *)             log_info "  Use your package manager or visit the project homepage" ;;
@@ -1418,7 +1418,11 @@ install_deps() {
 
     # On Debian/Ubuntu (including WSL), some Python packages need build tools.
     # Check and offer to install them if missing.
-    if [ "$DISTRO" = "ubuntu" ] || [ "$DISTRO" = "debian" ]; then
+    local _is_debian_family=false
+    case "$DISTRO" in
+        ubuntu|debian|raspbian|pop|linuxmint|elementary|zorin|kali|parrot) _is_debian_family=true ;;
+    esac
+    if [ "$_is_debian_family" = true ]; then
         local need_build_tools=false
         for pkg in gcc python3-dev libffi-dev; do
             if ! dpkg -s "$pkg" &>/dev/null; then
@@ -2505,7 +2509,7 @@ ensure_browser() {
 
             # OS-specific hints (detect_os sets $DISTRO)
             case "${DISTRO:-unknown}" in
-                ubuntu|debian)
+                ubuntu|debian|raspbian|pop|linuxmint|elementary|zorin|kali|parrot)
                     log_info "Try: sudo apt-get install -y chromium-browser"
                     ;;
                 arch)
