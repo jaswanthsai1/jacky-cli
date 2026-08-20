@@ -124,7 +124,7 @@ never SSH into yourself. It's not tied to your laptop.
 | 🎯 **[Hunt-Loop Methodology](/methodology/)**                           | The bundled bug-bounty / offensive-security doctrine, end to end      |
 | ⚙️ **[Configuration](/user-guide/configuration)**                       | Config file, providers, models, and options                           |
 | 💬 **[Messaging Gateway](/user-guide/messaging)**                       | Set up Telegram, Discord, Slack, WhatsApp, Teams, or more             |
-| 🔧 **[Tools & Toolsets](/user-guide/features/tools)**                   | 60+ built-in tools and how to configure them                          |
+| 🔧 **[Tools & Toolsets](/user-guide/features/tools)**                   | 80+ built-in tools and how to configure them                          |
 | 🧠 **[Memory System](/user-guide/features/memory)**                     | Persistent memory that grows across sessions                          |
 | 📚 **[Skills System](/user-guide/features/skills)**                     | Procedural memory the agent creates and reuses                        |
 | 🔌 **[MCP Integration](/user-guide/features/mcp)**                      | Connect to MCP servers, filter their tools, and extend Jacky safely  |
@@ -137,6 +137,7 @@ never SSH into yourself. It's not tied to your laptop.
 
 - **A closed learning loop** — Agent-curated memory with periodic nudges, autonomous skill creation, skill self-improvement during use, FTS5 cross-session recall with LLM summarization, and [Honcho](https://github.com/plastic-labs/honcho) dialectic user modeling
 - **A bundled bug-hunt methodology** — a real offensive-security doctrine (scope → recon → rank → enumerate → test → validate → chain → report) with class playbooks for SSRF, IDOR, XSS, SQLi, SSTI, auth bypass, business logic, race conditions, and more. See [Methodology](/methodology/).
+- **Built-in security toolset** — raw HTTP client for API testing, secret scanner, SCA dependency audit against OSV.dev, CVSS v3.1 + Bugcrowd VRT severity calculator, semgrep-backed static analysis (SQLi/command-injection/SSRF/deserialization patterns), passive CT-log/DNS recon, and structured evidence-bundle reports — all on by default. See [Tools Reference](/reference/tools-reference#security--recon-toolsets).
 - **Runs anywhere, not just your laptop** — 6 terminal backends: local, Docker, SSH, Daytona, Singularity, Modal. Daytona and Modal offer serverless persistence — your environment hibernates when idle, costing nearly nothing
 - **Lives where you do** — CLI, Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Mattermost, Email, SMS, DingTalk, Feishu, WeCom, Weixin, QQ Bot, Yuanbao, BlueBubbles, Home Assistant, Microsoft Teams, Google Chat, and more — 20+ platforms from one gateway
 - **Scheduled automations** — Built-in cron with delivery to any platform

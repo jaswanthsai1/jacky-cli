@@ -83,6 +83,13 @@ CONFIGURABLE_TOOLSETS = [
     ("discord_admin",   "🛡️  Discord Server Admin",    "list channels/roles, pin, assign roles"),
     ("yuanbao",          "🤖 Yuanbao",                  "group info, member queries, DM"),
     ("computer_use",     "🖱️  Computer Use (macOS/Windows/Linux)", "background desktop control via cua-driver"),
+    ("http_client",      "🌐 HTTP / API Client",         "raw request/response inspection for API testing"),
+    ("secret_scan",      "🔑 Secret Scanner",            "detect hardcoded credentials, keys, and tokens in code"),
+    ("dependency_audit", "📦 Dependency Audit",          "SCA scan of package manifests against OSV.dev advisories"),
+    ("severity_calc",    "📊 Severity Calculator",       "CVSS v3.1 scoring + Bugcrowd VRT lookup"),
+    ("evidence",         "🗂️  Evidence Bundler",         "package reproducible proof for a finding"),
+    ("static_analysis",  "🩻 Static Analysis",           "AST-based source scan for injection/deserialization/SSRF patterns"),
+    ("passive_recon",    "🛰️  Passive Recon",           "CT-log + DNS subdomain enumeration (no active probing)"),
 ]
 
 

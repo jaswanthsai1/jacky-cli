@@ -1,7 +1,7 @@
 ---
 title: "Jacky S6 Container Supervision"
 sidebar_label: "Jacky S6 Container Supervision"
-description: "Modify, debug, or extend the s6-overlay supervision tree inside the Jacky Agent Docker image — adding new services, debugging profile gateways, understandin..."
+description: "Modify, debug, or extend the s6-overlay supervision tree inside the Jacky Agent Docker image — adding new services, debugging profile gateways, understanding..."
 ---
 
 {/* This page is auto-generated from the skill's SKILL.md by website/scripts/generate-skill-docs.py. Edit the source SKILL.md, not this page. */}
@@ -21,7 +21,7 @@ Modify, debug, or extend the s6-overlay supervision tree inside the Jacky Agent 
 | License | MIT |
 | Platforms | linux |
 | Tags | `docker`, `s6`, `supervision`, `gateway`, `profiles` |
-| Related skills | [`jacky-agent`](/docs/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-jacky-agent), `jacky-agent-dev` |
+| Related skills | [`jacky-agent`](/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-jacky-agent), `jacky-agent-dev` |
 
 ## Reference: full SKILL.md
 

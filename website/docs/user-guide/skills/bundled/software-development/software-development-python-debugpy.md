@@ -21,7 +21,7 @@ Debug Python: pdb REPL + debugpy remote (DAP).
 | License | MIT |
 | Platforms | linux, macos |
 | Tags | `debugging`, `python`, `pdb`, `debugpy`, `breakpoints`, `dap`, `post-mortem` |
-| Related skills | [`systematic-debugging`](/docs/user-guide/skills/bundled/software-development/software-development-systematic-debugging), [`node-inspect-debugger`](/docs/user-guide/skills/bundled/software-development/software-development-node-inspect-debugger), `debugging-jacky-tui-commands` |
+| Related skills | [`systematic-debugging`](/user-guide/skills/bundled/software-development/software-development-systematic-debugging), [`node-inspect-debugger`](/user-guide/skills/bundled/software-development/software-development-node-inspect-debugger), `debugging-jacky-tui-commands` |
 
 ## Reference: full SKILL.md
 
@@ -169,7 +169,7 @@ For long-lived processes: Jacky gateway, tui_gateway, a daemon, a process that's
 ### Setup
 
 ```bash
-source /home/bb/jacky-agent/.venv/bin/activate
+source /home/user/jacky-cli/.venv/bin/activate
 pip install debugpy
 ```
 
@@ -266,7 +266,7 @@ This is fine for one-off automation but painful as an interactive UX.
   "connect": { "host": "127.0.0.1", "port": 5678 },
   "justMyCode": false,
   "pathMappings": [
-    { "localRoot": "${workspaceFolder}", "remoteRoot": "/home/bb/jacky-agent" }
+    { "localRoot": "${workspaceFolder}", "remoteRoot": "/home/user/jacky-cli" }
   ]
 }
 ```

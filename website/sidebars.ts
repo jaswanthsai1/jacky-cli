@@ -177,7 +177,6 @@ const sidebars: SidebarsConfig = {
                     'user-guide/skills/bundled/apple/apple-apple-reminders',
                     'user-guide/skills/bundled/apple/apple-findmy',
                     'user-guide/skills/bundled/apple/apple-imessage',
-                    'user-guide/skills/bundled/apple/apple-macos-computer-use',
                   ],
                 },
                 {
@@ -190,6 +189,24 @@ const sidebars: SidebarsConfig = {
                     'user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-codex',
                     'user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-jacky-agent',
                     'user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-opencode',
+                  ],
+                },
+                {
+                  type: 'category',
+                  label: 'bb-methodology',
+                  key: 'skills-bundled-bb-methodology',
+                  collapsed: true,
+                  items: [
+                    'user-guide/skills/bundled/bb-methodology/bb-methodology-bb-methodology',
+                  ],
+                },
+                {
+                  type: 'category',
+                  label: 'computer-use',
+                  key: 'skills-bundled-computer-use',
+                  collapsed: true,
+                  items: [
+                    'user-guide/skills/bundled/computer-use/computer-use-computer-use',
                   ],
                 },
                 {
@@ -245,6 +262,15 @@ const sidebars: SidebarsConfig = {
                 },
                 {
                   type: 'category',
+                  label: 'evidence-hygiene',
+                  key: 'skills-bundled-evidence-hygiene',
+                  collapsed: true,
+                  items: [
+                    'user-guide/skills/bundled/evidence-hygiene/evidence-hygiene-evidence-hygiene',
+                  ],
+                },
+                {
+                  type: 'category',
                   label: 'github',
                   key: 'skills-bundled-github',
                   collapsed: true,
@@ -255,6 +281,15 @@ const sidebars: SidebarsConfig = {
                     'user-guide/skills/bundled/github/github-github-issues',
                     'user-guide/skills/bundled/github/github-github-pr-workflow',
                     'user-guide/skills/bundled/github/github-github-repo-management',
+                  ],
+                },
+                {
+                  type: 'category',
+                  label: 'jacky-doctrine',
+                  key: 'skills-bundled-jacky-doctrine',
+                  collapsed: true,
+                  items: [
+                    'user-guide/skills/bundled/jacky-doctrine/jacky-doctrine-jacky-doctrine',
                   ],
                 },
                 {
@@ -312,6 +347,33 @@ const sidebars: SidebarsConfig = {
                 },
                 {
                   type: 'category',
+                  label: 'recon-scope-triage',
+                  key: 'skills-bundled-recon-scope-triage',
+                  collapsed: true,
+                  items: [
+                    'user-guide/skills/bundled/recon-scope-triage/recon-scope-triage-recon-scope-triage',
+                  ],
+                },
+                {
+                  type: 'category',
+                  label: 'redteam-mindset',
+                  key: 'skills-bundled-redteam-mindset',
+                  collapsed: true,
+                  items: [
+                    'user-guide/skills/bundled/redteam-mindset/redteam-mindset-redteam-mindset',
+                  ],
+                },
+                {
+                  type: 'category',
+                  label: 'report-writing',
+                  key: 'skills-bundled-report-writing',
+                  collapsed: true,
+                  items: [
+                    'user-guide/skills/bundled/report-writing/report-writing-report-writing',
+                  ],
+                },
+                {
+                  type: 'category',
                   label: 'research',
                   key: 'skills-bundled-research',
                   collapsed: true,
@@ -356,6 +418,15 @@ const sidebars: SidebarsConfig = {
                     'user-guide/skills/bundled/software-development/software-development-spike',
                     'user-guide/skills/bundled/software-development/software-development-systematic-debugging',
                     'user-guide/skills/bundled/software-development/software-development-test-driven-development',
+                  ],
+                },
+                {
+                  type: 'category',
+                  label: 'triage-validation',
+                  key: 'skills-bundled-triage-validation',
+                  collapsed: true,
+                  items: [
+                    'user-guide/skills/bundled/triage-validation/triage-validation-triage-validation',
                   ],
                 },
                 {
@@ -603,6 +674,7 @@ const sidebars: SidebarsConfig = {
                     'user-guide/skills/optional/security/security-godmode',
                     'user-guide/skills/optional/security/security-oss-forensics',
                     'user-guide/skills/optional/security/security-sherlock',
+                    'user-guide/skills/optional/security/security-unbroker',
                     'user-guide/skills/optional/security/security-web-pentest',
                   ],
                 },
@@ -623,6 +695,7 @@ const sidebars: SidebarsConfig = {
                   key: 'skills-optional-web-development',
                   collapsed: true,
                   items: [
+                    'user-guide/skills/optional/web-development/web-development-cloudflare-temporary-deploy',
                     'user-guide/skills/optional/web-development/web-development-page-agent',
                   ],
                 },

@@ -1,7 +1,7 @@
 ---
 title: "Honcho"
 sidebar_label: "Honcho"
-description: "Configure and use Honcho memory with Jacky -- cross-session user modeling, multi-profile peer isolation, observation config, dialectic reasoning, session su..."
+description: "Configure and use Honcho memory with Jacky -- cross-session user modeling, multi-profile peer isolation, observation config, dialectic reasoning, session sum..."
 ---
 
 {/* This page is auto-generated from the skill's SKILL.md by website/scripts/generate-skill-docs.py. Edit the source SKILL.md, not this page. */}
@@ -21,7 +21,7 @@ Configure and use Honcho memory with Jacky -- cross-session user modeling, multi
 | License | MIT |
 | Platforms | linux, macos, windows |
 | Tags | `Honcho`, `Memory`, `Profiles`, `Observation`, `Dialectic`, `User-Modeling`, `Session-Summary` |
-| Related skills | [`jacky-agent`](/docs/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-jacky-agent) |
+| Related skills | [`jacky-agent`](/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-jacky-agent) |
 
 ## Reference: full SKILL.md
 

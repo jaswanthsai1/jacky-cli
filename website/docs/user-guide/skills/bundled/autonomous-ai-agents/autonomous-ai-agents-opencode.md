@@ -21,7 +21,7 @@ Delegate coding to OpenCode CLI (features, PR review).
 | License | MIT |
 | Platforms | linux, macos, windows |
 | Tags | `Coding-Agent`, `OpenCode`, `Autonomous`, `Refactoring`, `Code-Review` |
-| Related skills | [`claude-code`](/docs/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-claude-code), [`codex`](/docs/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-codex), [`jacky-agent`](/docs/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-jacky-agent) |
+| Related skills | [`claude-code`](/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-claude-code), [`codex`](/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-codex), [`jacky-agent`](/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-jacky-agent) |
 
 ## Reference: full SKILL.md
 
