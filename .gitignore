@@ -168,3 +168,6 @@ infographic/
 .npmrc
 npm/.npmrc
 npm/*.tgz
+
+# Release build artifacts (scripts/release.py) — never commit built wheels
+/dist/

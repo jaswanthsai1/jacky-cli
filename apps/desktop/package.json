@@ -2,9 +2,9 @@
   "name": "jacky",
   "productName": "Jacky",
   "private": true,
-  "version": "0.18.3",
+  "version": "0.18.8",
   "description": "Native desktop shell for Jacky (fork of Nous Research's original Hermes Agent).",
-  "author": "Nous Research",
+  "author": "Maturi Jaswanth Sai Madhu Mohan",
   "type": "module",
   "main": "dist/electron-main.mjs",
   "engines": {

@@ -9,7 +9,7 @@ import styles from './styles.module.css';
  * Docusaurus MDX component (@site/src/components/...).
  */
 export function HomepageHero(): React.ReactElement {
-  const banner = useBaseUrl('img/jacky-banner.jpeg');
+  const banner = useBaseUrl('img/jacky-banner.png');
   return (
     <header className={styles.hero}>
       <div className={styles.heroCopy}>
