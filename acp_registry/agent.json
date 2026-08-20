@@ -11,7 +11,7 @@
   "license": "MIT",
   "distribution": {
     "uvx": {
-      "package": "jacky-agent[acp]==0.18.10",
+      "package": "jacky-cli[acp]==0.18.10",
       "args": [
         "jacky-acp"
       ]
