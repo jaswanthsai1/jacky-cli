@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Jacky Agent Release Script
+"""Jacky Release Script
 
 Generates changelogs and creates GitHub releases with CalVer tags.
 
@@ -2293,14 +2293,14 @@ def generate_changelog(commits, tag_name, semver, repo_url="https://github.com/j
     # Header
     now = datetime.now()
     date_str = now.strftime("%B %d, %Y")
-    lines.append(f"# Jacky Agent v{semver} ({tag_name})")
+    lines.append(f"# Jacky v{semver} ({tag_name})")
     lines.append("")
     lines.append(f"**Release Date:** {date_str}")
     lines.append("")
 
     if first_release:
         lines.append("> 🎉 **First official release!** This marks the beginning of regular weekly releases")
-        lines.append("> for Jacky Agent. See below for everything included in this initial release.")
+        lines.append("> for Jacky. See below for everything included in this initial release.")
         lines.append("")
 
     # Group commits by category
@@ -2390,7 +2390,7 @@ def generate_changelog(commits, tag_name, semver, repo_url="https://github.com/j
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Jacky Agent Release Tool")
+    parser = argparse.ArgumentParser(description="Jacky Release Tool")
     parser.add_argument("--bump", choices=["major", "minor", "patch"],
                         help="Which semver component to bump")
     parser.add_argument("--publish", action="store_true",
@@ -2438,7 +2438,7 @@ def main():
             return
 
     print(f"{'='*60}")
-    print("  Jacky Agent Release Preview")
+    print("  Jacky Release Preview")
     print(f"{'='*60}")
     print(f"  CalVer tag:      {tag_name}")
     print(f"  SemVer:          v{current_version} → v{new_version}")
@@ -2492,7 +2492,7 @@ def main():
         # Create annotated tag
         tag_result = git_result(
             "tag", "-a", tag_name, "-m",
-            f"Jacky Agent v{new_version} ({calver_date})\n\nWeekly release"
+            f"Jacky v{new_version} ({calver_date})\n\nWeekly release"
         )
         if tag_result.returncode != 0:
             print(f"  ✗ Failed to create tag {tag_name}: {tag_result.stderr.strip()}")
@@ -2522,7 +2522,7 @@ def main():
 
         gh_cmd = [
             "gh", "release", "create", tag_name,
-            "--title", f"Jacky Agent v{new_version} ({calver_date})",
+            "--title", f"Jacky v{new_version} ({calver_date})",
             "--notes-file", str(changelog_file),
         ]
         gh_cmd.extend(str(path) for path in artifacts)
@@ -2549,7 +2549,7 @@ def main():
             print(f"    Release notes kept at: {changelog_file}")
             print("    Tag was created locally. Create the release manually:")
             print(
-                f"    gh release create {tag_name} --title 'Jacky Agent v{new_version} ({calver_date})' "
+                f"    gh release create {tag_name} --title 'Jacky v{new_version} ({calver_date})' "
                 f"--notes-file .release_notes.md {' '.join(str(path) for path in artifacts)}"
             )
             print(f"\n  ✓ Release artifacts prepared for manual publish: v{new_version} ({tag_name})")
