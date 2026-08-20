@@ -27,8 +27,8 @@ try:
 
     __version__ = _pkg_version("jacky-cli")
 except Exception:
-    __version__ = "0.18.14"
-__release_date__ = "2026.8.20.7"
+    __version__ = "0.18.15"
+__release_date__ = "2026.8.20.8"
 
 
 def _ensure_utf8():
