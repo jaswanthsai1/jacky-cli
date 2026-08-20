@@ -3,6 +3,8 @@
 import json
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 
 from tools.browser_camofox import (
     camofox_back,
@@ -48,8 +50,10 @@ class TestCamofoxMode:
         monkeypatch.setenv("BROWSER_CDP_URL", "  ")
         assert is_camofox_mode() is True
 
-    def test_health_check_unreachable(self, monkeypatch):
+    @patch("tools.browser_camofox.requests.get")
+    def test_health_check_unreachable(self, mock_get, monkeypatch):
         monkeypatch.setenv("CAMOFOX_URL", "http://localhost:19999")
+        mock_get.side_effect = ConnectionError("connection refused")
         assert check_camofox_available() is False
 
 
@@ -69,6 +73,23 @@ def _mock_response(status=200, json_data=None):
     resp.content = b"\x89PNG\r\n\x1a\nfake"
     resp.raise_for_status = MagicMock()
     return resp
+
+
+@pytest.fixture(autouse=True)
+def _no_real_network_get():
+    """Never let a test fall through to a real ``requests.get`` call.
+
+    ``camofox_navigate`` auto-fetches a snapshot after every navigation via
+    an unmocked ``requests.get`` in several tests that only bothered to mock
+    ``requests.post``. On a host where a closed loopback port doesn't refuse
+    the connection instantly, that blocks for the full command timeout
+    (default 30s) per test instead of failing fast — with ~30 tests in this
+    file that made the whole module effectively hang. Tests that need to
+    control ``requests.get`` themselves (``@patch("...requests.get")``) still
+    get their own patch layered on top of this default.
+    """
+    with patch("tools.browser_camofox.requests.get", return_value=_mock_response(json_data={})):
+        yield
 
 
 # ---------------------------------------------------------------------------
@@ -171,8 +192,11 @@ class TestCamofoxNavigate:
         assert result["success"] is True
         assert result["url"] == "https://b.com"
 
-    def test_connection_error_returns_helpful_message(self, monkeypatch):
+    @patch("tools.browser_camofox.requests.post")
+    def test_connection_error_returns_helpful_message(self, mock_post, monkeypatch):
         monkeypatch.setenv("CAMOFOX_URL", "http://localhost:19999")
+        import requests as _requests
+        mock_post.side_effect = _requests.ConnectionError("connection refused")
         result = json.loads(camofox_navigate("https://example.com", task_id="t_err"))
         assert result["success"] is False
         assert "Cannot connect" in result["error"]
@@ -446,8 +470,12 @@ class TestBrowserToolRouting:
         mock_post.return_value = _mock_response(json_data={"tabId": "tab_rt", "url": "https://example.com"})
 
         from tools.browser_tool import browser_navigate
-        # Bypass SSRF check for test URL
-        with patch("tools.browser_tool._is_safe_url", return_value=True):
+        # Bypass SSRF checks for the test URL. ``_is_always_blocked_url`` does
+        # a real DNS lookup (checking for cloud-metadata IPs) which is slow
+        # to fail on a sandbox without real network access — mock it too so
+        # this test doesn't pay for a real, several-second DNS timeout.
+        with patch("tools.browser_tool._is_safe_url", return_value=True), \
+             patch("tools.browser_tool._is_always_blocked_url", return_value=False):
             result = json.loads(browser_navigate("https://example.com", task_id="t_route"))
         assert result["success"] is True
 

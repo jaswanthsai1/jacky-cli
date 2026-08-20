@@ -44,7 +44,7 @@ def _wire_common(main_mod, monkeypatch):
     monkeypatch.setitem(sys.modules, "uvicorn", types.SimpleNamespace())
     monkeypatch.setitem(
         sys.modules,
-        "jacky_logging",
+        "jacky_cli.jacky_logging",
         types.SimpleNamespace(setup_logging=lambda **_k: None),
     )
     monkeypatch.setitem(

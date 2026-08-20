@@ -29,7 +29,7 @@ class TestGatewayLifecyclePattern:
         "jacky gateway restart",
         "jacky gateway stop",
         "jacky  gateway  restart",         # double spaces
-        "Hermez Gateway Restart".lower().replace("z", "s"),  # case handled
+        "JaCkY GaTeWaY ReStArT".lower(),    # case handled
         "JACKY GATEWAY RESTART",           # uppercase
     ])
     def test_jacky_gateway_commands(self, text):

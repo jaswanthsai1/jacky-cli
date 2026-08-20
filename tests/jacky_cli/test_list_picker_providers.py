@@ -264,6 +264,12 @@ def test_current_custom_endpoint_passthrough_marks_current_row(monkeypatch):
     monkeypatch.setattr("jacky_cli.providers.JACKY_OVERLAYS", {})
     monkeypatch.setattr("jacky_cli.models.fetch_openrouter_models",
                         lambda *a, **kw: [])
+    # Don't let the picker probe a real local Ollama server that may happen
+    # to be running on the test machine — model discovery must fall back to
+    # the configured entries' own "model" fields, which is what this test
+    # verifies (#must stay hermetic regardless of the local environment).
+    monkeypatch.setattr("jacky_cli.models.fetch_api_models",
+                        lambda *a, **kw: None)
 
     result = model_switch.list_picker_providers(
         current_provider="custom:ollama",

@@ -62,11 +62,11 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 DEFAULT_CATALOG_URL = (
-    "https://jacky-agent.nousresearch.com/docs/api/model-catalog.json"
+    "https://jaswanthsai1.github.io/jacky-cli/api/model-catalog.json"
 )
-# Fallback fetch chain. The Docusaurus site is served through Vercel, which
-# occasionally returns HTTP 403 + x-vercel-mitigated: challenge for non-
-# browser clients (urllib, curl). When that happens the disk cache goes
+# Fallback fetch chain. GitHub Pages occasionally has propagation lag after
+# a fresh deploy, or a CDN edge can return a stale/challenge response for
+# non-browser clients (urllib, curl). When that happens the disk cache goes
 # stale and new model releases never reach the picker. The raw GitHub URL
 # is the same manifest published from the same repo and is not bot-gated,
 # so we fall through to it whenever the primary URL fails.

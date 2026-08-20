@@ -67,8 +67,8 @@ All fields are optional. Missing values inherit from the ``default`` skin.
     branding:
       agent_name: "Jacky Agent"          # Banner title, status display
       welcome: "Welcome message"          # Shown at CLI startup
-      goodbye: "Goodbye! ⚕"              # Shown on exit
-      response_label: " ⚕ Jacky "       # Response box header label
+      goodbye: "Goodbye! >_"              # Shown on exit
+      response_label: " >_ Jacky "       # Response box header label
       prompt_symbol: "❯"                 # Input prompt symbol (bare token; renderers add trailing space)
       help_header: "(^_^)? Commands"      # /help header text
 
@@ -164,33 +164,41 @@ class SkinConfig:
 _BUILTIN_SKINS: Dict[str, Dict[str, Any]] = {
     "default": {
         "name": "default",
-        "description": "Classic Jacky — gold and kawaii",
+        "description": "Classic Jacky — lime-green and red terminal duotone",
         "colors": {
-            "banner_border": "#CD7F32",
-            "banner_title": "#FFD700",
-            "banner_accent": "#FFBF00",
-            "banner_dim": "#B8860B",
-            "banner_text": "#FFF8DC",
-            "ui_accent": "#FFBF00",
-            "ui_label": "#DAA520",
-            "ui_ok": "#4caf50",
-            "ui_error": "#ef5350",
-            "ui_warn": "#ffa726",
-            "prompt": "#FFF8DC",
-            "input_rule": "#CD7F32",
-            "response_border": "#FFD700",
-            "status_bar_bg": "#1a1a2e",
-            "session_label": "#DAA520",
-            "session_border": "#8B8682",
+            "banner_border": "#78B82B",
+            "banner_title": "#96D14A",
+            "banner_accent": "#B0DE72",
+            # Was #1E3A8A (dark navy) -- Rich's [dim] style darkens an
+            # already-low-luminance color further, making section labels
+            # (category headings in "Available Skills", the "Session: ..."
+            # line, etc.) nearly unreadable on a black/dark terminal
+            # background. #5C8F1F keeps enough luminance to stay legible
+            # after dimming.
+            "banner_dim": "#5C8F1F",
+            "banner_text": "#E2E8F0",
+            "ui_accent": "#78B82B",
+            "ui_label": "#DC2626",
+            "ui_ok": "#22C55E",
+            "ui_error": "#EF4444",
+            "ui_warn": "#F87171",
+            "prompt": "#E2E8F0",
+            "input_rule": "#78B82B",
+            "response_border": "#96D14A",
+            "status_bar_bg": "#0A0A0A",
+            "session_label": "#DC2626",
+            # Was #64748B (slate blue-gray, low contrast on black). Same
+            # legibility fix as banner_dim above.
+            "session_border": "#8FBC5A",
         },
         "spinner": {
             # Empty = use hardcoded defaults in display.py
         },
         "branding": {
-            "agent_name": "Jacky Agent",
-            "welcome": "Welcome to Jacky Agent! Type your message or /help for commands.",
-            "goodbye": "Goodbye! ⚕",
-            "response_label": " ⚕ Jacky ",
+            "agent_name": "Jacky",
+            "welcome": "Welcome to Jacky! Type your message or /help for commands.",
+            "goodbye": "Goodbye! >_",
+            "response_label": " >_ Jacky ",
             "prompt_symbol": "❯",
             "help_header": "(^_^)? Available Commands",
         },
@@ -300,8 +308,8 @@ _BUILTIN_SKINS: Dict[str, Dict[str, Any]] = {
         "branding": {
             "agent_name": "Jacky Agent",
             "welcome": "Welcome to Jacky Agent! Type your message or /help for commands.",
-            "goodbye": "Goodbye! ⚕",
-            "response_label": " ⚕ Jacky ",
+            "goodbye": "Goodbye! >_",
+            "response_label": " >_ Jacky ",
             "prompt_symbol": "❯",
             "help_header": "[?] Available Commands",
         },
@@ -339,8 +347,8 @@ _BUILTIN_SKINS: Dict[str, Dict[str, Any]] = {
         "branding": {
             "agent_name": "Jacky Agent",
             "welcome": "Welcome to Jacky Agent! Type your message or /help for commands.",
-            "goodbye": "Goodbye! ⚕",
-            "response_label": " ⚕ Jacky ",
+            "goodbye": "Goodbye! >_",
+            "response_label": " >_ Jacky ",
             "prompt_symbol": "❯",
             "help_header": "(^_^)? Available Commands",
         },
@@ -376,8 +384,8 @@ _BUILTIN_SKINS: Dict[str, Dict[str, Any]] = {
         "branding": {
             "agent_name": "Jacky Agent",
             "welcome": "Welcome to Jacky Agent! Type your message or /help for commands.",
-            "goodbye": "Goodbye! ⚕",
-            "response_label": " ⚕ Jacky ",
+            "goodbye": "Goodbye! >_",
+            "response_label": " >_ Jacky ",
             "prompt_symbol": "❯",
             "help_header": "[?] Available Commands",
         },
@@ -413,8 +421,8 @@ _BUILTIN_SKINS: Dict[str, Dict[str, Any]] = {
         "branding": {
             "agent_name": "Jacky Agent",
             "welcome": "Welcome to Jacky Agent! Type your message or /help for commands.",
-            "goodbye": "Goodbye! \u2695",
-            "response_label": " \u2695 Jacky ",
+            "goodbye": "Goodbye! >_",
+            "response_label": " >_ Jacky ",
             "prompt_symbol": "\u276f",
             "help_header": "(^_^)? Available Commands",
         },
@@ -834,7 +842,7 @@ def get_active_help_header(fallback: str = "(^_^)? Available Commands") -> str:
 
 
 
-def get_active_goodbye(fallback: str = "Goodbye! ⚕") -> str:
+def get_active_goodbye(fallback: str = "Goodbye! >_") -> str:
     """Get the goodbye line from the active skin."""
     try:
         return get_active_skin().get_branding("goodbye", fallback)

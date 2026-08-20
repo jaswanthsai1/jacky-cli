@@ -61,6 +61,7 @@ def test_check_for_updates_invalidates_on_version_change(tmp_path, monkeypatch):
     monkeypatch.setenv("JACKY_HOME", str(tmp_path))
     monkeypatch.delenv("JACKY_REVISION", raising=False)
     with patch("jacky_cli.banner.subprocess.run") as mock_run, \
+         patch("jacky_cli.banner.check_via_npm", return_value=None), \
          patch("jacky_cli.banner.check_via_pypi", return_value=0) as mock_pypi:
         result = banner.check_for_updates()
 
@@ -234,8 +235,9 @@ def test_check_for_updates_no_git_dir(tmp_path, monkeypatch):
     monkeypatch.setattr(banner, "__file__", str(fake_banner))
     monkeypatch.setenv("JACKY_HOME", str(tmp_path))
     with patch("jacky_cli.banner.subprocess.run") as mock_run:
-        with patch("jacky_cli.banner.check_via_pypi", return_value=0):
-            result = banner.check_for_updates()
+        with patch("jacky_cli.banner.check_via_npm", return_value=None):
+            with patch("jacky_cli.banner.check_via_pypi", return_value=0):
+                result = banner.check_for_updates()
     assert result == 0
     mock_run.assert_not_called()
 
@@ -305,6 +307,7 @@ def test_check_for_updates_non_docker_still_checks(tmp_path, monkeypatch):
 
     with patch("jacky_cli.config.detect_install_method", return_value="pip"), \
          patch("jacky_cli.banner.subprocess.run") as mock_run, \
+         patch("jacky_cli.banner.check_via_npm", return_value=None), \
          patch("jacky_cli.banner.check_via_pypi", return_value=1) as mock_pypi:
         result = banner.check_for_updates()
 

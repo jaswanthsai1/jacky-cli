@@ -408,7 +408,7 @@ def test_supervised_gateway_stdout_reaches_docker_logs(
     swallows the gateway's stdout into the file and ``docker logs``
     only sees stderr (Python ``logging`` defaults to stderr). That's
     a poor user experience: the iconic "Jacky Gateway Starting…"
-    banner with the ⚕ symbol is the most visible "yes, your gateway
+    banner with the "Jacky Gateway Starting" text is the most visible "yes, your gateway
     started" signal, and forcing users to ``docker exec`` + ``tail``
     the log file just to see it is friction users don't expect.
 
@@ -417,22 +417,22 @@ def test_supervised_gateway_stdout_reaches_docker_logs(
     /init's stdout = container stdout = ``docker logs``) AND also
     writes a timestamped copy to the rotated file. Best of both.
 
-    We assert by looking for the literal banner glyph (``⚕``) — a
-    distinctive character that won't appear in stderr-routed
+    We assert by looking for the literal banner text (``Jacky Gateway
+    Starting``) — a distinctive string that won't appear in stderr-routed
     Python-logging output, so its presence in ``docker logs`` proves
     the stdout-tee is working.
     """
     start_container(built_image, container_name, cmd="gateway run")
 
-    # Poll docker logs for the banner glyph (⚕) or "Jacky Gateway
-    # Starting" — the gateway's rich-console startup banner. A fixed
+    # Poll docker logs for the "Jacky Gateway Starting" banner text —
+    # the gateway's rich-console startup banner. A fixed
     # sleep(8) races under CI parallel docker test fan-out: the
     # supervised gateway can take well over 8s to finish imports +
     # config-load + banner print under load, and the assertion would
     # fail not because the stdout-tee is broken but because we checked
     # too early. Polling with a generous deadline is both faster on
     # quick machines and flake-free on slow ones.
-    wait_for_docker_logs(container_name, "⚕", deadline_s=60.0)
+    wait_for_docker_logs(container_name, "Jacky Gateway Starting", deadline_s=60.0)
 
     logs = subprocess.run(
         ["docker", "logs", container_name],
@@ -440,10 +440,10 @@ def test_supervised_gateway_stdout_reaches_docker_logs(
     )
     combined = logs.stdout + logs.stderr
 
-    # The banner ⚕ symbol is the load-bearing assertion — it's unique
+    # The banner text is the load-bearing assertion — it's unique
     # to gateway startup stdout output and won't appear in stderr
     # (Python logging) or s6 boot messages.
-    assert "⚕" in combined or "Jacky Gateway Starting" in combined, (
+    assert "Jacky Gateway Starting" in combined, (
         "Supervised gateway's stdout banner did not reach docker logs. "
         "This means the `1` action directive in _render_log_run isn't "
         "forwarding stdout to /init. "
@@ -458,7 +458,7 @@ def test_supervised_gateway_stdout_reaches_docker_logs(
     file_contents = docker_exec_sh(
         container_name, "cat /opt/data/logs/gateways/default/current",
     ).stdout
-    assert "⚕" in file_contents or "Jacky Gateway Starting" in file_contents, (
+    assert "Jacky Gateway Starting" in file_contents, (
         "Banner also missing from rotated log file — the file "
         "destination may have been dropped by the new s6-log script. "
         f"File contents:\n{file_contents}"

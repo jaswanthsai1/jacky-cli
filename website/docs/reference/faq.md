@@ -206,7 +206,7 @@ source ~/.bashrc
 # If you previously installed with sudo, clean up:
 sudo rm /usr/local/bin/jacky
 # Then re-run the standard installer
-curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
 ```
 
 ---
@@ -736,7 +736,7 @@ Skills with very long descriptions are truncated to 40 characters in the Telegra
 
 1. Install Jacky Agent on the new machine:
    ```bash
-   curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
    ```
 
 2. On the **source machine**, create a full backup:

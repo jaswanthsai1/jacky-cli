@@ -362,7 +362,7 @@ class GitHubAuth:
         try:
             result = subprocess.run(
                 ["gh", "auth", "token"],
-                capture_output=True, text=True, timeout=5,
+                capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5,
                 stdin=subprocess.DEVNULL,
                 creationflags=windows_hide_flags(),
             )
@@ -3654,7 +3654,7 @@ def check_for_skill_updates(
 # Jacky centralized index source
 # ---------------------------------------------------------------------------
 
-JACKY_INDEX_URL = "https://jacky-agent.nousresearch.com/docs/api/skills-index.json"
+JACKY_INDEX_URL = "https://jaswanthsai1.github.io/jacky-cli/api/skills-index.json"
 JACKY_INDEX_TTL = 6 * 3600  # 6 hours
 
 

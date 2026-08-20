@@ -29,7 +29,11 @@ import base64
 import json
 import logging
 import os
+import shutil
+import subprocess
+import sys
 import threading
+import time
 import uuid
 from typing import Any, Dict, Optional
 from urllib.parse import SplitResult, urlsplit, urlunsplit
@@ -307,6 +311,180 @@ def _rewrite_loopback_url_for_camofox(url: str) -> tuple[str, Optional[Dict[str,
 
 
 # ---------------------------------------------------------------------------
+# Auto-bootstrap — make Camofox a true zero-config default browser
+# ---------------------------------------------------------------------------
+# Camofox is a *local server process* (npm package @askjo/camofox-browser),
+# not a Python dependency, so it can't be lazy-installed via
+# ``tools.lazy_deps`` directly. This mirrors that pattern instead of
+# inventing a new one:
+#   - one-shot per process (like ``browser_tool._maybe_autoinstall_chromium``)
+#   - gated by ``security.allow_lazy_installs`` via
+#     ``tools.lazy_deps._allow_lazy_installs()``
+#   - reuses the existing ``post_setup: "camofox"`` installer in
+#     ``jacky_cli.tools_config`` for the npm-install step instead of
+#     duplicating it
+# so a fresh install that never touched ``jacky doctor`` or the setup
+# wizard still gets a working anti-detection browser on first real use.
+
+_camofox_autostart_attempted = False
+_camofox_autostart_proc: Optional["subprocess.Popen"] = None
+
+# How long to poll ``/health`` after spawning the server before giving up.
+# First run downloads the Camoufox (patched Firefox) engine, ~300MB, so this
+# is generous compared to the regular command timeout.
+_AUTOSTART_READY_TIMEOUT_S = 180
+
+
+def _in_test_harness() -> bool:
+    """Best-effort detection that we're running under pytest.
+
+    Auto-bootstrap spawns a real background process (``npx
+    @askjo/camofox-browser``) and can shell out to ``npm install``. Dozens
+    of existing unit tests exercise ``_get_session`` / ``camofox_navigate``
+    against an intentionally-unreachable ``http://localhost:9377`` without
+    mocking ``requests.get`` — a fast "connection refused" is expected and
+    already tolerated there. Those tests must never trigger a *real*
+    subprocess spawn or npm install as an incidental side effect of this
+    feature. ``PYTEST_CURRENT_TEST`` is set by pytest for the duration of
+    every test; checking it keeps the process-spawning side effect out of a
+    suite that predates it, without touching every one of those test files.
+    Tests for :func:`maybe_autostart_camofox_server` itself bypass this via
+    ``force=True``.
+    """
+    return "PYTEST_CURRENT_TEST" in os.environ
+
+
+def reset_camofox_autostart_state() -> None:
+    """Reset the one-shot autostart state. Test helper."""
+    global _camofox_autostart_attempted, _camofox_autostart_proc
+    _camofox_autostart_attempted = False
+    _camofox_autostart_proc = None
+
+
+def _camofox_server_installed() -> bool:
+    """Return whether the ``@askjo/camofox-browser`` npm package is on disk."""
+    try:
+        from jacky_cli.tools_config import PROJECT_ROOT
+    except Exception:
+        return False
+    return (PROJECT_ROOT / "node_modules" / "@askjo" / "camofox-browser").exists()
+
+
+def maybe_autostart_camofox_server(*, force: bool = False) -> bool:
+    """Best-effort, one-shot auto-bootstrap of a local Camofox server.
+
+    Mirrors ``tools.browser_tool._maybe_autoinstall_chromium``: gated by
+    ``security.allow_lazy_installs`` (via :mod:`tools.lazy_deps`), attempted
+    once per process, and a structural no-op when there's nothing useful to
+    do (remote/non-loopback ``CAMOFOX_URL``, npx missing, lazy installs
+    disabled, server already reachable). Reuses the existing
+    ``post_setup: "camofox"`` installer in ``jacky_cli.tools_config`` for the
+    npm-install step, then spawns ``npx @askjo/camofox-browser`` detached and
+    polls ``/health`` until it comes up.
+
+    Called once, lazily, from :func:`camofox_navigate` — the natural first
+    browser tool call of a session — so Camofox works as a true zero-config
+    default browser instead of requiring the user to read this module's
+    docstring and start the server by hand first.
+
+    Returns True once the server is confirmed reachable (already running,
+    or successfully bootstrapped), False otherwise.
+    """
+    global _camofox_autostart_attempted, _camofox_autostart_proc
+
+    if not force and _in_test_harness():
+        return check_camofox_available()
+
+    if _camofox_autostart_attempted:
+        return check_camofox_available()
+    _camofox_autostart_attempted = True
+
+    if check_camofox_available():
+        return True
+
+    url = get_camofox_url()
+    if not url:
+        return False
+
+    from urllib.parse import urlparse
+    hostname = urlparse(url).hostname
+    if not _is_loopback_hostname(hostname):
+        # Remote or Dockerized Camofox — nothing local we can spawn.
+        logger.debug("Camofox autostart skipped: %s is not a loopback URL", url)
+        return False
+
+    from tools.lazy_deps import _allow_lazy_installs
+    if not _allow_lazy_installs():
+        logger.debug("Camofox autostart skipped: lazy installs disabled")
+        return False
+
+    npx_bin = shutil.which("npx")
+    if not npx_bin:
+        logger.debug("Camofox autostart skipped: npx not found on PATH")
+        return False
+
+    if not _camofox_server_installed():
+        print(
+            "\n🦊 Setting up Camofox (anti-detection browser) — one-time install...",
+            file=sys.stderr,
+        )
+        try:
+            from jacky_cli.tools_config import _run_post_setup
+            _run_post_setup("camofox")
+        except Exception as exc:
+            logger.warning("Camofox: post_setup install failed: %s", exc)
+        if not _camofox_server_installed():
+            logger.warning("Camofox: npm install did not complete; skipping autostart")
+            return False
+
+    print(
+        "🦊 Starting Camofox server (first run downloads the Camoufox engine, ~300MB)...",
+        file=sys.stderr,
+    )
+    try:
+        from jacky_cli.tools_config import PROJECT_ROOT
+        popen_kwargs: Dict[str, Any] = {
+            "stdout": subprocess.DEVNULL,
+            "stderr": subprocess.DEVNULL,
+            "stdin": subprocess.DEVNULL,
+            "cwd": str(PROJECT_ROOT),
+        }
+        if sys.platform == "win32":
+            popen_kwargs["creationflags"] = (
+                getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
+                | getattr(subprocess, "DETACHED_PROCESS", 0)
+            )
+        else:
+            popen_kwargs["start_new_session"] = True
+        # stdin=subprocess.DEVNULL is set in popen_kwargs above (noqa: subprocess-stdin)
+        proc = subprocess.Popen([npx_bin, "-y", "@askjo/camofox-browser"], **popen_kwargs)
+        _camofox_autostart_proc = proc
+    except (OSError, subprocess.SubprocessError) as exc:
+        logger.warning("Camofox: failed to launch local server: %s", exc)
+        return False
+
+    deadline = time.monotonic() + _AUTOSTART_READY_TIMEOUT_S
+    while time.monotonic() < deadline:
+        if check_camofox_available():
+            print("🦊 Camofox is ready.", file=sys.stderr)
+            return True
+        if proc.poll() is not None:
+            logger.warning(
+                "Camofox: server process exited early (code %s)", proc.returncode
+            )
+            return False
+        time.sleep(1)
+
+    logger.warning(
+        "Camofox: server did not report healthy within %ss (still downloading "
+        "the Camoufox engine?). It may finish starting in the background — "
+        "retry the browser tool call shortly.",
+        _AUTOSTART_READY_TIMEOUT_S,
+    )
+    return check_camofox_available()
+
+
+# ---------------------------------------------------------------------------
 # Session management
 # ---------------------------------------------------------------------------
 # Maps task_id -> {"user_id": str, "tab_id": str|None}
@@ -492,6 +670,11 @@ def _delete(path: str, body: dict = None, timeout: Optional[int] = None) -> dict
 def camofox_navigate(url: str, task_id: Optional[str] = None) -> str:
     """Navigate to a URL via Camofox."""
     try:
+        # First real browser-tool call of a session: bootstrap the local
+        # Camofox server if it isn't already running. No-op (fast) once the
+        # server is reachable, or if there's nothing local this process can
+        # start (see maybe_autostart_camofox_server for the exact gating).
+        maybe_autostart_camofox_server()
         browser_url, rewrite_info = _rewrite_loopback_url_for_camofox(url)
         session = _get_session(task_id)
         if not session["tab_id"]:

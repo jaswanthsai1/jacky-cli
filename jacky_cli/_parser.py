@@ -199,6 +199,18 @@ def build_top_level_parser():
     )
     _inherited_flag(
         parser,
+        "--no-persona",
+        action="store_true",
+        default=False,
+        help=(
+            "Skip preloading the Jacky persona (jacky-doctrine skill: banner, "
+            "self-identification, offensive-security doctrine). By default "
+            "every session preloads it regardless of model/provider; pass "
+            "this (or `--skills none`) for a bare, generic-assistant session."
+        ),
+    )
+    _inherited_flag(
+        parser,
         "--yolo",
         action="store_true",
         default=False,
@@ -300,6 +312,18 @@ def build_top_level_parser():
         action="append",
         default=argparse.SUPPRESS,
         help="Preload one or more skills for the session (repeat flag or comma-separate)",
+    )
+    _inherited_flag(
+        chat_parser,
+        "--no-persona",
+        action="store_true",
+        default=argparse.SUPPRESS,
+        help=(
+            "Skip preloading the Jacky persona (jacky-doctrine skill: banner, "
+            "self-identification, offensive-security doctrine). By default "
+            "every session preloads it regardless of model/provider; pass "
+            "this (or `--skills none`) for a bare, generic-assistant session."
+        ),
     )
     _inherited_flag(
         chat_parser,

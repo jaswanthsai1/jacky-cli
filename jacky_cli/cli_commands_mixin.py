@@ -258,9 +258,25 @@ class CLICommandsMixin:
             stopped = interrupt_all(reason="/stop")
             print(f"  ✅ Interrupted {stopped} background delegation(s).")
 
-    def _handle_agents_command(self):
-        """Handle /agents — show background processes and agent status."""
+    def _handle_agents_command(self, cmd_original: str = ""):
+        """Handle /agents [attach <delegation_id>] — background processes,
+        background delegations, and agent status.
+
+        ``/agents attach <delegation_id>`` tails a still-running
+        ``delegate_task(background=true)`` subagent's live progress in real
+        time instead of only surfacing its result once it completes.
+        """
         from jacky_cli.cli import _cprint
+
+        parts = (cmd_original or "").split()
+        sub = parts[1].lower() if len(parts) > 1 else ""
+        if sub == "attach":
+            if len(parts) < 3:
+                _cprint("  Usage: /agents attach <delegation_id>")
+                return
+            self._handle_agents_attach(parts[2])
+            return
+
         from tools.process_registry import format_uptime_short, process_registry
 
         processes = process_registry.list_sessions()
@@ -287,13 +303,109 @@ class CLICommandsMixin:
             _cprint(f"  Background delegations: {len(running_d)} running")
             for d in delegations:
                 goal = (d.get("goal") or "")[:60]
+                hint = self._agents_resume_hint(d)
                 _cprint(
                     f"    {d.get('delegation_id', '?')} · "
-                    f"{d.get('status', '?')} · {goal}"
+                    f"{d.get('status', '?')} · {goal}{hint}"
                 )
+            if running_d:
+                _cprint("  Watch one live: /agents attach <delegation_id>")
 
         agent_running = getattr(self, "_agent_running", False)
         _cprint(f"  Agent: {'running' if agent_running else 'idle'}")
+
+    def _agents_resume_hint(self, delegation: dict) -> str:
+        """Build the ``· resume: jacky --resume <id>`` suffix for one
+        delegation-list row, or an ``/agents attach`` pointer for a
+        multi-subagent batch (which has no single session to resume)."""
+        session_ids = [s for s in (delegation.get("session_ids") or []) if s]
+        if len(session_ids) == 1:
+            return f" · resume: jacky --resume {session_ids[0]}"
+        if len(session_ids) > 1:
+            return (
+                f" · {len(session_ids)} subagent sessions "
+                f"(see /agents attach {delegation.get('delegation_id', '?')})"
+            )
+        return ""
+
+    def _handle_agents_attach(self, delegation_id: str) -> None:
+        """Tail a running background delegation's live progress.
+
+        Polls the module-level async-delegation record plus
+        ``tools.delegate_tool.list_active_subagents()`` (the same registry
+        the TUI overlay reads for kill/pause controls) so the user can watch
+        a ``delegate_task(background=true)`` subagent work in real time
+        instead of only seeing it once its completion event re-enters the
+        chat. Ctrl-C detaches the tail WITHOUT stopping the subagent — use
+        ``/stop`` to actually interrupt it.
+        """
+        from jacky_cli.cli import _cprint
+        from tools.async_delegation import get_async_delegation
+
+        record = get_async_delegation(delegation_id)
+        if not record:
+            _cprint(f"  No delegation found with id: {delegation_id}")
+            _cprint("  See /agents for the current list.")
+            return
+
+        session_ids = [s for s in (record.get("session_ids") or []) if s]
+        subagent_ids = [s for s in (record.get("subagent_ids") or []) if s]
+
+        if record.get("status") != "running":
+            _cprint(
+                f"  Delegation {delegation_id} already finished "
+                f"({record.get('status', '?')})."
+            )
+            if session_ids:
+                _cprint(f"  Full transcript: jacky --resume {session_ids[0]}")
+            return
+
+        _cprint(f"  Attached to {delegation_id}: {(record.get('goal') or '')[:70]}")
+        if session_ids:
+            _cprint(f"  Live session: jacky --resume {session_ids[0]}")
+        _cprint("  (Ctrl-C detaches — the subagent keeps running; /stop interrupts it)\n")
+
+        try:
+            from tools.delegate_tool import list_active_subagents
+        except Exception:
+            list_active_subagents = None  # type: ignore[assignment]
+
+        last_line = ""
+        try:
+            while True:
+                # ``record`` is already the fresh fetch on the first pass
+                # (the "Attached to ..." banner above needed it); every
+                # subsequent pass re-fetches at the top of the loop.
+                if not record or record.get("status") != "running":
+                    status = record.get("status") if record else "unknown"
+                    _cprint(f"  ✓ {delegation_id} finished: {status}")
+                    break
+
+                if subagent_ids and list_active_subagents is not None:
+                    try:
+                        live = {
+                            r.get("subagent_id"): r for r in list_active_subagents()
+                        }
+                    except Exception:
+                        live = {}
+                    for sid in subagent_ids:
+                        info = live.get(sid)
+                        if not info:
+                            continue
+                        elapsed = round(time.time() - (info.get("started_at") or time.time()))
+                        tool = info.get("last_tool") or "(thinking)"
+                        line = (
+                            f"  [{elapsed}s] tool_calls={info.get('tool_count', 0)} "
+                            f"· current={tool} · {(info.get('goal') or '')[:50]}"
+                        )
+                        if line != last_line:
+                            _cprint(line)
+                            last_line = line
+
+                time.sleep(1.0)
+                record = get_async_delegation(delegation_id)
+        except KeyboardInterrupt:
+            _cprint(f"\n  Detached from {delegation_id} (still running in the background).")
 
     def _handle_journey_command(self, cmd_original: str) -> None:
         """Handle /journey — the learning timeline (see `jacky journey`).
@@ -1697,11 +1809,11 @@ class CLICommandsMixin:
                     try:
                         from jacky_cli.skin_engine import get_active_skin
                         _skin = get_active_skin()
-                        label = _skin.get_branding("response_label", "⚕ Jacky")
+                        label = _skin.get_branding("response_label", ">_ Jacky")
                         _resp_color = _maybe_remap_for_light_mode(_skin.get_color("response_border", "#CD7F32"))
                         _resp_text = _maybe_remap_for_light_mode(_skin.get_color("banner_text", "#FFF8DC"))
                     except Exception:
-                        label = "⚕ Jacky"
+                        label = ">_ Jacky"
                         _resp_color = "#CD7F32"
                         _resp_text = "#FFF8DC"
 
@@ -2686,7 +2798,7 @@ class CLICommandsMixin:
             ("cancel", "Cancel", "keep the current session"),
         ]
         raw = self._prompt_text_input_modal(
-            title="⚕  Update Jacky Agent",
+            title=">_  Update Jacky Agent",
             detail="This will exit the current session and run `jacky update`.",
             choices=choices,
         )
@@ -2699,7 +2811,7 @@ class CLICommandsMixin:
             return False
 
         print()
-        print("  ⚕ Launching update...")
+        print("  >_ Launching update...")
         print()
 
         # Store the relaunch args so run() can exec them from the main thread

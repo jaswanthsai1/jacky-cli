@@ -92,10 +92,10 @@ Text strings used throughout the CLI interface.
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `agent_name` | Name shown in banner title and status display | `Jacky Agent` |
-| `welcome` | Welcome message shown at CLI startup | `Welcome to Jacky Agent! Type your message or /help for commands.` |
-| `goodbye` | Message shown on exit | `Goodbye! ⚕` |
-| `response_label` | Label on the response box header | ` ⚕ Jacky ` |
+| `agent_name` | Name shown in banner title and status display | `Jacky` |
+| `welcome` | Welcome message shown at CLI startup | `Welcome to Jacky! Type your message or /help for commands.` |
+| `goodbye` | Message shown on exit | `Goodbye! >_` |
+| `response_label` | Label on the response box header | ` >_ Jacky ` |
 | `prompt_symbol` | Symbol before the user input prompt (bare token, renderers add a trailing space) | `❯` |
 | `help_header` | Header text for the `/help` command output | `(^_^)? Available Commands` |
 

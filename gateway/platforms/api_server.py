@@ -394,9 +394,9 @@ class ResponseStore:
                 db_path = ":memory:"
         self._db_path: Optional[str] = db_path if db_path != ":memory:" else None
         try:
-            self._conn = sqlite3.connect(db_path, check_same_thread=False)
+            self._conn = sqlite3.connect(db_path, check_same_thread=False, timeout=30.0)
         except Exception:
-            self._conn = sqlite3.connect(":memory:", check_same_thread=False)
+            self._conn = sqlite3.connect(":memory:", check_same_thread=False, timeout=30.0)
             self._db_path = None
         # Use shared WAL-fallback helper so response_store.db degrades
         # gracefully on NFS/SMB/FUSE-mounted JACKY_HOME (same filesystem

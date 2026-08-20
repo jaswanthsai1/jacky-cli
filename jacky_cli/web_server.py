@@ -3532,7 +3532,7 @@ def _recent_upstream_commits(n: int = 20) -> List[Dict[str, Any]]:
                 f"-n{int(n)}",
             ],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=5,
         )
         if out.returncode != 0:
@@ -4510,7 +4510,7 @@ def _run_setup_command(
         executable="/bin/bash" if shell else None,
         env=_memory_provider_setup_env(),
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
         timeout=timeout,
         check=False,
     )
@@ -6337,7 +6337,7 @@ _PLATFORM_OVERRIDES: dict[str, dict[str, Any]] = {
     "email": {
         "name": "Email",
         "description": "Talk to Jacky through an IMAP/SMTP mailbox.",
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/",
         "env_vars": (
             "EMAIL_ADDRESS",
             "EMAIL_PASSWORD",
@@ -6380,7 +6380,7 @@ _PLATFORM_OVERRIDES: dict[str, dict[str, Any]] = {
     "google_chat": {
         "name": "Google Chat",
         "description": "Connect Jacky to Google Chat via Cloud Pub/Sub.",
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/google_chat",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/google_chat",
     },
     "wecom": {
         "name": "WeCom (group bot)",
@@ -6409,7 +6409,7 @@ _PLATFORM_OVERRIDES: dict[str, dict[str, Any]] = {
     "weixin": {
         "name": "Weixin / WeChat (Personal)",
         "description": "Connect a personal WeChat account through Tencent's iLink Bot API.",
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/weixin/",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/weixin/",
         "env_vars": ("WEIXIN_ACCOUNT_ID", "WEIXIN_TOKEN", "WEIXIN_BASE_URL"),
         "required_env": ("WEIXIN_ACCOUNT_ID", "WEIXIN_TOKEN"),
     },
@@ -6435,7 +6435,7 @@ _PLATFORM_OVERRIDES: dict[str, dict[str, Any]] = {
     # plugin registry. Only the docs link needs an override here so the
     # Channels page can point at the Microsoft Teams setup guide.
     "teams": {
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/teams",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/teams",
     },
     "yuanbao": {
         "name": "Yuanbao (元宝)",
@@ -6446,7 +6446,7 @@ _PLATFORM_OVERRIDES: dict[str, dict[str, Any]] = {
     "api_server": {
         "name": "API server",
         "description": "Expose Jacky as an OpenAI-compatible HTTP API for tools like Open WebUI.",
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/",
         "env_vars": (
             "API_SERVER_ENABLED",
             "API_SERVER_KEY",
@@ -6459,7 +6459,7 @@ _PLATFORM_OVERRIDES: dict[str, dict[str, Any]] = {
     "webhook": {
         "name": "Webhooks",
         "description": "Receive events from GitHub, GitLab, and other webhook sources.",
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/webhooks/",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/webhooks/",
         "env_vars": ("WEBHOOK_ENABLED", "WEBHOOK_PORT", "WEBHOOK_SECRET"),
         "required_env": (),
     },
@@ -7075,7 +7075,7 @@ def _ensure_whatsapp_bridge_dependencies(bridge_dir: Path) -> None:
             [npm, "install", "--silent"],
             cwd=str(bridge_dir),
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=timeout,
             env=with_jacky_node_path(),
             creationflags=windows_hide_flags(),
@@ -8150,7 +8150,7 @@ _OAUTH_PROVIDER_CATALOG: tuple[Dict[str, Any], ...] = (
         # 127.0.0.1 callback.
         "flow": "device_code",
         "cli_command": "jacky auth add xai-oauth",
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/guides/xai-grok-oauth",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/guides/xai-grok-oauth",
         "status_fn": None,  # dispatched via auth.get_xai_oauth_auth_status
     },
     {
@@ -9637,6 +9637,28 @@ async def delete_empty_sessions_endpoint(profile: Optional[str] = None):
         return {"ok": True, "deleted": deleted}
     finally:
         db.close()
+
+
+@app.get("/api/agents/delegations")
+async def list_agent_delegations():
+    """Background ``delegate_task(background=true)`` delegations (running +
+    recently completed), for a dashboard "Agents" panel.
+
+    Mirrors the CLI's ``/agents`` listing. Each entry now carries
+    ``session_id``/``session_ids`` — the child agent's real, SessionDB-backed
+    session id(s), assigned at dispatch — so the dashboard can link straight
+    to a live session (``jacky --resume <session_id>``) instead of only
+    showing a status line for a delegation that's still running. Best-effort:
+    the async-delegation module is optional in some embed contexts, so an
+    import failure degrades to an empty list rather than a 500.
+    """
+    try:
+        from tools.async_delegation import list_async_delegations
+        delegations = list_async_delegations()
+    except Exception:
+        delegations = []
+    running = [d for d in delegations if d.get("status") == "running"]
+    return {"delegations": delegations, "running_count": len(running)}
 
 
 @app.get("/api/sessions/stats")

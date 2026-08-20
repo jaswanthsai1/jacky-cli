@@ -650,6 +650,10 @@ def test_list_authenticated_providers_groups_same_endpoint(monkeypatch):
     returned as a single picker row with all their models merged."""
     monkeypatch.setattr("agent.models_dev.fetch_models_dev", lambda: {})
     monkeypatch.setattr(providers_mod, "JACKY_OVERLAYS", {})
+    # Don't let this probe a real local Ollama server that may happen to be
+    # running on the test machine — grouping must be verified from the
+    # configured entries' own "model" fields alone.
+    monkeypatch.setattr("jacky_cli.models.fetch_api_models", lambda *a, **k: [])
 
     providers = list_authenticated_providers(
         current_provider="custom",
@@ -736,6 +740,9 @@ def test_list_authenticated_providers_distinct_endpoints_stay_separate(monkeypat
     even if some display names happen to be similar."""
     monkeypatch.setattr("agent.models_dev.fetch_models_dev", lambda: {})
     monkeypatch.setattr(providers_mod, "JACKY_OVERLAYS", {})
+    # Don't let this probe a real local Ollama server that may happen to be
+    # running on the test machine.
+    monkeypatch.setattr("jacky_cli.models.fetch_api_models", lambda *a, **k: [])
 
     providers = list_authenticated_providers(
         user_providers={},
@@ -831,6 +838,9 @@ def test_list_authenticated_providers_total_models_reflects_grouped_count(monkey
     the full count, and every grouped model appears in the list."""
     monkeypatch.setattr("agent.models_dev.fetch_models_dev", lambda: {})
     monkeypatch.setattr(providers_mod, "JACKY_OVERLAYS", {})
+    # Don't let this probe a real local Ollama server that may happen to be
+    # running on the test machine.
+    monkeypatch.setattr("jacky_cli.models.fetch_api_models", lambda *a, **k: [])
 
     entries = [
         {"name": f"Ollama \u2014 Model {i}", "base_url": "http://localhost:11434/v1",

@@ -185,7 +185,7 @@ def test_cli_get_tool_definitions_briefly_waits_for_fast_mcp_thread(monkeypatch)
 
     monkeypatch.setitem(
         sys.modules,
-        "model_tools",
+        "jacky_cli.model_tools",
         types.SimpleNamespace(get_tool_definitions=lambda *_a, **_k: ["ok"]),
     )
 

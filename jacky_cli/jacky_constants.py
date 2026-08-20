@@ -643,7 +643,13 @@ def display_jacky_home() -> str:
     """
     home = get_jacky_home()
     try:
-        return "~/" + str(home.relative_to(Path.home()))
+        # On Windows, `relative_to()` returns backslash-separated segments
+        # (e.g. "AppData\Local\jacky"). String-concatenating that onto the
+        # literal "~/" prefix produces a mixed-separator path like
+        # "~/AppData\Local\jacky". Normalize to forward slashes so the
+        # display string is consistent everywhere.
+        rel = str(home.relative_to(Path.home())).replace("\\", "/")
+        return "~/" + rel
     except ValueError:
         return str(home)
 

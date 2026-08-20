@@ -189,7 +189,7 @@ class TestCmdUpdatePipUsesUvTool:
              patch("jacky_cli.config.is_uv_tool_install", return_value=True):
             _cmd_update_pip(SimpleNamespace())
 
-        assert mock_run.call_args[0][0] == ["/usr/local/bin/uv", "tool", "upgrade", "jacky-agent"]
+        assert mock_run.call_args[0][0] == ["/usr/local/bin/uv", "tool", "upgrade", "jacky-cli"]
 
     @patch("subprocess.run")
     def test_runs_uv_pip_install_when_not_uv_tool(self, mock_run):
@@ -206,7 +206,7 @@ class TestCmdUpdatePipUsesUvTool:
             "pip",
             "install",
             "--upgrade",
-            "jacky-agent",
+            "jacky-cli",
         ]
 
     @patch("subprocess.run")
@@ -219,7 +219,7 @@ class TestCmdUpdatePipUsesUvTool:
             _cmd_update_pip(SimpleNamespace())
 
         cmd = mock_run.call_args[0][0]
-        assert cmd[1:] == ["-m", "pip", "install", "--upgrade", "jacky-agent"]
+        assert cmd[1:] == ["-m", "pip", "install", "--upgrade", "jacky-cli"]
 
     @patch("subprocess.run")
     def test_exits_nonzero_on_subprocess_failure(self, mock_run):
@@ -267,7 +267,7 @@ class TestCmdUpdatePipInstallLayouts:
         from jacky_cli import main as hm
 
         mock_run.return_value = subprocess.CompletedProcess([], 0, stdout="", stderr="")
-        monkeypatch.setattr(hm.sys, "prefix", "/home/u/.local/pipx/venvs/jacky-agent")
+        monkeypatch.setattr(hm.sys, "prefix", "/home/u/.local/pipx/venvs/jacky-cli")
         monkeypatch.setattr(hm.sys, "base_prefix", "/usr")
 
         def _which(name):
@@ -277,7 +277,7 @@ class TestCmdUpdatePipInstallLayouts:
              patch("jacky_cli.config.is_uv_tool_install", return_value=False):
             hm._cmd_update_pip(SimpleNamespace())
 
-        assert mock_run.call_args[0][0] == ["/usr/bin/pipx", "upgrade", "jacky-agent"]
+        assert mock_run.call_args[0][0] == ["/usr/bin/pipx", "upgrade", "jacky-cli"]
         # pipx upgrade ignores VIRTUAL_ENV; we must not set it.
         assert "env" not in mock_run.call_args.kwargs
 
@@ -288,7 +288,7 @@ class TestCmdUpdatePipInstallLayouts:
         from jacky_cli import main as hm
 
         mock_run.return_value = subprocess.CompletedProcess([], 0, stdout="", stderr="")
-        monkeypatch.setattr(hm.sys, "prefix", "/home/u/.local/pipx/venvs/jacky-agent")
+        monkeypatch.setattr(hm.sys, "prefix", "/home/u/.local/pipx/venvs/jacky-cli")
         monkeypatch.setattr(hm.sys, "base_prefix", "/usr")
 
         # pipx layout detected via prefix, but pipx binary missing on PATH.
@@ -301,9 +301,9 @@ class TestCmdUpdatePipInstallLayouts:
 
         # prefix != base_prefix, so this is treated as a venv -> overlay, no --system.
         assert mock_run.call_args[0][0] == [
-            "/usr/bin/uv", "pip", "install", "--upgrade", "jacky-agent",
+            "/usr/bin/uv", "pip", "install", "--upgrade", "jacky-cli",
         ]
-        assert mock_run.call_args.kwargs["env"]["VIRTUAL_ENV"].endswith("jacky-agent")
+        assert mock_run.call_args.kwargs["env"]["VIRTUAL_ENV"].endswith("jacky-cli")
 
     @patch("subprocess.run")
     def test_bare_pip_outside_venv_adds_system(self, mock_run, monkeypatch):
@@ -319,7 +319,7 @@ class TestCmdUpdatePipInstallLayouts:
             hm._cmd_update_pip(SimpleNamespace())
 
         assert mock_run.call_args[0][0] == [
-            "/usr/bin/uv", "pip", "install", "--system", "--upgrade", "jacky-agent",
+            "/usr/bin/uv", "pip", "install", "--system", "--upgrade", "jacky-cli",
         ]
         assert "env" not in mock_run.call_args.kwargs
 
@@ -338,5 +338,5 @@ class TestCmdUpdatePipInstallLayouts:
 
         cmd = mock_run.call_args[0][0]
         assert "--system" not in cmd
-        assert cmd == ["/usr/bin/uv", "pip", "install", "--upgrade", "jacky-agent"]
+        assert cmd == ["/usr/bin/uv", "pip", "install", "--upgrade", "jacky-cli"]
         assert mock_run.call_args.kwargs["env"]["VIRTUAL_ENV"] == "/home/u/.jacky/jacky-agent/venv"

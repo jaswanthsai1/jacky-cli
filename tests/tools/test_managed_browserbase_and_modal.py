@@ -101,6 +101,17 @@ def _install_fake_tools_package():
     sys.modules["agent.auxiliary_client"] = types.SimpleNamespace(
         call_llm=lambda *args, **kwargs: "",
     )
+    # jacky_cli.auth imports sanitize_borrowed_credential_payload from
+    # agent.credential_persistence — stub it too so monkeypatch.setattr's
+    # dotted-name resolution of jacky_cli.auth doesn't chase a real import
+    # into the (deliberately empty-__path__) fake `agent` package.
+    sys.modules["agent.credential_persistence"] = types.SimpleNamespace(
+        sanitize_borrowed_credential_payload=lambda entry, provider_id=None: entry,
+    )
+    # tools/browser_tool.py also imports redact_cdp_url from agent.redact.
+    sys.modules["agent.redact"] = types.SimpleNamespace(
+        redact_cdp_url=lambda value: str(value),
+    )
 
     # Stubs for the browser-provider plugin layer introduced in PR #25214.
     # The fake `agent` package has an empty __path__ so real submodules

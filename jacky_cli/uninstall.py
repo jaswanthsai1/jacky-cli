@@ -465,7 +465,7 @@ def _uninstall_profile(profile) -> None:
             subprocess.run(
                 jacky_invocation + ["gateway", subcmd],
                 capture_output=True,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
                 timeout=60,
                 check=False,
             )
@@ -512,7 +512,7 @@ def run_gui_uninstall(args):
 
     print()
     print(color("┌─────────────────────────────────────────────────────────┐", Colors.MAGENTA, Colors.BOLD))
-    print(color("│         ⚕ Jacky Chat GUI Uninstaller                  │", Colors.MAGENTA, Colors.BOLD))
+    print(color("│         > Jacky Chat GUI Uninstaller                  │", Colors.MAGENTA, Colors.BOLD))
     print(color("└─────────────────────────────────────────────────────────┘", Colors.MAGENTA, Colors.BOLD))
     print()
 
@@ -609,7 +609,7 @@ def run_uninstall(args):
 
     print()
     print(color("┌─────────────────────────────────────────────────────────┐", Colors.MAGENTA, Colors.BOLD))
-    print(color("│            ⚕ Jacky Agent Uninstaller                  │", Colors.MAGENTA, Colors.BOLD))
+    print(color("│            > Jacky Agent Uninstaller                  │", Colors.MAGENTA, Colors.BOLD))
     print(color("└─────────────────────────────────────────────────────────┘", Colors.MAGENTA, Colors.BOLD))
     print()
     
@@ -830,24 +830,49 @@ def _perform_uninstall(
     except Exception as e:
         log_warn(f"Could not remove desktop GUI artifacts: {e}")
 
-    # 4. Remove installation directory (code)
+    # 4. Remove installation directory (code) — ONLY for a git-checkout
+    #    install. For pip/npm installs, `project_root` (parent of jacky_cli/)
+    #    resolves to the venv's site-packages root (or its parent), which is
+    #    far more than "the install" — rmtree-ing it while the interpreter is
+    #    actively running out of it is a real data-loss risk (it can nuke the
+    #    entire venv, not just jacky-cli). When in doubt, DON'T delete; tell
+    #    the user the correct command to run instead.
     log_info("Removing installation directory...")
-    
-    # Check if we're running from within the install dir
-    # We need to be careful here
+
     try:
-        if project_root.exists():
-            # If the install is inside ~/.jacky/, just remove the jacky-agent subdir
-            if jacky_home in project_root.parents or project_root.parent == jacky_home:
-                shutil.rmtree(project_root)
-                log_success(f"Removed {project_root}")
-            else:
-                # Installation is somewhere else entirely
-                shutil.rmtree(project_root)
-                log_success(f"Removed {project_root}")
+        from jacky_cli.config import detect_install_method
+        install_method = detect_install_method(project_root)
     except Exception as e:
-        log_warn(f"Could not fully remove {project_root}: {e}")
-        log_info("You may need to manually remove it")
+        log_warn(f"Could not determine install method: {e}")
+        install_method = None
+
+    if install_method == "git":
+        try:
+            if project_root.exists():
+                shutil.rmtree(project_root)
+                log_success(f"Removed {project_root}")
+        except Exception as e:
+            log_warn(f"Could not fully remove {project_root}: {e}")
+            log_info("You may need to manually remove it")
+    elif install_method in ("pip", "npm") or install_method is None:
+        log_warn(
+            "Jacky was installed via pip/npm, not as a git checkout — "
+            "skipping deletion of the install directory to avoid removing "
+            "unrelated files from your Python environment."
+        )
+        log_info(f"  (would have affected: {project_root})")
+        log_info("To finish removing Jacky, run:")
+        log_info("  pip uninstall jacky-cli")
+        log_info("  npm uninstall -g jacky-cli-agent   # if installed via npm")
+    else:
+        # docker / nixos / homebrew / other managed installs: the package
+        # manager or image lifecycle owns removal, not this script.
+        log_warn(
+            f"Jacky appears to be a '{install_method}'-managed install — "
+            "skipping deletion of the install directory. Use your package "
+            "manager (or remove the container/image) to finish uninstalling."
+        )
+        log_info(f"  (would have affected: {project_root})")
 
     # 4b. Remove Windows-only installer artifacts that are NOT user data:
     #     PortableGit, bundled Node, gateway-service dir.  Installer put them
@@ -899,9 +924,9 @@ def _perform_uninstall(
         print()
         print("To reinstall later with your existing settings:")
         if _is_windows():
-            print(color("  iex (irm https://jacky-agent.nousresearch.com/install.ps1)", Colors.DIM))
+            print(color("  iex (irm https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.ps1)", Colors.DIM))
         else:
-            print(color("  curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash", Colors.DIM))
+            print(color("  curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash", Colors.DIM))
         print()
 
     if _is_windows():
@@ -911,7 +936,7 @@ def _perform_uninstall(
         print(color("Reload your shell to complete the process:", Colors.YELLOW))
         print("  source ~/.bashrc  # or ~/.zshrc")
     print()
-    print("Thank you for using Jacky Agent! ⚕")
+    print("Thank you for using Jacky Agent! >_")
     print()
 
 

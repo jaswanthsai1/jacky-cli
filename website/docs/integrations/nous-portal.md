@@ -138,7 +138,7 @@ jacky portal tools      # detailed Tool Gateway catalog with per-tool routing
 jacky portal open       # open the subscription management page in your browser
 ```
 
-`jacky portal` (with no subcommand) is the human-readable alias for `jacky auth add nous --type oauth` — it logs you in, lets you pick a Nous model, sets Nous as your inference provider, and offers the Tool Gateway opt-in (identical to `jacky setup --portal`, and the same Nous flow as the first-time quick setup).
+`jacky portal` (with no subcommand) is the human-readable alias for `jacky auth add nous --type oauth` — it logs you in, lets you pick a Nous model, sets Nous as your inference provider, and offers the Tool Gateway opt-in (identical to `jacky setup --portal`).
 
 `jacky portal info` gives you the high-level overview:
 

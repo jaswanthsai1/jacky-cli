@@ -28,6 +28,7 @@ __pycache__/web_tools.cpython-310.pyc
 logs/
 data/
 !website/src/data/
+!tools/data/
 .pytest_cache/
 test_durations.json
 .pytest-cache/
@@ -70,9 +71,12 @@ environments/benchmarks/evals/
 jacky_cli/web_dist/
 apps/desktop/build/
 
-# Plugin dashboard build output (vite bundles regenerated at build time;
-# not covered by the specific dist/ entries above)
-plugins/*/dashboard/dist/
+# NOTE: plugins/*/dashboard/dist/ (e.g. plugins/kanban, plugins/jacky-achievements)
+# is intentionally NOT ignored. These plugins ship no source tree in this repo
+# (no package.json/src under plugins/*/dashboard/) -- the committed dist/ IS the
+# artifact, hand-authored/patched directly, with no build step to regenerate it.
+# A prior pass wrongly assumed this was disposable build output and deleting it
+# broke the plugin (and its tests) entirely -- do not re-add this ignore rule.
 apps/desktop/dist/
 apps/desktop/release/
 apps/desktop/*.tsbuildinfo
@@ -153,3 +157,18 @@ apps/desktop/demo/
 # PR body is the archive. See the jacky-agent-dev skill's
 # pr-infographic-workflow reference (storage rule + lapse #8 / #COMMIT-1).
 infographic/
+
+# --- opensource-sanitizer additions (verification pass, 2026-08-19) ---
+# Root setuptools build output (setup.py build), never committed
+/build/
+# JetBrains IDE folder
+.idea/
+
+# npm auth tokens (written locally by `npm config set` / `npm login`) and
+# packed tarballs — never belong in the repo.
+.npmrc
+npm/.npmrc
+npm/*.tgz
+
+# Release build artifacts (scripts/release.py) — never commit built wheels
+/dist/

@@ -3,7 +3,7 @@
   "updated_at": "2026-07-09T18:38:59Z",
   "metadata": {
     "source": "jacky-agent repo",
-    "docs": "https://jacky-agent.nousresearch.com/docs/reference/model-catalog"
+    "docs": "https://jaswanthsai1.github.io/jacky-cli/reference/model-catalog"
   },
   "providers": {
     "openrouter": {

@@ -194,7 +194,7 @@ jacky-agent/
 ├── skills/                   # Habilidades incluidas (copiadas a ~/.jacky/skills/ en la instalación)
 ├── optional-skills/          # Habilidades opcionales oficiales (descubribles vía hub, no activadas por defecto)
 ├── tests/                    # Suite de tests
-├── website/                  # Sitio de documentación (jacky-agent.nousresearch.com)
+├── website/                  # Sitio de documentación (jaswanthsai1.github.io/jacky-cli)
 │
 ├── cli-config.yaml.example   # Configuración de ejemplo (copiada a ~/.jacky/config.yaml)
 └── AGENTS.md                 # Guía de desarrollo para asistentes de codificación IA

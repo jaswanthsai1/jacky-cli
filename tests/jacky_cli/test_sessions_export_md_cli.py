@@ -471,7 +471,7 @@ def test_sessions_export_redact_scrubs_secrets(monkeypatch, tmp_path):
     import jacky_cli.main as main_mod
     import jacky_cli.jacky_state as jacky_state
 
-    secret = "sk-proj-Zz12345678901234567890123456789012345678"
+    secret = "********8"
 
     class FakeDB:
         def resolve_session_id(self, session_id):
