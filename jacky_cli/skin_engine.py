@@ -164,31 +164,39 @@ class SkinConfig:
 _BUILTIN_SKINS: Dict[str, Dict[str, Any]] = {
     "default": {
         "name": "default",
-        "description": "Classic Jacky — blue and red terminal duotone",
+        "description": "Classic Jacky — lime-green and red terminal duotone",
         "colors": {
-            "banner_border": "#2563EB",
-            "banner_title": "#3B82F6",
-            "banner_accent": "#60A5FA",
-            "banner_dim": "#1E3A8A",
+            "banner_border": "#78B82B",
+            "banner_title": "#96D14A",
+            "banner_accent": "#B0DE72",
+            # Was #1E3A8A (dark navy) -- Rich's [dim] style darkens an
+            # already-low-luminance color further, making section labels
+            # (category headings in "Available Skills", the "Session: ..."
+            # line, etc.) nearly unreadable on a black/dark terminal
+            # background. #5C8F1F keeps enough luminance to stay legible
+            # after dimming.
+            "banner_dim": "#5C8F1F",
             "banner_text": "#E2E8F0",
-            "ui_accent": "#3B82F6",
+            "ui_accent": "#78B82B",
             "ui_label": "#DC2626",
             "ui_ok": "#22C55E",
             "ui_error": "#EF4444",
             "ui_warn": "#F87171",
             "prompt": "#E2E8F0",
-            "input_rule": "#2563EB",
-            "response_border": "#3B82F6",
-            "status_bar_bg": "#0F172A",
+            "input_rule": "#78B82B",
+            "response_border": "#96D14A",
+            "status_bar_bg": "#0A0A0A",
             "session_label": "#DC2626",
-            "session_border": "#64748B",
+            # Was #64748B (slate blue-gray, low contrast on black). Same
+            # legibility fix as banner_dim above.
+            "session_border": "#8FBC5A",
         },
         "spinner": {
             # Empty = use hardcoded defaults in display.py
         },
         "branding": {
-            "agent_name": "Jacky Agent",
-            "welcome": "Welcome to Jacky Agent! Type your message or /help for commands.",
+            "agent_name": "Jacky",
+            "welcome": "Welcome to Jacky! Type your message or /help for commands.",
             "goodbye": "Goodbye! >_",
             "response_label": " >_ Jacky ",
             "prompt_symbol": "❯",

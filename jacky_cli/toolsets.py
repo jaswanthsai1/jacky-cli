@@ -77,6 +77,11 @@ _JACKY_CORE_TOOLS = [
     "kanban_unblock",
     # Computer use (macOS, gated on cua-driver being installed via check_fn)
     "computer_use",
+    # Security & recon toolset (http_client/secret_scan/dependency_audit/
+    # severity_calc/evidence/static_analysis/passive_recon) -- on by default
+    # per the project's bug-bounty/offensive-security hunt-loop focus.
+    "http_client", "secret_scan", "dependency_audit", "severity_calculator",
+    "evidence_bundler", "static_analysis", "passive_recon",
 ]
 
 # Webhook events may originate from untrusted third-party content (for example,
@@ -186,7 +191,49 @@ TOOLSETS = {
         "tools": ["cronjob"],
         "includes": []
     },
-    
+
+    "http_client": {
+        "description": "Raw HTTP client for API testing and TLS certificate inspection",
+        "tools": ["http_client"],
+        "includes": []
+    },
+
+    "secret_scan": {
+        "description": "Scan a directory (or its git history) for leaked credentials and secrets",
+        "tools": ["secret_scan"],
+        "includes": []
+    },
+
+    "dependency_audit": {
+        "description": "Software Composition Analysis (SCA): scan project manifests for known-vulnerable dependencies via OSV.dev",
+        "tools": ["dependency_audit"],
+        "includes": []
+    },
+
+    "severity_calc": {
+        "description": "Vulnerability severity rating: Bugcrowd VRT lookup and CVSS v3.1 base score calculation",
+        "tools": ["severity_calculator"],
+        "includes": []
+    },
+
+    "evidence": {
+        "description": "Assemble raw finding evidence into a structured markdown finding report",
+        "tools": ["evidence_bundler"],
+        "includes": []
+    },
+
+    "static_analysis": {
+        "description": "Semgrep-backed (with pure-Python fallback) static analysis for code-level vulnerability patterns",
+        "tools": ["static_analysis"],
+        "includes": []
+    },
+
+    "passive_recon": {
+        "description": "Passive-only subdomain enumeration via CT logs and DNS resolution — no active probing",
+        "tools": ["passive_recon"],
+        "includes": []
+    },
+
 
     "file": {
         "description": "File manipulation tools: read, write, patch (with fuzzy matching), and search (content + files)",

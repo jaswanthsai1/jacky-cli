@@ -2300,6 +2300,15 @@ def _resolve_persona_skills(args) -> object:
 
 def cmd_chat(args):
     """Run interactive chat CLI."""
+    # Seed ~/.jacky/skills/ (or the platform equivalent) BEFORE anything
+    # tries to preload a skill by name. This must run before
+    # _resolve_persona_skills/build_preloaded_skills_prompt below --
+    # previously it ran later in this function (see the old call site),
+    # which raced the mandatory jacky-doctrine persona-skill preload on a
+    # genuinely first-ever invocation and crashed with "Unknown skill(s):
+    # jacky-doctrine" before the sync had a chance to seed it.
+    _sync_bundled_skills_quietly()
+
     use_tui = _resolve_use_tui(args)
 
     _apply_safe_mode(args)

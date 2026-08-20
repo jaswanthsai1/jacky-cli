@@ -31,23 +31,28 @@ EXCLUDED_SKILL_DIRS = frozenset(
         ".hub",
         ".archive",
         ".venv",
-        "venv",
         "node_modules",
-        # NOTE: "site-packages" deliberately NOT in this set. It was here to
-        # avoid wandering into a stray nested venv while scanning arbitrary
-        # directories (external_dirs config, etc.), but it silently broke
-        # skill discovery for every pip/npm install: the canonical bundled
-        # skills location for a packaged install (see
-        # jacky_constants.get_bundled_skills_dir /
-        # _get_packaged_data_dir, which resolves to
-        # sysconfig.get_path("purelib") / "skills") is ALWAYS inside
-        # site-packages/ by construction. Excluding it meant
-        # _discover_bundled_skills() found zero skills on every fresh
-        # pip/npm install, and jacky-doctrine (the always-preloaded persona
-        # skill) crashed cmd_chat() with "Unknown skill(s): jacky-doctrine"
-        # on first launch, every time. venv/.venv/node_modules above still
-        # catch the actual "wandered into a dependency tree" case this was
-        # meant to guard against.
+        # NOTE: "site-packages" and bare "venv" deliberately NOT in this set.
+        # Both were here to avoid wandering into a stray nested venv while
+        # scanning arbitrary directories (external_dirs config, etc.), but
+        # they silently broke skill discovery for every pip/npm install:
+        # - "site-packages": the canonical bundled skills location for a
+        #   packaged install (see jacky_constants.get_bundled_skills_dir /
+        #   _get_packaged_data_dir, which resolves to
+        #   sysconfig.get_path("purelib") / "skills") is ALWAYS inside
+        #   site-packages/ by construction.
+        # - "venv" (bare, not ".venv"): the npm shim's managed install lives
+        #   at <JACKY_HOME>/venv/ (jacky_constants.get_jacky_home() / "venv"),
+        #   so the packaged skills path on a real npm/pip-via-npm install is
+        #   literally <JACKY_HOME>/venv/Lib/site-packages/skills/... on
+        #   Windows -- "venv" as a path *component* matched every single
+        #   time, independent of the site-packages fix above.
+        # Both exclusions meant _discover_bundled_skills() found zero skills
+        # on every fresh pip/npm install, and jacky-doctrine (the
+        # always-preloaded persona skill) crashed cmd_chat() with "Unknown
+        # skill(s): jacky-doctrine" on first launch, every time. .venv/
+        # node_modules above still catch the actual "wandered into a
+        # dependency tree" case these were meant to guard against.
         "__pycache__",
         ".tox",
         ".nox",

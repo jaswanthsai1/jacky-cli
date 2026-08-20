@@ -3486,7 +3486,7 @@ def _build_compact_banner() -> str:
         line1 = ">_ NOUS JACKY - AI Agent Framework"
         tiny_line = ">_ NOUS JACKY"
     else:
-        agent_name = _skin.get_branding("agent_name", "Jacky Agent") if _skin else "Jacky Agent"
+        agent_name = _skin.get_branding("agent_name", "Jacky") if _skin else "Jacky"
         line1 = f"{agent_name} - AI Agent Framework"
         tiny_line = agent_name
 
@@ -14006,7 +14006,7 @@ class JackyCLI(CLIAgentSetupMixin, CLICommandsMixin):
             import signal as _sig
             from prompt_toolkit.application import run_in_terminal
             from jacky_cli.skin_engine import get_active_skin
-            agent_name = get_active_skin().get_branding("agent_name", "Jacky Agent")
+            agent_name = get_active_skin().get_branding("agent_name", "Jacky")
             msg = f"\n{agent_name} has been suspended. Run `fg` to bring {agent_name} back."
             def _suspend():
                 os.write(1, msg.encode())

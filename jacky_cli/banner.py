@@ -569,9 +569,9 @@ def format_banner_version_label() -> str:
     """Return the version label shown in the startup banner title."""
     try:
         from jacky_cli.skin_engine import get_active_skin
-        _name = get_active_skin().get_branding("agent_name", "Jacky Agent")
+        _name = get_active_skin().get_branding("agent_name", "Jacky")
     except Exception:
-        _name = "Jacky Agent"
+        _name = "Jacky"
     base = f"{_name} v{VERSION} ({RELEASE_DATE})"
     state = get_git_banner_state()
     if not state:

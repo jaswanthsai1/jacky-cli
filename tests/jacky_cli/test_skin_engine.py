@@ -27,13 +27,13 @@ class TestSkinConfig:
     def test_get_color_with_fallback(self):
         from jacky_cli.skin_engine import load_skin
         skin = load_skin("default")
-        assert skin.get_color("banner_title") == "#3B82F6"
+        assert skin.get_color("banner_title") == "#96D14A"
         assert skin.get_color("nonexistent", "#000") == "#000"
 
     def test_get_branding_with_fallback(self):
         from jacky_cli.skin_engine import load_skin
         skin = load_skin("default")
-        assert skin.get_branding("agent_name") == "Jacky Agent"
+        assert skin.get_branding("agent_name") == "Jacky"
         assert skin.get_branding("nonexistent", "fallback") == "fallback"
 
     def test_get_spinner_wings_empty_for_default(self):
@@ -205,7 +205,7 @@ class TestUserSkins:
         assert skin.get_branding("agent_name") == "Custom Agent"
         assert skin.tool_prefix == "▸"
         # Should inherit defaults for unspecified colors
-        assert skin.get_color("banner_border") == "#2563EB"  # from default
+        assert skin.get_color("banner_border") == "#78B82B"  # from default
 
     def test_load_user_skin_invalid_section_types_fall_back_to_defaults(self, tmp_path, monkeypatch):
         from jacky_cli.skin_engine import load_skin
@@ -232,8 +232,8 @@ class TestUserSkins:
         skin = load_skin("broken")
 
         assert skin.name == "broken"
-        assert skin.get_color("banner_title") == "#3B82F6"
-        assert skin.get_branding("agent_name") == "Jacky Agent"
+        assert skin.get_color("banner_title") == "#96D14A"
+        assert skin.get_branding("agent_name") == "Jacky"
         assert skin.spinner.get("waiting_faces", []) == []
         assert skin.tool_emojis == {}
         assert skin.tool_prefix == "!"
