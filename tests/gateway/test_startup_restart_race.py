@@ -277,7 +277,7 @@ async def test_start_gateway_does_not_start_cron_after_aborted_startup(tmp_path,
     monkeypatch.setattr("gateway.status.remove_pid_file", lambda: None)
     monkeypatch.setattr("gateway.status.release_gateway_runtime_lock", lambda: None)
     monkeypatch.setattr("tools.skills_sync.sync_skills", lambda quiet=True: None)
-    monkeypatch.setattr("jacky_logging.setup_logging", lambda jacky_home, mode: None)
+    monkeypatch.setattr("jacky_cli.jacky_logging.setup_logging", lambda jacky_home, mode: None)
     monkeypatch.setattr("gateway.run.GatewayRunner", AbortedStartupRunner)
     monkeypatch.setattr("gateway.run._start_cron_ticker", fail_if_cron_starts)
     monkeypatch.setattr("tools.mcp_tool.shutdown_mcp_servers", lambda: None)

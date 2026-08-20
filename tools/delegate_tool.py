@@ -30,7 +30,7 @@ from concurrent.futures import (
 )
 from typing import Any, Dict, List, Optional
 
-from toolsets import TOOLSETS
+from jacky_cli.toolsets import TOOLSETS
 
 # Sentinel value used by the runtime provider system for providers that are
 # not natively known (named custom providers, third-party aggregators, etc.).
@@ -38,7 +38,7 @@ from toolsets import TOOLSETS
 _RUNTIME_PROVIDER_CUSTOM = "custom"
 from tools import file_state
 from tools.terminal_tool import set_approval_callback as _set_subagent_approval_cb
-from utils import base_url_hostname, is_truthy_value
+from jacky_cli.utils import base_url_hostname, is_truthy_value
 
 
 # Tools that children must never have access to
@@ -1074,7 +1074,7 @@ def _build_child_agent(
     routing subagents to a different provider:model pair (e.g. cheap/fast
     model on OpenRouter while the parent runs on Nous Portal).
     """
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     import uuid as _uuid
 
     # ── Role resolution ─────────────────────────────────────────────────
@@ -1108,7 +1108,7 @@ def _build_child_agent(
         parent_toolsets = set(parent_enabled)
     elif parent_agent and hasattr(parent_agent, "valid_tool_names"):
         # enabled_toolsets is None (all tools) — derive from loaded tool names
-        import model_tools
+        import jacky_cli.model_tools as model_tools
 
         parent_toolsets = {
             ts
@@ -1260,7 +1260,7 @@ def _build_child_agent(
         # instead of disabling thinking for children.
         delegation_effort = delegation_cfg.get("reasoning_effort")
         if delegation_effort or delegation_effort is False:
-            from jacky_constants import parse_reasoning_effort
+            from jacky_cli.jacky_constants import parse_reasoning_effort
 
             parsed = parse_reasoning_effort(delegation_effort)
             if parsed is not None:
@@ -1445,7 +1445,7 @@ def _dump_subagent_timeout_diagnostic(
     Returns the absolute path to the diagnostic file, or None on failure.
     """
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         import datetime as _dt
         import sys as _sys
         import traceback as _traceback
@@ -1579,7 +1579,7 @@ def _spill_summary_to_file(task_index: int, summary: str) -> Optional[str]:
     the trimmed head+tail is still returned to the parent regardless).
     """
     try:
-        from jacky_constants import get_jacky_dir
+        from jacky_cli.jacky_constants import get_jacky_dir
         import datetime as _dt
 
         cache_dir = get_jacky_dir("cache/delegation", "delegation_cache")
@@ -1761,7 +1761,7 @@ def _run_single_child(
 
     # Restore parent tool names using the value saved before child construction
     # mutated the global. This is the correct parent toolset, not the child's.
-    import model_tools
+    import jacky_cli.model_tools as model_tools
 
     _saved_tool_names = getattr(
         child, "_delegate_saved_tool_names", list(model_tools._last_resolved_tool_names)
@@ -2313,7 +2313,7 @@ def _run_single_child(
 
         # Restore the parent's tool names so the process-global is correct
         # for any subsequent execute_code calls or other consumers.
-        import model_tools
+        import jacky_cli.model_tools as model_tools
 
         saved_tool_names = getattr(child, "_delegate_saved_tool_names", None)
         if isinstance(saved_tool_names, list):
@@ -2499,7 +2499,7 @@ def delegate_task(
     # Save parent tool names BEFORE any child construction mutates the global.
     # _build_child_agent() calls AIAgent() which calls get_tool_definitions(),
     # which overwrites model_tools._last_resolved_tool_names with child's toolset.
-    import model_tools as _model_tools
+    import jacky_cli.model_tools as _model_tools
 
     _parent_tool_names = list(_model_tools._last_resolved_tool_names)
 
@@ -2876,6 +2876,15 @@ def delegate_task(
                     pass
 
         _goals = [t["goal"] for t in task_list]
+        # Each child already has a real, SessionDB-backed session_id (assigned
+        # at construction in _build_child_agent) and, when a display/progress
+        # channel exists on the parent, a live entry in
+        # tools.delegate_tool._active_subagents. Both ride on the delegation
+        # record so a still-RUNNING background delegation can be watched —
+        # via `jacky --resume <session_id>` or `jacky agents attach
+        # <delegation_id>` — instead of only being visible once it completes.
+        _child_session_ids = [getattr(c, "session_id", "") or "" for c in _child_agents]
+        _child_subagent_ids = [getattr(c, "_subagent_id", "") or "" for c in _child_agents]
         dispatch = dispatch_async_delegation_batch(
             goals=_goals,
             context=context,
@@ -2890,6 +2899,8 @@ def delegate_task(
             runner=_batch_runner,
             interrupt_fn=_batch_interrupt,
             max_async_children=_get_max_async_children(),
+            session_ids=_child_session_ids,
+            subagent_ids=_child_subagent_ids,
         )
 
         if dispatch.get("status") == "dispatched":
@@ -3183,7 +3194,7 @@ def _load_config() -> dict:
         except Exception:
             pass
     try:
-        from cli import CLI_CONFIG
+        from jacky_cli.cli import CLI_CONFIG
 
         cfg = CLI_CONFIG.get("delegation") or {}
         return cfg if isinstance(cfg, dict) else {}

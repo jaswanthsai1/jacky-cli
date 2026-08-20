@@ -9,7 +9,7 @@ from types import SimpleNamespace
 from unittest.mock import patch as mock_patch
 
 import tools.approval as approval_module
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from tools.approval import (
     _get_approval_mode,
     _normalize_approval_mode,

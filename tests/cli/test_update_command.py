@@ -22,7 +22,7 @@ from unittest.mock import patch
 
 import pytest
 
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 
 
 def _bound(fn, instance):

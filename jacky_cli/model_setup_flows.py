@@ -121,7 +121,7 @@ def _prompt_auth_credentials_choice(title: str) -> str:
 def _model_flow_openrouter(config, current_model=""):
     """OpenRouter provider: ensure API key, then pick model."""
     from jacky_cli.main import _prompt_api_key
-    from jacky_constants import OPENROUTER_BASE_URL
+    from jacky_cli.jacky_constants import OPENROUTER_BASE_URL
     from jacky_cli.auth import (
         ProviderConfig,
         _prompt_model_selection,

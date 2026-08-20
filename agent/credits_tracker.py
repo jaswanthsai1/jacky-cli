@@ -39,7 +39,7 @@ import time
 from dataclasses import dataclass
 from typing import Any, Mapping, Optional
 
-from utils import is_truthy_value
+from jacky_cli.utils import is_truthy_value
 
 logger = logging.getLogger(__name__)
 

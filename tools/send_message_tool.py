@@ -335,7 +335,7 @@ def _handle_react(args, remove=False):
         )
 
     try:
-        from model_tools import _run_async
+        from jacky_cli.model_tools import _run_async
         if remove:
             result = _run_async(
                 react_fn(chat_id=chat_id, message_id=message_id)
@@ -477,7 +477,7 @@ def _handle_send(args):
                         if data.get("ok"):
                             return data["channel"]["id"]
                         return None
-            from model_tools import _run_async
+            from jacky_cli.model_tools import _run_async
             dm_channel = _run_async(_open_slack_dm(pconfig.token, chat_id))
             if dm_channel:
                 chat_id = dm_channel
@@ -487,7 +487,7 @@ def _handle_send(args):
             return json.dumps({"error": f"Failed to open Slack DM: {e}"})
 
     try:
-        from model_tools import _run_async
+        from jacky_cli.model_tools import _run_async
         result = _run_async(
             _send_to_platform(
                 platform,

@@ -706,12 +706,12 @@ class TestGetModelContextLengthLocalFallback:
              patch("agent.model_metadata._query_ollama_api_show", return_value=None), \
              patch("agent.model_metadata._is_custom_endpoint", return_value=False), \
              patch("agent.model_metadata.is_local_endpoint", return_value=True), \
-             patch("agent.model_metadata._query_local_context_length", return_value=32768), \
+             patch("agent.model_metadata._query_local_context_length", return_value=16384), \
              patch("agent.model_metadata._invalidate_cached_context_length") as mock_invalidate, \
              patch("agent.model_metadata.save_context_length") as mock_save:
             result = get_model_context_length(model, base, provider="custom")
 
-        assert result == 32768
+        assert result == 16384
         mock_invalidate.assert_called_once_with(model, base)
         mock_save.assert_not_called()
 
@@ -750,11 +750,11 @@ class TestGetModelContextLengthLocalFallback:
              patch("agent.model_metadata._query_ollama_api_show", return_value=None), \
              patch("agent.model_metadata._is_custom_endpoint", return_value=False), \
              patch("agent.model_metadata.is_local_endpoint", return_value=True), \
-             patch("agent.model_metadata._query_local_context_length", return_value=32768), \
+             patch("agent.model_metadata._query_local_context_length", return_value=16384), \
              patch("agent.model_metadata.save_context_length") as mock_save:
             result = get_model_context_length(model, base, provider="custom")
 
-        assert result == 32768
+        assert result == 16384
         mock_save.assert_not_called()
 
     def test_local_endpoint_server_returns_none_falls_back_to_2m(self):

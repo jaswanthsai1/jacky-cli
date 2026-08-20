@@ -343,7 +343,7 @@ MAX_MESSAGE_LENGTH = 4000
 
 # Store directory for E2EE keys and sync state.
 # Uses get_jacky_home() so each profile gets its own Matrix store.
-from jacky_constants import get_jacky_dir as _get_jacky_dir
+from jacky_cli.jacky_constants import get_jacky_dir as _get_jacky_dir
 
 _STORE_DIR = _get_jacky_dir("platforms/matrix/store", "matrix/store")
 _CRYPTO_DB_PATH = _STORE_DIR / "crypto.db"

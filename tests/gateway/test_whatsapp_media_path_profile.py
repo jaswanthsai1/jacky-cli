@@ -10,7 +10,7 @@ profile's cache. The validator must resolve the cache roots per-call.
 """
 from pathlib import Path
 
-from jacky_constants import reset_jacky_home_override, set_jacky_home_override
+from jacky_cli.jacky_constants import reset_jacky_home_override, set_jacky_home_override
 
 
 def _make_profile(root: Path) -> Path:

@@ -130,7 +130,7 @@ def test_validate_critical_files_syntax_tolerates_missing_files(tmp_path):
     guard should skip missing files, not falsely flag the install as broken."""
     # Populate everything except jacky_constants.py
     for relpath in jacky_main._UPDATE_CRITICAL_FILES:
-        if relpath == "jacky_constants.py":
+        if relpath == "jacky_cli/jacky_constants.py":
             continue
         path = tmp_path / relpath
         path.parent.mkdir(parents=True, exist_ok=True)

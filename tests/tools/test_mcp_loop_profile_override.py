@@ -23,7 +23,7 @@ def mcp_loop():
 
 
 def test_override_propagates_to_mcp_loop(tmp_path, monkeypatch, mcp_loop):
-    from jacky_constants import (
+    from jacky_cli.jacky_constants import (
         get_jacky_home,
         reset_jacky_home_override,
         set_jacky_home_override,
@@ -60,7 +60,7 @@ def test_oauth_token_paths_follow_override(tmp_path, monkeypatch, mcp_loop):
     """The actual symptom path: JackyTokenStorage resolving inside the
     probe's MCP-loop coroutine must land in the selected profile's
     mcp-tokens dir, not the process home's."""
-    from jacky_constants import (
+    from jacky_cli.jacky_constants import (
         reset_jacky_home_override,
         set_jacky_home_override,
     )
@@ -90,7 +90,7 @@ def test_concurrent_scopes_do_not_interfere(tmp_path, monkeypatch, mcp_loop):
     loop must each see their own home — the wrapper is task-local."""
     import threading
 
-    from jacky_constants import (
+    from jacky_cli.jacky_constants import (
         get_jacky_home,
         reset_jacky_home_override,
         set_jacky_home_override,

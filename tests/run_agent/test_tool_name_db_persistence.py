@@ -5,15 +5,15 @@ time. This test verifies that the value survives the flush path into the session
 """
 from unittest.mock import MagicMock, patch
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 from agent.tool_dispatch_helpers import make_tool_result_message
 
 
 def _make_agent(session_db):
     with (
-        patch("run_agent.get_tool_definitions", return_value=[]),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
         return AIAgent(
             api_key="test-key",

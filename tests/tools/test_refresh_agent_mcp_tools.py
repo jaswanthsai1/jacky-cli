@@ -34,7 +34,7 @@ def test_refresh_adds_late_landing_tools(monkeypatch):
     new_defs = [_tool(n) for n in ("read_file", "terminal", "mcp_granola_get_account_info")]
     monkeypatch.setattr(mcp_tool, "get_tool_definitions", lambda **kw: new_defs, raising=False)
     # get_tool_definitions is imported inside the helper from model_tools, so patch there too.
-    import model_tools
+    import jacky_cli.model_tools as model_tools
     monkeypatch.setattr(model_tools, "get_tool_definitions", lambda **kw: new_defs)
 
     added = mcp_tool.refresh_agent_mcp_tools(agent)
@@ -49,7 +49,7 @@ def test_refresh_no_change_returns_empty_and_leaves_agent_untouched(monkeypatch)
     agent = _agent(["read_file", "terminal"])
     original_tools = agent.tools
 
-    import model_tools
+    import jacky_cli.model_tools as model_tools
     monkeypatch.setattr(
         model_tools, "get_tool_definitions",
         lambda **kw: [_tool("read_file"), _tool("terminal")],
@@ -65,7 +65,7 @@ def test_refresh_detects_equal_size_swap(monkeypatch):
     """Name-based diff catches an add+remove of equal count (count-compare can't)."""
     agent = _agent(["a", "old_mcp_tool"])  # 2 tools
 
-    import model_tools
+    import jacky_cli.model_tools as model_tools
     # Same COUNT (2) but a different membership: old_mcp_tool removed, new added.
     monkeypatch.setattr(
         model_tools, "get_tool_definitions",
@@ -84,7 +84,7 @@ def test_refresh_passes_agent_toolset_filters(monkeypatch):
     agent = _agent(["a"], enabled=["coding", "granola"], disabled=["messaging"])
     seen = {}
 
-    import model_tools
+    import jacky_cli.model_tools as model_tools
 
     def _capture(**kw):
         seen.update(kw)
@@ -123,7 +123,7 @@ def test_refresh_preserves_memory_provider_and_context_engine_tools(monkeypatch)
     )
     agent._context_engine_tool_names = {"lcm_grep"}
 
-    import model_tools
+    import jacky_cli.model_tools as model_tools
     # The registry now ALSO has a newly-connected MCP tool, but does NOT contain
     # the memory/context tools (they're never in get_tool_definitions output).
     monkeypatch.setattr(
@@ -150,7 +150,7 @@ def test_refresh_respects_context_engine_toolset_gate(monkeypatch):
     )
     agent._context_engine_tool_names = set()
 
-    import model_tools
+    import jacky_cli.model_tools as model_tools
     monkeypatch.setattr(
         model_tools, "get_tool_definitions",
         lambda **kw: [_tool("read_file"), _tool("mcp_new_tool")],
@@ -167,7 +167,7 @@ def test_refreshed_tool_is_callable_through_valid_tool_names_guard(monkeypatch):
     run loop uses to accept/reject tool calls (agent.valid_tool_names)."""
     agent = _agent(["read_file"])
 
-    import model_tools
+    import jacky_cli.model_tools as model_tools
     monkeypatch.setattr(
         model_tools, "get_tool_definitions",
         lambda **kw: [_tool("read_file"), _tool("mcp_granola_list_meetings")],
@@ -204,7 +204,7 @@ def test_refresh_is_thread_safe_under_concurrent_calls(monkeypatch):
         with flip_lock:
             return list(next(flip))
 
-    import model_tools
+    import jacky_cli.model_tools as model_tools
     monkeypatch.setattr(model_tools, "get_tool_definitions", _gtd)
 
     errors = []
@@ -273,7 +273,7 @@ def test_stale_generation_refresh_does_not_clobber_newer(monkeypatch):
     agent.tools = [_tool("read_file"), _tool("mcp_new_tool")]
     agent.valid_tool_names = {"read_file", "mcp_new_tool"}
 
-    import model_tools
+    import jacky_cli.model_tools as model_tools
     # This (stale) refresh computes only the old single-tool set.
     monkeypatch.setattr(model_tools, "get_tool_definitions", lambda **kw: [_tool("read_file")])
 

@@ -27,7 +27,7 @@ def _seed(tmp_path, monkeypatch, value=False):
     hh.mkdir()
     (hh / "config.yaml").write_text(f"display:\n  timestamps: {str(value).lower()}\n")
     monkeypatch.setenv("JACKY_HOME", str(hh))
-    import cli
+    import jacky_cli.cli as cli
 
     monkeypatch.setattr(cli, "_jacky_home", hh, raising=False)
     return hh
@@ -58,7 +58,7 @@ def test_timestamps_status_is_noop(tmp_path, monkeypatch):
 
 
 def _render_history(history, show_ts):
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     h = JackyCLI.__new__(JackyCLI)
     h.show_timestamps = show_ts

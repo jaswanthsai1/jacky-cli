@@ -20,8 +20,8 @@ import os
 from pathlib import Path
 
 try:
-    from jacky_constants import display_jacky_home as display_jacky_home
-    from jacky_constants import get_jacky_home as get_jacky_home
+    from jacky_cli.jacky_constants import display_jacky_home as display_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home as get_jacky_home
 except (ModuleNotFoundError, ImportError):
 
     def get_jacky_home() -> Path:

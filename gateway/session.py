@@ -94,7 +94,7 @@ from .whatsapp_identity import (
     canonical_whatsapp_identifier,
     normalize_whatsapp_identifier,  # noqa: F401 - re-exported for gateway.session callers
 )
-from utils import atomic_replace
+from jacky_cli.utils import atomic_replace
 
 # Session keys/ids flow into filesystem paths downstream (e.g.
 # ``sessions_dir / f"{session_id}.json"`` in jacky_state, request-dump
@@ -585,7 +585,7 @@ def build_session_context_prompt(
     lines.append("")
     lines.append("**Delivery options for scheduled tasks:**")
 
-    from jacky_constants import display_jacky_home
+    from jacky_cli.jacky_constants import display_jacky_home
 
     # Origin delivery
     if context.source.platform == Platform.LOCAL:
@@ -1017,7 +1017,7 @@ class SessionStore:
         # Initialize SQLite session database
         self._db = None
         try:
-            from jacky_state import SessionDB
+            from jacky_cli.jacky_state import SessionDB
             self._db = SessionDB()
         except Exception as e:
             print(f"[gateway] Warning: SQLite session store unavailable, falling back to JSONL: {e}")

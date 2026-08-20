@@ -17,7 +17,7 @@ import json
 from unittest.mock import AsyncMock
 
 from gateway.config import Platform, PlatformConfig
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 
 PHONE = "351912345678"

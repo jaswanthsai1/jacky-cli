@@ -44,7 +44,7 @@ class _StubCLI:
 
 
 def _run_display(monkeypatch, result):
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
 
     captured: list[str] = []
     monkeypatch.setattr(cli_mod, "_cprint", lambda s, *a, **k: captured.append(str(s)))

@@ -67,6 +67,11 @@ def _install_modal_test_modules(
     sys.modules["jacky_cli.config"] = types.SimpleNamespace(
         get_jacky_home=lambda: jacky_home,
     )
+    # tools/environments/modal.py imports get_jacky_home from jacky_cli.jacky_constants
+    # (not jacky_cli.config) — stub it too, matching the real module's location.
+    sys.modules["jacky_cli.jacky_constants"] = types.SimpleNamespace(
+        get_jacky_home=lambda: jacky_home,
+    )
 
     tools_package = types.ModuleType("tools")
     tools_package.__path__ = [str(TOOLS_DIR)]  # type: ignore[attr-defined]

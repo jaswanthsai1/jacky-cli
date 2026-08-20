@@ -293,7 +293,7 @@ def test_start_whatsapp_onboarding_returns_before_bridge_spawn(monkeypatch, tmp_
 def test_spawn_whatsapp_pairing_process_uses_json_mode(monkeypatch, tmp_path):
     from gateway.platforms import whatsapp_common
     from jacky_cli import web_server as ws
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
 
     bridge_dir = tmp_path / "bridge"
     bridge_dir.mkdir()

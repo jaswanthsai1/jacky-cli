@@ -118,9 +118,9 @@ class TestCodexCloudflareHeaders:
 
 class TestPrimaryClientWiring:
     def test_init_wires_codex_headers_for_chatgpt_base_url(self):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         token = _make_codex_jwt("acct-primary-init")
-        with patch("run_agent.OpenAI") as mock_openai:
+        with patch("jacky_cli.run_agent.OpenAI") as mock_openai:
             mock_openai.return_value = MagicMock()
             AIAgent(
                 api_key=token,
@@ -138,9 +138,9 @@ class TestPrimaryClientWiring:
 
     def test_apply_client_headers_on_base_url_change(self):
         """Credential-rotation / base-url change path must also emit codex headers."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         token = _make_codex_jwt("acct-rotation")
-        with patch("run_agent.OpenAI") as mock_openai:
+        with patch("jacky_cli.run_agent.OpenAI") as mock_openai:
             mock_openai.return_value = MagicMock()
             agent = AIAgent(
                 api_key="placeholder-openrouter-key",
@@ -163,9 +163,9 @@ class TestPrimaryClientWiring:
 
     def test_apply_client_headers_clears_codex_headers_off_chatgpt(self):
         """Switching AWAY from chatgpt.com must drop the codex headers."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         token = _make_codex_jwt()
-        with patch("run_agent.OpenAI") as mock_openai:
+        with patch("jacky_cli.run_agent.OpenAI") as mock_openai:
             mock_openai.return_value = MagicMock()
             agent = AIAgent(
                 api_key=token,
@@ -185,8 +185,8 @@ class TestPrimaryClientWiring:
             assert "default_headers" not in agent._client_kwargs
 
     def test_openrouter_base_url_does_not_get_codex_headers(self):
-        from run_agent import AIAgent
-        with patch("run_agent.OpenAI") as mock_openai:
+        from jacky_cli.run_agent import AIAgent
+        with patch("jacky_cli.run_agent.OpenAI") as mock_openai:
             mock_openai.return_value = MagicMock()
             AIAgent(
                 api_key="sk-or-test",

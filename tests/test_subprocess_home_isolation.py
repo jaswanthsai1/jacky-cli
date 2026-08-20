@@ -14,7 +14,7 @@ import os
 import threading
 from pathlib import Path
 
-import jacky_constants
+import jacky_cli.jacky_constants as jacky_constants
 
 
 
@@ -37,7 +37,7 @@ class TestGetSubprocessHome:
 
     def test_returns_none_when_jacky_home_unset(self, monkeypatch):
         monkeypatch.delenv("JACKY_HOME", raising=False)
-        from jacky_constants import get_subprocess_home
+        from jacky_cli.jacky_constants import get_subprocess_home
         assert get_subprocess_home() is None
 
     def test_returns_none_when_home_dir_missing(self, tmp_path, monkeypatch):
@@ -45,7 +45,7 @@ class TestGetSubprocessHome:
         jacky_home.mkdir()
         monkeypatch.setenv("JACKY_HOME", str(jacky_home))
         # No home/ subdirectory created
-        from jacky_constants import get_subprocess_home
+        from jacky_cli.jacky_constants import get_subprocess_home
         assert get_subprocess_home() is None
 
     def test_host_auto_keeps_real_home_when_profile_home_exists(self, tmp_path, monkeypatch):
@@ -57,7 +57,7 @@ class TestGetSubprocessHome:
         profile_home.mkdir(parents=True)
         monkeypatch.setenv("HOME", str(real_home))
         monkeypatch.setenv("JACKY_HOME", str(jacky_home))
-        from jacky_constants import get_subprocess_home
+        from jacky_cli.jacky_constants import get_subprocess_home
         assert get_subprocess_home() is None
 
     def test_container_auto_uses_profile_home_when_home_dir_exists(self, tmp_path, monkeypatch):
@@ -66,7 +66,7 @@ class TestGetSubprocessHome:
         profile_home = jacky_home / "home"
         profile_home.mkdir(parents=True)
         monkeypatch.setenv("JACKY_HOME", str(jacky_home))
-        from jacky_constants import get_subprocess_home
+        from jacky_cli.jacky_constants import get_subprocess_home
         assert get_subprocess_home() == str(profile_home)
 
     def test_returns_profile_specific_path(self, tmp_path, monkeypatch):
@@ -78,7 +78,7 @@ class TestGetSubprocessHome:
         profile_home.mkdir()
         monkeypatch.setenv("TERMINAL_HOME_MODE", "profile")
         monkeypatch.setenv("JACKY_HOME", str(profile_dir))
-        from jacky_constants import get_subprocess_home
+        from jacky_cli.jacky_constants import get_subprocess_home
         assert get_subprocess_home() == str(profile_home)
 
     def test_real_mode_repairs_parent_home_already_pointing_at_profile(self, tmp_path, monkeypatch):
@@ -93,7 +93,7 @@ class TestGetSubprocessHome:
         monkeypatch.setenv("HOME", str(profile_home))
         monkeypatch.setenv("JACKY_REAL_HOME", str(real_home))
 
-        from jacky_constants import get_subprocess_home, get_real_home
+        from jacky_cli.jacky_constants import get_subprocess_home, get_real_home
 
         assert get_real_home() == str(real_home)
         assert get_subprocess_home() == str(real_home)
@@ -106,7 +106,7 @@ class TestGetSubprocessHome:
         monkeypatch.setenv("JACKY_HOME", str(profile_dir))
         monkeypatch.setenv("HOME", str(profile_home))
 
-        from jacky_constants import get_real_home
+        from jacky_cli.jacky_constants import get_real_home
 
         assert get_real_home() != str(profile_home)
 
@@ -118,7 +118,7 @@ class TestGetSubprocessHome:
             p.mkdir(parents=True)
             (p / "home").mkdir()
 
-        from jacky_constants import get_subprocess_home
+        from jacky_cli.jacky_constants import get_subprocess_home
 
         monkeypatch.setenv("JACKY_HOME", str(base / "alpha"))
         home_a = get_subprocess_home()
@@ -139,7 +139,7 @@ class TestGetSubprocessHome:
         profile.mkdir()
         monkeypatch.setenv("JACKY_HOME", str(root))
 
-        from jacky_constants import (
+        from jacky_cli.jacky_constants import (
             get_jacky_home,
             reset_jacky_home_override,
             set_jacky_home_override,
@@ -247,7 +247,7 @@ class TestMakeRunEnvHomeInjection:
         monkeypatch.setenv("HOME", "/root")
         monkeypatch.setenv("PATH", "/usr/bin:/bin")
 
-        from jacky_constants import reset_jacky_home_override, set_jacky_home_override
+        from jacky_cli.jacky_constants import reset_jacky_home_override, set_jacky_home_override
         from tools.environments.local import _make_run_env
 
         token = set_jacky_home_override(profile)
@@ -321,7 +321,7 @@ class TestSanitizeSubprocessEnvHomeInjection:
         monkeypatch.setenv("JACKY_HOME", str(root))
 
         base_env = {"HOME": "/root", "PATH": "/usr/bin"}
-        from jacky_constants import reset_jacky_home_override, set_jacky_home_override
+        from jacky_cli.jacky_constants import reset_jacky_home_override, set_jacky_home_override
         from tools.environments.local import _sanitize_subprocess_env
 
         token = set_jacky_home_override(profile)
@@ -375,7 +375,7 @@ class TestPythonProcessUnchanged:
         original_home = os.environ.get("HOME")
         original_path_home = str(Path.home())
 
-        from jacky_constants import get_subprocess_home
+        from jacky_cli.jacky_constants import get_subprocess_home
         sub_home = get_subprocess_home()
 
         # Resolving subprocess HOME must not mutate the Python process env.

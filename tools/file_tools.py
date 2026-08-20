@@ -38,7 +38,7 @@ def _expand_tilde(path: str) -> str:
     if not path or "~" not in path:
         return path
     try:
-        from jacky_constants import get_subprocess_home
+        from jacky_cli.jacky_constants import get_subprocess_home
 
         home = get_subprocess_home()
     except Exception:

@@ -19,8 +19,8 @@ import time
 from pathlib import Path
 from typing import Dict
 
-from jacky_constants import display_jacky_home
-from utils import atomic_replace
+from jacky_cli.jacky_constants import display_jacky_home
+from jacky_cli.utils import atomic_replace
 from jacky_cli.config import cfg_get
 
 
@@ -29,7 +29,7 @@ _SUBSCRIPTIONS_FILE_MODE = 0o600
 
 
 def _jacky_home() -> Path:
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     return get_jacky_home()
 
 

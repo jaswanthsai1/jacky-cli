@@ -14,7 +14,7 @@ failure.
 import ast
 import pathlib
 
-import jacky_bootstrap
+import jacky_cli.jacky_bootstrap as jacky_bootstrap
 
 
 def _entry_source() -> str:

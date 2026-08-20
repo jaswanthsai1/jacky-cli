@@ -1,7 +1,7 @@
 import queue
 from unittest.mock import patch
 
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 from jacky_cli.moa_config import decode_moa_turn
 
 
@@ -43,7 +43,7 @@ def test_moa_bare_shows_usage_no_switch():
     # session is done via the model picker, not /moa.
     cli = _make_cli()
     cli._pending_moa_disable_after_turn = False
-    with patch("cli._cprint"):
+    with patch("jacky_cli.cli._cprint"):
         assert cli.process_command("/moa") is True
     assert cli.provider != "moa"
     assert cli._pending_agent_seed is None
@@ -54,7 +54,7 @@ def test_moa_arg_is_always_one_shot_prompt():
     # Any argument (even a string that matches a preset name) is treated as a
     # one-shot prompt through the DEFAULT preset, then the model is restored.
     cli = _make_cli()
-    with patch("cli._cprint"):
+    with patch("jacky_cli.cli._cprint"):
         cli.process_command("/moa review")
     assert cli._pending_agent_seed == "review"
     assert cli._pending_moa_disable_after_turn is True
@@ -64,7 +64,7 @@ def test_moa_arg_is_always_one_shot_prompt():
 
 def test_moa_non_preset_is_one_shot_prompt():
     cli = _make_cli()
-    with patch("cli._cprint"):
+    with patch("jacky_cli.cli._cprint"):
         cli.process_command("/moa inspect the flaky test")
     assert cli._pending_agent_seed == "inspect the flaky test"
     assert cli._pending_moa_disable_after_turn is True

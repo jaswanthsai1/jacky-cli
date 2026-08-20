@@ -49,9 +49,9 @@ from jacky_cli.config import (
     read_raw_config,
     require_readable_config_before_write,
 )
-from jacky_constants import OPENROUTER_BASE_URL, secure_parent_dir
+from jacky_cli.jacky_constants import OPENROUTER_BASE_URL, secure_parent_dir
 from agent.credential_persistence import sanitize_borrowed_credential_payload
-from utils import atomic_replace, atomic_yaml_write, env_float, is_truthy_value
+from jacky_cli.utils import atomic_replace, atomic_yaml_write, env_float, is_truthy_value
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +74,14 @@ AUTH_LOCK_TIMEOUT_SECONDS = 15.0
 # Nous Portal defaults
 DEFAULT_NOUS_PORTAL_URL = "https://portal.nousresearch.com"
 DEFAULT_NOUS_INFERENCE_URL = "https://inference-api.nousresearch.com/v1"
-DEFAULT_NOUS_CLIENT_ID = "jacky-cli"
+DEFAULT_NOUS_CLIENT_ID = "hermes-cli"  # Registered client_id on Nous Portal's OAuth
+# server -- this is an external third-party API identifier, not a branding
+# string. Nous Portal's device-code endpoint validates client_id against its
+# own whitelist and 400s with "Unsupported OAuth client_id" for anything not
+# already registered there (verified directly: "jacky-cli" -> 400
+# invalid_client, "hermes-cli" -> 200 with a real device_code). Renaming this
+# during the fork's de-branding pass broke the entire Nous Portal OAuth login
+# flow -- the default, no-API-key-needed "Quick Setup" path -- for every user.
 NOUS_INFERENCE_INVOKE_SCOPE = "inference:invoke"
 NOUS_BILLING_MANAGE_SCOPE = "billing:manage"
 DEFAULT_NOUS_SCOPE = NOUS_INFERENCE_INVOKE_SCOPE
@@ -124,11 +131,11 @@ QWEN_ACCESS_TOKEN_REFRESH_SKEW_SECONDS = 120
 DEFAULT_SPOTIFY_ACCOUNTS_BASE_URL = "https://accounts.spotify.com"
 DEFAULT_SPOTIFY_API_BASE_URL = "https://api.spotify.com/v1"
 DEFAULT_SPOTIFY_REDIRECT_URI = "http://127.0.0.1:43827/spotify/callback"
-SPOTIFY_DOCS_URL = "https://jacky-agent.nousresearch.com/docs/user-guide/features/spotify"
+SPOTIFY_DOCS_URL = "https://jaswanthsai1.github.io/jacky-cli/user-guide/features/spotify"
 SPOTIFY_DASHBOARD_URL = "https://developer.spotify.com/dashboard"
 SPOTIFY_ACCESS_TOKEN_REFRESH_SKEW_SECONDS = 120
 
-OAUTH_OVER_SSH_DOCS_URL = "https://jacky-agent.nousresearch.com/docs/guides/oauth-over-ssh"
+OAUTH_OVER_SSH_DOCS_URL = "https://jaswanthsai1.github.io/jacky-cli/guides/oauth-over-ssh"
 DEFAULT_SPOTIFY_SCOPE = " ".join((
     "user-modify-playback-state",
     "user-read-playback-state",
@@ -924,7 +931,7 @@ def _global_auth_file_path() -> Optional[Path]:
     See issue #18594 follow-up (credential_pool shadowing).
     """
     try:
-        from jacky_constants import get_default_jacky_root
+        from jacky_cli.jacky_constants import get_default_jacky_root
         global_root = get_default_jacky_root()
     except Exception:
         return None
@@ -4642,7 +4649,7 @@ def _nous_shared_auth_dir() -> Path:
     override = os.getenv("JACKY_SHARED_AUTH_DIR", "").strip()
     if override:
         return Path(override).expanduser()
-    from jacky_constants import get_default_jacky_root
+    from jacky_cli.jacky_constants import get_default_jacky_root
     return get_default_jacky_root() / "shared"
 
 
@@ -4655,7 +4662,7 @@ def _nous_shared_store_path() -> Path:
     # so forgetting to set it fails loudly instead of writing to the real
     # shared store).
     if os.environ.get("PYTEST_CURRENT_TEST"):
-        from jacky_constants import get_default_jacky_root
+        from jacky_cli.jacky_constants import get_default_jacky_root
         real_home_shared = (
             get_default_jacky_root() / "shared" / NOUS_SHARED_STORE_FILENAME
         ).resolve(strict=False)
@@ -6986,7 +6993,7 @@ def _login_openai_codex(
     config_path = _update_config_for_provider("openai-codex", creds.get("base_url", DEFAULT_CODEX_BASE_URL))
     print()
     print("Login successful!")
-    from jacky_constants import display_jacky_home as _dhh
+    from jacky_cli.jacky_constants import display_jacky_home as _dhh
     print(f"  Auth state: {_dhh()}/auth.json")
     print(f"  Config updated: {config_path} (model.provider=openai-codex)")
 
@@ -7054,7 +7061,7 @@ def _login_xai_oauth(
     config_path = _update_config_for_provider("xai-oauth", creds.get("base_url", DEFAULT_XAI_OAUTH_BASE_URL))
     print()
     print("Login successful!")
-    from jacky_constants import display_jacky_home as _dhh
+    from jacky_cli.jacky_constants import display_jacky_home as _dhh
     print(f"  Auth state: {_dhh()}/auth.json")
     print(f"  Config updated: {config_path} (model.provider=xai-oauth)")
 

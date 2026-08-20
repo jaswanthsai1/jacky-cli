@@ -66,16 +66,16 @@ def test_sys_path_guard_runs_before_cli_import():
         ):
             if harden_call_line is None:
                 harden_call_line = node.lineno
-        if isinstance(node, ast.Import) and any(a.name == "cli" for a in node.names):
+        if isinstance(node, ast.Import) and any(a.name == "jacky_cli.cli" for a in node.names):
             if cli_import_line is None:
                 cli_import_line = node.lineno
 
     assert harden_call_line is not None, (
         "slash_worker.py must call jacky_bootstrap.harden_import_path()"
     )
-    assert cli_import_line is not None, "slash_worker.py must 'import cli'"
+    assert cli_import_line is not None, "slash_worker.py must 'import jacky_cli.cli'"
     assert harden_call_line < cli_import_line, (
-        "harden_import_path() must run before 'import cli' (issue #51286)"
+        "harden_import_path() must run before 'import jacky_cli.cli' (issue #51286)"
     )
 
 

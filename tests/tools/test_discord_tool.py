@@ -654,17 +654,17 @@ class TestRegistration:
 
 class TestToolsetInclusion:
     def test_discord_tools_in_jacky_discord_toolset(self):
-        from toolsets import TOOLSETS
+        from jacky_cli.toolsets import TOOLSETS
         assert "discord" in TOOLSETS["jacky-discord"]["tools"]
         assert "discord_admin" in TOOLSETS["jacky-discord"]["tools"]
 
     def test_discord_tools_not_in_core_tools(self):
-        from toolsets import _JACKY_CORE_TOOLS
+        from jacky_cli.toolsets import _JACKY_CORE_TOOLS
         assert "discord" not in _JACKY_CORE_TOOLS
         assert "discord_admin" not in _JACKY_CORE_TOOLS
 
     def test_discord_tools_not_in_other_toolsets(self):
-        from toolsets import TOOLSETS
+        from jacky_cli.toolsets import TOOLSETS
         for name, ts in TOOLSETS.items():
             if name in {"jacky-discord", "jacky-gateway", "discord", "discord_admin"}:
                 continue
@@ -1241,14 +1241,14 @@ class Test403Enrichment:
 class TestModelToolsIntegration:
     def setup_method(self):
         _reset_capability_cache()
-        from model_tools import _clear_tool_defs_cache
+        from jacky_cli.model_tools import _clear_tool_defs_cache
         from tools.registry import invalidate_check_fn_cache
         _clear_tool_defs_cache()
         invalidate_check_fn_cache()
 
     def teardown_method(self):
         _reset_capability_cache()
-        from model_tools import _clear_tool_defs_cache
+        from jacky_cli.model_tools import _clear_tool_defs_cache
         from tools.registry import invalidate_check_fn_cache
         _clear_tool_defs_cache()
         invalidate_check_fn_cache()
@@ -1267,7 +1267,7 @@ class TestModelToolsIntegration:
         # Bot without GUILD_MEMBERS intent
         mock_req.return_value = {"flags": 0}
 
-        from model_tools import get_tool_definitions
+        from jacky_cli.model_tools import get_tool_definitions
         tools = get_tool_definitions(enabled_toolsets=["jacky-discord"], quiet_mode=True)
         discord_admin_tool = next(
             (t for t in tools if t.get("function", {}).get("name") == "discord_admin"),
@@ -1288,7 +1288,7 @@ class TestModelToolsIntegration:
         )
         mock_req.return_value = {"flags": 0}
 
-        from model_tools import get_tool_definitions
+        from jacky_cli.model_tools import get_tool_definitions
         tools = get_tool_definitions(enabled_toolsets=["jacky-discord"], quiet_mode=True)
         names = [t.get("function", {}).get("name") for t in tools]
         assert "discord" not in names

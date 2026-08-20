@@ -3,9 +3,9 @@ import threading
 import time
 from unittest.mock import patch
 
-import cli as cli_module
+import jacky_cli.cli as cli_module
 import tools.skills_tool as skills_tool_module
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 from jacky_cli.callbacks import prompt_for_secret
 from tools.skills_tool import set_secret_capture_callback
 
@@ -134,7 +134,7 @@ def test_cli_chat_registers_secret_capture_callback():
         "terminal": {"env_type": "local"},
     }
 
-    with patch("cli.get_tool_definitions", return_value=[]), patch.dict(
+    with patch("jacky_cli.cli.get_tool_definitions", return_value=[]), patch.dict(
         "os.environ", {"LLM_MODEL": "", "JACKY_MAX_ITERATIONS": ""}, clear=False
     ), patch.dict(cli_module.__dict__, {"CLI_CONFIG": clean_config}):
         cli_obj = JackyCLI()

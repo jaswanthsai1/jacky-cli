@@ -13,7 +13,7 @@ from datetime import datetime
 from unittest.mock import patch
 import yaml
 
-from jacky_constants import reset_jacky_home_override, set_jacky_home_override
+from jacky_cli.jacky_constants import reset_jacky_home_override, set_jacky_home_override
 from gateway.config import GatewayConfig, Platform
 from gateway.session import SessionSource, SessionStore, build_session_key
 

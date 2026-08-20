@@ -738,12 +738,12 @@ def test_visible_providers_include_nous_subscription_when_logged_in(monkeypatch)
 
     providers = _visible_providers(TOOL_CATEGORIES["browser"], config)
 
-    # The managed Nous row is listed (not necessarily first — "Local Browser"
+    # The managed Nous row is listed (not necessarily first — "Camofox"
     # sorts first so a fresh-install Enter lands on the free local backend).
     assert any(p["name"].startswith("Nous Subscription") for p in providers)
-    # "Local Browser" must be the index-0 default so pressing Enter never
+    # "Camofox" must be the index-0 default so pressing Enter never
     # walks a user into a paid Nous Portal login.
-    assert providers[0]["name"] == "Local Browser"
+    assert providers[0]["name"] == "Camofox"
 
 
 def test_visible_providers_show_nous_subscription_when_logged_out(monkeypatch):
@@ -820,7 +820,7 @@ def test_visible_providers_force_fresh_shows_nous_subscription_after_upgrade(mon
     )
 
     # The managed Nous row reappears after the entitlement upgrade. It is no
-    # longer asserted to be first — "Local Browser" sorts first by design.
+    # longer asserted to be first — "Camofox" sorts first by design.
     assert any(p["name"].startswith("Nous Subscription") for p in providers)
     assert ("features", True) in calls
 
@@ -845,12 +845,17 @@ def test_fresh_install_browser_default_is_free_local_not_paid_nous():
     Regression: the Nous row used to sort first, so the menu cursor defaulted
     to index 0 (Nous) and pressing Enter walked users straight into a Nous
     Portal login for a paid offering (Javier's bug, June 2026).
+
+    Camofox (free, local, anti-detection, auto-bootstraps on first use) is
+    now the zero-config default browser backend, ahead of the plain-Chromium
+    "Local Browser" row — both are free/local/no-key, so the no-paid-Nous
+    regression guard still holds.
     """
     from jacky_cli.tools_config import _detect_active_provider_index
 
     providers = TOOL_CATEGORIES["browser"]["providers"]
-    assert providers[0]["name"] == "Local Browser"
-    assert providers[0]["browser_provider"] == "local"
+    assert providers[0]["name"] == "Camofox"
+    assert providers[0]["browser_provider"] == "camofox"
     # Nothing active/configured → cursor defaults to index 0 (the free local row).
     assert _detect_active_provider_index(providers, {}) == 0
 
@@ -1018,7 +1023,7 @@ class TestPlatformToolsetConsistency:
     def test_all_platforms_have_toolset_definitions(self):
         """Each platform's default_toolset must exist in TOOLSETS."""
         from jacky_cli.tools_config import PLATFORMS
-        from toolsets import TOOLSETS
+        from jacky_cli.toolsets import TOOLSETS
 
         for platform, meta in PLATFORMS.items():
             ts_name = meta["default_toolset"]
@@ -1030,7 +1035,7 @@ class TestPlatformToolsetConsistency:
     def test_gateway_toolset_includes_all_messaging_platforms(self):
         """jacky-gateway includes list should cover all messaging platforms."""
         from jacky_cli.tools_config import PLATFORMS
-        from toolsets import TOOLSETS
+        from jacky_cli.toolsets import TOOLSETS
 
         gateway_includes = set(TOOLSETS["jacky-gateway"]["includes"])
         # Exclude non-messaging platforms from the check
@@ -1317,7 +1322,7 @@ def test_get_platform_tools_recovers_non_configurable_toolsets_from_composite():
     """Non-configurable toolsets whose tools are in the composite but not in
     CONFIGURABLE_TOOLSETS should still appear in the result.
     """
-    from toolsets import TOOLSETS
+    from jacky_cli.toolsets import TOOLSETS
     from jacky_cli.tools_config import PLATFORMS
     from unittest.mock import patch as mock_patch
 
@@ -1338,7 +1343,7 @@ def test_get_platform_tools_recovers_non_configurable_toolsets_from_composite():
     }
 
     with mock_patch("jacky_cli.tools_config.PLATFORMS", {**PLATFORMS, **test_platforms}):
-        with mock_patch("toolsets.TOOLSETS", fake_toolsets):
+        with mock_patch("jacky_cli.toolsets.TOOLSETS", fake_toolsets):
             enabled = _get_platform_tools({}, "_test_platform")
 
     assert "_test_platform_tool" in enabled

@@ -488,7 +488,7 @@ def _store_full_text(url: str, content: str) -> Optional[str]:
     try:
         import hashlib
         from urllib.parse import urlparse
-        from jacky_constants import get_jacky_dir
+        from jacky_cli.jacky_constants import get_jacky_dir
 
         cache_dir = get_jacky_dir("cache/web", "web_cache")
         cache_dir.mkdir(parents=True, exist_ok=True)

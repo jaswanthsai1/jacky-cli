@@ -106,7 +106,7 @@ def _build_subprocess_env() -> dict[str, str]:
     env = jacky_subprocess_env(inherit_credentials=True)
     home = _resolve_home_dir()
     env["HOME"] = home
-    from jacky_constants import apply_subprocess_home_env
+    from jacky_cli.jacky_constants import apply_subprocess_home_env
     apply_subprocess_home_env(env)
     return env
 
@@ -508,7 +508,7 @@ class CopilotACPClient:
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
                 bufsize=1,
                 cwd=self._acp_cwd,
                 env=_build_subprocess_env(),

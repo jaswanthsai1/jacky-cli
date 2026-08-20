@@ -253,6 +253,14 @@ def test_run_uninstall_yes_keep_data_is_non_interactive(tmp_path, monkeypatch):
     monkeypatch.setattr(gu_mod, "packaged_gui_app_paths", lambda: [])
     monkeypatch.setattr(gu_mod, "desktop_userdata_dir", lambda: tmp_path / "none")
 
+    # This test's fake_code IS meant to represent a git-checkout install (a
+    # throwaway dir the test owns and expects removed) — real pip/npm
+    # installs are deliberately NOT rmtree'd anymore (see uninstall.py's
+    # install-method guard, a real data-loss-prevention fix), so this test
+    # must declare itself as the "git" case it's actually exercising.
+    from jacky_cli import config as config_mod
+    monkeypatch.setattr(config_mod, "detect_install_method", lambda root: "git")
+
     uninstall.run_uninstall(_Args(yes=True, full=False))
 
     # Code checkout removed, GUI artifacts swept, but user data preserved.

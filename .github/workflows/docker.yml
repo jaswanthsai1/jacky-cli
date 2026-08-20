@@ -40,9 +40,29 @@ jobs:
 
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
+    outputs:
+      has_creds: ${{ steps.dockerhub_check.outputs.has_creds }}
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      # `secrets` is not a recognized named-value inside `if:` conditions
+      # on a job/step defined in a CALLED (reusable, workflow_call)
+      # workflow, even when the caller passes secrets via `secrets: inherit`
+      # — GitHub Actions specifically disallows it there, even though
+      # ${{ secrets.X }} works fine in `with:`/`run:`/`env:` in the same
+      # file. Route through a step output instead, which has no such
+      # restriction, so forks without DOCKERHUB_USERNAME/TOKEN configured
+      # skip the publish steps cleanly instead of the whole workflow
+      # failing to even parse.
+      - name: Check Docker Hub credentials
+        id: dockerhub_check
+        run: |
+          if [ -n "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
+            echo "has_creds=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_creds=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
@@ -53,7 +73,7 @@ jobs:
         uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           context: .
-          file: Dockerfile
+          file: docker/Dockerfile
           load: true
           platforms: ${{ matrix.platform }}
           tags: ${{ env.IMAGE_NAME }}:test
@@ -63,7 +83,7 @@ jobs:
           cache-to: ${{ (github.event_name != 'pull_request') && matrix.cache-to || '' }}
 
       - name: Log in to Docker Hub
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'release'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'release') && steps.dockerhub_check.outputs.has_creds == 'true'
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -74,11 +94,11 @@ jobs:
       # pattern for multi-runner multi-platform builds.
       - name: Push ${{ matrix.arch }} by digest
         id: push
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'release'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'release') && steps.dockerhub_check.outputs.has_creds == 'true'
         uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           context: .
-          file: Dockerfile
+          file: docker/Dockerfile
           platforms: ${{ matrix.platform }}
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
@@ -91,14 +111,14 @@ jobs:
       # Write the digest to a file and upload it as an artifact so the
       # merge job can stitch both per-arch digests into a manifest list.
       - name: Export digest
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'release'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'release') && steps.dockerhub_check.outputs.has_creds == 'true'
         run: |
           mkdir -p /tmp/digests
           digest="${{ steps.push.outputs.digest }}"
           touch "/tmp/digests/${digest#sha256:}"
 
       - name: Upload digest artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'release'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'release') && steps.dockerhub_check.outputs.has_creds == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: digest-${{ matrix.arch }}
@@ -155,7 +175,7 @@ jobs:
   # On releases: tags :<release_tag_name>.
   # ---------------------------------------------------------------------------
   merge:
-    if: github.repository == 'jaswanthsai1/jacky-cli' && (github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'release')
+    if: github.repository == 'jaswanthsai1/jacky-cli' && (github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'release') && needs.build.outputs.has_creds == 'true'
     runs-on: ubuntu-latest
     needs: [build]
     timeout-minutes: 10
@@ -208,3 +228,61 @@ jobs:
           else
             docker buildx imagetools inspect "${IMAGE_NAME}:main"
           fi
+
+  # ---------------------------------------------------------------------------
+  # Publish to GitHub Container Registry (ghcr.io). Separate from Docker
+  # Hub above by design: this one needs no external account or secret at
+  # all — it authenticates with the workflow's own built-in GITHUB_TOKEN,
+  # scoped by the `packages: write` permission below, so it publishes on
+  # every push to main / every release with zero setup. Single-arch
+  # (amd64) for now — the Docker Hub job above has the full digest-merge
+  # multi-arch machinery if this ever needs to grow to match it.
+  # ---------------------------------------------------------------------------
+  publish-ghcr:
+    if: github.repository == 'jaswanthsai1/jacky-cli' && (github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'release')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute tags
+        id: tags
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "tags=${IMAGE}:${RELEASE_TAG},${IMAGE}:latest" >> "$GITHUB_OUTPUT"
+          else
+            echo "tags=${IMAGE}:main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build and push
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
+        with:
+          context: .
+          file: docker/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          build-args: |
+            JACKY_GIT_SHA=${{ github.sha }}
+          cache-from: type=gha,scope=docker-ghcr
+          cache-to: type=gha,mode=max,scope=docker-ghcr

@@ -1,7 +1,7 @@
 """Tests for toolsets.py — toolset resolution, validation, and composition."""
 
 from tools.registry import ToolRegistry
-from toolsets import (
+from jacky_cli.toolsets import (
     TOOLSETS,
     get_toolset,
     resolve_toolset,

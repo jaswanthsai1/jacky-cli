@@ -31,7 +31,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 
 
 # ---------------------------------------------------------------------------

@@ -114,7 +114,7 @@ def _get_service_pids() -> set:
                         "--no-pager",
                     ],
                     capture_output=True,
-                    text=True,
+                    text=True, encoding="utf-8", errors="replace",
                     timeout=5,
                 )
                 for line in result.stdout.strip().splitlines():
@@ -126,7 +126,7 @@ def _get_service_pids() -> set:
                         show = subprocess.run(
                             scope_args + ["show", svc, "--property=MainPID", "--value"],
                             capture_output=True,
-                            text=True,
+                            text=True, encoding="utf-8", errors="replace",
                             timeout=5,
                         )
                         pid = int(show.stdout.strip())
@@ -144,7 +144,7 @@ def _get_service_pids() -> set:
             result = subprocess.run(
                 ["launchctl", "list", label],
                 capture_output=True,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
                 timeout=5,
             )
             if result.returncode == 0:
@@ -200,7 +200,7 @@ def _get_parent_pid(pid: int) -> int | None:
         result = subprocess.run(
             ["ps", "-o", "ppid=", "-p", str(pid)],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=5,
         )
     except (FileNotFoundError, subprocess.TimeoutExpired):
@@ -500,7 +500,7 @@ def _scan_gateway_pids(
                 result = subprocess.run(
                     ["ps", "-A", "eww", "-o", "pid=,command="],
                     capture_output=True,
-                    text=True,
+                    text=True, encoding="utf-8", errors="replace",
                     timeout=10,
                 )
                 if result.returncode != 0:
@@ -1268,7 +1268,7 @@ def _probe_launchd_service_running() -> bool:
         result = subprocess.run(
             ["launchctl", "list", get_launchd_label()],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=10,
         )
     except subprocess.TimeoutExpired:
@@ -1287,7 +1287,7 @@ def get_gateway_runtime_snapshot(system: bool = False) -> GatewayRuntimeSnapshot
             gateway_pids=gateway_pids,
         )
 
-    from jacky_constants import is_container
+    from jacky_cli.jacky_constants import is_container
 
     if is_linux() and is_container():
         # Phase 4: report s6 supervision when running under our /init.
@@ -1607,7 +1607,7 @@ def is_linux() -> bool:
     return sys.platform.startswith("linux")
 
 
-from jacky_constants import is_container, is_termux, is_wsl
+from jacky_cli.jacky_constants import is_container, is_termux, is_wsl
 
 
 def _wsl_systemd_operational() -> bool:
@@ -1713,7 +1713,7 @@ def _profile_suffix() -> str:
     """
     import hashlib
     import re
-    from jacky_constants import get_default_jacky_root
+    from jacky_cli.jacky_constants import get_default_jacky_root
 
     home = get_jacky_home().resolve()
     default = get_default_jacky_root().resolve()
@@ -1748,7 +1748,7 @@ def _profile_arg(jacky_home: str | None = None, default_root: str | Path | None 
             refer to root but the target profile lives under the service user.
     """
     import re
-    from jacky_constants import get_default_jacky_root
+    from jacky_cli.jacky_constants import get_default_jacky_root
 
     home = Path(jacky_home or str(get_jacky_home())).resolve()
     default = Path(default_root).resolve() if default_root else get_default_jacky_root().resolve()
@@ -1935,7 +1935,7 @@ def _preflight_user_systemd(*, auto_enable_linger: bool = True) -> None:
             result = subprocess.run(
                 ["loginctl", "enable-linger", username],
                 capture_output=True,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
                 check=False,
                 timeout=30,
             )
@@ -2412,7 +2412,7 @@ def get_systemd_linger_status() -> tuple[bool | None, str]:
         result = subprocess.run(
             ["loginctl", "show-user", username, "--property=Linger", "--value"],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             check=False,
             timeout=10,
         )
@@ -3043,7 +3043,7 @@ def _ensure_linger_enabled() -> None:
         result = subprocess.run(
             ["loginctl", "enable-linger", username],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             check=False,
             timeout=30,
         )
@@ -3574,7 +3574,7 @@ def _launchd_domain() -> str:
         result = subprocess.run(
             ["launchctl", "managername"],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=5,
         )
         if "Aqua" in (result.stdout or ""):
@@ -3849,7 +3849,7 @@ def _launchd_fallback_to_detached(reason: str, *, exit_on_failure: bool = True) 
     launched, prints the manual workaround and (by default) exits non-zero so
     the failure surfaces instead of silently doing nothing.
     """
-    from jacky_constants import display_jacky_home as _dhh
+    from jacky_cli.jacky_constants import display_jacky_home as _dhh
 
     _write_launchd_unsupported_marker()
     print(f"⚠ launchd cannot manage the gateway on this macOS version ({reason}).")
@@ -4154,7 +4154,7 @@ def launchd_install(force: bool = False):
     print()
     print("Next steps:")
     print("  jacky gateway status             # Check status")
-    from jacky_constants import display_jacky_home as _dhh
+    from jacky_cli.jacky_constants import display_jacky_home as _dhh
 
     print(f"  tail -f {_dhh()}/logs/gateway.log  # View logs")
 
@@ -4397,7 +4397,7 @@ def launchd_status(deep: bool = False):
         result = subprocess.run(
             ["launchctl", "list", label],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=10,
         )
         service_listed = result.returncode == 0
@@ -4535,7 +4535,7 @@ def _guard_named_profile_under_multiplexer(force: bool = False) -> None:
         return  # default profile (or unrecognized) — this guard doesn't apply
 
     try:
-        from jacky_constants import get_default_jacky_root
+        from jacky_cli.jacky_constants import get_default_jacky_root
         default_root = get_default_jacky_root()
         # (b) Is the default-profile gateway running?
         from gateway.status import get_running_pid as _default_running_pid  # noqa
@@ -4778,7 +4778,7 @@ def run_gateway(verbose: int = 0, quiet: bool = False, replace: bool = False, fo
     from gateway.run import start_gateway
 
     print("┌─────────────────────────────────────────────────────────┐")
-    print("│           ⚕ Jacky Gateway Starting...                 │")
+    print("│           > Jacky Gateway Starting...                 │")
     print("├─────────────────────────────────────────────────────────┤")
     print("│  Messaging platforms + cron scheduler                    │")
     print("│  Press Ctrl+C to stop                                   │")
@@ -4807,7 +4807,7 @@ def run_gateway(verbose: int = 0, quiet: bool = False, replace: bool = False, fo
         if os.environ.get("JACKY_GATEWAY_EXIT_DIAG", "1") != "1":
             return
         try:
-            from jacky_constants import get_jacky_home as _ghh
+            from jacky_cli.jacky_constants import get_jacky_home as _ghh
 
             log_dir = _ghh() / "logs"
             log_dir.mkdir(parents=True, exist_ok=True)
@@ -5504,7 +5504,7 @@ def _is_service_running() -> bool:
             result = subprocess.run(
                 ["launchctl", "list", get_launchd_label()],
                 capture_output=True,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
                 timeout=10,
             )
             return result.returncode == 0
@@ -6046,7 +6046,7 @@ def gateway_setup():
     )
     print(
         color(
-            "│             ⚕ Gateway Setup                            │", Colors.MAGENTA
+            "│             > Gateway Setup                            │", Colors.MAGENTA
         )
     )
     print(
@@ -6273,7 +6273,7 @@ def gateway_setup():
                     "  To enable systemd: add systemd=true to /etc/wsl.conf, then 'wsl --shutdown'"
                 )
             elif is_termux():
-                from jacky_constants import display_jacky_home as _dhh
+                from jacky_cli.jacky_constants import display_jacky_home as _dhh
 
                 print_info("  Termux does not use systemd/launchd services.")
                 print_info("  Run in foreground: jacky gateway run")

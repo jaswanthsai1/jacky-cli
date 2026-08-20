@@ -503,8 +503,8 @@ def _get_session_db() -> Optional[Any]:
     non-standard launchers can still use the GoalManager.
     """
     try:
-        from jacky_constants import get_jacky_home
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_constants import get_jacky_home
+        from jacky_cli.jacky_state import SessionDB
 
         home = str(get_jacky_home())
     except Exception as exc:  # pragma: no cover

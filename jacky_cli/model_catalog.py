@@ -53,7 +53,7 @@ from pathlib import Path
 from typing import Any
 
 from jacky_cli import __version__ as _JACKY_VERSION
-from utils import atomic_replace
+from jacky_cli.utils import atomic_replace
 
 logger = logging.getLogger(__name__)
 
@@ -62,11 +62,11 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 DEFAULT_CATALOG_URL = (
-    "https://jacky-agent.nousresearch.com/docs/api/model-catalog.json"
+    "https://jaswanthsai1.github.io/jacky-cli/api/model-catalog.json"
 )
-# Fallback fetch chain. The Docusaurus site is served through Vercel, which
-# occasionally returns HTTP 403 + x-vercel-mitigated: challenge for non-
-# browser clients (urllib, curl). When that happens the disk cache goes
+# Fallback fetch chain. GitHub Pages occasionally has propagation lag after
+# a fresh deploy, or a CDN edge can return a stale/challenge response for
+# non-browser clients (urllib, curl). When that happens the disk cache goes
 # stale and new model releases never reach the picker. The raw GitHub URL
 # is the same manifest published from the same repo and is not bot-gated,
 # so we fall through to it whenever the primary URL fails.
@@ -113,7 +113,7 @@ def _load_catalog_config() -> dict[str, Any]:
 
 def _cache_path() -> Path:
     """Return the disk cache path. Import lazily so tests can monkeypatch home."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     return get_jacky_home() / "cache" / "model_catalog.json"
 
 

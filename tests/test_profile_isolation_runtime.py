@@ -19,7 +19,7 @@ from pathlib import Path
 
 import pytest
 
-from jacky_constants import (
+from jacky_cli.jacky_constants import (
     get_jacky_home,
     reset_jacky_home_override,
     set_jacky_home_override,
@@ -194,7 +194,7 @@ class TestThreadContextPropagation:
         import asyncio
 
         _prof_a, prof_b = two_profiles
-        import model_tools
+        import jacky_cli.model_tools as model_tools
 
         async def reads_home():
             return str(get_jacky_home())

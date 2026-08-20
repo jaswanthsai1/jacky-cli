@@ -7,7 +7,7 @@ AIAgent instance. It must stay in sync with run_agent.py::_strip_think_blocks
 for tool-call tag coverage."""
 
 
-from cli import _strip_reasoning_tags
+from jacky_cli.cli import _strip_reasoning_tags
 
 
 class TestToolCallStripping:

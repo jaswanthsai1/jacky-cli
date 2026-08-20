@@ -35,7 +35,7 @@ class TestWriteDenyExactPaths:
         # ``~/.jacky``) must be write-denied. The hermetic test conftest
         # points JACKY_HOME at a tempdir — resolve via get_jacky_home()
         # to match the denylist.
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         path = str(get_jacky_home() / ".env")
         assert _is_write_denied(path) is True
 
@@ -58,7 +58,7 @@ class TestWriteDenyExactPaths:
         monkeypatch.setenv("JACKY_HOME", str(profile_home))
 
         # Sanity check: JACKY_HOME does point to the profile dir, not the root.
-        from jacky_constants import get_jacky_home, get_default_jacky_root
+        from jacky_cli.jacky_constants import get_jacky_home, get_default_jacky_root
         assert get_jacky_home() == profile_home
         assert get_default_jacky_root() == root
 
@@ -121,7 +121,7 @@ class TestWriteAllowed:
         assert _is_write_denied("/home/user/project/main.py") is False
 
     def test_jacky_control_files_requested_writable(self):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         home = get_jacky_home()
         for name in ["auth.json", "config.yaml", "webhook_subscriptions.json"]:

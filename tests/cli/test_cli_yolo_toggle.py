@@ -30,7 +30,7 @@ from unittest.mock import patch
 import pytest
 
 import tools.approval as approval_module
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 
 
 SESSION_KEY = "test-cli-yolo-session"
@@ -73,14 +73,14 @@ class TestToggleYoloIsSessionScoped:
 
         assert approval_module.is_session_yolo_enabled(SESSION_KEY) is False
 
-        with patch("cli._cprint"):
+        with patch("jacky_cli.cli._cprint"):
             JackyCLI._toggle_yolo(stand_in)
 
         assert approval_module.is_session_yolo_enabled(SESSION_KEY) is True
 
     def test_toggle_yolo_disables_session_bypass_on_second_call(self):
         stand_in = _make_stand_in()
-        with patch("cli._cprint"):
+        with patch("jacky_cli.cli._cprint"):
             JackyCLI._toggle_yolo(stand_in)  # ON
             assert approval_module.is_session_yolo_enabled(SESSION_KEY) is True
             JackyCLI._toggle_yolo(stand_in)  # OFF
@@ -91,7 +91,7 @@ class TestToggleYoloIsSessionScoped:
         frozen at import time and would mislead anyone reading the env later
         (subprocesses, status bars wired to the env, the relaunch flag list)."""
         stand_in = _make_stand_in()
-        with patch("cli._cprint"):
+        with patch("jacky_cli.cli._cprint"):
             JackyCLI._toggle_yolo(stand_in)
 
         assert os.environ.get("JACKY_YOLO_MODE") is None
@@ -102,7 +102,7 @@ class TestToggleYoloIsSessionScoped:
         ``default`` session key so the bypass still takes effect for any code
         that resolves against the default key."""
         stand_in = _make_stand_in(session_id="")
-        with patch("cli._cprint"):
+        with patch("jacky_cli.cli._cprint"):
             JackyCLI._toggle_yolo(stand_in)
 
         assert approval_module.is_session_yolo_enabled("default") is True
@@ -114,7 +114,7 @@ class TestToggleYoloIsSessionScoped:
         cli_b = _make_stand_in(session_id="session-yolo-b")
 
         try:
-            with patch("cli._cprint"):
+            with patch("jacky_cli.cli._cprint"):
                 JackyCLI._toggle_yolo(cli_a)
 
             assert approval_module.is_session_yolo_enabled("session-yolo-a") is True
@@ -133,12 +133,12 @@ class TestIsSessionYoloActiveHelper:
 
         assert JackyCLI._is_session_yolo_active(stand_in) is False
 
-        with patch("cli._cprint"):
+        with patch("jacky_cli.cli._cprint"):
             JackyCLI._toggle_yolo(stand_in)
 
         assert JackyCLI._is_session_yolo_active(stand_in) is True
 
-        with patch("cli._cprint"):
+        with patch("jacky_cli.cli._cprint"):
             JackyCLI._toggle_yolo(stand_in)
 
         assert JackyCLI._is_session_yolo_active(stand_in) is False
@@ -162,7 +162,7 @@ class TestToggleYoloEndToEnd:
 
         token = approval_module.set_current_session_key(SESSION_KEY)
         try:
-            with patch("cli._cprint"):
+            with patch("jacky_cli.cli._cprint"):
                 JackyCLI._toggle_yolo(stand_in)  # YOLO ON
 
             result = approval_module.check_all_command_guards(

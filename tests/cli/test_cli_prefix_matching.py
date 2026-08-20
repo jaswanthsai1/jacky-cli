@@ -1,6 +1,6 @@
 """Tests for slash command prefix matching in JackyCLI.process_command."""
 from unittest.mock import MagicMock, patch
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 
 
 def _make_cli():
@@ -72,7 +72,7 @@ class TestSlashCommandPrefixMatching:
     def test_ambiguous_prefix_shows_suggestions(self):
         """/re matches multiple commands — should show ambiguous message."""
         cli_obj = _make_cli()
-        with patch("cli._cprint") as mock_cprint:
+        with patch("jacky_cli.cli._cprint") as mock_cprint:
             cli_obj.process_command("/re")
             printed = " ".join(str(c) for c in mock_cprint.call_args_list)
         assert "Ambiguous" in printed or "Did you mean" in printed
@@ -80,7 +80,7 @@ class TestSlashCommandPrefixMatching:
     def test_unknown_command_shows_error(self):
         """/xyz should show unknown command error."""
         cli_obj = _make_cli()
-        with patch("cli._cprint") as mock_cprint:
+        with patch("jacky_cli.cli._cprint") as mock_cprint:
             cli_obj.process_command("/xyz")
             printed = " ".join(str(c) for c in mock_cprint.call_args_list)
         assert "Unknown command" in printed
@@ -99,7 +99,7 @@ class TestSlashCommandPrefixMatching:
         printed = []
         cli_obj.console.print = lambda *a, **kw: printed.append(str(a))
 
-        import cli as cli_mod
+        import jacky_cli.cli as cli_mod
         with patch.object(cli_mod, '_skill_commands', fake_skill):
             cli_obj.process_command("/test-skill-xy")
 
@@ -113,7 +113,7 @@ class TestSlashCommandPrefixMatching:
         # /help-extra is a fake skill that shares /hel prefix with /help
         fake_skill = {"/help-extra": {"name": "Help Extra", "description": "test"}}
 
-        import cli as cli_mod
+        import jacky_cli.cli as cli_mod
         with patch.object(cli_mod, '_skill_commands', fake_skill),              patch.object(cli_obj, 'show_help') as mock_help:
             cli_obj.process_command("/help")
 
@@ -127,7 +127,7 @@ class TestSlashCommandPrefixMatching:
         cli_obj = _make_cli()
         fake_skill = {"/quint-pipeline": {"name": "Quint Pipeline", "description": "test"}}
 
-        import cli as cli_mod
+        import jacky_cli.cli as cli_mod
         with patch.object(cli_mod, '_skill_commands', fake_skill):
             # /quit is caught by the exact "/quit" branch → process_command returns False
             result = cli_obj.process_command("/qui")
@@ -141,7 +141,7 @@ class TestSlashCommandPrefixMatching:
         """/re matches /reset and /retry (both 6 chars) — no unique shortest, stays ambiguous."""
         cli_obj = _make_cli()
         printed = []
-        import cli as cli_mod
+        import jacky_cli.cli as cli_mod
         with patch.object(cli_mod, '_cprint', side_effect=lambda t: printed.append(t)):
             cli_obj.process_command("/re")
         combined = " ".join(printed)
@@ -151,7 +151,7 @@ class TestSlashCommandPrefixMatching:
         """/help typed with /help-extra skill installed → exact match wins."""
         cli_obj = _make_cli()
         fake_skill = {"/help-extra": {"name": "Help Extra", "description": ""}}
-        import cli as cli_mod
+        import jacky_cli.cli as cli_mod
         with patch.object(cli_mod, '_skill_commands', fake_skill), \
              patch.object(cli_obj, 'show_help') as mock_help:
             cli_obj.process_command("/help")

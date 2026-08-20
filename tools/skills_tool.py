@@ -70,7 +70,7 @@ import json
 import logging
 import time
 
-from jacky_constants import get_jacky_home, display_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home, display_jacky_home
 import os
 import re
 from enum import Enum
@@ -79,7 +79,7 @@ from typing import Dict, Any, List, Optional, Set, Tuple
 
 from tools.registry import registry, tool_error
 from jacky_cli.config import cfg_get
-from utils import env_var_enabled
+from jacky_cli.utils import env_var_enabled
 from agent.skill_utils import (
     EXCLUDED_SKILL_DIRS as _EXCLUDED_SKILL_DIRS,
     is_skill_support_path as _is_skill_support_path,

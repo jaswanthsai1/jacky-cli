@@ -394,15 +394,15 @@ class ResponseStore:
                 db_path = ":memory:"
         self._db_path: Optional[str] = db_path if db_path != ":memory:" else None
         try:
-            self._conn = sqlite3.connect(db_path, check_same_thread=False)
+            self._conn = sqlite3.connect(db_path, check_same_thread=False, timeout=30.0)
         except Exception:
-            self._conn = sqlite3.connect(":memory:", check_same_thread=False)
+            self._conn = sqlite3.connect(":memory:", check_same_thread=False, timeout=30.0)
             self._db_path = None
         # Use shared WAL-fallback helper so response_store.db degrades
         # gracefully on NFS/SMB/FUSE-mounted JACKY_HOME (same filesystem
         # issue addressed for state.db/kanban.db — see
         # jacky_state._WAL_INCOMPAT_MARKERS).
-        from jacky_state import apply_wal_with_fallback
+        from jacky_cli.jacky_state import apply_wal_with_fallback
         apply_wal_with_fallback(self._conn, db_label="response_store.db")
         self._conn.execute(
             """CREATE TABLE IF NOT EXISTS responses (
@@ -1173,7 +1173,7 @@ class APIServerAdapter(BasePlatformAdapter):
         """
         if self._session_db is None:
             try:
-                from jacky_state import SessionDB
+                from jacky_cli.jacky_state import SessionDB
                 self._session_db = SessionDB()
             except Exception as e:
                 logger.debug("SessionDB unavailable for API server: %s", e)
@@ -1286,7 +1286,7 @@ class APIServerAdapter(BasePlatformAdapter):
         this session — its model/provider/api_key/base_url override the
         global defaults for this agent instance only.
         """
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         from gateway.run import (
             _current_max_iterations,
             _resolve_runtime_agent_kwargs,
@@ -1620,7 +1620,7 @@ class APIServerAdapter(BasePlatformAdapter):
                 _get_platform_tools,
                 _toolset_has_keys,
             )
-            from toolsets import resolve_toolset
+            from jacky_cli.toolsets import resolve_toolset
 
             config = load_config()
             enabled_toolsets = _get_platform_tools(

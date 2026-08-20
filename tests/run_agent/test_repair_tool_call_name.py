@@ -39,7 +39,7 @@ def repair():
     reads self.valid_tool_names. A SimpleNamespace stub is enough to
     bind the unbound function.
     """
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     stub = SimpleNamespace(valid_tool_names=VALID)
     return AIAgent._repair_tool_call.__get__(stub, AIAgent)
 

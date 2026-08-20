@@ -21,7 +21,7 @@ from unittest.mock import MagicMock, patch
 
 def _make_session_db(tmp_path):
     """Create a real SessionDB for integration-style tests."""
-    from jacky_state import SessionDB
+    from jacky_cli.jacky_state import SessionDB
     db_path = tmp_path / "test_state.db"
     return SessionDB(db_path=db_path)
 

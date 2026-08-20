@@ -29,8 +29,8 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 from agent.codex_runtime import run_codex_app_server_turn
-from jacky_state import SessionDB
-from run_agent import AIAgent
+from jacky_cli.jacky_state import SessionDB
+from jacky_cli.run_agent import AIAgent
 
 
 def _make_turn():

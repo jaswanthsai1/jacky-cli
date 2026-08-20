@@ -23,14 +23,14 @@ from typing import Optional, Dict, Any
 
 from jacky_cli.nous_subscription import get_nous_subscription_features
 from tools.tool_backend_helpers import managed_nous_tools_enabled
-from utils import base_url_hostname
-from jacky_constants import get_optional_skills_dir
+from jacky_cli.utils import base_url_hostname
+from jacky_cli.jacky_constants import get_optional_skills_dir
 
 logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
-_DOCS_BASE = "https://jacky-agent.nousresearch.com/docs"
+_DOCS_BASE = "https://jaswanthsai1.github.io/jacky-cli"
 
 
 def _model_config_dict(config: Dict[str, Any]) -> Dict[str, Any]:
@@ -181,7 +181,7 @@ def is_interactive_stdin() -> bool:
 def print_noninteractive_setup_guidance(reason: str | None = None) -> None:
     """Print guidance for headless/non-interactive setup flows."""
     print()
-    print(color("⚕ Jacky Setup — Non-interactive mode", Colors.CYAN, Colors.BOLD))
+    print(color(">_ Jacky Setup — Non-interactive mode", Colors.CYAN, Colors.BOLD))
     print()
     if reason:
         print_info(reason)
@@ -606,7 +606,7 @@ def _print_setup_summary(config: dict, jacky_home):
         print_warning(
             "Some tools are disabled. Run 'jacky setup tools' to configure them,"
         )
-        from jacky_constants import display_jacky_home as _dhh
+        from jacky_cli.jacky_constants import display_jacky_home as _dhh
         print_warning(f"or edit {_dhh()}/.env directly to add the missing API keys.")
         print()
 
@@ -630,7 +630,7 @@ def _print_setup_summary(config: dict, jacky_home):
     print()
 
     # Show file locations prominently
-    from jacky_constants import display_jacky_home as _dhh
+    from jacky_cli.jacky_constants import display_jacky_home as _dhh
     print(color(f"📁 All your files are in {_dhh()}/:", Colors.CYAN, Colors.BOLD))
     print()
     print(f"   {color('Settings:', Colors.YELLOW)}  {get_config_path()}")
@@ -1081,7 +1081,7 @@ def _setup_tts_provider(config: dict):
                     save_env_value("XAI_API_KEY", api_key)
                     print_success("xAI TTS API key saved")
                 else:
-                    from jacky_constants import display_jacky_home as _dhh
+                    from jacky_cli.jacky_constants import display_jacky_home as _dhh
                     print_warning(
                         "No xAI API key provided for TTS. Configure XAI_API_KEY "
                         f"via jacky setup model or {_dhh()}/.env to use xAI TTS. "
@@ -1427,7 +1427,7 @@ def setup_terminal_backend(config: dict):
                 ssh_cmd.extend(["-p", port])
             ssh_cmd.append(f"{user}@{host}" if user else host)
             ssh_cmd.append("echo ok")
-            result = subprocess.run(ssh_cmd, capture_output=True, text=True, timeout=10)
+            result = subprocess.run(ssh_cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=10)
             if result.returncode == 0:
                 print_success("  SSH connection successful!")
             else:
@@ -1910,7 +1910,7 @@ def _setup_webhooks():
     print_warning("   internet. For security, run the gateway in a sandboxed environment")
     print_warning("   (Docker, VM, etc.) to limit blast radius from prompt injection.")
     print()
-    print_info("   Full guide: https://jacky-agent.nousresearch.com/docs/user-guide/messaging/webhooks/")
+    print_info("   Full guide: https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/webhooks/")
     print()
 
     port = prompt("Webhook port (default 8644)")
@@ -1931,13 +1931,13 @@ def _setup_webhooks():
     save_env_value("WEBHOOK_ENABLED", "true")
     print()
     print_success("Webhooks enabled! Next steps:")
-    from jacky_constants import display_jacky_home as _dhh
+    from jacky_cli.jacky_constants import display_jacky_home as _dhh
     print_info(f"   1. Define webhook routes in {_dhh()}/config.yaml")
     print_info("   2. Point your service (GitHub, GitLab, etc.) at:")
     print_info("      http://your-server:8644/webhooks/<route-name>")
     print()
     print_info("   Route configuration guide:")
-    print_info("   https://jacky-agent.nousresearch.com/docs/user-guide/messaging/webhooks/#configuring-routes")
+    print_info("   https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/webhooks/#configuring-routes")
     print()
     print_info("   Open config in your editor:  jacky config edit")
     print_info("   Open config in your editor:  jacky config edit")
@@ -2163,7 +2163,7 @@ def setup_gateway(config: dict):
                     print_info("  Or as a boot-time service: jacky gateway install --system")
                 print_info("  Or run in foreground:  jacky gateway")
         else:
-            from jacky_constants import is_container
+            from jacky_cli.jacky_constants import is_container
             if is_container():
                 print_info("Start the gateway to bring your bots online:")
                 print_info("   jacky gateway run          # Run as container main process")
@@ -2636,7 +2636,7 @@ def _run_portal_one_shot(config: dict) -> None:
             Colors.MAGENTA,
         )
     )
-    print(color("│     ⚕ Jacky Setup — Nous Portal (one-shot)             │", Colors.MAGENTA))
+    print(color("│     > Jacky Setup — Nous Portal (one-shot)             │", Colors.MAGENTA))
     print(
         color(
             "└─────────────────────────────────────────────────────────┘",
@@ -2766,7 +2766,7 @@ def run_setup_wizard(args):
                         Colors.MAGENTA,
                     )
                 )
-                print(color(f"│     ⚕ Jacky Setup — {label:<34s} │", Colors.MAGENTA))
+                print(color(f"│     > Jacky Setup — {label:<34s} │", Colors.MAGENTA))
                 print(
                     color(
                         "└─────────────────────────────────────────────────────────┘",
@@ -2802,7 +2802,7 @@ def run_setup_wizard(args):
     )
     print(
         color(
-            "│             ⚕ Jacky Agent Setup Wizard                │", Colors.MAGENTA
+            "│             > Jacky Agent Setup Wizard                │", Colors.MAGENTA
         )
     )
     print(
@@ -2869,17 +2869,13 @@ def run_setup_wizard(args):
         setup_mode = prompt_choice(
             "How would you like to set up Jacky?",
             [
-                "Quick Setup (Nous Portal) — free OAuth login, no API keys, model + tools (recommended)",
-                "Full setup — configure every provider, tool & option yourself (bring your own keys)",
+                "Full setup — configure every provider, tool & option yourself (bring your own keys) (recommended)",
                 "Blank Slate — everything off except the bare minimum; opt in to each capability",
             ],
             0,
         )
 
-        if setup_mode == 0:
-            _run_first_time_quick_setup(config, jacky_home, is_existing)
-            return
-        if setup_mode == 2:
+        if setup_mode == 1:
             _run_blank_slate_setup(config, jacky_home, is_existing)
             return
 
@@ -3022,7 +3018,7 @@ def _blank_slate_minimal_toolsets(config: dict):
     config.setdefault("platform_toolsets", {})["cli"] = sorted(keep)
 
     try:
-        from toolsets import TOOLSETS
+        from jacky_cli.toolsets import TOOLSETS
         from jacky_cli.tools_config import CONFIGURABLE_TOOLSETS, _get_plugin_toolset_keys
 
         all_keys = set()

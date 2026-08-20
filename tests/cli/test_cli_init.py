@@ -47,7 +47,7 @@ def _make_cli(env_overrides=None, config_overrides=None, **kwargs):
     }
     with patch.dict(sys.modules, prompt_toolkit_stubs), \
          patch.dict("os.environ", clean_env, clear=False):
-        import cli as _cli_mod
+        import jacky_cli.cli as _cli_mod
         _cli_mod = importlib.reload(_cli_mod)
         with patch.object(_cli_mod, "get_tool_definitions", return_value=[]), \
              patch.dict(_cli_mod.__dict__, {"CLI_CONFIG": _clean_config}):
@@ -191,7 +191,7 @@ class TestPromptToolkitTerminalCompatibility:
         from unittest.mock import patch as _patch
         from prompt_toolkit.key_binding import KeyBindings
 
-        from cli import _bind_prompt_submit_keys
+        from jacky_cli.cli import _bind_prompt_submit_keys
 
         def submit_handler(event):
             return None
@@ -238,7 +238,7 @@ class TestPromptToolkitTerminalCompatibility:
             assert ("c-j",) not in bindings
 
     def test_cpr_warning_callback_is_disabled(self):
-        from cli import _disable_prompt_toolkit_cpr_warning
+        from jacky_cli.cli import _disable_prompt_toolkit_cpr_warning
 
         renderer = SimpleNamespace(cpr_not_supported_callback=lambda: None)
         app = SimpleNamespace(renderer=renderer)
@@ -256,7 +256,7 @@ class TestPromptToolkitTerminalCompatibility:
         the renderer marks CPR NOT_SUPPORTED and never calls ask_for_cpr().
         """
         import sys as _sys
-        from cli import _build_cpr_disabled_output
+        from jacky_cli.cli import _build_cpr_disabled_output
         from prompt_toolkit.application import Application
         from prompt_toolkit.layout import Layout, Window, FormattedTextControl
         from prompt_toolkit.renderer import CPR_Support
@@ -278,7 +278,7 @@ class TestPromptToolkitTerminalCompatibility:
 
     def test_cpr_disabled_output_returns_none_on_failure(self):
         """A non-fileno stdout must degrade to None (default output fallback)."""
-        from cli import _build_cpr_disabled_output
+        from jacky_cli.cli import _build_cpr_disabled_output
 
         class _NoFileno:
             def fileno(self):
@@ -297,7 +297,7 @@ class TestPromptToolkitTerminalCompatibility:
         _terminal_may_leak_cpr(). Local (no SSH env) -> CPR left enabled;
         SSH session or PROMPT_TOOLKIT_NO_CPR=1 -> CPR suppressed.
         """
-        from cli import _terminal_may_leak_cpr
+        from jacky_cli.cli import _terminal_may_leak_cpr
 
         for var in ("SSH_CONNECTION", "SSH_CLIENT", "SSH_TTY", "PROMPT_TOOLKIT_NO_CPR"):
             monkeypatch.delenv(var, raising=False)
@@ -414,7 +414,7 @@ class TestHistoryDisplay:
 
     def test_resume_updates_jacky_session_id_env_and_context(self, tmp_path):
         from gateway.session_context import _UNSET, _VAR_MAP, get_session_env
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         cli = _make_cli()
         cli.session_id = "current_session"
@@ -571,7 +571,7 @@ class TestRootLevelProviderOverride:
             },
         }))
 
-        import cli
+        import jacky_cli.cli as cli
         monkeypatch.setattr(cli, "_jacky_home", jacky_home)
         cfg = cli.load_cli_config()
 
@@ -594,7 +594,7 @@ class TestRootLevelProviderOverride:
             },
         }))
 
-        import cli
+        import jacky_cli.cli as cli
         monkeypatch.setattr(cli, "_jacky_home", jacky_home)
         cfg = cli.load_cli_config()
 
@@ -616,7 +616,7 @@ class TestRootLevelProviderOverride:
             },
         }))
 
-        import cli
+        import jacky_cli.cli as cli
         monkeypatch.setattr(cli, "_jacky_home", jacky_home)
         cfg = cli.load_cli_config()
 

@@ -21,7 +21,7 @@ JPEG = b"\xff\xd8\xff" + b"\x00" * 64
 
 def _reload(monkeypatch, jacky_home: Path):
     monkeypatch.setenv("JACKY_HOME", str(jacky_home))
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
     importlib.reload(jacky_constants)
     import tools.image_source as isrc
     importlib.reload(isrc)

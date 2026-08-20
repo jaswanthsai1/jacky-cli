@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-import jacky_state
-from jacky_state import AsyncSessionDB
+import jacky_cli.jacky_state as jacky_state
+from jacky_cli.jacky_state import AsyncSessionDB
 
 
 class _SpyDB:

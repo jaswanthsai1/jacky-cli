@@ -1,99 +1,118 @@
 ---
 slug: /
 sidebar_position: 0
-title: "Jacky Agent Documentation"
-description: "The self-improving AI agent built by Nous Research. A built-in learning loop that creates skills from experience, improves them during use, and remembers across sessions."
+title: "Jacky CLI"
+description: "Jacky CLI — a self-improving AI agent CLI with a built-in bug-hunt methodology. Local or cloud models, a real tool-calling loop, one-command install. MIT licensed."
 hide_table_of_contents: true
 displayed_sidebar: docs
 ---
 
-import Link from "@docusaurus/Link";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import {HomepageHero, HomepageFeatures, HomepageHuntLoop} from '@site/src/components/Homepage';
 
-# Jacky Agent
+<HomepageHero />
 
-The self-improving AI agent built by [Nous Research](https://nousresearch.com). The only agent with a built-in learning loop — it creates skills from experience, improves them during use, nudges itself to persist knowledge, and builds a deepening model of who you are across sessions.
+<HomepageFeatures />
 
-<div
-  style={{
-    display: "flex",
-    gap: "1rem",
-    marginBottom: "2rem",
-    flexWrap: "wrap",
-  }}
->
-  <Link
-    to="/getting-started/installation"
-    style={{
-      display: "inline-block",
-      padding: "0.6rem 1.2rem",
-      backgroundColor: "#FFD700",
-      color: "#07070d",
-      borderRadius: "8px",
-      fontWeight: 600,
-      textDecoration: "none",
-    }}
-  >
-    Get Started →
-  </Link>
-  <a
-    href="https://jacky-agent.nousresearch.com/"
-    style={{
-      display: "inline-block",
-      padding: "0.6rem 1.2rem",
-      border: "1px solid rgba(255,215,0,0.2)",
-      borderRadius: "8px",
-      textDecoration: "none",
-    }}
-  >
-    Download Desktop
-  </a>
-  <a
-    href="https://github.com/jaswanthsai1/jacky-cli"
-    style={{
-      display: "inline-block",
-      padding: "0.6rem 1.2rem",
-      border: "1px solid rgba(255,215,0,0.2)",
-      borderRadius: "8px",
-      textDecoration: "none",
-    }}
-  >
-    View on GitHub
-  </a>
-</div>
+<HomepageHuntLoop />
 
-## Install
+## Quick Start {#quick-start}
 
-### Windows or macOS
+Every real install path — pick whichever fits your platform. All of them end
+with the `jacky` command on your `PATH`.
 
-To easily install the command-line and desktop applications, [download the Jacky Desktop installer](https://jacky-agent.nousresearch.com/) from our website and run it.
-
-### Without Jacky Desktop:
-
-For a command-line only install without Jacky Desktop, run:
-
-#### Linux / macOS / WSL2 / Android (Termux)
+<Tabs groupId="install-method">
+<TabItem value="oneline" label="One-line (GitHub)" default>
 
 ```bash
-curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
 ```
 
-#### Windows (native)
+Clones the repo to `~/.jacky-cli`, runs `setup.sh` for you, and leaves
+`jacky` on your `PATH`. Re-running it later updates your install in place.
 
-Run in powershell:
+</TabItem>
+<TabItem value="manual" label="Manual (git clone)">
+
+```bash
+git clone https://github.com/jaswanthsai1/jacky-cli.git
+cd jacky-cli
+./setup.sh
+jacky
+```
+
+`setup.sh` creates a virtual environment, installs Jacky CLI into it, copies
+`.env.example` → `.env`, links the `jacky` command onto your `PATH`, and —
+before declaring success — actually runs `jacky --help` to prove the install
+works.
+
+</TabItem>
+<TabItem value="npm" label="npm">
+
+```bash
+npm install -g jacky-cli-agent
+```
+
+Live on npm today. Jacky checks for updates on startup and tells you when
+`npm update -g jacky-cli-agent` is worth running.
+
+</TabItem>
+<TabItem value="pypi" label="pip (PyPI)">
+
+```bash
+pip install jacky-cli
+```
+
+Live on PyPI today — installs the `jacky` command via `pip`/`pipx` on any OS
+with Python 3.11–3.13.
+
+</TabItem>
+<TabItem value="pip-git" label="pip (via git)">
+
+```bash
+pip install git+https://github.com/jaswanthsai1/jacky-cli.git
+```
+
+Installs straight from the repository, no PyPI release required — useful for
+tracking `main`.
+
+</TabItem>
+<TabItem value="windows" label="Windows (native)">
 
 ```powershell
-iex (irm https://jacky-agent.nousresearch.com/install.ps1)
+git clone https://github.com/jaswanthsai1/jacky-cli.git
+cd jacky-cli
+powershell -ExecutionPolicy ByPass -File scripts\install.ps1
 ```
 
-See the full **[Installation Guide](/getting-started/installation)** for what the installer does, the per-user vs root layout, and Windows-specific notes. For the complete platform support matrix, see **[Platform Support](/getting-started/platform-support)**.
+See the [Windows Native guide](/user-guide/windows-native) for the feature
+matrix, or [Windows + WSL Quickstart](/user-guide/windows-wsl-quickstart) if
+you'd rather run it under WSL2.
+
+</TabItem>
+</Tabs>
+
+See the full **[Installation Guide](/getting-started/installation)** for what
+the installer does, the per-user vs root layout, and platform-specific notes.
+For the complete platform support matrix, see
+**[Platform Support](/getting-started/platform-support)**.
 
 :::tip Fastest path to a working agent
-After installing, run `jacky setup --portal` — one OAuth covers a model plus all four Tool Gateway tools (web search, image generation, TTS, browser). See [Nous Portal](/integrations/nous-portal).
+After installing, run `jacky setup --portal` — one OAuth covers a model plus
+all four Tool Gateway tools (web search, image generation, TTS, browser). See
+[Nous Portal](/integrations/nous-portal).
 :::
 
-## What is Jacky Agent?
+## What is Jacky CLI?
 
-It's not a coding copilot tethered to an IDE or a chatbot wrapper around a single API. It's an **autonomous agent** that gets more capable the longer it runs. It lives wherever you put it — a $5 VPS, a GPU cluster, or serverless infrastructure (Daytona, Modal) that costs nearly nothing when idle. Talk to it from Telegram while it works on a cloud VM you never SSH into yourself. It's not tied to your laptop.
+It's not a coding copilot tethered to an IDE or a chatbot wrapper around a
+single API. It's an **autonomous agent** that gets more capable the longer it
+runs, and it ships with a real offensive-security hunt-loop methodology out
+of the box — not bolted on. It lives wherever you put it — a $5 VPS, a GPU
+cluster, or serverless infrastructure (Daytona, Modal) that costs nearly
+nothing when idle. Talk to it from Telegram while it works on a cloud VM you
+never SSH into yourself. It's not tied to your laptop.
 
 ## Quick Links
 
@@ -102,34 +121,31 @@ It's not a coding copilot tethered to an IDE or a chatbot wrapper around a singl
 | 🚀 **[Installation](/getting-started/installation)**                    | Install in 60 seconds on Linux, macOS, WSL2, native Windows, or Android        |
 | 📖 **[Quickstart Tutorial](/getting-started/quickstart)**               | Your first conversation and key features to try                       |
 | 🗺️ **[Learning Path](/getting-started/learning-path)**                  | Find the right docs for your experience level                         |
+| 🎯 **[Hunt-Loop Methodology](/methodology/)**                           | The bundled bug-bounty / offensive-security doctrine, end to end      |
 | ⚙️ **[Configuration](/user-guide/configuration)**                       | Config file, providers, models, and options                           |
 | 💬 **[Messaging Gateway](/user-guide/messaging)**                       | Set up Telegram, Discord, Slack, WhatsApp, Teams, or more             |
-| 🔧 **[Tools & Toolsets](/user-guide/features/tools)**                   | 60+ built-in tools and how to configure them                          |
+| 🔧 **[Tools & Toolsets](/user-guide/features/tools)**                   | 80+ built-in tools and how to configure them                          |
 | 🧠 **[Memory System](/user-guide/features/memory)**                     | Persistent memory that grows across sessions                          |
 | 📚 **[Skills System](/user-guide/features/skills)**                     | Procedural memory the agent creates and reuses                        |
 | 🔌 **[MCP Integration](/user-guide/features/mcp)**                      | Connect to MCP servers, filter their tools, and extend Jacky safely  |
-| 🧭 **[Use MCP with Jacky](/guides/use-mcp-with-jacky)**               | Practical MCP setup patterns, examples, and tutorials                 |
 | 🎙️ **[Voice Mode](/user-guide/features/voice-mode)**                    | Real-time voice interaction in CLI, Telegram, Discord, and Discord VC |
-| 🗣️ **[Use Voice Mode with Jacky](/guides/use-voice-mode-with-jacky)** | Hands-on setup and usage patterns for Jacky voice workflows          |
-| 🎭 **[Personality & SOUL.md](/user-guide/features/personality)**        | Define Jacky' default voice with a global SOUL.md                    |
-| 📄 **[Context Files](/user-guide/features/context-files)**              | Project context files that shape every conversation                   |
 | 🔒 **[Security](/user-guide/security)**                                 | Command approval, authorization, container isolation                  |
-| 💡 **[Tips & Best Practices](/guides/tips)**                            | Quick wins to get the most out of Jacky                              |
 | 🏗️ **[Architecture](/developer-guide/architecture)**                    | How it works under the hood                                           |
 | ❓ **[FAQ & Troubleshooting](/reference/faq)**                          | Common questions and solutions                                        |
 
 ## Key Features
 
 - **A closed learning loop** — Agent-curated memory with periodic nudges, autonomous skill creation, skill self-improvement during use, FTS5 cross-session recall with LLM summarization, and [Honcho](https://github.com/plastic-labs/honcho) dialectic user modeling
+- **A bundled bug-hunt methodology** — a real offensive-security doctrine (scope → recon → rank → enumerate → test → validate → chain → report) with class playbooks for SSRF, IDOR, XSS, SQLi, SSTI, auth bypass, business logic, race conditions, and more. See [Methodology](/methodology/).
+- **Built-in security toolset** — raw HTTP client for API testing, secret scanner, SCA dependency audit against OSV.dev, CVSS v3.1 + Bugcrowd VRT severity calculator, semgrep-backed static analysis (SQLi/command-injection/SSRF/deserialization patterns), passive CT-log/DNS recon, and structured evidence-bundle reports — all on by default. See [Tools Reference](/reference/tools-reference#security--recon-toolsets).
 - **Runs anywhere, not just your laptop** — 6 terminal backends: local, Docker, SSH, Daytona, Singularity, Modal. Daytona and Modal offer serverless persistence — your environment hibernates when idle, costing nearly nothing
 - **Lives where you do** — CLI, Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Mattermost, Email, SMS, DingTalk, Feishu, WeCom, Weixin, QQ Bot, Yuanbao, BlueBubbles, Home Assistant, Microsoft Teams, Google Chat, and more — 20+ platforms from one gateway
-- **Built by model trainers** — Created by [Nous Research](https://nousresearch.com), the lab behind Jacky, Nomos, and Psyche. Works with [Nous Portal](https://portal.nousresearch.com), [OpenRouter](https://openrouter.ai), OpenAI, or any endpoint
 - **Scheduled automations** — Built-in cron with delivery to any platform
 - **Delegates & parallelizes** — Spawn isolated subagents for parallel workstreams. Programmatic Tool Calling via `execute_code` collapses multi-step pipelines into single inference calls
 - **Open standard skills** — Compatible with [agentskills.io](https://agentskills.io). Skills are portable, shareable, and community-contributed via the Skills Hub
 - **Full web control** — Search, extract, browse, vision, image generation, TTS — one subscription via [Nous Portal](/integrations/nous-portal) bundles all of them
 - **MCP support** — Connect to any MCP server for extended tool capabilities
-- **Research-ready** — Batch processing, trajectory export, RL training with Atropos. Built by [Nous Research](https://nousresearch.com) — the lab behind Jacky, Nomos, and Psyche models
+- **Research-ready** — Batch processing, trajectory export, RL training with Atropos
 
 ## For LLMs and coding agents
 

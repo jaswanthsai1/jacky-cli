@@ -17,14 +17,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
-from jacky_constants import (
+from jacky_cli.jacky_constants import (
     get_jacky_home,
     get_jacky_home_override,
     reset_jacky_home_override,
     set_jacky_home_override,
 )
 from jacky_cli.env_loader import load_jacky_dotenv
-from utils import is_truthy_value
+from jacky_cli.utils import is_truthy_value
 from tools.environments.local import jacky_subprocess_env
 from agent.replay_cleanup import sanitize_replay_history
 from tui_gateway import git_probe
@@ -972,7 +972,7 @@ _start_idle_reaper()
 def _get_db():
     global _db, _db_error
     if _db is None:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         try:
             _db = SessionDB()
@@ -1348,7 +1348,7 @@ def _start_agent_build(sid: str, session: dict) -> None:
             if profile_home:
                 home_token = set_jacky_home_override(profile_home)
                 try:
-                    from jacky_state import SessionDB
+                    from jacky_cli.jacky_state import SessionDB
 
                     session_db = SessionDB(db_path=Path(profile_home) / "state.db")
                 except Exception:
@@ -1681,7 +1681,7 @@ def _ensure_session_db_row(session: dict) -> None:
     # unified list mis-tags it, and resume 404s ("session not found").
     profile_home = session.get("profile_home")
     if profile_home:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         try:
             db = SessionDB(db_path=Path(profile_home) / "state.db")
@@ -1807,7 +1807,7 @@ def _session_db(session: dict):
     db, close_db = None, False
     profile_home = session.get("profile_home")
     if profile_home:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         try:
             db, close_db = SessionDB(db_path=Path(profile_home) / "state.db"), True
@@ -2529,7 +2529,7 @@ def _display_mouse_tracking(display: dict) -> str:
 
 
 def _load_reasoning_config() -> dict | None:
-    from jacky_constants import parse_reasoning_effort
+    from jacky_cli.jacky_constants import parse_reasoning_effort
 
     # Pass the raw value through — ``or ""`` would coerce a YAML boolean
     # False (``reasoning_effort: false``/``off``/``no``) to "", silently
@@ -2631,7 +2631,7 @@ def _load_enabled_toolsets() -> list[str] | None:
             pass
 
     try:
-        from toolsets import validate_toolset
+        from jacky_cli.toolsets import validate_toolset
     except Exception:
         validate_toolset = None
 
@@ -2794,7 +2794,7 @@ def _persist_model_switch(result) -> None:
     # rewriting the whole `model:` block. A full-block rewrite via save_config()
     # destroys sibling keys the user set under `model:` — `model_slots`,
     # `model_fallback`, etc. — when switching models from the TUI (#48305).
-    from cli import save_config_value
+    from jacky_cli.cli import save_config_value
 
     save_config_value("model.default", result.new_model)
     save_config_value("model.provider", result.target_provider)
@@ -3396,7 +3396,7 @@ def _session_info(agent, session: dict | None = None) -> dict:
     except Exception:
         pass
     try:
-        from model_tools import get_toolset_for_tool
+        from jacky_cli.model_tools import get_toolset_for_tool
 
         for t in getattr(agent, "tools", []) or []:
             name = t["function"]["name"]
@@ -4012,7 +4012,7 @@ def _render_personality_prompt(value) -> str:
 
 def _available_personalities(cfg: dict | None = None) -> dict:
     try:
-        from cli import load_cli_config
+        from jacky_cli.cli import load_cli_config
 
         return (load_cli_config().get("agent") or {}).get("personalities", {}) or {}
     except Exception:
@@ -4482,7 +4482,7 @@ def _make_agent(
     service_tier_override: str | None = None,
     platform_override: str | None = None,
 ):
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
 
     # MCP tool discovery runs in a background daemon thread at startup so a
     # dead server can't freeze the shell.  The agent snapshots its tool list
@@ -5203,7 +5203,7 @@ def _(rid, params: dict) -> dict:
     create_reasoning_override = None
     if effort := str(params.get("reasoning_effort") or "").strip():
         try:
-            from jacky_constants import parse_reasoning_effort
+            from jacky_cli.jacky_constants import parse_reasoning_effort
 
             create_reasoning_override = parse_reasoning_effort(effort)
         except Exception:
@@ -5557,7 +5557,7 @@ def _(rid, params: dict) -> dict:
     # In a profile scope, the agent OWNS a long-lived db handle bound to that
     # profile (do NOT auto-close it here). Otherwise reuse the shared launch db.
     if profile_home is not None:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB(db_path=profile_home / "state.db")
     else:
@@ -7141,7 +7141,7 @@ def _(rid, params: dict) -> dict:
 
 def _pet_gen_root():
     """Profile-scoped staging dir for in-progress generation drafts."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     root = get_jacky_home() / "cache" / "pet-gen"
     root.mkdir(parents=True, exist_ok=True)
@@ -7762,7 +7762,7 @@ def _(rid, params: dict) -> dict:
     if err:
         return err
 
-    from jacky_constants import display_jacky_home
+    from jacky_cli.jacky_constants import display_jacky_home
 
     key = session.get("session_key") or params.get("session_id") or ""
     agent = session.get("agent")
@@ -8210,7 +8210,7 @@ def _(rid, params: dict) -> dict:
 
 
 def _spawn_trees_root():
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     root = get_jacky_home() / "spawn-trees"
     root.mkdir(parents=True, exist_ok=True)
@@ -9436,7 +9436,7 @@ def _(rid, params: dict) -> dict:
     if not raw:
         return _err(rid, 4015, "path required")
     try:
-        from cli import (
+        from jacky_cli.cli import (
             _IMAGE_EXTENSIONS,
             _detect_file_drop,
             _resolve_attachment_path,
@@ -9531,7 +9531,7 @@ def _sniff_image_ext(img_bytes: bytes, filename: str = "") -> str:
 
 def _allowed_image_extensions() -> frozenset[str]:
     try:
-        from cli import _IMAGE_EXTENSIONS
+        from jacky_cli.cli import _IMAGE_EXTENSIONS
 
         return frozenset(_IMAGE_EXTENSIONS)
     except Exception:
@@ -9666,7 +9666,7 @@ def _(rid, params: dict) -> dict:
             display_name = str(params.get("filename", "") or "uploaded.pdf")
         else:
             try:
-                from cli import _resolve_attachment_path
+                from jacky_cli.cli import _resolve_attachment_path
 
                 resolved = _resolve_attachment_path(raw_path)
             except Exception:
@@ -9812,7 +9812,7 @@ def _resolve_gateway_attachment_path(raw: str) -> Path | None:
     if not raw:
         return None
     try:
-        from cli import _detect_file_drop, _resolve_attachment_path, _split_path_input
+        from jacky_cli.cli import _detect_file_drop, _resolve_attachment_path, _split_path_input
     except Exception:
         return None
 
@@ -9960,7 +9960,7 @@ def _(rid, params: dict) -> dict:
     if err:
         return err
     try:
-        from cli import _detect_file_drop
+        from jacky_cli.cli import _detect_file_drop
 
         raw = str(params.get("text", "") or "")
         dropped = _detect_file_drop(raw)
@@ -10014,7 +10014,7 @@ def _(rid, params: dict) -> dict:
     def run():
         session_tokens = _set_session_context(task_id, cwd=_session_cwd(session))
         try:
-            from run_agent import AIAgent
+            from jacky_cli.run_agent import AIAgent
 
             result = AIAgent(
                 **_background_agent_kwargs(session["agent"], task_id)
@@ -10111,7 +10111,7 @@ def _(rid, params: dict) -> dict:
         # invalid client path, which would silently fall back to the launch dir.
         session_tokens = _set_session_context(task_id, cwd=(preview_cwd or _session_cwd(session)))
         try:
-            from run_agent import AIAgent
+            from jacky_cli.run_agent import AIAgent
             from tools.terminal_tool import register_task_env_overrides
 
             if preview_cwd:
@@ -10462,7 +10462,7 @@ def _(rid, params: dict) -> dict:
 
     if key == "reasoning":
         try:
-            from jacky_constants import parse_reasoning_effort
+            from jacky_cli.jacky_constants import parse_reasoning_effort
 
             arg = str(value or "").strip().lower()
             if arg in {"show", "on"}:
@@ -10911,7 +10911,7 @@ def _is_repo_junk(root: str) -> bool:
     if not root:
         return True
 
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     real = os.path.realpath(root)
     home = os.path.realpath(os.path.expanduser("~"))
@@ -11200,7 +11200,7 @@ def _(rid, params: dict) -> dict:
         except Exception as e:
             return _err(rid, 5013, str(e))
     if key == "profile":
-        from jacky_constants import display_jacky_home
+        from jacky_cli.jacky_constants import display_jacky_home
 
         return _ok(rid, {"home": str(_jacky_home), "display": display_jacky_home()})
     if key == "project":
@@ -11555,7 +11555,7 @@ def _(rid, params: dict) -> dict:
         # Honor `always=true` by persisting the opt-out to config.
         if bool(params.get("always", False)):
             try:
-                from cli import save_config_value as _save_cfg
+                from jacky_cli.cli import save_config_value as _save_cfg
 
                 _save_cfg("approvals.mcp_reload_confirm", False)
             except Exception as _exc:
@@ -13850,7 +13850,7 @@ def _(rid, params: dict) -> dict:
 @method("tools.list")
 def _(rid, params: dict) -> dict:
     try:
-        from toolsets import get_all_toolsets, get_toolset_info
+        from jacky_cli.toolsets import get_all_toolsets, get_toolset_info
 
         session = _sessions.get(params.get("session_id", ""))
         enabled = (
@@ -13881,7 +13881,7 @@ def _(rid, params: dict) -> dict:
 @method("tools.show")
 def _(rid, params: dict) -> dict:
     try:
-        from model_tools import get_toolset_for_tool, get_tool_definitions
+        from jacky_cli.model_tools import get_toolset_for_tool, get_tool_definitions
 
         session = _sessions.get(params.get("session_id", ""))
         enabled = (
@@ -13990,7 +13990,7 @@ def _(rid, params: dict) -> dict:
 @method("toolsets.list")
 def _(rid, params: dict) -> dict:
     try:
-        from toolsets import get_all_toolsets, get_toolset_info
+        from jacky_cli.toolsets import get_all_toolsets, get_toolset_info
 
         session = _sessions.get(params.get("session_id", ""))
         enabled = (

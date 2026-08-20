@@ -235,10 +235,10 @@ function normalizeAnsiForeground(color: string): string {
 
 const BRAND: ThemeBrand = {
   name: 'Jacky Agent',
-  icon: '⚕',
+  icon: '>_',
   prompt: '❯',
   welcome: 'Type your message or /help for commands.',
-  goodbye: 'Goodbye! ⚕',
+  goodbye: 'Goodbye! >_',
   tool: '┊',
   helpHeader: '(^_^)? Commands'
 }
@@ -253,40 +253,38 @@ const cleanPromptSymbol = (s: string | undefined, fallback: string) => {
 
 export const DARK_THEME: Theme = {
   color: {
-    primary: '#FFD700',
-    accent: '#FFBF00',
-    border: '#CD7F32',
-    text: '#FFF8DC',
-    muted: '#CC9B1F',
-    // Bumped from the old `#B8860B` darkgoldenrod (~53% luminance) which
-    // read as barely-visible on dark terminals for long body text.  The
-    // new value sits ~60% luminance — readable without losing the "muted /
-    // secondary" semantic.  Field labels still use `label` (65%) which
-    // stays brighter so hierarchy holds.
+    primary: '#3B82F6',
+    accent: '#60A5FA',
+    border: '#2563EB',
+    text: '#E2E8F0',
+    muted: '#7C93B8',
+    // Muted sits at ~60% luminance — readable without losing the "muted /
+    // secondary" semantic. Field labels still use `label` (brighter, and
+    // now the red half of the blue/red duotone) so hierarchy holds.
     completionBg: '#1a1a2e',
     completionCurrentBg: '#333355',
     completionMetaBg: '#1a1a2e',
     completionMetaCurrentBg: '#333355',
 
-    label: '#DAA520',
+    label: '#F87171',
     ok: '#4caf50',
-    error: '#ef5350',
-    warn: '#ffa726',
+    error: '#EF4444',
+    warn: '#F87171',
 
-    prompt: '#FFF8DC',
+    prompt: '#E2E8F0',
     // sessionLabel/sessionBorder intentionally track the `dim` value — they
     // are "same role, same colour" by design.  fromSkin's banner_dim fallback
     // relies on this pairing (#11300).
-    sessionLabel: '#CC9B1F',
-    sessionBorder: '#CC9B1F',
+    sessionLabel: '#7C93B8',
+    sessionBorder: '#7C93B8',
 
-    statusBg: '#1a1a2e',
+    statusBg: '#0F172A',
     statusFg: '#C0C0C0',
     statusGood: '#8FBC8F',
-    statusWarn: '#FFD700',
-    statusBad: '#FF8C00',
-    statusCritical: '#FF6B6B',
-    selectionBg: '#3a3a55',
+    statusWarn: '#F87171',
+    statusBad: '#EF4444',
+    statusCritical: '#DC2626',
+    selectionBg: '#1E3A5F',
 
     diffAdded: 'rgb(220,255,220)',
     diffRemoved: 'rgb(255,220,220)',
@@ -306,31 +304,31 @@ export const DARK_THEME: Theme = {
 // cleanly (#11300).
 export const LIGHT_THEME: Theme = {
   color: {
-    primary: '#8B6914',
-    accent: '#A0651C',
-    border: '#7A4F1F',
-    text: '#3D2F13',
-    muted: '#7A5A0F',
+    primary: '#1D4ED8',
+    accent: '#2563EB',
+    border: '#1E40AF',
+    text: '#0F172A',
+    muted: '#475569',
     completionBg: '#F5F5F5',
-    completionCurrentBg: mix('#F5F5F5', '#A0651C', 0.25),
+    completionCurrentBg: mix('#F5F5F5', '#2563EB', 0.25),
     completionMetaBg: '#F5F5F5',
-    completionMetaCurrentBg: mix('#F5F5F5', '#A0651C', 0.25),
+    completionMetaCurrentBg: mix('#F5F5F5', '#2563EB', 0.25),
 
-    label: '#7A5A0F',
+    label: '#B91C1C',
     ok: '#2E7D32',
-    error: '#C62828',
-    warn: '#E65100',
+    error: '#B91C1C',
+    warn: '#B91C1C',
 
-    prompt: '#2B2014',
-    sessionLabel: '#7A5A0F',
-    sessionBorder: '#7A5A0F',
+    prompt: '#0F172A',
+    sessionLabel: '#475569',
+    sessionBorder: '#475569',
 
     statusBg: '#F5F5F5',
     statusFg: '#333333',
     statusGood: '#2E7D32',
-    statusWarn: '#8B6914',
-    statusBad: '#D84315',
-    statusCritical: '#B71C1C',
+    statusWarn: '#B91C1C',
+    statusBad: '#B91C1C',
+    statusCritical: '#7F1D1D',
     selectionBg: '#D4E4F7',
 
     diffAdded: 'rgb(200,240,200)',

@@ -49,21 +49,21 @@ def test_setup_uses_temporary_outputs_when_source_tree_is_read_only(
     build_cmd.initialize_options()
     build_cmd.finalize_options()
     assert not _is_under(build_cmd.build_base, REPO_ROOT)
-    assert Path(build_cmd.build_base).name.startswith("jacky-agent-build")
+    assert Path(build_cmd.build_base).name.startswith("jacky-cli-build")
 
     source_relative_build = cmdclass["build"](Distribution())
     source_relative_build.initialize_options()
     source_relative_build.build_base = "nested/build"
     source_relative_build.finalize_options()
     assert not _is_under(source_relative_build.build_base, REPO_ROOT)
-    assert Path(source_relative_build.build_base).name.startswith("jacky-agent-build")
+    assert Path(source_relative_build.build_base).name.startswith("jacky-cli-build")
 
     egg_info_cmd = cmdclass["egg_info"](Distribution())
     egg_info_cmd.initialize_options()
     egg_info_cmd.finalize_options()
     assert egg_info_cmd.egg_base is not None
     assert not _is_under(egg_info_cmd.egg_base, REPO_ROOT)
-    assert Path(egg_info_cmd.egg_base).name.startswith("jacky-agent-egg-info")
+    assert Path(egg_info_cmd.egg_base).name.startswith("jacky-cli-egg-info")
 
     source_relative_egg_info = cmdclass["egg_info"](Distribution())
     source_relative_egg_info.initialize_options()
@@ -72,5 +72,5 @@ def test_setup_uses_temporary_outputs_when_source_tree_is_read_only(
     assert source_relative_egg_info.egg_base is not None
     assert not _is_under(source_relative_egg_info.egg_base, REPO_ROOT)
     assert Path(source_relative_egg_info.egg_base).name.startswith(
-        "jacky-agent-egg-info"
+        "jacky-cli-egg-info"
     )

@@ -136,7 +136,7 @@ pixel_art("in.png", "out.png", preset="snes", palette="PICO_8", block=6)
 
 ```python
 import sys
-sys.path.insert(0, "/home/teknium/.jacky/skills/creative/pixel-art/scripts")
+sys.path.insert(0, "/home/user/.jacky/skills/creative/pixel-art/scripts")
 from pixel_art import pixel_art
 from pixel_art_video import pixel_art_video
 
@@ -158,7 +158,7 @@ pixel_art_video(
 ### CLI
 
 ```bash
-cd /home/teknium/.jacky/skills/creative/pixel-art/scripts
+cd /home/user/.jacky/skills/creative/pixel-art/scripts
 
 python pixel_art.py in.jpg out.png --preset gameboy
 python pixel_art.py in.jpg out.png --preset snes --palette PICO_8 --block 6

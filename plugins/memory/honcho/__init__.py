@@ -275,7 +275,7 @@ class HonchoMemoryProvider(MemoryProvider):
             except Exception:
                 pass
         existing.update(values)
-        from utils import atomic_json_write
+        from jacky_cli.utils import atomic_json_write
         atomic_json_write(config_path, existing, mode=0o600)
 
     def get_config_schema(self):
@@ -459,7 +459,7 @@ class HonchoMemoryProvider(MemoryProvider):
         # of performing a one-time migration.
         try:
             if not session.messages and cfg.session_strategy != "per-session":
-                from jacky_constants import get_jacky_home
+                from jacky_cli.jacky_constants import get_jacky_home
                 mem_dir = str(get_jacky_home() / "memories")
                 self._manager.migrate_memory_files(self._session_key, mem_dir)
                 logger.debug("Honcho memory file migration attempted for new session: %s", self._session_key)

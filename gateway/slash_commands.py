@@ -40,7 +40,7 @@ from gateway.session import (
     is_shared_multi_user_session,
 )
 from jacky_cli.config import atomic_config_write, cfg_get, clear_model_endpoint_credentials
-from utils import (
+from jacky_cli.utils import (
     atomic_json_write,
     base_url_host_matches,
     is_truthy_value,
@@ -273,7 +273,7 @@ class GatewaySlashCommandsMixin:
         _title_arg = event.get_command_args().strip()
         _title_note = ""
         if _title_arg and self._session_db and new_entry:
-            from jacky_state import SessionDB
+            from jacky_cli.jacky_state import SessionDB
             try:
                 sanitized = SessionDB.sanitize_title(_title_arg)
             except ValueError as e:
@@ -331,7 +331,7 @@ class GatewaySlashCommandsMixin:
 
     async def _handle_profile_command(self, event: MessageEvent) -> str:
         """Handle /profile — show active profile name and home directory."""
-        from jacky_constants import display_jacky_home
+        from jacky_cli.jacky_constants import display_jacky_home
         from jacky_cli.profiles import get_active_profile_name
 
         display = display_jacky_home()
@@ -2076,7 +2076,7 @@ class GatewaySlashCommandsMixin:
     async def _handle_personality_command(self, event: MessageEvent) -> str:
         """Handle /personality command - list or set a personality."""
         from gateway.run import _jacky_home, _load_gateway_config
-        from jacky_constants import display_jacky_home
+        from jacky_cli.jacky_constants import display_jacky_home
 
         args = event.get_command_args().strip().lower()
         config_path = _jacky_home / 'config.yaml'
@@ -3142,7 +3142,7 @@ class GatewaySlashCommandsMixin:
             return "\n".join(lines)
 
         try:
-            from run_agent import AIAgent
+            from jacky_cli.run_agent import AIAgent
             from agent.manual_compression_feedback import summarize_manual_compression
             from agent.model_metadata import estimate_request_tokens_rough
 
@@ -3371,7 +3371,7 @@ class GatewaySlashCommandsMixin:
         if source.platform != Platform.TELEGRAM or source.chat_type != "dm":
             return t("gateway.topic.not_telegram_dm")
         if not self._session_db:
-            from jacky_state import format_session_db_unavailable
+            from jacky_cli.jacky_state import format_session_db_unavailable
             return format_session_db_unavailable(prefix=t("gateway.shared.session_db_unavailable_prefix"))
 
         # Authorization: /topic activates multi-session mode and mutates
@@ -3461,7 +3461,7 @@ class GatewaySlashCommandsMixin:
         session_id = session_entry.session_id
 
         if not self._session_db:
-            from jacky_state import format_session_db_unavailable
+            from jacky_cli.jacky_state import format_session_db_unavailable
             return format_session_db_unavailable(prefix=t("gateway.shared.session_db_unavailable_prefix"))
 
         # Ensure session exists in SQLite DB (it may only exist in session_store
@@ -3488,7 +3488,7 @@ class GatewaySlashCommandsMixin:
         if title_arg:
             # Sanitize the title before setting
             try:
-                from jacky_state import SessionDB
+                from jacky_cli.jacky_state import SessionDB
                 sanitized = SessionDB.sanitize_title(title_arg)
             except ValueError as e:
                 return t("gateway.shared.warn_passthrough", error=e)
@@ -3529,7 +3529,7 @@ class GatewaySlashCommandsMixin:
     async def _handle_resume_command(self, event: MessageEvent) -> str:
         """Handle /resume command — list or switch to a previous session."""
         if not self._session_db:
-            from jacky_state import format_session_db_unavailable
+            from jacky_cli.jacky_state import format_session_db_unavailable
             return format_session_db_unavailable(prefix=t("gateway.shared.session_db_unavailable_prefix"))
 
         source = event.source
@@ -3705,7 +3705,7 @@ class GatewaySlashCommandsMixin:
     async def _handle_sessions_command(self, event: MessageEvent) -> str:
         """Handle /sessions — list previous sessions for gateway chats."""
         if not self._session_db:
-            from jacky_state import format_session_db_unavailable
+            from jacky_cli.jacky_state import format_session_db_unavailable
             return format_session_db_unavailable(prefix=t("gateway.shared.session_db_unavailable_prefix"))
 
         from jacky_cli.session_listing import (
@@ -3778,7 +3778,7 @@ class GatewaySlashCommandsMixin:
         import uuid as _uuid
 
         if not self._session_db:
-            from jacky_state import format_session_db_unavailable
+            from jacky_cli.jacky_state import format_session_db_unavailable
             return format_session_db_unavailable(prefix=t("gateway.shared.session_db_unavailable_prefix"))
 
         source = event.source
@@ -4121,7 +4121,7 @@ class GatewaySlashCommandsMixin:
                     i += 1
 
         try:
-            from jacky_state import SessionDB
+            from jacky_cli.jacky_state import SessionDB
             from agent.insights import InsightsEngine
 
             loop = asyncio.get_running_loop()
@@ -4179,7 +4179,7 @@ class GatewaySlashCommandsMixin:
             if choice == "always":
                 # Persist the opt-out and run the reload.
                 try:
-                    from cli import save_config_value
+                    from jacky_cli.cli import save_config_value
                     save_config_value("approvals.mcp_reload_confirm", False)
                     logger.info(
                         "User opted out of /reload-mcp confirmation (session=%s)",

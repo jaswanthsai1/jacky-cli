@@ -13,7 +13,7 @@ from jacky_cli.nous_account import (
     get_nous_portal_account_info,
 )
 from tools.managed_tool_gateway import is_managed_tool_gateway_ready
-from utils import is_truthy_value
+from jacky_cli.utils import is_truthy_value
 from tools.tool_backend_helpers import (
     fal_key_is_configured,
     has_direct_modal_credentials,
@@ -120,7 +120,7 @@ def _model_config_dict(config: Dict[str, object]) -> Dict[str, object]:
 
 
 def _toolset_enabled(config: Dict[str, object], toolset_key: str) -> bool:
-    from toolsets import resolve_toolset
+    from jacky_cli.toolsets import resolve_toolset
 
     platform_toolsets = config.get("platform_toolsets")
     if not isinstance(platform_toolsets, dict) or not platform_toolsets:
@@ -159,7 +159,7 @@ def _toolset_enabled(config: Dict[str, object], toolset_key: str) -> bool:
 def _has_agent_browser() -> bool:
     import shutil
 
-    from jacky_constants import agent_browser_runnable
+    from jacky_cli.jacky_constants import agent_browser_runnable
 
     # Validate the resolved binary actually runs — a dangling global symlink
     # (issue #48521) is reported by ``which`` but fails at exec. Fall through to

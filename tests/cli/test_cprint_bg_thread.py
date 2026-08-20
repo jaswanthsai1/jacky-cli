@@ -18,7 +18,7 @@ from types import SimpleNamespace
 
 import pytest
 
-import cli
+import jacky_cli.cli as cli
 
 
 @pytest.fixture(autouse=True)

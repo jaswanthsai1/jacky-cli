@@ -32,7 +32,7 @@ from typing import Any, Dict, List, Optional
 
 import yaml
 
-from jacky_constants import get_jacky_home, get_optional_mcps_dir
+from jacky_cli.jacky_constants import get_jacky_home, get_optional_mcps_dir
 from jacky_cli.colors import Colors, color
 from jacky_cli.config import (
     load_config,

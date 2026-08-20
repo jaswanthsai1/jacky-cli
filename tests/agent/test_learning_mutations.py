@@ -9,7 +9,7 @@ from __future__ import annotations
 import pytest
 
 from agent import learning_mutations as lm
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 _SKILL = """---
 name: my-skill

@@ -73,7 +73,7 @@ def test_fire_cron_job_scopes_store_and_runtime_home_together(
     from cron import scheduler
     from jacky_cli import web_server
 
-    from jacky_constants import (
+    from jacky_cli.jacky_constants import (
         reset_jacky_home_override,
         set_jacky_home_override,
     )

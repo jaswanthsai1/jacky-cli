@@ -15,7 +15,7 @@ from unittest.mock import patch
 import pytest
 
 from agent.credits_tracker import AgentNotice
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 # ── A. Emitter behaviour ─────────────────────────────────────────────────────

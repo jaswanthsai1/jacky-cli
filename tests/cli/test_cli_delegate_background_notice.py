@@ -8,8 +8,8 @@ dispatch so the idle prompt doesn't read as "nothing happened".
 
 import json
 
-import cli
-from cli import JackyCLI
+import jacky_cli.cli as cli
+from jacky_cli.cli import JackyCLI
 
 
 def _make_cli():

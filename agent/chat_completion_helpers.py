@@ -26,7 +26,7 @@ from types import SimpleNamespace
 from typing import Any, Dict, Optional
 
 from jacky_cli.timeouts import get_provider_request_timeout, get_provider_stale_timeout
-from jacky_constants import PARTIAL_STREAM_STUB_ID, FINISH_REASON_LENGTH
+from jacky_cli.jacky_constants import PARTIAL_STREAM_STUB_ID, FINISH_REASON_LENGTH
 from agent.error_classifier import FailoverReason
 from agent.gemini_native_adapter import is_native_gemini_base_url
 from agent.model_metadata import is_local_endpoint
@@ -35,7 +35,7 @@ from agent.message_sanitization import (
     _repair_tool_call_arguments,
 )
 from tools.terminal_tool import is_persistent_env
-from utils import base_url_host_matches, base_url_hostname, env_float, env_int
+from jacky_cli.utils import base_url_host_matches, base_url_hostname, env_float, env_int
 
 logger = logging.getLogger(__name__)
 _OPENROUTER_PROVIDER_SORT_VALUES = {"throughput", "latency", "price"}
@@ -56,10 +56,10 @@ def _ra():
     """Lazy ``run_agent`` reference.
 
     Used to honor test patches like
-    ``patch("run_agent.cleanup_vm")`` / ``patch("run_agent.cleanup_browser")``
+    ``patch("jacky_cli.run_agent.cleanup_vm")`` / ``patch("jacky_cli.run_agent.cleanup_browser")``
     that target symbols imported into ``run_agent``'s namespace.
     """
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     return run_agent
 
 

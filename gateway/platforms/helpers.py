@@ -13,7 +13,7 @@ import time
 from pathlib import Path
 from typing import TYPE_CHECKING, Dict
 
-from utils import atomic_json_write
+from jacky_cli.utils import atomic_json_write
 
 if TYPE_CHECKING:
     from gateway.platforms.base import MessageEvent
@@ -227,7 +227,7 @@ class ThreadParticipationTracker:
         }
 
     def _state_path(self) -> Path:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         return get_jacky_home() / f"{self._platform}_threads.json"
 
     def _load(self) -> list[str]:

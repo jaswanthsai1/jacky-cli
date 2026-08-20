@@ -154,7 +154,7 @@ def _get_mcp_stderr_log() -> Any:
         if _mcp_stderr_log_fh is not None:
             return _mcp_stderr_log_fh
         try:
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             log_dir = get_jacky_home() / "logs"
             log_dir.mkdir(parents=True, exist_ok=True)
             log_path = log_dir / "mcp-stderr.log"
@@ -3589,7 +3589,7 @@ def _wrap_with_home_override(coro: "Coroutine") -> "Coroutine":
     carrying different scopes don't interfere.
     """
     try:
-        from jacky_constants import (
+        from jacky_cli.jacky_constants import (
             get_jacky_home_override,
             reset_jacky_home_override,
             set_jacky_home_override,
@@ -3755,7 +3755,7 @@ def _load_mcp_config() -> Dict[str, dict]:
     """
     try:
         from jacky_cli.config import load_config
-        from utils import env_var_enabled as _env_enabled
+        from jacky_cli.utils import env_var_enabled as _env_enabled
 
         if _env_enabled("JACKY_SAFE_MODE"):
             return {}
@@ -5269,7 +5269,7 @@ def refresh_agent_mcp_tools(
     explicit user consent; the late-binding and between-turns paths only rebuild
     at a turn boundary, before that turn's ``tools=`` prefix is assembled).
     """
-    from model_tools import get_tool_definitions
+    from jacky_cli.model_tools import get_tool_definitions
     from tools.registry import registry
 
     # Explicit reloads (/reload-mcp) pass freshly-resolved toolsets so a server

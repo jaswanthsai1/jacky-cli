@@ -302,7 +302,7 @@ class TestBedrockPreserveDotsFlag:
     def test_bedrock_provider_preserves_dots(self):
         from types import SimpleNamespace
         agent = SimpleNamespace(provider="bedrock", base_url="")
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is True
 
     def test_bedrock_runtime_us_east_1_url_preserves_dots(self):
@@ -314,7 +314,7 @@ class TestBedrockPreserveDotsFlag:
             provider="custom",
             base_url="https://bedrock-runtime.us-east-1.amazonaws.com",
         )
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is True
 
     def test_bedrock_runtime_ap_northeast_2_url_preserves_dots(self):
@@ -325,7 +325,7 @@ class TestBedrockPreserveDotsFlag:
             provider="custom",
             base_url="https://bedrock-runtime.ap-northeast-2.amazonaws.com",
         )
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is True
 
     def test_non_bedrock_aws_url_does_not_preserve_dots(self):
@@ -338,7 +338,7 @@ class TestBedrockPreserveDotsFlag:
             provider="custom",
             base_url="https://s3.us-east-1.amazonaws.com",
         )
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is False
 
     def test_anthropic_native_still_does_not_preserve_dots(self):
@@ -347,7 +347,7 @@ class TestBedrockPreserveDotsFlag:
         becomes ``claude-sonnet-4-6`` for the Anthropic API."""
         from types import SimpleNamespace
         agent = SimpleNamespace(provider="anthropic", base_url="https://api.anthropic.com")
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is False
 
 

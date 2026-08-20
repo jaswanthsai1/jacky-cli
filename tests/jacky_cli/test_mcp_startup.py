@@ -11,7 +11,7 @@ import types
 
 import pytest
 
-import cli as cli_mod
+import jacky_cli.cli as cli_mod
 from jacky_cli import main as main_mod
 from jacky_cli import mcp_startup
 
@@ -185,7 +185,7 @@ def test_cli_get_tool_definitions_briefly_waits_for_fast_mcp_thread(monkeypatch)
 
     monkeypatch.setitem(
         sys.modules,
-        "model_tools",
+        "jacky_cli.model_tools",
         types.SimpleNamespace(get_tool_definitions=lambda *_a, **_k: ["ok"]),
     )
 

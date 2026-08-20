@@ -45,7 +45,7 @@ def jacky_home(tmp_path, monkeypatch):
     home.mkdir()
     monkeypatch.setenv("JACKY_HOME", str(home))
     # Some modules cache get_jacky_home; clear if needed.
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
     if hasattr(jacky_constants, "_JACKY_HOME_CACHE"):
         jacky_constants._JACKY_HOME_CACHE = None  # type: ignore[attr-defined]
     return home

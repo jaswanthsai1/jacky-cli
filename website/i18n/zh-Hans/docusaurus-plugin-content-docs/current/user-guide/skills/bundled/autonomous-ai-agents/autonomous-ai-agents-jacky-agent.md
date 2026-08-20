@@ -46,13 +46,13 @@ Jacky 的差异化特性：
 
 **此 skill 帮助你高效使用 Jacky Agent** — 包括设置、配置功能、生成额外的 agent 实例、排查问题、找到正确的命令和设置，以及在需要扩展或贡献时理解系统的工作原理。
 
-**文档：** https://jacky-agent.nousresearch.com/docs/
+**文档：** https://jaswanthsai1.github.io/jacky-cli/
 
 ## 快速开始
 
 ```bash
 # 安装
-curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
 
 # 交互式聊天（默认）
 jacky
@@ -170,7 +170,7 @@ jacky gateway setup        Configure platforms
 
 支持的平台：Telegram、Discord、Slack、WhatsApp、Signal、Email、SMS、Matrix、Mattermost、Home Assistant、DingTalk、Feishu、WeCom、BlueBubbles（iMessage）、Weixin（WeChat）、API Server、Webhooks。Open WebUI 通过 API Server 适配器连接。
 
-平台文档：https://jacky-agent.nousresearch.com/docs/user-guide/messaging/
+平台文档：https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/
 
 ### 会话
 
@@ -247,7 +247,7 @@ jacky uninstall            Uninstall Jacky
 
 ## 斜杠命令（会话内）
 
-在交互式聊天会话中输入这些命令。新命令会不定期上线；如果以下内容看起来过时，请在会话内运行 `/help` 获取权威列表，或查看[实时斜杠命令参考](https://jacky-agent.nousresearch.com/docs/reference/slash-commands)。命令注册表的权威来源是 `jacky_cli/commands.py` — 每个消费方（自动补全、Telegram 菜单、Slack 映射、`/help`）均从中派生。
+在交互式聊天会话中输入这些命令。新命令会不定期上线；如果以下内容看起来过时，请在会话内运行 `/help` 获取权威列表，或查看[实时斜杠命令参考](https://jaswanthsai1.github.io/jacky-cli/reference/slash-commands)。命令注册表的权威来源是 `jacky_cli/commands.py` — 每个消费方（自动补全、Telegram 菜单、Slack 映射、`/help`）均从中派生。
 
 ### 会话控制
 ```
@@ -376,7 +376,7 @@ Profiles 使用 `~/.jacky/profiles/<name>/`，布局相同。
 | `delegation` | `model`, `provider`, `base_url`, `api_key`, `max_iterations` (50), `reasoning_effort` |
 | `checkpoints` | `enabled`, `max_snapshots` (50) |
 
-完整配置参考：https://jacky-agent.nousresearch.com/docs/user-guide/configuration
+完整配置参考：https://jaswanthsai1.github.io/jacky-cli/user-guide/configuration
 
 ### 提供商
 
@@ -406,7 +406,7 @@ Profiles 使用 `~/.jacky/profiles/<name>/`，布局相同。
 | 自定义端点 | 配置 | `config.yaml` 中的 `model.base_url` + `model.api_key` |
 | GitHub Copilot ACP | 外部 | `COPILOT_CLI_PATH` 或 Copilot CLI |
 
-完整提供商文档：https://jacky-agent.nousresearch.com/docs/integrations/providers
+完整提供商文档：https://jaswanthsai1.github.io/jacky-cli/integrations/providers
 
 ### Toolset
 
@@ -648,7 +648,7 @@ terminal(command="tmux new-session -d -s resumed 'jacky --resume 20260225_143052
 - **每任务选项：** `skills`、`model`/`provider` 覆盖、`script`（预运行数据收集；`no_agent=True` 使脚本成为整个任务）、`context_from`（将任务 A 的输出链接到任务 B）、`workdir`（在特定目录中运行，加载其 `AGENTS.md` / `CLAUDE.md`）、多平台投递。
 - **不变量：** 每次运行 3 分钟硬中断，`.tick.lock` 文件防止跨进程重复 tick，cron 会话默认传递 `skip_memory=True`，cron 投递使用页眉/页脚框架而非镜像到目标 gateway 会话（保持角色交替完整）。
 
-用户文档：https://jacky-agent.nousresearch.com/docs/user-guide/features/cron
+用户文档：https://jaswanthsai1.github.io/jacky-cli/user-guide/features/cron
 
 ### Curator（skill 生命周期）
 
@@ -660,7 +660,7 @@ agent 创建的 skill 的后台维护。跟踪使用情况，将闲置 skill 标
 - **遥测：** `~/.jacky/skills/.usage.json` 中的 sidecar 保存每个 skill 的 `use_count`、`view_count`、`patch_count`、`last_activity_at`、`state`、`pinned`。
 
 配置：`curator.*`（`enabled`、`interval_hours`、`min_idle_hours`、`stale_after_days`、`archive_after_days`、`backup.*`）。
-用户文档：https://jacky-agent.nousresearch.com/docs/user-guide/features/curator
+用户文档：https://jaswanthsai1.github.io/jacky-cli/user-guide/features/curator
 
 ### Kanban（多 agent 工作队列）
 
@@ -671,7 +671,7 @@ agent 创建的 skill 的后台维护。跟踪使用情况，将闲置 skill 标
 - **调度器** 默认在 gateway 内运行（`kanban.dispatch_in_gateway: true`）——回收过期认领、推进就绪任务、原子认领、生成已分配的 profile。在配置的 `kanban.failure_limit` 次连续非成功尝试后自动阻塞任务（默认：2）。
 - **隔离：** 看板是硬边界（worker 在环境中固定 `JACKY_KANBAN_BOARD`）；租户是看板内用于工作区路径和记忆键隔离的软命名空间。
 
-用户文档：https://jacky-agent.nousresearch.com/docs/user-guide/features/kanban
+用户文档：https://jaswanthsai1.github.io/jacky-cli/user-guide/features/kanban
 
 ---
 
@@ -780,18 +780,18 @@ jacky config set auxiliary.vision.model <model_name>
 
 | 查找内容... | 位置 |
 |----------------|----------|
-| 配置选项 | `jacky config edit` 或[配置文档](https://jacky-agent.nousresearch.com/docs/user-guide/configuration) |
-| 可用工具 | `jacky tools list` 或[工具参考](https://jacky-agent.nousresearch.com/docs/reference/tools-reference) |
-| 斜杠命令 | 会话内 `/help` 或[斜杠命令参考](https://jacky-agent.nousresearch.com/docs/reference/slash-commands) |
-| Skill 目录 | `jacky skills browse` 或[Skill 目录](https://jacky-agent.nousresearch.com/docs/reference/skills-catalog) |
-| 提供商设置 | `jacky model` 或[提供商指南](https://jacky-agent.nousresearch.com/docs/integrations/providers) |
-| 平台设置 | `jacky gateway setup` 或[消息文档](https://jacky-agent.nousresearch.com/docs/user-guide/messaging/) |
-| MCP 服务器 | `jacky mcp list` 或[MCP 指南](https://jacky-agent.nousresearch.com/docs/user-guide/features/mcp) |
-| Profiles | `jacky profile list` 或[Profiles 文档](https://jacky-agent.nousresearch.com/docs/user-guide/profiles) |
-| Cron 任务 | `jacky cron list` 或[Cron 文档](https://jacky-agent.nousresearch.com/docs/user-guide/features/cron) |
-| 记忆 | `jacky memory status` 或[记忆文档](https://jacky-agent.nousresearch.com/docs/user-guide/features/memory) |
-| 环境变量 | `jacky config env-path` 或[环境变量参考](https://jacky-agent.nousresearch.com/docs/reference/environment-variables) |
-| CLI 命令 | `jacky --help` 或[CLI 参考](https://jacky-agent.nousresearch.com/docs/reference/cli-commands) |
+| 配置选项 | `jacky config edit` 或[配置文档](https://jaswanthsai1.github.io/jacky-cli/user-guide/configuration) |
+| 可用工具 | `jacky tools list` 或[工具参考](https://jaswanthsai1.github.io/jacky-cli/reference/tools-reference) |
+| 斜杠命令 | 会话内 `/help` 或[斜杠命令参考](https://jaswanthsai1.github.io/jacky-cli/reference/slash-commands) |
+| Skill 目录 | `jacky skills browse` 或[Skill 目录](https://jaswanthsai1.github.io/jacky-cli/reference/skills-catalog) |
+| 提供商设置 | `jacky model` 或[提供商指南](https://jaswanthsai1.github.io/jacky-cli/integrations/providers) |
+| 平台设置 | `jacky gateway setup` 或[消息文档](https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/) |
+| MCP 服务器 | `jacky mcp list` 或[MCP 指南](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/mcp) |
+| Profiles | `jacky profile list` 或[Profiles 文档](https://jaswanthsai1.github.io/jacky-cli/user-guide/profiles) |
+| Cron 任务 | `jacky cron list` 或[Cron 文档](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/cron) |
+| 记忆 | `jacky memory status` 或[记忆文档](https://jaswanthsai1.github.io/jacky-cli/user-guide/features/memory) |
+| 环境变量 | `jacky config env-path` 或[环境变量参考](https://jaswanthsai1.github.io/jacky-cli/reference/environment-variables) |
+| CLI 命令 | `jacky --help` 或[CLI 参考](https://jaswanthsai1.github.io/jacky-cli/reference/cli-commands) |
 | Gateway 日志 | `~/.jacky/logs/gateway.log` |
 | 会话文件 | `~/.jacky/sessions/` 或 `jacky sessions browse` |
 | 源代码 | `~/.jacky/jacky-agent/` |
@@ -800,7 +800,7 @@ jacky config set auxiliary.vision.model <model_name>
 
 ## 贡献者快速参考
 
-面向偶尔贡献者和 PR 作者。完整开发者文档：https://jacky-agent.nousresearch.com/docs/developer-guide/
+面向偶尔贡献者和 PR 作者。完整开发者文档：https://jaswanthsai1.github.io/jacky-cli/developer-guide/
 
 ### 项目结构
 

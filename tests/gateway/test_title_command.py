@@ -34,7 +34,7 @@ def _make_runner(session_db=None):
     runner._voice_mode = {}
     # Gateway holds the async facade; the slash handlers await it.
     if session_db is not None:
-        from jacky_state import AsyncSessionDB
+        from jacky_cli.jacky_state import AsyncSessionDB
         session_db = AsyncSessionDB(session_db)
     runner._session_db = session_db
 
@@ -60,7 +60,7 @@ class TestHandleTitleCommand:
     @pytest.mark.asyncio
     async def test_set_title(self, tmp_path):
         """Setting a title returns confirmation."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("test_session_123", "telegram")
 
@@ -77,7 +77,7 @@ class TestHandleTitleCommand:
     @pytest.mark.asyncio
     async def test_show_title_when_set(self, tmp_path):
         """Showing title when one is set returns the title."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("test_session_123", "telegram")
         db.set_session_title("test_session_123", "Existing Title")
@@ -92,7 +92,7 @@ class TestHandleTitleCommand:
     @pytest.mark.asyncio
     async def test_show_title_when_not_set(self, tmp_path):
         """Showing title when none is set returns usage hint."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("test_session_123", "telegram")
 
@@ -106,7 +106,7 @@ class TestHandleTitleCommand:
     @pytest.mark.asyncio
     async def test_title_conflict(self, tmp_path):
         """Setting a title already used by another session returns error."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("other_session", "telegram")
         db.set_session_title("other_session", "Taken Title")
@@ -130,7 +130,7 @@ class TestHandleTitleCommand:
     @pytest.mark.asyncio
     async def test_title_too_long(self, tmp_path):
         """Setting a title that exceeds max length returns error."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("test_session_123", "telegram")
 
@@ -145,7 +145,7 @@ class TestHandleTitleCommand:
     @pytest.mark.asyncio
     async def test_title_control_chars_sanitized(self, tmp_path):
         """Control characters are stripped and sanitized title is stored."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("test_session_123", "telegram")
 
@@ -159,7 +159,7 @@ class TestHandleTitleCommand:
     @pytest.mark.asyncio
     async def test_title_only_control_chars(self, tmp_path):
         """Title with only control chars returns empty error."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("test_session_123", "telegram")
 
@@ -172,7 +172,7 @@ class TestHandleTitleCommand:
     @pytest.mark.asyncio
     async def test_set_title_propagates_to_telegram_topic_rename(self, tmp_path):
         """/title <name> also renames the visible Telegram topic, not just the DB."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("test_session_123", "telegram")
 
@@ -191,7 +191,7 @@ class TestHandleTitleCommand:
     @pytest.mark.asyncio
     async def test_show_title_does_not_rename_topic(self, tmp_path):
         """Showing the title (no arg) must not trigger a topic rename."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB(db_path=tmp_path / "state.db")
         db.create_session("test_session_123", "telegram")
         db.set_session_title("test_session_123", "Existing Title")
@@ -208,7 +208,7 @@ class TestHandleTitleCommand:
     @pytest.mark.asyncio
     async def test_works_across_platforms(self, tmp_path):
         """The /title command works for Discord, Slack, and WhatsApp too."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         for platform in [Platform.DISCORD, Platform.TELEGRAM]:
             db = SessionDB(db_path=tmp_path / f"state_{platform.value}.db")
             db.create_session("test_session_123", platform.value)

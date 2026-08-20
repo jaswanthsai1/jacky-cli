@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 from gateway.config import GatewayConfig
 from gateway.session import SessionStore
 

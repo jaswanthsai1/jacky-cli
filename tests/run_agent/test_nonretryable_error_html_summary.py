@@ -17,8 +17,8 @@ terminal path is taken, ``result['error']`` is a short, HTML-free summary.
 
 from unittest.mock import MagicMock, patch
 
-import run_agent
-from run_agent import AIAgent
+import jacky_cli.run_agent as run_agent
+from jacky_cli.run_agent import AIAgent
 
 
 # A representative Cloudflare "managed challenge" body, matching the shape the
@@ -55,9 +55,9 @@ def _make_agent() -> AIAgent:
     # validation ``ValueError`` *before* any API call, so the test passed
     # without ever touching the 403 summarization path.
     with (
-        patch("run_agent.get_tool_definitions", return_value=[]),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
         a = AIAgent(
             api_key="test-key-1234567890",

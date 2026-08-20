@@ -57,7 +57,7 @@ Usage:
 # ``jacky update`` to recover.  Missing the bootstrap means UTF-8 stdio
 # setup is skipped on Windows — degraded, not broken.  POSIX is unaffected.
 try:
-    import jacky_bootstrap  # noqa: F401
+    import jacky_cli.jacky_bootstrap as jacky_bootstrap  # noqa: F401
 except ModuleNotFoundError:
     pass
 
@@ -486,7 +486,7 @@ def _apply_profile_override() -> None:
     # the "Docker & Profiles & Dashboard" report.
     if profile_name is None and not os.environ.get("JACKY_S6_SUPERVISED_CHILD"):
         try:
-            from jacky_constants import get_default_jacky_root
+            from jacky_cli.jacky_constants import get_default_jacky_root
 
             active_path = get_default_jacky_root() / "active_profile"
             if active_path.exists():
@@ -582,7 +582,7 @@ except Exception:
 # Dashboard entrypoints bootstrap with GUI mode so gui.log is always present
 # during GUI testing, including pre-dispatch startup failures.
 try:
-    from jacky_logging import setup_logging as _setup_logging
+    from jacky_cli.jacky_logging import setup_logging as _setup_logging
 
     _setup_logging(
         mode=(
@@ -600,7 +600,7 @@ except Exception:
 # this just calls the toggle without a redundant load_config() round trip.
 if _FORCE_IPV4_EARLY:
     try:
-        from jacky_constants import apply_ipv4_preference as _apply_ipv4
+        from jacky_cli.jacky_constants import apply_ipv4_preference as _apply_ipv4
 
         _apply_ipv4(force=True)
     except Exception:
@@ -1158,7 +1158,7 @@ def _resolve_last_session(source: str = "cli") -> Optional[str]:
     """Look up the most recently-used session ID for a source."""
     db = None
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         sessions = db.search_sessions(source=source, limit=1)
@@ -1181,7 +1181,7 @@ def _probe_container(cmd: list, backend: str, via_sudo: bool = False):
     all other exceptions propagate naturally.
     """
     try:
-        return subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+        return subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=15)
     except subprocess.TimeoutExpired:
         label = f"sudo {backend}" if via_sudo else backend
         print(
@@ -1297,7 +1297,7 @@ def _resolve_session_by_name_or_id(name_or_id: str) -> Optional[str]:
       resumed at the live tip instead of a stale parent with no messages.
     """
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
 
@@ -1350,7 +1350,7 @@ def _print_tui_exit_summary(
 
     db = None
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         session = db.get_session(target)
@@ -1694,7 +1694,7 @@ def _restore_tui_workspace(tui_dir: Path) -> bool:
             [git, "restore", "--", tui_dir.name],
             cwd=str(tui_dir.parent),
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             check=False,
         )
     except OSError:
@@ -2040,7 +2040,7 @@ def _launch_tui(
     wt_info = None
     if worktree:
         try:
-            from cli import (
+            from jacky_cli.cli import (
                 _cleanup_worktree,
                 _git_repo_root,
                 _prune_stale_worktrees,
@@ -2155,7 +2155,7 @@ def _launch_tui(
         from jacky_cli.relaunch import relaunch
 
         print()
-        print("⚕ Launching update...")
+        print(">_ Launching update...")
         print()
         relaunch(["update"], preserve_inherited=False)
 
@@ -2246,11 +2246,77 @@ def _resolve_use_tui(args) -> bool:
         return False
 
 
+# The bundled skill (skills/jacky-doctrine/) that gives every session the
+# Jacky persona: banner, self-identification as "Jacky", offensive-security
+# doctrine. This is preloaded by default for every `jacky` invocation --
+# any model/provider, local Ollama or cloud -- so there is exactly ONE
+# `jacky` experience regardless of how it was installed or configured.
+# Making this a property of cmd_chat()'s own startup path (rather than an
+# external shell wrapper like the old bin/jacky script, which could be
+# bypassed, shadowed by a different `jacky` on PATH, or simply drift out of
+# sync) guarantees it can't be silently dropped. Escape hatches:
+# `--no-persona` or `--skills none`.
+_PERSONA_SKILL = "jacky-doctrine"
+
+
+def _resolve_persona_skills(args) -> object:
+    """Return the ``skills`` value for this session with the Jacky persona
+    guaranteed to be preloaded, unless explicitly disabled.
+
+    Explicit disable paths:
+      * ``--no-persona``
+      * ``--skills none`` (case-insensitive; also strips a literal "none"
+        entry out of any other requested skills)
+
+    Otherwise the persona skill is prepended to whatever the user already
+    requested via ``-s/--skills`` (or is the sole skill if none were given).
+    """
+    if getattr(args, "no_persona", False):
+        return getattr(args, "skills", None)
+
+    raw = getattr(args, "skills", None)
+    if raw is None:
+        values: list[str] = []
+    elif isinstance(raw, (list, tuple)):
+        values = [str(v) for v in raw]
+    else:
+        values = [str(raw)]
+
+    flat_parts = [part.strip() for value in values for part in value.split(",")]
+    flat_parts = [part for part in flat_parts if part]
+
+    if any(part.lower() == "none" for part in flat_parts):
+        # Explicit opt-out via `--skills none`: disable ALL preloaded
+        # skills, including the persona. Strip the "none" sentinel itself
+        # so it never reaches skill resolution as an unknown skill name.
+        kept = [part for part in flat_parts if part.lower() != "none"]
+        return kept or None
+
+    if any(part == _PERSONA_SKILL for part in flat_parts):
+        return raw  # Already requested explicitly -- pass through as-is.
+
+    return [_PERSONA_SKILL, *flat_parts]
+
+
 def cmd_chat(args):
     """Run interactive chat CLI."""
+    # Seed ~/.jacky/skills/ (or the platform equivalent) BEFORE anything
+    # tries to preload a skill by name. This must run before
+    # _resolve_persona_skills/build_preloaded_skills_prompt below --
+    # previously it ran later in this function (see the old call site),
+    # which raced the mandatory jacky-doctrine persona-skill preload on a
+    # genuinely first-ever invocation and crashed with "Unknown skill(s):
+    # jacky-doctrine" before the sync had a chance to seed it.
+    _sync_bundled_skills_quietly()
+
     use_tui = _resolve_use_tui(args)
 
     _apply_safe_mode(args)
+
+    # Guarantee the Jacky persona loads by default (see
+    # `_resolve_persona_skills` docstring). Applies uniformly to the TUI
+    # launch path and the classic CLI path below, and to every provider.
+    args.skills = _resolve_persona_skills(args)
 
     # Resolve --continue into --resume with the latest session or by name
     continue_val = getattr(args, "continue_last", None)
@@ -2406,7 +2472,7 @@ def cmd_chat(args):
         )
 
     # Import and run the CLI
-    from cli import main as cli_main
+    from jacky_cli.cli import main as cli_main
 
     # Build kwargs from args
     kwargs = {
@@ -2461,10 +2527,10 @@ def cmd_whatsapp(args):
     """Set up WhatsApp: choose mode, configure, install bridge, pair via QR."""
     _require_tty("whatsapp")
     from jacky_cli.config import get_env_value, save_env_value
-    from jacky_constants import find_node_executable, with_jacky_node_path
+    from jacky_cli.jacky_constants import find_node_executable, with_jacky_node_path
 
     print()
-    print("⚕ WhatsApp Setup")
+    print(">_ WhatsApp Setup")
     print("=" * 50)
 
     # ── Step 1: Choose mode ──────────────────────────────────────────────
@@ -2675,14 +2741,14 @@ def cmd_whatsapp(args):
             print("    2. Send a message to the bot's WhatsApp number")
             print("    3. The agent will reply automatically")
             print()
-            print("  Tip: Agent responses are prefixed with '⚕ Jacky Agent'")
+            print("  Tip: Agent responses are prefixed with '>_ Jacky Agent'")
         else:
             print("  Next steps:")
             print("    1. Start the gateway:  jacky gateway")
             print("    2. Open WhatsApp → Message Yourself")
             print("    3. Type a message — the agent will reply")
             print()
-            print("  Tip: Agent responses are prefixed with '⚕ Jacky Agent'")
+            print("  Tip: Agent responses are prefixed with '>_ Jacky Agent'")
             print("  so you can tell them apart from your own messages.")
         print()
         print("  Or install as a service: jacky gateway install")
@@ -2723,7 +2789,7 @@ def cmd_postinstall(args):
 
     stamp_install_method("pip")
 
-    print("⚕ Jacky post-install bootstrap")
+    print(">_ Jacky post-install bootstrap")
     print()
 
     for dep in ("node", "browser", "ripgrep", "ffmpeg"):
@@ -2737,8 +2803,70 @@ def cmd_postinstall(args):
         print("✓ Post-install complete.")
 
 
+def _cmd_model_list(args) -> None:  # noqa: ARG001
+    """Non-interactive ``jacky model list``: print the configured model and
+    which providers currently have credentials available.
+
+    Mirrors the pattern used by the sibling subcommands (``fallback list``,
+    ``moa list``, ``auth list``, ``skills list``, ``profile list``) — no TTY
+    required, no interactive picker.
+    """
+    from jacky_cli.config import load_config
+
+    config = load_config()
+    model_cfg = config.get("model")
+    if isinstance(model_cfg, dict):
+        provider = (model_cfg.get("provider") or "auto").strip() or "auto"
+        model = (model_cfg.get("default") or model_cfg.get("model") or "(not set)").strip() or "(not set)"
+    elif isinstance(model_cfg, str) and model_cfg.strip():
+        provider = "auto"
+        model = model_cfg.strip()
+    else:
+        provider = "auto"
+        model = "(not set)"
+
+    print()
+    print(f"  Current model:     {model}")
+    print(f"  Current provider:  {provider}")
+    print()
+
+    try:
+        from jacky_cli.auth import PROVIDER_REGISTRY
+        from agent.credential_pool import load_pool, list_custom_pool_providers
+    except ImportError:
+        print("  Run `jacky model` to change the model interactively.")
+        print()
+        return
+
+    provider_names = sorted({*PROVIDER_REGISTRY.keys(), "openrouter", *list_custom_pool_providers()})
+    configured = []
+    for name in provider_names:
+        try:
+            pool = load_pool(name)
+            if pool.entries():
+                configured.append(name)
+        except Exception:
+            continue
+
+    if configured:
+        print(f"  Providers with credentials configured ({len(configured)}):")
+        for name in configured:
+            marker = " ←" if name == provider else ""
+            print(f"    - {name}{marker}")
+    else:
+        print("  No providers have credentials configured yet.")
+    print()
+    print("  Change it with:      jacky model")
+    print("  Add credentials for a provider:  jacky auth add <provider>")
+    print()
+
+
 def cmd_model(args):
     """Select default model — starts with provider selection, then model picker."""
+    sub = getattr(args, "model_command", None)
+    if sub in {"list", "ls"}:
+        _cmd_model_list(args)
+        return
     _require_tty("model")
     if getattr(args, "refresh", False):
         try:
@@ -4138,7 +4266,7 @@ def _run_anthropic_oauth_flow(save_env_value):
         ):
             use_anthropic_claude_code_credentials(save_fn=save_env_value)
             print("  ✓ Claude Code credentials linked.")
-            from jacky_constants import display_jacky_home as _dhh_fn
+            from jacky_cli.jacky_constants import display_jacky_home as _dhh_fn
 
             print(
                 f"    Jacky will use Claude's credential store directly instead of copying a setup-token into {_dhh_fn()}/.env."
@@ -4484,11 +4612,11 @@ _UPDATE_CRITICAL_FILES = (
     "jacky_cli/config.py",
     "jacky_cli/__init__.py",
     "jacky_cli/web_server.py",
-    "cli.py",
-    "run_agent.py",
-    "model_tools.py",
-    "toolsets.py",
-    "jacky_constants.py",
+    "jacky_cli/cli.py",
+    "jacky_cli/run_agent.py",
+    "jacky_cli/model_tools.py",
+    "jacky_cli/toolsets.py",
+    "jacky_cli/jacky_constants.py",
 )
 
 
@@ -4499,7 +4627,7 @@ def _capture_head_sha(git_cmd, cwd) -> str | None:
             git_cmd + ["rev-parse", "HEAD"],
             cwd=cwd,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             check=True,
         )
         return result.stdout.strip() or None
@@ -4561,7 +4689,7 @@ def _gateway_prompt(prompt_text: str, default: str = "", timeout: float = 300.0)
     """
     import json as _json
     import uuid as _uuid
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     home = get_jacky_home()
     prompt_path = home / ".update_prompt.json"
@@ -4785,7 +4913,7 @@ def _nixos_build_env() -> dict[str, str] | None:
     try:
         result = subprocess.run(
             ["nix-shell", "-p", "python3", "--run", "which python3"],
-            capture_output=True, text=True, check=False, timeout=15,
+            capture_output=True, text=True, encoding="utf-8", errors="replace", check=False, timeout=15,
         )
         if result.returncode == 0:
             python3_path = result.stdout.strip()
@@ -4875,7 +5003,7 @@ def _build_web_ui(web_dir: Path, *, fatal: bool = False) -> bool:
             encoding = getattr(sys.stdout, "encoding", None) or "ascii"
             print(text.encode(encoding, errors="replace").decode(encoding, errors="replace"))
 
-    from jacky_constants import find_node_executable, with_jacky_node_path
+    from jacky_cli.jacky_constants import find_node_executable, with_jacky_node_path
 
     npm = find_node_executable("npm")
     if not npm:
@@ -5060,7 +5188,7 @@ def _compute_desktop_content_hash(project_root: Path) -> str:
 
 def _desktop_stamp_path() -> Path:
     """Return the path to the desktop build stamp file under $JACKY_HOME."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     return get_jacky_home() / "desktop-build-stamp.json"
 
 
@@ -5316,7 +5444,7 @@ def _redownload_electron_dist(
     installer = electron_dir / "install.js"
     if not installer.is_file():
         return False
-    from jacky_constants import find_node_executable, with_jacky_node_path
+    from jacky_cli.jacky_constants import find_node_executable, with_jacky_node_path
 
     node = find_node_executable("node")
     if not node:
@@ -5610,12 +5738,12 @@ def cmd_gui(args: argparse.Namespace):
         sys.exit(1)
 
     try:
-        from jacky_logging import setup_logging as _setup_logging_gui
+        from jacky_cli.jacky_logging import setup_logging as _setup_logging_gui
         _setup_logging_gui(mode="gui")
     except Exception:
         pass
 
-    from jacky_constants import find_node_executable, with_jacky_node_path
+    from jacky_cli.jacky_constants import find_node_executable, with_jacky_node_path
 
     # with_jacky_node_path() copies os.environ when called with no arg.
     env = with_jacky_node_path()
@@ -5917,7 +6045,7 @@ def _find_stale_dashboard_pids(
             result = subprocess.run(
                 ["ps", "-A", "-o", "pid=,command="],
                 capture_output=True,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
                 timeout=10,
             )
             if result.returncode == 0:
@@ -5980,7 +6108,7 @@ def _print_curator_first_run_notice() -> None:
     print("  Preview now:  jacky curator run --dry-run")
     print("  Pause it:     jacky curator pause")
     print(
-        "  Docs:         https://jacky-agent.nousresearch.com/docs/user-guide/features/curator"
+        "  Docs:         https://jaswanthsai1.github.io/jacky-cli/user-guide/features/curator"
     )
 
 
@@ -6127,7 +6255,7 @@ def _kill_stale_dashboard_processes(
                 result = subprocess.run(
                     ["taskkill", "/PID", str(pid), "/F"],
                     capture_output=True,
-                    text=True,
+                    text=True, encoding="utf-8", errors="replace",
                     timeout=10,
                 )
                 if result.returncode == 0:
@@ -6435,7 +6563,7 @@ def _stash_local_changes_if_needed(git_cmd: list[str], cwd: Path) -> Optional[st
         git_cmd + ["status", "--porcelain"],
         cwd=cwd,
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
         check=True,
     )
     if not status.stdout.strip():
@@ -6449,7 +6577,7 @@ def _stash_local_changes_if_needed(git_cmd: list[str], cwd: Path) -> Optional[st
         git_cmd + ["ls-files", "--unmerged"],
         cwd=cwd,
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
     )
     if unmerged.stdout.strip():
         print("→ Clearing unmerged index entries from a previous conflict...")
@@ -6470,7 +6598,7 @@ def _stash_local_changes_if_needed(git_cmd: list[str], cwd: Path) -> Optional[st
         git_cmd + ["rev-parse", "--verify", "refs/stash"],
         cwd=cwd,
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
         check=True,
     ).stdout.strip()
     return stash_ref
@@ -6483,7 +6611,7 @@ def _resolve_stash_selector(
         git_cmd + ["stash", "list", "--format=%gd %H"],
         cwd=cwd,
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
         check=True,
     )
     for line in stash_list.stdout.splitlines():
@@ -6538,7 +6666,7 @@ def _restore_stashed_changes(
         git_cmd + ["stash", "apply", stash_ref],
         cwd=cwd,
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
     )
 
     # Check for unmerged (conflicted) files — can happen even when returncode is 0
@@ -6546,7 +6674,7 @@ def _restore_stashed_changes(
         git_cmd + ["diff", "--name-only", "--diff-filter=U"],
         cwd=cwd,
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
     )
     has_conflicts = bool(unmerged.stdout.strip())
 
@@ -6596,7 +6724,7 @@ def _restore_stashed_changes(
             git_cmd + ["stash", "drop", stash_selector],
             cwd=cwd,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
         )
         if drop.returncode != 0:
             print(
@@ -6648,7 +6776,7 @@ def _discard_stashed_changes(
         git_cmd + ["stash", "drop", stash_selector],
         cwd=cwd,
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
     )
     if drop.returncode != 0:
         print(
@@ -6685,7 +6813,7 @@ def _get_origin_url(git_cmd: list[str], cwd: Path) -> Optional[str]:
             git_cmd + ["remote", "get-url", "origin"],
             cwd=cwd,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
         )
         if result.returncode == 0:
             return result.stdout.strip()
@@ -6718,7 +6846,7 @@ def _has_upstream_remote(git_cmd: list[str], cwd: Path) -> bool:
             git_cmd + ["remote", "get-url", "upstream"],
             cwd=cwd,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
         )
         return result.returncode == 0
     except Exception:
@@ -6732,7 +6860,7 @@ def _add_upstream_remote(git_cmd: list[str], cwd: Path) -> bool:
             git_cmd + ["remote", "add", "upstream", OFFICIAL_REPO_URL],
             cwd=cwd,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
         )
         return result.returncode == 0
     except Exception:
@@ -6746,7 +6874,7 @@ def _count_commits_between(git_cmd: list[str], cwd: Path, base: str, head: str) 
             git_cmd + ["rev-list", "--count", f"{base}..{head}"],
             cwd=cwd,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
         )
         if result.returncode == 0:
             return int(result.stdout.strip())
@@ -6757,7 +6885,7 @@ def _count_commits_between(git_cmd: list[str], cwd: Path, base: str, head: str) 
 
 def _should_skip_upstream_prompt() -> bool:
     """Check if user previously declined to add upstream."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     return (get_jacky_home() / SKIP_UPSTREAM_PROMPT_FILE).exists()
 
@@ -6765,7 +6893,7 @@ def _should_skip_upstream_prompt() -> bool:
 def _mark_skip_upstream_prompt():
     """Create marker file to skip future upstream prompts."""
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         (get_jacky_home() / SKIP_UPSTREAM_PROMPT_FILE).touch()
     except Exception:
@@ -6782,7 +6910,7 @@ def _sync_fork_with_upstream(git_cmd: list[str], cwd: Path) -> bool:
             git_cmd + ["push", "origin", "main", "--force-with-lease"],
             cwd=cwd,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
         )
         return result.returncode == 0
     except Exception:
@@ -6914,7 +7042,7 @@ def _invalidate_update_cache():
     """
     homes = []
     # Default profile home (Docker-aware — uses /opt/data in Docker)
-    from jacky_constants import get_default_jacky_root
+    from jacky_cli.jacky_constants import get_default_jacky_root
 
     default_home = get_default_jacky_root()
     homes.append(default_home)
@@ -7873,31 +8001,40 @@ def _verify_core_dependencies_installed(
             if name:
                 deps.append((name, None))
 
-    # Apply environment markers to drop deps that don't apply on this platform
-    # (e.g. ``ptyprocess ; sys_platform != 'win32'`` is correctly skipped on
-    # Windows). Without markers we'd false-positive every cross-platform exclusion.
+    # Run the check inside the venv Python — sys.executable here may be the
+    # outer Python that drove ``jacky update``, not the venv we just wrote
+    # to. The uv install_cmd_prefix encodes which environment we targeted
+    # (either ``[uv, pip]`` with VIRTUAL_ENV in env, or
+    # ``[sys.executable, -m, pip]`` for the in-process Python); resolve the
+    # right interpreter for the verification. Resolved BEFORE marker
+    # filtering below, since marker evaluation needs to know the TARGET
+    # venv's platform, not necessarily the host's.
+    venv_python = _resolve_install_target_python(install_cmd_prefix, env)
+    if venv_python is None:
+        return
+
+    # Apply environment markers to drop deps that don't apply on the target
+    # platform (e.g. ``ptyprocess ; sys_platform != 'win32'`` is correctly
+    # skipped on Windows). marker.evaluate() defaults to the CURRENT
+    # interpreter's platform, which is only correct when verifying our own
+    # venv — infer the actual target from the resolved venv path (Windows
+    # venvs use a ``Scripts`` layout, POSIX ones use ``bin``) so this stays
+    # correct even if the target venv's platform ever differs from the host
+    # running the verification.
+    _venv_is_windows = "Scripts" in venv_python.parts
+    _marker_env = {"sys_platform": "win32" if _venv_is_windows else sys.platform}
     applicable: list[str] = []
     for name, marker in deps:
         if marker is None:
             applicable.append(name)
             continue
         try:
-            if marker.evaluate():  # type: ignore[union-attr]
+            if marker.evaluate(environment=_marker_env):  # type: ignore[union-attr]
                 applicable.append(name)
         except Exception:
             applicable.append(name)
 
     if not applicable:
-        return
-
-    # Run the check inside the venv Python — sys.executable here may be the
-    # outer Python that drove ``jacky update``, not the venv we just wrote
-    # to. The uv install_cmd_prefix encodes which environment we targeted
-    # (either ``[uv, pip]`` with VIRTUAL_ENV in env, or
-    # ``[sys.executable, -m, pip]`` for the in-process Python); resolve the
-    # right interpreter for the verification.
-    venv_python = _resolve_install_target_python(install_cmd_prefix, env)
-    if venv_python is None:
         return
 
     def _missing_deps() -> list[str]:
@@ -7913,7 +8050,7 @@ def _verify_core_dependencies_installed(
             result = subprocess.run(
                 [str(venv_python), "-c", check_script, *applicable],
                 capture_output=True,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
                 check=False,
                 env=env,
             )
@@ -8106,7 +8243,7 @@ def _ensure_uv_for_termux(pip_cmd: list[str]) -> str | None:
 
 
 def _update_node_dependencies() -> None:
-    from jacky_constants import find_node_executable, with_jacky_node_path
+    from jacky_cli.jacky_constants import find_node_executable, with_jacky_node_path
 
     npm = find_node_executable("npm")
     if not npm:
@@ -8438,7 +8575,7 @@ def _cmd_update_check(branch: str = "main", *, branch_explicit: bool = False):
         elif result == 0:
             print("✓ Already up to date.")
         else:
-            print("⚕ Update available on PyPI.")
+            print(">_ Update available on PyPI.")
             print(f"  Run '{recommended_update_command()}' to install.")
         return
 
@@ -8467,7 +8604,7 @@ def _cmd_update_check(branch: str = "main", *, branch_explicit: bool = False):
             git_cmd + ["rev-parse", "--is-shallow-repository"],
             cwd=PROJECT_ROOT,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
         ).stdout.strip()
         == "true"
     )
@@ -8479,7 +8616,7 @@ def _cmd_update_check(branch: str = "main", *, branch_explicit: bool = False):
             git_cmd + ["fetch"] + depth_args + ["upstream", branch],
             cwd=PROJECT_ROOT,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
         )
         if fetch_result.returncode != 0:
             # Fallback to origin if upstream doesn't exist
@@ -8488,7 +8625,7 @@ def _cmd_update_check(branch: str = "main", *, branch_explicit: bool = False):
                 git_cmd + ["fetch"] + depth_args + ["origin", branch],
                 cwd=PROJECT_ROOT,
                 capture_output=True,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
             )
             upstream_exists = False
             compare_branch = f"origin/{branch}"
@@ -8502,7 +8639,7 @@ def _cmd_update_check(branch: str = "main", *, branch_explicit: bool = False):
             git_cmd + ["fetch"] + depth_args + ["origin", branch],
             cwd=PROJECT_ROOT,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
         )
         upstream_exists = False
         compare_branch = f"origin/{branch}"
@@ -8527,7 +8664,7 @@ def _cmd_update_check(branch: str = "main", *, branch_explicit: bool = False):
         git_cmd + ["rev-parse", "--verify", "--quiet", compare_branch],
         cwd=PROJECT_ROOT,
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
     )
     if verify_result.returncode != 0:
         print(f"✗ Branch '{branch}' not found on {compare_branch.split('/', 1)[0]}.")
@@ -8538,16 +8675,16 @@ def _cmd_update_check(branch: str = "main", *, branch_explicit: bool = False):
         # report presence-only (mirrors the banner's _check_via_local_git).
         head_sha = subprocess.run(
             git_cmd + ["rev-parse", "HEAD"],
-            cwd=PROJECT_ROOT, capture_output=True, text=True,
+            cwd=PROJECT_ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace",
         ).stdout.strip()
         target_sha = subprocess.run(
             git_cmd + ["rev-parse", compare_branch],
-            cwd=PROJECT_ROOT, capture_output=True, text=True,
+            cwd=PROJECT_ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace",
         ).stdout.strip()
         if head_sha and target_sha and head_sha == target_sha:
             print("✓ Already up to date.")
         else:
-            print(f"⚕ Update available (behind {compare_branch}).")
+            print(f">_ Update available (behind {compare_branch}).")
             from jacky_cli.config import recommended_update_command
 
             print(f"  Run '{recommended_update_command()}' to install.")
@@ -8557,7 +8694,7 @@ def _cmd_update_check(branch: str = "main", *, branch_explicit: bool = False):
         git_cmd + ["rev-list", f"HEAD..{compare_branch}", "--count"],
         cwd=PROJECT_ROOT,
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
         check=True,
     )
     behind = int(rev_result.stdout.strip())
@@ -8566,7 +8703,7 @@ def _cmd_update_check(branch: str = "main", *, branch_explicit: bool = False):
         print("✓ Already up to date.")
     else:
         commits_word = "commit" if behind == 1 else "commits"
-        print(f"⚕ Update available: {behind} {commits_word} behind {compare_branch}.")
+        print(f">_ Update available: {behind} {commits_word} behind {compare_branch}.")
         from jacky_cli.config import recommended_update_command
 
         print(f"  Run '{recommended_update_command()}' to install.")
@@ -8618,7 +8755,7 @@ def _ensure_fhs_path_guard() -> None:
                 "command -v jacky",
             ],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=10,
         )
     except (FileNotFoundError, subprocess.TimeoutExpired):
@@ -8745,7 +8882,7 @@ def _run_pre_update_backup(args) -> None:
 
     # Render path using display_jacky_home so the user sees ~/.jacky/...
     try:
-        from jacky_constants import get_jacky_home, display_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home, display_jacky_home
 
         home = get_jacky_home()
         try:
@@ -8768,7 +8905,7 @@ def _write_update_planned_stop_marker(profile_path: Path, pid: int) -> bool:
         from datetime import timezone
 
         from gateway.status import _get_process_start_time
-        from utils import atomic_json_write
+        from jacky_cli.utils import atomic_json_write
 
         record = {
             "target_pid": pid,
@@ -8871,7 +9008,7 @@ def _venv_core_imports_healthy() -> tuple[bool, str]:
         result = subprocess.run(
             [str(venv_python), "-c", check],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=60,
             cwd=PROJECT_ROOT,
         )
@@ -9260,7 +9397,7 @@ def _discard_lockfile_churn(git_cmd, repo_root):
             git_cmd + ["diff", "--name-only"],
             cwd=repo_root,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
         )
         if diff.returncode != 0:
             return
@@ -9281,7 +9418,7 @@ def _discard_lockfile_churn(git_cmd, repo_root):
             git_cmd + ["checkout", "--", *dirty],
             cwd=repo_root,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             check=False,
         )
         print(f"→ Discarded npm lockfile churn ({len(dirty)} file(s))")
@@ -9382,13 +9519,13 @@ def _cmd_update_pip(args):
             print("✗ Detected a uv-tool install but managed uv install failed.")
             print("  Install uv manually: https://docs.astral.sh/uv/getting-started/installation/")
             sys.exit(1)
-        cmd = [uv, "tool", "upgrade", "jacky-agent"]
+        cmd = [uv, "tool", "upgrade", "jacky-cli"]
     elif pipx_managed and pipx:
         # pipx owns its own venv; ``pipx upgrade`` is the only correct path.
         # Matches scripts/auto-update.sh, which already uses pipx upgrade.
-        cmd = [pipx, "upgrade", "jacky-agent"]
+        cmd = [pipx, "upgrade", "jacky-cli"]
     elif uv:
-        cmd = [uv, "pip", "install", "--upgrade", "jacky-agent"]
+        cmd = [uv, "pip", "install", "--upgrade", "jacky-cli"]
         if in_venv:
             # Launcher shim runs the venv interpreter but doesn't export
             # VIRTUAL_ENV; without it uv errors "No virtual environment found".
@@ -9398,7 +9535,7 @@ def _cmd_update_pip(args):
             # interpreter, matching pip's default behaviour.
             cmd.insert(3, "--system")
     else:
-        cmd = [sys.executable, "-m", "pip", "install", "--upgrade", "jacky-agent"]
+        cmd = [sys.executable, "-m", "pip", "install", "--upgrade", "jacky-cli"]
 
     print(f"→ Running: {' '.join(cmd)}")
     run_kwargs = {}
@@ -9447,7 +9584,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
             logger.debug("Could not read updates.non_interactive_local_changes: %s", exc)
             discard_local_changes = False
 
-    print("⚕ Updating Jacky Agent...")
+    print(">_ Updating Jacky Agent...")
     print()
 
     # On Windows, abort early if another jacky.exe is holding the venv shim
@@ -9508,7 +9645,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                 return
             print("✗ Not a git repository. Please reinstall:")
             print(
-                "  curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash"
+                "  curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash"
             )
             sys.exit(1)
 
@@ -9575,7 +9712,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
             git_cmd + ["fetch", "origin", branch],
             cwd=PROJECT_ROOT,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
         )
         if fetch_result.returncode != 0:
             stderr = fetch_result.stderr.strip()
@@ -9599,7 +9736,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
             git_cmd + ["rev-parse", "--abbrev-ref", "HEAD"],
             cwd=PROJECT_ROOT,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             check=True,
         )
         current_branch = result.stdout.strip()
@@ -9622,7 +9759,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                 git_cmd + ["checkout", branch],
                 cwd=PROJECT_ROOT,
                 capture_output=True,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
             )
             if checkout_result.returncode != 0:
                 # Local checkout doesn't have this branch yet. Try to set
@@ -9633,7 +9770,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                     git_cmd + ["checkout", "-B", branch, f"origin/{branch}"],
                     cwd=PROJECT_ROOT,
                     capture_output=True,
-                    text=True,
+                    text=True, encoding="utf-8", errors="replace",
                 )
                 if track_result.returncode != 0:
                     # Restore the user's prior branch + stash before bailing
@@ -9664,7 +9801,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
             git_cmd + ["rev-list", f"HEAD..origin/{branch}", "--count"],
             cwd=PROJECT_ROOT,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             check=True,
         )
         commit_count = int(result.stdout.strip())
@@ -9690,7 +9827,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                     git_cmd + ["checkout", current_branch],
                     cwd=PROJECT_ROOT,
                     capture_output=True,
-                    text=True,
+                    text=True, encoding="utf-8", errors="replace",
                     check=False,
                 )
 
@@ -9779,7 +9916,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                 git_cmd + ["pull", "--ff-only", "origin", branch],
                 cwd=PROJECT_ROOT,
                 capture_output=True,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
             )
             if pull_result.returncode != 0:
                 # ff-only failed — local and remote have diverged (e.g. upstream
@@ -9792,7 +9929,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                     git_cmd + ["reset", "--hard", f"origin/{branch}"],
                     cwd=PROJECT_ROOT,
                     capture_output=True,
-                    text=True,
+                    text=True, encoding="utf-8", errors="replace",
                 )
                 if reset_result.returncode != 0:
                     print(f"✗ Failed to reset to origin/{branch}.")
@@ -9828,7 +9965,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                         git_cmd + ["reset", "--hard", pre_pull_sha],
                         cwd=PROJECT_ROOT,
                         capture_output=True,
-                        text=True,
+                        text=True, encoding="utf-8", errors="replace",
                     )
                     if rollback_result.returncode == 0:
                         print("  ✓ Rollback complete — your install is unchanged.")
@@ -9970,7 +10107,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
         # Electron build by ``jacky update``.
         desktop_dir = PROJECT_ROOT / "apps" / "desktop"
         has_desktop_app = _desktop_packaged_executable(desktop_dir) is not None or _desktop_dist_exists(desktop_dir)
-        from jacky_constants import find_node_executable
+        from jacky_cli.jacky_constants import find_node_executable
 
         if (desktop_dir / "package.json").exists() and find_node_executable("npm") and has_desktop_app:
             print("→ Checking if desktop app needs rebuilding...")
@@ -9989,7 +10126,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                 tail = "\n".join((build_result.stdout or "").strip().splitlines()[-15:])
                 if tail:
                     print(tail)
-                from jacky_constants import display_jacky_home as _dhh
+                from jacky_cli.jacky_constants import display_jacky_home as _dhh
                 print(f"  Full build log: {_dhh()}/logs/update.log")
             else:
                 print("  ✓ Desktop app up to date")
@@ -10019,7 +10156,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
         # attributes like display_jacky_home() added since the last release.
         try:
             import importlib
-            import jacky_constants as _hc
+            import jacky_cli.jacky_constants as _hc
 
             importlib.reload(_hc)
         except Exception:
@@ -10378,7 +10515,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                         _verify = subprocess.run(
                             scope_cmd_ + ["is-active", svc_name_],
                             capture_output=True,
-                            text=True,
+                            text=True, encoding="utf-8", errors="replace",
                             timeout=5,
                         )
                         if _verify.stdout.strip() == "active":
@@ -10412,7 +10549,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                             "--value",
                         ],
                         capture_output=True,
-                        text=True,
+                        text=True, encoding="utf-8", errors="replace",
                         timeout=5,
                     )
                 except (FileNotFoundError, subprocess.TimeoutExpired):
@@ -10507,7 +10644,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
             # systemd units without SIGUSR1 wiring this wait just times out
             # and we fall back to ``systemctl restart`` (the old behaviour).
             try:
-                from jacky_constants import (
+                from jacky_cli.jacky_constants import (
                     DEFAULT_GATEWAY_RESTART_DRAIN_TIMEOUT as _DEFAULT_DRAIN,
                 )
             except Exception:
@@ -10559,7 +10696,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                                 "--no-pager",
                             ],
                             capture_output=True,
-                            text=True,
+                            text=True, encoding="utf-8", errors="replace",
                             timeout=10,
                         )
                         for line in result.stdout.strip().splitlines():
@@ -10576,7 +10713,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                             check = subprocess.run(
                                 scope_cmd + ["is-active", svc_name],
                                 capture_output=True,
-                                text=True,
+                                text=True, encoding="utf-8", errors="replace",
                                 timeout=5,
                             )
                             if check.stdout.strip() != "active":
@@ -10609,7 +10746,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                                         "--value",
                                     ],
                                     capture_output=True,
-                                    text=True,
+                                    text=True, encoding="utf-8", errors="replace",
                                     timeout=5,
                                 )
                                 _main_pid = int((_show.stdout or "").strip() or 0)
@@ -10662,13 +10799,13 @@ def _cmd_update_impl(args, gateway_mode: bool):
                                     subprocess.run(
                                         _manage_cmd + ["reset-failed", svc_name],
                                         capture_output=True,
-                                        text=True,
+                                        text=True, encoding="utf-8", errors="replace",
                                         timeout=10,
                                     )
                                     subprocess.run(
                                         _manage_cmd + ["start", svc_name],
                                         capture_output=True,
-                                        text=True,
+                                        text=True, encoding="utf-8", errors="replace",
                                         timeout=15,
                                     )
                                     # Short poll: the gateway should be up
@@ -10751,13 +10888,13 @@ def _cmd_update_impl(args, gateway_mode: bool):
                             subprocess.run(
                                 _manage_cmd + ["reset-failed", svc_name],
                                 capture_output=True,
-                                text=True,
+                                text=True, encoding="utf-8", errors="replace",
                                 timeout=10,
                             )
                             restart = subprocess.run(
                                 _manage_cmd + ["restart", svc_name],
                                 capture_output=True,
-                                text=True,
+                                text=True, encoding="utf-8", errors="replace",
                                 timeout=15,
                             )
                             if restart.returncode == 0:
@@ -10783,13 +10920,13 @@ def _cmd_update_impl(args, gateway_mode: bool):
                                     subprocess.run(
                                         _manage_cmd + ["reset-failed", svc_name],
                                         capture_output=True,
-                                        text=True,
+                                        text=True, encoding="utf-8", errors="replace",
                                         timeout=10,
                                     )
                                     subprocess.run(
                                         _manage_cmd + ["restart", svc_name],
                                         capture_output=True,
-                                        text=True,
+                                        text=True, encoding="utf-8", errors="replace",
                                         timeout=15,
                                     )
                                     if _wait_for_service_active(
@@ -10839,7 +10976,7 @@ def _cmd_update_impl(args, gateway_mode: bool):
                         check = subprocess.run(
                             ["launchctl", "list", get_launchd_label()],
                             capture_output=True,
-                            text=True,
+                            text=True, encoding="utf-8", errors="replace",
                             timeout=5,
                         )
                         if check.returncode == 0:
@@ -11129,7 +11266,7 @@ def cmd_profile(args):
         _is_wrapper_dir_in_path,
         _get_wrapper_dir,
     )
-    from jacky_constants import display_jacky_home
+    from jacky_cli.jacky_constants import display_jacky_home
 
     action = getattr(args, "profile_action", None)
 
@@ -11365,7 +11502,7 @@ def cmd_profile(args):
         if name and not text_value and not auto_flag:
             try:
                 if _profiles_mod.normalize_profile_name(name) == "default":
-                    from jacky_constants import get_jacky_home as _hh
+                    from jacky_cli.jacky_constants import get_jacky_home as _hh
                     profile_dir = Path(_hh())
                 else:
                     profile_dir = _profiles_mod.get_profile_dir(name)
@@ -11388,7 +11525,7 @@ def cmd_profile(args):
         if text_value:
             try:
                 if _profiles_mod.normalize_profile_name(name) == "default":
-                    from jacky_constants import get_jacky_home as _hh
+                    from jacky_cli.jacky_constants import get_jacky_home as _hh
                     profile_dir = Path(_hh())
                 else:
                     profile_dir = _profiles_mod.get_profile_dir(name)
@@ -11881,7 +12018,7 @@ def _maybe_setup_dashboard_auth_interactively(args) -> None:
             "    jacky dashboard register\n"
             "  It provisions a Nous Portal OAuth client and writes "
             "JACKY_DASHBOARD_OAUTH_CLIENT_ID into ~/.jacky/.env for you.\n"
-            "  Docs: https://jacky-agent.nousresearch.com/docs/"
+            "  Docs: https://jaswanthsai1.github.io/jacky-cli/"
             "user-guide/features/web-dashboard#authentication-gated-mode"
         )
         sys.exit(0)
@@ -12050,7 +12187,7 @@ def cmd_dashboard(args):
         # and /opt/data for Docker (it strips a trailing profiles/<name>).
         # See the support report for the double-mount workaround this avoids.
         try:
-            from jacky_constants import get_default_jacky_root
+            from jacky_cli.jacky_constants import get_default_jacky_root
             env["JACKY_HOME"] = str(get_default_jacky_root())
         except Exception:
             # Best-effort: if root resolution fails, fall back to the prior
@@ -12070,7 +12207,7 @@ def cmd_dashboard(args):
     # Attach gui.log early so dashboard startup/build failures are captured in
     # the same logs directory as every other Jacky surface.
     try:
-        from jacky_logging import setup_logging as _setup_logging_gui
+        from jacky_cli.jacky_logging import setup_logging as _setup_logging_gui
         _setup_logging_gui(mode="gui")
     except Exception:
         pass
@@ -12641,7 +12778,7 @@ def cmd_memory(args):
         print("\n  ✓ Memory provider: built-in only")
         print("  Saved to config.yaml\n")
     elif sub == "reset":
-        from jacky_constants import get_jacky_home, display_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home, display_jacky_home
 
         mem_dir = get_jacky_home() / "memories"
         target = getattr(args, "target", "all")
@@ -12710,7 +12847,11 @@ def cmd_acp(args):
         acp_main(acp_argv)
     except ImportError:
         print("ACP dependencies not installed.", file=sys.stderr)
-        print("Install them with:  pip install -e '.[acp]'", file=sys.stderr)
+        # NOT `pip install -e '.[acp]'` — that's an editable-source-install
+        # flag that's meaningless (no local pyproject.toml to point `-e` at)
+        # for anyone who installed via `pip install jacky-cli` or the npm
+        # shim. `pip install "jacky-cli[acp]"` works for every install path.
+        print('Install them with:  pip install "jacky-cli[acp]"', file=sys.stderr)
         sys.exit(1)
 
 
@@ -12733,7 +12874,7 @@ def cmd_tools(args):
 
 def cmd_insights(args):
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         from agent.insights import InsightsEngine
 
         db = SessionDB()
@@ -12861,7 +13002,7 @@ def main():
             "Manage the fallback provider chain.  Fallback providers are tried "
             "in order when the primary model fails with rate-limit, overload, or "
             "connection errors.  See: "
-            "https://jacky-agent.nousresearch.com/docs/user-guide/features/fallback-providers"
+            "https://jaswanthsai1.github.io/jacky-cli/user-guide/features/fallback-providers"
         ),
     )
     fallback_subparsers = fallback_parser.add_subparsers(dest="fallback_command")
@@ -12895,7 +13036,7 @@ def main():
             "Pull API keys from an external secret manager at process startup "
             "instead of storing them in ~/.jacky/.env.  Supports Bitwarden "
             "Secrets Manager and 1Password.  See: "
-            "https://jacky-agent.nousresearch.com/docs/user-guide/secrets/"
+            "https://jaswanthsai1.github.io/jacky-cli/user-guide/secrets/"
         ),
     )
     secrets_subparsers = secrets_parser.add_subparsers(dest="secrets_command")
@@ -13418,7 +13559,7 @@ def main():
                     from jacky_cli.tools_config import _cua_driver_env
                     version = subprocess.run(
                         [path, "--version"],
-                        capture_output=True, text=True, timeout=5,
+                        capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5,
                         env=_cua_driver_env(),
                     ).stdout.strip()
                 except Exception:
@@ -13786,7 +13927,7 @@ def main():
         # exactly the case where SessionDB() can't open, so it operates on the
         # raw file path instead.
         if action == "repair":
-            from jacky_state import (
+            from jacky_cli.jacky_state import (
                 DEFAULT_DB_PATH,
                 _db_opens_cleanly,
                 repair_state_db_schema,
@@ -13812,7 +13953,7 @@ def main():
                     print(f"  backup: {report['backup_path']}")
                 print(f"  strategy: {report.get('strategy')}")
                 try:
-                    from jacky_state import SessionDB
+                    from jacky_cli.jacky_state import SessionDB
 
                     n = SessionDB()._conn.execute(
                         "SELECT COUNT(*) FROM sessions"
@@ -13828,7 +13969,7 @@ def main():
             return
 
         try:
-            from jacky_state import SessionDB
+            from jacky_cli.jacky_state import SessionDB
 
             db = SessionDB()
         except Exception as e:

@@ -12,7 +12,7 @@ import sys
 import shlex
 from pathlib import Path
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from jacky_cli.secret_prompt import masked_secret_prompt
 
 _CANCELLED = -1

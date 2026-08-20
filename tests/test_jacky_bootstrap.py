@@ -37,8 +37,8 @@ def _fresh_import():
     Drops any cached copy from sys.modules first so module-level code
     runs again and the platform check re-evaluates.
     """
-    sys.modules.pop("jacky_bootstrap", None)
-    import jacky_bootstrap  # noqa: WPS433
+    sys.modules.pop("jacky_cli.jacky_bootstrap", None)
+    import jacky_cli.jacky_bootstrap as jacky_bootstrap  # noqa: WPS433
     return jacky_bootstrap
 
 
@@ -240,12 +240,12 @@ class TestEntryPointsImportBootstrap:
     # Entry points that invoke Jacky as a process.  Each one must
     # import jacky_bootstrap before doing any file I/O or stdout writes.
     ENTRY_POINTS = [
-        "jacky_cli/main.py",   # jacky CLI (console_script)
-        "run_agent.py",          # jacky-agent (console_script)
-        "acp_adapter/entry.py",  # jacky-acp (console_script)
-        "gateway/run.py",        # gateway
-        "batch_runner.py",       # batch mode
-        "cli.py",                # legacy direct-launch CLI
+        "jacky_cli/main.py",         # jacky CLI (console_script)
+        "jacky_cli/run_agent.py",    # jacky-agent (console_script)
+        "acp_adapter/entry.py",      # jacky-acp (console_script)
+        "gateway/run.py",            # gateway
+        "jacky_cli/batch_runner.py", # batch mode
+        "jacky_cli/cli.py",          # legacy direct-launch CLI
     ]
 
     @pytest.mark.parametrize("path", ENTRY_POINTS)
@@ -305,11 +305,11 @@ class TestEntryPointsImportBootstrap:
         else:  # ImportFrom
             first_import_name = first_import_node.module or ""
 
-        assert first_import_name == "jacky_bootstrap", (
+        assert first_import_name in ("jacky_bootstrap", "jacky_cli.jacky_bootstrap"), (
             f"{path}: first top-level import is {first_import_name!r}, "
-            f"but it must be 'jacky_bootstrap' so UTF-8 stdio is "
-            f"configured before anything else initializes.  Move the "
-            f"'import jacky_bootstrap' line to be the first import."
+            f"but it must be 'jacky_bootstrap' (or 'jacky_cli.jacky_bootstrap') "
+            f"so UTF-8 stdio is configured before anything else initializes. "
+            f"Move the 'import jacky_bootstrap' line to be the first import."
         )
 
 
@@ -381,8 +381,9 @@ class TestHardenImportPath:
                 os.environ["JACKY_PYTHON_SRC_ROOT"] = original_env
 
     def test_defaults_to_module_dir(self):
-        # With neither arg nor env var, the helper anchors on the bootstrap
-        # module's own directory — the repo root for shipped entry points.
+        # With neither arg nor env var, the helper anchors on the parent of
+        # the jacky_cli package the bootstrap module lives in — the repo
+        # root / site-packages root for shipped entry points.
         hb = _fresh_import()
         original = sys.path[:]
         original_env = os.environ.get("JACKY_PYTHON_SRC_ROOT")
@@ -390,7 +391,7 @@ class TestHardenImportPath:
             sys.path[:] = ["", "/somewhere/else"]
             os.environ.pop("JACKY_PYTHON_SRC_ROOT", None)
             hb.harden_import_path()
-            expected = os.path.dirname(os.path.abspath(hb.__file__))
+            expected = os.path.dirname(os.path.dirname(os.path.abspath(hb.__file__)))
             assert sys.path[0] == expected
         finally:
             sys.path[:] = original

@@ -37,7 +37,7 @@ def fake_jacky(tmp_path, monkeypatch):
 
     monkeypatch.setenv("JACKY_HOME", str(sec_home))
 
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
     monkeypatch.setattr(jacky_constants, "get_default_jacky_root", lambda: root)
 
     import agent.file_safety as fs

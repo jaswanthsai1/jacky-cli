@@ -45,6 +45,9 @@ echo -e "${BOLD}${CYAN}Jacky CLI — Setup${NC}"
 echo ""
 
 # ---- 1. Find a Python interpreter (>=3.11, <3.14) ----------------------
+# If nothing suitable is found, this offers to install one automatically
+# via whatever package manager is on the system (apt/dnf/yum/pacman/zypper/
+# apk/brew) — but only after asking, never silently.
 info "Looking for a Python 3.11-3.13 interpreter..."
 PYTHON_BIN=""
 for candidate in python3.13 python3.12 python3.11 python3; do
@@ -56,14 +59,104 @@ for candidate in python3.13 python3.12 python3.11 python3; do
   fi
 done
 
+confirm() {
+  # Interactive-only. Non-interactive shells (CI, piped installs) get a
+  # clear instruction instead of a hang or a silent auto-yes.
+  if [ ! -t 0 ]; then
+    return 1
+  fi
+  local prompt="$1"
+  read -r -p "$prompt [y/N] " reply </dev/tty || return 1
+  case "$reply" in [yY]|[yY][eE][sS]) return 0 ;; *) return 1 ;; esac
+}
+
 if [ -z "$PYTHON_BIN" ]; then
-  fail "No usable Python interpreter found (need 3.11, 3.12, or 3.13)."
-  echo "  Install one, e.g.:"
-  echo "    Ubuntu/Debian: sudo apt install python3.11 python3.11-venv"
-  echo "    macOS (brew):  brew install python@3.11"
-  exit 1
+  warn "No usable Python interpreter found (need 3.11, 3.12, or 3.13)."
+  PKG_CMD=""
+  PKG_LABEL=""
+  if command -v apt-get >/dev/null 2>&1; then
+    PKG_CMD="sudo apt-get update && sudo apt-get install -y python3.11 python3.11-venv"
+    PKG_LABEL="apt (Debian/Ubuntu)"
+  elif command -v dnf >/dev/null 2>&1; then
+    PKG_CMD="sudo dnf install -y python3.11"
+    PKG_LABEL="dnf (Fedora/RHEL)"
+  elif command -v yum >/dev/null 2>&1; then
+    PKG_CMD="sudo yum install -y python3.11"
+    PKG_LABEL="yum (RHEL/CentOS)"
+  elif command -v pacman >/dev/null 2>&1; then
+    PKG_CMD="sudo pacman -Sy --noconfirm python"
+    PKG_LABEL="pacman (Arch)"
+  elif command -v zypper >/dev/null 2>&1; then
+    PKG_CMD="sudo zypper install -y python311"
+    PKG_LABEL="zypper (openSUSE)"
+  elif command -v apk >/dev/null 2>&1; then
+    PKG_CMD="sudo apk add python3"
+    PKG_LABEL="apk (Alpine)"
+  elif command -v brew >/dev/null 2>&1; then
+    PKG_CMD="brew install python@3.11"
+    PKG_LABEL="Homebrew (macOS)"
+  fi
+
+  if [ -n "$PKG_CMD" ]; then
+    echo "  This can be installed automatically via $PKG_LABEL:"
+    echo "    $PKG_CMD"
+    if confirm "Install it now?"; then
+      info "Running: $PKG_CMD"
+      if eval "$PKG_CMD"; then
+        ok "Python installed."
+      else
+        fail "Automatic install failed. Run the command above manually, then re-run ./setup.sh."
+        exit 1
+      fi
+      for candidate in python3.13 python3.12 python3.11 python3; do
+        if command -v "$candidate" >/dev/null 2>&1; then
+          ver="$("$candidate" -c 'import sys; print("%d.%d" % sys.version_info[:2])' 2>/dev/null || echo "")"
+          case "$ver" in
+            3.11|3.12|3.13) PYTHON_BIN="$candidate"; break ;;
+          esac
+        fi
+      done
+    fi
+  else
+    echo "  No known package manager detected — install one manually, e.g.:"
+    echo "    Ubuntu/Debian: sudo apt install python3.11 python3.11-venv"
+    echo "    macOS (brew):  brew install python@3.11"
+  fi
+
+  if [ -z "$PYTHON_BIN" ]; then
+    fail "No usable Python interpreter available. Install Python 3.11-3.13 and re-run ./setup.sh."
+    exit 1
+  fi
 fi
 ok "Using $($PYTHON_BIN --version) at $(command -v "$PYTHON_BIN")"
+
+# ---- 1b. Make sure the venv module actually works ----------------------
+# Debian/Ubuntu split `python3-venv` out of the base python3 package, so
+# `python3 -m venv` can fail even though python3 itself is present. Same
+# approval-gated auto-install pattern as above.
+if ! "$PYTHON_BIN" -m venv --help >/dev/null 2>&1; then
+  warn "$PYTHON_BIN found, but its 'venv' module isn't available."
+  VENV_PKG_CMD=""
+  if command -v apt-get >/dev/null 2>&1; then
+    PYVER="$("$PYTHON_BIN" -c 'import sys; print("%d.%d" % sys.version_info[:2])')"
+    VENV_PKG_CMD="sudo apt-get install -y python${PYVER}-venv"
+  fi
+  if [ -n "$VENV_PKG_CMD" ]; then
+    echo "  This can be installed automatically:"
+    echo "    $VENV_PKG_CMD"
+    if confirm "Install it now?"; then
+      info "Running: $VENV_PKG_CMD"
+      eval "$VENV_PKG_CMD" || { fail "Automatic install failed. Run the command above manually, then re-run ./setup.sh."; exit 1; }
+      ok "venv module installed."
+    else
+      fail "The venv module is required. Install it, then re-run ./setup.sh."
+      exit 1
+    fi
+  else
+    fail "Install your platform's Python venv package, then re-run ./setup.sh."
+    exit 1
+  fi
+fi
 
 # ---- 2. Create the virtual environment ---------------------------------
 VENV_DIR="$SCRIPT_DIR/.venv"
@@ -165,6 +258,6 @@ echo "     a cloud API key — see README.md for both paths)."
 echo "  2. Run: jacky"
 echo "     (or, without touching PATH: .venv/bin/jacky)"
 echo "  3. Using Claude Code, Codex, or another coding agent? This repo"
-echo "     ships METHODOLOGY.md and skills/ with a bundled offensive-"
-echo "     security hunt-loop methodology — see METHODOLOGY.md."
+echo "     ships docs/METHODOLOGY.md and skills/ with a bundled offensive-"
+echo "     security hunt-loop methodology — see docs/METHODOLOGY.md."
 echo ""

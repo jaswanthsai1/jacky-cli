@@ -25,7 +25,7 @@ def deepseek_profile():
     """
     # ``model_tools`` triggers plugin discovery on import, which is what
     # registers the DeepSeek profile in the global provider registry.
-    import model_tools  # noqa: F401
+    import jacky_cli.model_tools as model_tools  # noqa: F401
     import providers
 
     profile = providers.get_provider_profile("deepseek")

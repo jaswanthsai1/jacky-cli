@@ -29,6 +29,13 @@ exposed until the process restarts.
 The messaging client (Discord/Telegram/Feishu/...) is incidental: the trigger is
 a fresh import on a stale process, not the platform. We assert that below by
 reproducing the failure with the Discord adapter's exact import line.
+
+NOTE: ``utils.py`` was relocated to ``jacky_cli/utils.py`` (root-Python-modules
+cleanup). The historical incident above predates that move and named the
+bare top-level ``utils`` module; the hazard itself -- a long-running process
+holding a stale cached module object after ``git pull`` updates the file on
+disk -- is unchanged and still real for ``jacky_cli.utils``, so this test now
+exercises the current import path instead of the pre-move one.
 """
 
 import sys
@@ -50,8 +57,9 @@ def _import_fresh_consumer(name: str, source: str) -> types.ModuleType:
 
 class TestStaleUtilsModuleImport:
     def test_fresh_consumer_import_fails_against_stale_utils(self, monkeypatch):
-        """The bug: stale in-memory ``utils`` + fresh ``from utils import env_float``."""
-        import utils
+        """The bug: stale in-memory ``jacky_cli.utils`` + fresh ``from
+        jacky_cli.utils import env_float``."""
+        import jacky_cli.utils as utils
 
         # Sanity: today's on-disk source is healthy.
         assert hasattr(utils, "env_float")
@@ -59,32 +67,32 @@ class TestStaleUtilsModuleImport:
         # Simulate the pre-06-20 cached module (monkeypatch auto-restores after).
         monkeypatch.delattr(utils, "env_float")
 
-        with pytest.raises(ImportError, match=r"cannot import name 'env_float' from 'utils'"):
-            _import_fresh_consumer("stale_switch_path_consumer", "from utils import env_float\n")
+        with pytest.raises(ImportError, match=r"cannot import name 'env_float' from 'jacky_cli\.utils'"):
+            _import_fresh_consumer("stale_switch_path_consumer", "from jacky_cli.utils import env_float\n")
 
     def test_client_is_incidental_discord_import_line_fails_identically(self, monkeypatch):
         """Same failure via the Discord adapter's exact import line -- the client
         does not determine the bug, the stale process does."""
-        import utils
+        import jacky_cli.utils as utils
 
         monkeypatch.delattr(utils, "env_float")
 
-        # plugins/platforms/discord/adapter.py:106
-        with pytest.raises(ImportError, match=r"cannot import name 'env_float' from 'utils'"):
+        # plugins/platforms/discord/adapter.py:110
+        with pytest.raises(ImportError, match=r"cannot import name 'env_float' from 'jacky_cli\.utils'"):
             _import_fresh_consumer(
                 "stale_discord_consumer",
-                "from utils import atomic_json_write, env_float\n",
+                "from jacky_cli.utils import atomic_json_write, env_float\n",
             )
 
     def test_healthy_process_imports_consumer_fine(self):
-        """Control: when the cached ``utils`` matches disk (env_float present),
-        the same consumer import succeeds -- proving the harness isolates the
-        staleness, not an unrelated import error."""
-        import utils
+        """Control: when the cached ``jacky_cli.utils`` matches disk (env_float
+        present), the same consumer import succeeds -- proving the harness
+        isolates the staleness, not an unrelated import error."""
+        import jacky_cli.utils as utils
 
         assert hasattr(utils, "env_float")
         mod = _import_fresh_consumer(
             "healthy_consumer",
-            "from utils import env_float\nVALUE = env_float('UNSET_FOR_TEST', 1.5)\n",
+            "from jacky_cli.utils import env_float\nVALUE = env_float('UNSET_FOR_TEST', 1.5)\n",
         )
         assert mod.VALUE == 1.5

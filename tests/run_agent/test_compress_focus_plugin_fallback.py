@@ -10,7 +10,7 @@ on older plugins.
 from unittest.mock import MagicMock
 
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 def _make_agent_with_engine(engine):

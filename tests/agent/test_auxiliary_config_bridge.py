@@ -311,7 +311,7 @@ class TestCLIDefaultsHaveAuxiliaryKeys:
         # carries over keys from file_config that aren't in defaults.
         # So auxiliary config from config.yaml gets merged even though
         # cli.py's defaults dict doesn't define it.
-        import cli as _cli_mod
+        import jacky_cli.cli as _cli_mod
         # See note in test_gateway_has_auxiliary_bridge — pin UTF-8 so the
         # test runs on Windows where the default locale is cp1252.
         source = Path(_cli_mod.__file__).read_text(encoding="utf-8")

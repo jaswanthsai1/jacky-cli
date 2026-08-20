@@ -211,7 +211,7 @@ def test_real_handler_uses_os_exit_for_kanban_workers():
     import pathlib
 
     cli_path = (
-        pathlib.Path(__file__).resolve().parent.parent.parent / "cli.py"
+        pathlib.Path(__file__).resolve().parent.parent.parent / "jacky_cli" / "cli.py"
     )
     src = cli_path.read_text()
     # Locate the handler body.

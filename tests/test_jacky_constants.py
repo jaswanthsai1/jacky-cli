@@ -6,8 +6,8 @@ from types import SimpleNamespace
 
 import pytest
 
-import jacky_constants
-from jacky_constants import (
+import jacky_cli.jacky_constants as jacky_constants
+from jacky_cli.jacky_constants import (
     VALID_REASONING_EFFORTS,
     agent_browser_runnable,
     find_jacky_node_executable,

@@ -2,7 +2,7 @@
 from unittest.mock import patch, MagicMock
 
 
-from toolsets import resolve_toolset, get_toolset, validate_toolset
+from jacky_cli.toolsets import resolve_toolset, get_toolset, validate_toolset
 
 
 class TestJackyApiServerToolset:
@@ -128,7 +128,7 @@ class TestApiServerAdapterToolset:
         with patch("gateway.run._resolve_runtime_agent_kwargs") as mock_kwargs, \
              patch("gateway.run._resolve_gateway_model") as mock_model, \
              patch("gateway.run._load_gateway_config") as mock_config, \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
 
             mock_kwargs.return_value = {"api_key": "test-key", "base_url": None,
                                         "provider": None, "api_mode": None,
@@ -158,7 +158,7 @@ class TestApiServerAdapterToolset:
         with patch("gateway.run._resolve_runtime_agent_kwargs") as mock_kwargs, \
              patch("gateway.run._resolve_gateway_model") as mock_model, \
              patch("gateway.run._load_gateway_config") as mock_config, \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
 
             mock_kwargs.return_value = {"api_key": "test-key", "base_url": None,
                                         "provider": None, "api_mode": None,

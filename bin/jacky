@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
 # ┌──────────────────────────────────────────────────────────────────────────┐
 # │  jacky — dedicated CLI for the Jacky offensive-security agent             │
-# │  (Hermes core · local JACKY model · offline-capable · shared-state aware) │
+# │  (local JACKY model · offline-capable · shared-state aware)               │
 # └──────────────────────────────────────────────────────────────────────────┘
+#
+# NOTE: the Jacky persona (banner + jacky-doctrine skill + self-identification)
+# is guaranteed by `jacky_cli/main.py` itself now (see `_resolve_persona_skills`
+# in jacky_cli/main.py) -- every invocation of the real `jacky` console script
+# preloads it by default, regardless of provider. The --skills flag below is
+# kept for explicitness/back-compat but is no longer load-bearing for that.
 set -uo pipefail
 export PATH="$HOME/.local/bin:$HOME/go/bin:/usr/local/bin:/usr/bin:/bin:/usr/lib/wsl/lib:$PATH"
 
 # ── load user API keys (each key set here lights up that provider in /model) ──
-KEYS_FILE="$HOME/.hermes/jacky-keys.env"
+KEYS_FILE="$HOME/.jacky/jacky-keys.env"
 if [ -f "$KEYS_FILE" ]; then
   set -a; . "$KEYS_FILE"; set +a
   # auto-wire OpenAI-compatible providers (nvidia/together/fireworks/…) from keys
@@ -15,7 +21,7 @@ if [ -f "$KEYS_FILE" ]; then
 fi
 
 JACKY_MODEL="${JACKY_MODEL:-JACKY:latest}"
-PLUGIN_DIR="$HOME/.hermes/plugins"
+PLUGIN_DIR="$HOME/.jacky/plugins"
 PRELOAD_SKILLS="jacky-doctrine"
 
 # ── colors ────────────────────────────────────────────────────────────────────
@@ -61,10 +67,10 @@ surface_up() {
 engine() {  # engine <handler_suffix> <json-args>
   python3 - "$@" <<'PY'
 import sys, json, importlib.util, os
-sys.path.insert(0, os.path.expanduser("~/.hermes/plugins"))
+sys.path.insert(0, os.path.expanduser("~/.jacky/plugins"))
 spec = importlib.util.spec_from_file_location("jacky_offensive_pkg",
-    os.path.expanduser("~/.hermes/plugins/jacky-offensive/__init__.py"),
-    submodule_search_locations=[os.path.expanduser("~/.hermes/plugins/jacky-offensive")])
+    os.path.expanduser("~/.jacky/plugins/jacky-offensive/__init__.py"),
+    submodule_search_locations=[os.path.expanduser("~/.jacky/plugins/jacky-offensive")])
 mod = importlib.util.module_from_spec(spec); sys.modules["jacky_offensive_pkg"]=mod
 spec.loader.exec_module(mod)
 from jacky_offensive_pkg import tools as T
@@ -133,7 +139,7 @@ while :; do
     *) break ;;
   esac
 done
-# Toggle the Caido MCP server (66 tools) in config.yaml. Hermes injects every
+# Toggle the Caido MCP server (66 tools) in config.yaml. Jacky injects every
 # CONNECTED MCP server's tools regardless of --toolsets, so the only way to keep
 # the local 14B's prompt small enough to tool-call is to disable the caido MCP for
 # local runs. Cloud (MiniMax, huge ctx) keeps it. Atomic write; default-safe = off.
@@ -141,7 +147,7 @@ caido_mcp() {  # caido_mcp on|off
   python3 - "$1" <<'PY'
 import sys,os,re,tempfile
 want = sys.argv[1] == "on"; newval = "true" if want else "false"
-cfg = os.path.expanduser("~/.hermes/config.yaml")
+cfg = os.path.expanduser("~/.jacky/config.yaml")
 lines = open(cfg).read().splitlines(keepends=True)
 changed=False
 for i,l in enumerate(lines):
@@ -161,12 +167,12 @@ PY
 }
 
 # Temporarily disable global fallback models (like big-pickle) for jacky --cloud runs,
-# keeping it enabled for direct hermes commands (like hermes --resume).
+# keeping it enabled for direct jacky commands (like jacky --resume).
 disable_fallbacks() {
   python3 <<'PY'
 import os, re, tempfile
-cfg = os.path.expanduser("~/.hermes/config.yaml")
-bak = os.path.expanduser("~/.hermes/config.yaml.bak.fallbacks")
+cfg = os.path.expanduser("~/.jacky/config.yaml")
+bak = os.path.expanduser("~/.jacky/config.yaml.bak.fallbacks")
 if os.path.exists(cfg):
     # Back up first
     open(bak, "w").write(open(cfg).read())
@@ -183,9 +189,9 @@ PY
 }
 
 enable_fallbacks() {
-  bak=~/.hermes/config.yaml.bak.fallbacks
+  bak=~/.jacky/config.yaml.bak.fallbacks
   if [ -f "$bak" ]; then
-    mv "$bak" ~/.hermes/config.yaml
+    mv "$bak" ~/.jacky/config.yaml
   fi
 }
 if [ "$USE_CLOUD" = "1" ]; then
@@ -205,7 +211,7 @@ if [ "$USE_CLOUD" = "1" ]; then
 else
   PROVIDER_ARGS=(--provider custom:ollama-local --model "$JACKY_MODEL")
   # local models have a 64K ctx — full tool dump (120 tools/~42K tok) overflows input and
-  # kills tool-calling. Lean toolset (hermes-cli + jacky) + Caido MCP off -> ~33K in -> works.
+  # kills tool-calling. Lean toolset (jacky-cli + jacky) + Caido MCP off -> ~33K in -> works.
   TOOLSET_ARGS=()
   caido_mcp off
 fi
@@ -214,12 +220,12 @@ CMD="${1:-chat}"; [ $# -gt 0 ] && shift || true
 
 case "$CMD" in
   help|-h|--help)        usage ;;
-  version|-V|--version)  banner; echo; hermes --version 2>/dev/null | sed "s/^/${GRY}hermes ${R}/"; echo "${GRY}plugin ${R}$(grep -m1 '^version:' "$PLUGIN_DIR/jacky-offensive/plugin.yaml" | awk '{print $2}')" ;;
+  version|-V|--version)  banner; echo; jacky --version 2>/dev/null | sed "s/^/${GRY}jacky ${R}/"; echo "${GRY}plugin ${R}$(grep -m1 '^version:' "$PLUGIN_DIR/jacky-offensive/plugin.yaml" | awk '{print $2}')" ;;
 
   up)      echo "${CYN}» bringing offensive surface up...${R}"; surface_up; echo "${GRN}✓ camofox + Caido (best-effort)${R}" ;;
   status)  agent-sync status 2>/dev/null || echo "${RED}bridge unavailable${R}" ;;
-  tools)   echo "${B}${CYN}Jacky toolset${R}"; hermes tools list 2>/dev/null | grep -iE "jacky" || echo "(run 'hermes plugins enable jacky-offensive')" ;;
-  skills)  hermes skills list 2>/dev/null ;;
+  tools)   echo "${B}${CYN}Jacky toolset${R}"; jacky tools list 2>/dev/null | grep -iE "jacky" || echo "(run 'jacky plugins enable jacky-offensive')" ;;
+  skills)  jacky skills list 2>/dev/null ;;
   keys)
     echo "${B}${CYN}Jacky API keys${R}  ${DIM}$KEYS_FILE${R}"
     echo "${DIM}edit the file, add a key, relaunch jacky, then type /model to pick that provider's models${R}"
@@ -231,7 +237,7 @@ case "$CMD" in
     done
     echo "  ${GRN}✓${R} tokenrouter/DeepSeek-V4-Flash-Free ${GRY}(preconfigured in config.yaml)${R}"
     [ "$found" = "0" ] && echo "  ${YEL}(no extra keys yet — open $KEYS_FILE and add one)${R}"
-    echo "${DIM}open it:  nano $KEYS_FILE   (or:  ! nano ~/.hermes/jacky-keys.env)${R}" ;;
+    echo "${DIM}open it:  nano $KEYS_FILE   (or:  ! nano ~/.jacky/jacky-keys.env)${R}" ;;
   models)
     echo "${B}${CYN}Jacky brains${R} ${DIM}(one runs at a time — selecting evicts the other)${R}"
     loaded=$(ollama ps 2>/dev/null | awk 'NR>1{print $1}')
@@ -306,25 +312,25 @@ PY
     echo "${CYN}» ${CMD} ${B}$TARGET${R}${DIM} — bringing surface up…${R}"
     surface_up
     command -v hunt-workspace >/dev/null 2>&1 && hunt-workspace "$TARGET" >/dev/null 2>&1 || true
-    agent-sync presence --actor hermes --status running --target "$TARGET" >/dev/null 2>&1 || true
-    hermes chat "${PROVIDER_ARGS[@]}" "${TOOLSET_ARGS[@]}" --skills "$PRELOAD_SKILLS" "$@" \
+    agent-sync presence --actor jacky --status running --target "$TARGET" >/dev/null 2>&1 || true
+    jacky chat "${PROVIDER_ARGS[@]}" "${TOOLSET_ARGS[@]}" --skills "$PRELOAD_SKILLS" "$@" \
       -q "Hunt target '$TARGET'. First run agent-sync status and read ~/engagements/$TARGET/NOTEBOOK.md + the latest handoff. Then DRIVE THE ENGINE: jacky_ptt init $TARGET (or show if it exists), then loop jacky_ptt next -> run the recommended tool -> jacky_ptt done/fail, never repeating tried attacks, until findings are validated. Continue from the documented next action if resuming."
     ;;
 
   ask)
     [ $# -ge 1 ] || { echo 'usage: jacky ask "..."'; exit 1; }
-    surface_up; hermes chat "${PROVIDER_ARGS[@]}" "${TOOLSET_ARGS[@]}" --skills "$PRELOAD_SKILLS" -q "$*" ;;
+    surface_up; jacky chat "${PROVIDER_ARGS[@]}" "${TOOLSET_ARGS[@]}" --skills "$PRELOAD_SKILLS" -q "$*" ;;
 
   doctor)
     banner; echo
     echo "${B}model${R}    $(ollama list 2>/dev/null | grep -qi "${JACKY_MODEL%%:*}" && echo "${GRN}✓ $JACKY_MODEL${R}" || echo "${RED}✗ not found${R}")"
-    echo "${B}plugin${R}   $(hermes tools list 2>/dev/null | grep -qi 'enabled.*jacky' && echo "${GRN}✓ enabled${R}" || echo "${RED}✗ disabled${R}")"
+    echo "${B}plugin${R}   $(jacky tools list 2>/dev/null | grep -qi 'enabled.*jacky' && echo "${GRN}✓ enabled${R}" || echo "${RED}✗ disabled${R}")"
     echo "${B}camofox${R}  $(curl -s -m2 -o /dev/null -w '%{http_code}' http://localhost:9377/ 2>/dev/null | grep -qE '[2-4]' && echo "${GRN}✓ up${R}" || echo "${YEL}- down (jacky up)${R}")"
     echo "${B}caido${R}    $(curl -s -m2 -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/ 2>/dev/null | grep -qE '[2-4]' && echo "${GRN}✓ up${R}" || echo "${YEL}- down (jacky up)${R}")"
     echo "${B}bridge${R}   $(agent-sync status >/dev/null 2>&1 && echo "${GRN}✓ ok${R}" || echo "${YEL}- unavailable${R}")"
-    echo "${B}tools${R}    $(hermes tools list 2>/dev/null | grep -ci jacky) jacky entries"
+    echo "${B}tools${R}    $(jacky tools list 2>/dev/null | grep -ci jacky) jacky entries"
     ;;
 
-  chat)    surface_up; hermes chat "${PROVIDER_ARGS[@]}" "${TOOLSET_ARGS[@]}" --skills "$PRELOAD_SKILLS" "$@" ;;
-  *)       surface_up; hermes chat "${PROVIDER_ARGS[@]}" "${TOOLSET_ARGS[@]}" --skills "$PRELOAD_SKILLS" -q "$CMD $*" ;;
+  chat)    surface_up; jacky chat "${PROVIDER_ARGS[@]}" "${TOOLSET_ARGS[@]}" --skills "$PRELOAD_SKILLS" "$@" ;;
+  *)       surface_up; jacky chat "${PROVIDER_ARGS[@]}" "${TOOLSET_ARGS[@]}" --skills "$PRELOAD_SKILLS" -q "$CMD $*" ;;
 esac

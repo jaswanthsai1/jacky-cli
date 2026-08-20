@@ -203,7 +203,7 @@ class VideoGenProvider(abc.ABC):
 
 def _videos_cache_dir() -> Path:
     """Return ``$JACKY_HOME/cache/videos/``, creating parents as needed."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     path = get_jacky_home() / "cache" / "videos"
     path.mkdir(parents=True, exist_ok=True)

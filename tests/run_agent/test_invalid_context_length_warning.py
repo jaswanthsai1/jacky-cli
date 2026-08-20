@@ -3,7 +3,7 @@
 from unittest.mock import patch
 
 
-def _build_agent(model_cfg, custom_providers=None, model="anthropic/claude-opus-4.6"):
+def _build_agent(model_cfg, custom_providers=None, model="gpt5.4"):
     """Build an AIAgent with the given model config."""
     cfg = {"model": model_cfg}
     if custom_providers is not None:
@@ -14,11 +14,21 @@ def _build_agent(model_cfg, custom_providers=None, model="anthropic/claude-opus-
     with (
         patch("jacky_cli.config.load_config", return_value=cfg),
         patch("agent.model_metadata.get_model_context_length", return_value=128_000),
-        patch("run_agent.get_tool_definitions", return_value=[]),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        # ContextCompressor imports get_model_context_length into its own
+        # module namespace at import time, so patching agent.model_metadata's
+        # copy alone doesn't cover it — without this, agent init falls
+        # through to a real (slow-to-refuse) network probe against the
+        # localhost base_url.
+        patch("agent.context_compressor.get_model_context_length", return_value=128_000),
+        # agent_init also probes the local base_url to detect an Ollama
+        # server (query_ollama_num_ctx -> detect_local_server_type), a real
+        # network call that's slow to fail against a non-listening test URL.
+        patch("agent.agent_init.query_ollama_num_ctx", return_value=None),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             model=model,
@@ -33,7 +43,7 @@ def _build_agent(model_cfg, custom_providers=None, model="anthropic/claude-opus-
 
 def test_valid_integer_context_length_no_warning():
     """Plain integer context_length should work silently."""
-    with patch("run_agent.logger") as mock_logger:
+    with patch("jacky_cli.run_agent.logger") as mock_logger:
         agent = _build_agent({"default": "gpt5.4", "provider": "custom",
                               "base_url": "http://localhost:4000/v1",
                               "context_length": 256000})
@@ -45,7 +55,7 @@ def test_valid_integer_context_length_no_warning():
 
 def test_string_k_suffix_context_length_warns():
     """context_length: '256K' should warn the user clearly."""
-    with patch("run_agent.logger") as mock_logger:
+    with patch("jacky_cli.run_agent.logger") as mock_logger:
         agent = _build_agent({"default": "gpt5.4", "provider": "custom",
                               "base_url": "http://localhost:4000/v1",
                               "context_length": "256K"})
@@ -59,7 +69,7 @@ def test_string_k_suffix_context_length_warns():
 
 def test_string_numeric_context_length_works():
     """context_length: '256000' (string) should parse fine via int()."""
-    with patch("run_agent.logger") as mock_logger:
+    with patch("jacky_cli.run_agent.logger") as mock_logger:
         agent = _build_agent({"default": "gpt5.4", "provider": "custom",
                               "base_url": "http://localhost:4000/v1",
                               "context_length": "256000"})
@@ -79,7 +89,7 @@ def test_custom_providers_invalid_context_length_warns():
             },
         }
     ]
-    with patch("run_agent.logger") as mock_logger:
+    with patch("jacky_cli.run_agent.logger") as mock_logger:
         agent = _build_agent(
             {"default": "gpt5.4", "provider": "custom",
              "base_url": "http://localhost:4000/v1"},
@@ -103,7 +113,7 @@ def test_custom_providers_valid_context_length():
             },
         }
     ]
-    with patch("run_agent.logger") as mock_logger:
+    with patch("jacky_cli.run_agent.logger") as mock_logger:
         agent = _build_agent(
             {"default": "gpt5.4", "provider": "custom",
              "base_url": "http://localhost:4000/v1"},

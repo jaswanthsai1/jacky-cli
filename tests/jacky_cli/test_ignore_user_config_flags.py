@@ -67,7 +67,7 @@ class TestIgnoreUserConfigEnvGate:
 
     def _reload_cli(self, monkeypatch, tmp_path):
         """Point cli._jacky_home at tmp_path and return a fresh load_cli_config."""
-        import cli
+        import jacky_cli.cli as cli
         monkeypatch.setattr(cli, "_jacky_home", tmp_path)
         return cli.load_cli_config
 
@@ -125,7 +125,7 @@ class TestIgnoreRulesEnvGate:
 
         # Import JackyCLI lazily — cli.py has heavy module-init side effects
         # that we don't want to run at test collection time.
-        import cli
+        import jacky_cli.cli as cli
         importlib.reload(cli)
 
         # Build only enough of JackyCLI to reach the ignore_rules assignment.
@@ -141,7 +141,7 @@ class TestIgnoreRulesEnvGate:
 
     def test_constructor_flag_alone_enables_ignore_rules(self, monkeypatch):
         monkeypatch.delenv("JACKY_IGNORE_RULES", raising=False)
-        import cli
+        import jacky_cli.cli as cli
         obj = object.__new__(cli.JackyCLI)
         ignore_rules = True  # constructor argument
         obj.ignore_rules = ignore_rules or os.environ.get("JACKY_IGNORE_RULES") == "1"
@@ -149,7 +149,7 @@ class TestIgnoreRulesEnvGate:
 
     def test_neither_flag_nor_env_leaves_rules_enabled(self, monkeypatch):
         monkeypatch.delenv("JACKY_IGNORE_RULES", raising=False)
-        import cli
+        import jacky_cli.cli as cli
         obj = object.__new__(cli.JackyCLI)
         ignore_rules = False
         obj.ignore_rules = ignore_rules or os.environ.get("JACKY_IGNORE_RULES") == "1"

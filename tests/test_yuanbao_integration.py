@@ -287,7 +287,7 @@ class TestToolset:
     def test_yuanbao_toolset_registered(self):
         """toolsets.py 中存在 jacky-yuanbao 键"""
         import importlib
-        ts = importlib.import_module("toolsets")
+        ts = importlib.import_module("jacky_cli.toolsets")
         assert hasattr(ts, "TOOLSETS") or hasattr(ts, "toolsets")
         toolsets_dict = getattr(ts, "TOOLSETS", getattr(ts, "toolsets", {}))
         assert "jacky-yuanbao" in toolsets_dict

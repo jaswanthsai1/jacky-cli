@@ -197,7 +197,7 @@ def test_status_fn_empty_selection():
         pytest.skip("tiktoken unavailable")
 
     from jacky_cli.tools_config import CONFIGURABLE_TOOLSETS
-    from toolsets import resolve_toolset
+    from jacky_cli.toolsets import resolve_toolset
 
     ts_keys = [ts_key for ts_key, _, _ in CONFIGURABLE_TOOLSETS]
 
@@ -266,7 +266,7 @@ def test_registry_get_schema_returns_schema():
     from tools.registry import registry
 
     # Import to trigger discovery
-    import model_tools  # noqa: F401
+    import jacky_cli.model_tools as model_tools  # noqa: F401
 
     schema = registry.get_schema("terminal")
     assert schema is not None

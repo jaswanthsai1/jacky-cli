@@ -1566,7 +1566,7 @@ def _sessions_list(_engine: JackyConsoleEngine, args: list[str]) -> str:
     if ns.limit < 1 or ns.limit > 200:
         raise ConsoleCommandError("sessions list --limit must be between 1 and 200")
 
-    from jacky_state import SessionDB
+    from jacky_cli.jacky_state import SessionDB
 
     db = SessionDB()
     try:
@@ -1582,7 +1582,7 @@ def _sessions_list(_engine: JackyConsoleEngine, args: list[str]) -> str:
 
 def _sessions_stats(_engine: JackyConsoleEngine, args: list[str]) -> str:
     _expect_no_args(args, "sessions stats")
-    from jacky_state import SessionDB
+    from jacky_cli.jacky_state import SessionDB
 
     db = SessionDB()
     try:
@@ -1653,7 +1653,7 @@ def _sessions_export(_engine: JackyConsoleEngine, args: list[str]) -> str:
     ns = parser.parse_args(args)
 
     def _run() -> None:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1690,7 +1690,7 @@ def _sessions_rename(_engine: JackyConsoleEngine, args: list[str]) -> str:
     ns = parser.parse_args(args)
 
     def _run() -> None:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1711,7 +1711,7 @@ def _sessions_optimize(_engine: JackyConsoleEngine, args: list[str]) -> str:
     _expect_no_args(args, "sessions optimize")
 
     def _run() -> None:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1730,7 +1730,7 @@ def _sessions_repair(_engine: JackyConsoleEngine, args: list[str]) -> str:
     ns = parser.parse_args(args)
 
     def _run() -> None:
-        from jacky_state import DEFAULT_DB_PATH, _db_opens_cleanly, repair_state_db_schema
+        from jacky_cli.jacky_state import DEFAULT_DB_PATH, _db_opens_cleanly, repair_state_db_schema
 
         db_path = DEFAULT_DB_PATH
         if not db_path.exists():

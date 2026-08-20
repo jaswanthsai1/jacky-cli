@@ -13,7 +13,7 @@ import os
 from typing import Callable, Optional
 
 from tools.registry import registry, tool_error
-from utils import env_var_enabled
+from jacky_cli.utils import env_var_enabled
 
 
 def read_terminal_tool(

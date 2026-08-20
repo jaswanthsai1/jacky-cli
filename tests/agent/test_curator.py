@@ -1282,7 +1282,7 @@ def test_review_fork_runs_under_background_review_origin(curator_env, monkeypatc
             captured["write_origin"] = self._memory_write_origin
             return {"final_response": "no change"}
 
-    monkeypatch.setattr("run_agent.AIAgent", _StubAgent)
+    monkeypatch.setattr("jacky_cli.run_agent.AIAgent", _StubAgent)
 
     meta = curator._run_llm_review("review prompt")
 
@@ -1336,7 +1336,7 @@ def test_review_fork_forwards_runtime_pool_and_overrides(curator_env, monkeypatc
         "jacky_cli.runtime_provider.resolve_runtime_provider",
         _fake_resolve_runtime_provider,
     )
-    monkeypatch.setattr("run_agent.AIAgent", _StubAgent)
+    monkeypatch.setattr("jacky_cli.run_agent.AIAgent", _StubAgent)
 
     meta = curator._run_llm_review("review prompt")
 
@@ -1378,7 +1378,7 @@ def test_review_fork_uses_runtime_model_and_output_cap(curator_env, monkeypatch)
         def close(self):
             pass
 
-    monkeypatch.setattr("run_agent.AIAgent", _StubAgent)
+    monkeypatch.setattr("jacky_cli.run_agent.AIAgent", _StubAgent)
     result = curator._run_llm_review("review")
 
     assert result["error"] is None
@@ -1429,7 +1429,7 @@ def test_review_fork_merges_slot_extra_body_over_runtime(curator_env, monkeypatc
         def close(self):
             pass
 
-    monkeypatch.setattr("run_agent.AIAgent", _StubAgent)
+    monkeypatch.setattr("jacky_cli.run_agent.AIAgent", _StubAgent)
 
     result = curator._run_llm_review("review")
 

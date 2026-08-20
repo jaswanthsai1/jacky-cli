@@ -165,13 +165,13 @@ class TestMinimaxAuxModel:
         # no longer in _API_KEY_PROVIDER_AUX_MODELS_FALLBACK after the
         # minimax-M3 default-aux-model cleanup, so the profile is
         # the only path to a non-empty aux value).
-        import model_tools  # noqa: F401
+        import jacky_cli.model_tools as model_tools  # noqa: F401
         from agent.auxiliary_client import _get_aux_model_for_provider
         assert _get_aux_model_for_provider("minimax") == "MiniMax-M3"
         assert _get_aux_model_for_provider("minimax-cn") == "MiniMax-M3"
 
     def test_minimax_aux_not_highspeed(self):
-        import model_tools  # noqa: F401
+        import jacky_cli.model_tools as model_tools  # noqa: F401
         from agent.auxiliary_client import _get_aux_model_for_provider
         assert "highspeed" not in _get_aux_model_for_provider("minimax")
         assert "highspeed" not in _get_aux_model_for_provider("minimax-cn")
@@ -342,55 +342,55 @@ class TestMinimaxPreserveDots:
     def test_minimax_provider_preserves_dots(self):
         from types import SimpleNamespace
         agent = SimpleNamespace(provider="minimax", base_url="")
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is True
 
     def test_minimax_cn_provider_preserves_dots(self):
         from types import SimpleNamespace
         agent = SimpleNamespace(provider="minimax-cn", base_url="")
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is True
 
     def test_minimax_url_preserves_dots(self):
         from types import SimpleNamespace
         agent = SimpleNamespace(provider="custom", base_url="https://api.minimax.io/anthropic")
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is True
 
     def test_minimax_cn_url_preserves_dots(self):
         from types import SimpleNamespace
         agent = SimpleNamespace(provider="custom", base_url="https://api.minimaxi.com/anthropic")
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is True
 
     def test_anthropic_does_not_preserve_dots(self):
         from types import SimpleNamespace
         agent = SimpleNamespace(provider="anthropic", base_url="https://api.anthropic.com")
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is False
 
     def test_opencode_zen_provider_preserves_dots(self):
         from types import SimpleNamespace
         agent = SimpleNamespace(provider="opencode-zen", base_url="")
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is True
 
     def test_opencode_zen_url_preserves_dots(self):
         from types import SimpleNamespace
         agent = SimpleNamespace(provider="custom", base_url="https://opencode.ai/zen/v1")
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is True
 
     def test_zai_provider_preserves_dots(self):
         from types import SimpleNamespace
         agent = SimpleNamespace(provider="zai", base_url="")
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is True
 
     def test_bigmodel_cn_url_preserves_dots(self):
         from types import SimpleNamespace
         agent = SimpleNamespace(provider="custom", base_url="https://open.bigmodel.cn/api/paas/v4")
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         assert AIAgent._anthropic_preserve_dots(agent) is True
 
     def test_normalize_preserves_m25_free_dot(self):
@@ -425,8 +425,8 @@ class TestMinimaxSwitchModelCredentialGuard:
         """switch_model() should NOT call resolve_anthropic_token() for MiniMax."""
         from unittest.mock import patch, MagicMock
 
-        with patch("run_agent.AIAgent.__init__", return_value=None):
-            from run_agent import AIAgent
+        with patch("jacky_cli.run_agent.AIAgent.__init__", return_value=None):
+            from jacky_cli.run_agent import AIAgent
             agent = AIAgent.__new__(AIAgent)
             agent.provider = "anthropic"
             agent.model = "claude-sonnet-4"

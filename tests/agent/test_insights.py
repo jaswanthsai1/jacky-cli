@@ -3,7 +3,7 @@
 import time
 import pytest
 
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 from agent.insights import (
     InsightsEngine,
     _estimate_cost,

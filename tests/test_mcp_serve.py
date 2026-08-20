@@ -29,7 +29,7 @@ def _isolate_jacky_home(tmp_path, monkeypatch):
     """Redirect JACKY_HOME to a temp directory."""
     monkeypatch.setenv("JACKY_HOME", str(tmp_path))
     try:
-        import jacky_constants
+        import jacky_cli.jacky_constants as jacky_constants
         monkeypatch.setattr(jacky_constants, "get_jacky_home", lambda: tmp_path)
     except (ImportError, AttributeError):
         pass
@@ -242,7 +242,7 @@ class _FakeFastMCP:
 
 @pytest.fixture
 def fake_mcp_server(populated_sessions_dir, mock_session_db, monkeypatch):
-    import mcp_serve
+    import jacky_cli.mcp_serve as mcp_serve
 
     monkeypatch.setattr(mcp_serve, "_get_sessions_dir", lambda: populated_sessions_dir)
     monkeypatch.setattr(mcp_serve, "_get_session_db", lambda: mock_session_db)
@@ -261,24 +261,24 @@ def fake_mcp_server(populated_sessions_dir, mock_session_db, monkeypatch):
 
 class TestImports:
     def test_import_module(self):
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         assert hasattr(mcp_serve, "create_mcp_server")
         assert hasattr(mcp_serve, "run_mcp_server")
         assert hasattr(mcp_serve, "EventBridge")
 
     def test_mcp_available_flag(self):
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         assert isinstance(mcp_serve._MCP_SERVER_AVAILABLE, bool)
 
 
 class TestHelpers:
     def test_get_sessions_dir(self, tmp_path):
-        from mcp_serve import _get_sessions_dir
+        from jacky_cli.mcp_serve import _get_sessions_dir
         result = _get_sessions_dir()
         assert result == tmp_path / "sessions"
 
     def test_coerce_int_handles_invalid_and_out_of_range_values(self):
-        from mcp_serve import _coerce_int
+        from jacky_cli.mcp_serve import _coerce_int
 
         assert _coerce_int(None, default=50, minimum=1, maximum=200) == 50
         assert _coerce_int("20", default=50, minimum=1, maximum=200) == 20
@@ -287,30 +287,30 @@ class TestHelpers:
         assert _coerce_int(-5, default=50, minimum=1, maximum=200) == 1
 
     def test_load_sessions_index_empty(self, sessions_dir, monkeypatch):
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         monkeypatch.setattr(mcp_serve, "_get_sessions_dir", lambda: sessions_dir)
         assert mcp_serve._load_sessions_index() == {}
 
     def test_load_sessions_index_with_data(self, populated_sessions_dir, monkeypatch):
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         monkeypatch.setattr(mcp_serve, "_get_sessions_dir", lambda: populated_sessions_dir)
         result = mcp_serve._load_sessions_index()
         assert len(result) == 3
 
     def test_load_sessions_index_corrupt(self, sessions_dir, monkeypatch):
         (sessions_dir / "sessions.json").write_text("not json!")
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         monkeypatch.setattr(mcp_serve, "_get_sessions_dir", lambda: sessions_dir)
         assert mcp_serve._load_sessions_index() == {}
 
 
 class TestContentExtraction:
     def test_text(self):
-        from mcp_serve import _extract_message_content
+        from jacky_cli.mcp_serve import _extract_message_content
         assert _extract_message_content({"content": "Hello"}) == "Hello"
 
     def test_multipart(self):
-        from mcp_serve import _extract_message_content
+        from jacky_cli.mcp_serve import _extract_message_content
         msg = {"content": [
             {"type": "text", "text": "A"},
             {"type": "image", "url": "http://x.com/i.png"},
@@ -319,7 +319,7 @@ class TestContentExtraction:
         assert _extract_message_content(msg) == "A\nB"
 
     def test_empty(self):
-        from mcp_serve import _extract_message_content
+        from jacky_cli.mcp_serve import _extract_message_content
         assert _extract_message_content({"content": ""}) == ""
         assert _extract_message_content({}) == ""
         assert _extract_message_content({"content": None}) == ""
@@ -327,7 +327,7 @@ class TestContentExtraction:
 
 class TestAttachmentExtraction:
     def test_image_url_block(self):
-        from mcp_serve import _extract_attachments
+        from jacky_cli.mcp_serve import _extract_attachments
         msg = {"content": [
             {"type": "image_url", "image_url": {"url": "http://x.com/pic.jpg"}},
         ]}
@@ -336,23 +336,23 @@ class TestAttachmentExtraction:
         assert att[0] == {"type": "image", "url": "http://x.com/pic.jpg"}
 
     def test_media_tag_in_text(self):
-        from mcp_serve import _extract_attachments
+        from jacky_cli.mcp_serve import _extract_attachments
         msg = {"content": "Here MEDIA: /tmp/out.png done"}
         att = _extract_attachments(msg)
         assert len(att) == 1
         assert att[0] == {"type": "media", "path": "/tmp/out.png"}
 
     def test_multiple_media_tags(self):
-        from mcp_serve import _extract_attachments
+        from jacky_cli.mcp_serve import _extract_attachments
         msg = {"content": "MEDIA: /a.png and MEDIA: /b.mp3"}
         assert len(_extract_attachments(msg)) == 2
 
     def test_no_attachments(self):
-        from mcp_serve import _extract_attachments
+        from jacky_cli.mcp_serve import _extract_attachments
         assert _extract_attachments({"content": "plain text"}) == []
 
     def test_image_content_block(self):
-        from mcp_serve import _extract_attachments
+        from jacky_cli.mcp_serve import _extract_attachments
         msg = {"content": [{"type": "image", "url": "http://x.com/p.png"}]}
         att = _extract_attachments(msg)
         assert att[0]["type"] == "image"
@@ -364,13 +364,13 @@ class TestAttachmentExtraction:
 
 class TestEventBridge:
     def test_create(self):
-        from mcp_serve import EventBridge
+        from jacky_cli.mcp_serve import EventBridge
         b = EventBridge()
         assert b._cursor == 0
         assert b._queue == []
 
     def test_enqueue_and_poll(self):
-        from mcp_serve import EventBridge, QueueEvent
+        from jacky_cli.mcp_serve import EventBridge, QueueEvent
         b = EventBridge()
         b._enqueue(QueueEvent(cursor=0, type="message", session_key="k1",
                               data={"content": "hi"}))
@@ -380,7 +380,7 @@ class TestEventBridge:
         assert r["next_cursor"] == 1
 
     def test_cursor_filter(self):
-        from mcp_serve import EventBridge, QueueEvent
+        from jacky_cli.mcp_serve import EventBridge, QueueEvent
         b = EventBridge()
         for i in range(5):
             b._enqueue(QueueEvent(cursor=0, type="message", session_key=f"s{i}"))
@@ -389,7 +389,7 @@ class TestEventBridge:
         assert r["events"][0]["session_key"] == "s3"
 
     def test_session_filter(self):
-        from mcp_serve import EventBridge, QueueEvent
+        from jacky_cli.mcp_serve import EventBridge, QueueEvent
         b = EventBridge()
         b._enqueue(QueueEvent(cursor=0, type="message", session_key="a"))
         b._enqueue(QueueEvent(cursor=0, type="message", session_key="b"))
@@ -398,13 +398,13 @@ class TestEventBridge:
         assert len(r["events"]) == 2
 
     def test_poll_empty(self):
-        from mcp_serve import EventBridge
+        from jacky_cli.mcp_serve import EventBridge
         r = EventBridge().poll_events(after_cursor=0)
         assert r["events"] == []
         assert r["next_cursor"] == 0
 
     def test_poll_limit(self):
-        from mcp_serve import EventBridge, QueueEvent
+        from jacky_cli.mcp_serve import EventBridge, QueueEvent
         b = EventBridge()
         for i in range(10):
             b._enqueue(QueueEvent(cursor=0, type="message", session_key=f"s{i}"))
@@ -412,7 +412,7 @@ class TestEventBridge:
         assert len(r["events"]) == 3
 
     def test_wait_immediate(self):
-        from mcp_serve import EventBridge, QueueEvent
+        from jacky_cli.mcp_serve import EventBridge, QueueEvent
         b = EventBridge()
         b._enqueue(QueueEvent(cursor=0, type="message", session_key="t",
                               data={"content": "hi"}))
@@ -421,14 +421,14 @@ class TestEventBridge:
         assert event["type"] == "message"
 
     def test_wait_timeout(self):
-        from mcp_serve import EventBridge
+        from jacky_cli.mcp_serve import EventBridge
         start = time.monotonic()
         event = EventBridge().wait_for_event(after_cursor=0, timeout_ms=150)
         assert event is None
         assert time.monotonic() - start >= 0.1
 
     def test_wait_wakes_on_enqueue(self):
-        from mcp_serve import EventBridge, QueueEvent
+        from jacky_cli.mcp_serve import EventBridge, QueueEvent
         b = EventBridge()
         result = [None]
 
@@ -444,14 +444,14 @@ class TestEventBridge:
         assert result[0]["session_key"] == "wake"
 
     def test_queue_limit(self):
-        from mcp_serve import EventBridge, QueueEvent, QUEUE_LIMIT
+        from jacky_cli.mcp_serve import EventBridge, QueueEvent, QUEUE_LIMIT
         b = EventBridge()
         for i in range(QUEUE_LIMIT + 50):
             b._enqueue(QueueEvent(cursor=0, type="message", session_key=f"s{i}"))
         assert len(b._queue) == QUEUE_LIMIT
 
     def test_concurrent_enqueue(self):
-        from mcp_serve import EventBridge, QueueEvent
+        from jacky_cli.mcp_serve import EventBridge, QueueEvent
         b = EventBridge()
         errors = []
 
@@ -473,7 +473,7 @@ class TestEventBridge:
         assert b._cursor == 500
 
     def test_approvals_lifecycle(self):
-        from mcp_serve import EventBridge
+        from jacky_cli.mcp_serve import EventBridge
         b = EventBridge()
         b._pending_approvals["a1"] = {
             "id": "a1", "kind": "exec",
@@ -486,7 +486,7 @@ class TestEventBridge:
         assert len(b.list_pending_approvals()) == 0
 
     def test_respond_nonexistent(self):
-        from mcp_serve import EventBridge
+        from jacky_cli.mcp_serve import EventBridge
         r = EventBridge().respond_to_approval("nope", "deny")
         assert "error" in r
 
@@ -499,7 +499,7 @@ class TestEventBridge:
 def mcp_server_e2e(populated_sessions_dir, mock_session_db, monkeypatch):
     """Create a fully wired MCP server for E2E testing."""
     mcp = pytest.importorskip("mcp", reason="MCP SDK not installed")
-    import mcp_serve
+    import jacky_cli.mcp_serve as mcp_serve
     monkeypatch.setattr(mcp_serve, "_get_sessions_dir", lambda: populated_sessions_dir)
     monkeypatch.setattr(mcp_serve, "_get_session_db", lambda: mock_session_db)
     monkeypatch.setattr(mcp_serve, "_load_channel_directory", lambda: {})
@@ -677,7 +677,7 @@ class TestE2EEventsPoll:
         assert result["next_cursor"] == 0
 
     def test_poll_with_events(self, mcp_server_e2e, _event_loop):
-        from mcp_serve import QueueEvent
+        from jacky_cli.mcp_serve import QueueEvent
         server, bridge = mcp_server_e2e
         bridge._enqueue(QueueEvent(cursor=0, type="message",
                                    session_key="agent:main:telegram:dm:123456",
@@ -693,7 +693,7 @@ class TestE2EEventsPoll:
         assert result["next_cursor"] == 2
 
     def test_poll_cursor_pagination(self, mcp_server_e2e, _event_loop):
-        from mcp_serve import QueueEvent
+        from jacky_cli.mcp_serve import QueueEvent
         server, bridge = mcp_server_e2e
         for i in range(5):
             bridge._enqueue(QueueEvent(cursor=0, type="message",
@@ -709,7 +709,7 @@ class TestE2EEventsPoll:
         assert page2["next_cursor"] == 4
 
     def test_poll_session_filter(self, mcp_server_e2e, _event_loop):
-        from mcp_serve import QueueEvent
+        from jacky_cli.mcp_serve import QueueEvent
         server, bridge = mcp_server_e2e
         bridge._enqueue(QueueEvent(cursor=0, type="message", session_key="a"))
         bridge._enqueue(QueueEvent(cursor=0, type="message", session_key="b"))
@@ -728,7 +728,7 @@ class TestE2EEventsWait:
         assert result["reason"] == "timeout"
 
     def test_wait_with_existing_event(self, mcp_server_e2e, _event_loop):
-        from mcp_serve import QueueEvent
+        from jacky_cli.mcp_serve import QueueEvent
         server, bridge = mcp_server_e2e
         bridge._enqueue(QueueEvent(cursor=0, type="message",
                                    session_key="test",
@@ -739,7 +739,7 @@ class TestE2EEventsWait:
 
     def test_wait_caps_timeout(self, mcp_server_e2e, _event_loop):
         """Timeout should be capped at 300000ms (5 min)."""
-        from mcp_serve import QueueEvent
+        from jacky_cli.mcp_serve import QueueEvent
         server, bridge = mcp_server_e2e
         bridge._enqueue(QueueEvent(cursor=0, type="message", session_key="t"))
         # Even with huge timeout, should return immediately since event exists
@@ -762,7 +762,7 @@ class TestMCPToolParameterCoercion:
         assert result["count"] == 2
 
     def test_events_poll_coerces_string_cursor_and_limit(self, fake_mcp_server, _event_loop):
-        from mcp_serve import QueueEvent
+        from jacky_cli.mcp_serve import QueueEvent
 
         server, bridge = fake_mcp_server
         bridge._enqueue(QueueEvent(cursor=0, type="message", session_key="a"))
@@ -773,7 +773,7 @@ class TestMCPToolParameterCoercion:
         assert result["next_cursor"] == 1
 
     def test_events_wait_coerces_invalid_timeout(self, fake_mcp_server, _event_loop):
-        from mcp_serve import QueueEvent
+        from jacky_cli.mcp_serve import QueueEvent
 
         server, bridge = fake_mcp_server
         bridge._enqueue(
@@ -833,7 +833,7 @@ class TestE2EChannelsList:
         {"updated_at": ..., "platforms": {...}} but the reader was iterating
         directory.items() directly, so channels_list always returned 0.
         """
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         monkeypatch.setattr(mcp_serve, "_load_channel_directory", lambda: {
             "updated_at": "2026-05-07T12:00:00",
             "platforms": {
@@ -854,7 +854,7 @@ class TestE2EChannelsList:
 
     def test_channels_with_directory_platform_filter(self, mcp_server_e2e, _event_loop, monkeypatch):
         """Platform filter should work against the wrapped 'platforms' payload."""
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         monkeypatch.setattr(mcp_serve, "_load_channel_directory", lambda: {
             "updated_at": "2026-05-07T12:00:00",
             "platforms": {
@@ -950,19 +950,19 @@ class TestToolRegistration:
 class TestServerCreation:
     def test_create_server(self, populated_sessions_dir, monkeypatch):
         pytest.importorskip("mcp", reason="MCP SDK not installed")
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         monkeypatch.setattr(mcp_serve, "_get_sessions_dir", lambda: populated_sessions_dir)
         assert mcp_serve.create_mcp_server() is not None
 
     def test_create_with_bridge(self, populated_sessions_dir, monkeypatch):
         pytest.importorskip("mcp", reason="MCP SDK not installed")
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         monkeypatch.setattr(mcp_serve, "_get_sessions_dir", lambda: populated_sessions_dir)
         bridge = mcp_serve.EventBridge()
         assert mcp_serve.create_mcp_server(event_bridge=bridge) is not None
 
     def test_create_without_mcp_sdk(self, monkeypatch):
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         monkeypatch.setattr(mcp_serve, "_MCP_SERVER_AVAILABLE", False)
         with pytest.raises(ImportError, match="MCP server requires"):
             mcp_serve.create_mcp_server()
@@ -970,7 +970,7 @@ class TestServerCreation:
 
 class TestRunMcpServer:
     def test_run_without_mcp_exits(self, monkeypatch):
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         monkeypatch.setattr(mcp_serve, "_MCP_SERVER_AVAILABLE", False)
         with pytest.raises(SystemExit) as exc_info:
             mcp_serve.run_mcp_server()
@@ -1006,7 +1006,7 @@ class TestCliIntegration:
     def test_dispatcher_routes_serve(self, monkeypatch, tmp_path):
         monkeypatch.setenv("JACKY_HOME", str(tmp_path))
         mock_run = MagicMock()
-        monkeypatch.setattr("mcp_serve.run_mcp_server", mock_run)
+        monkeypatch.setattr("jacky_cli.mcp_serve.run_mcp_server", mock_run)
 
         import argparse
         args = argparse.Namespace(mcp_action="serve", verbose=True)
@@ -1022,7 +1022,7 @@ class TestCliIntegration:
 class TestEdgeCases:
     def test_empty_sessions_json(self, sessions_dir, monkeypatch):
         (sessions_dir / "sessions.json").write_text("{}")
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         monkeypatch.setattr(mcp_serve, "_get_sessions_dir", lambda: sessions_dir)
         assert mcp_serve._load_sessions_index() == {}
 
@@ -1034,13 +1034,13 @@ class TestEdgeCases:
             "updated_at": "2026-03-29T12:00:00",
         }}
         (sessions_dir / "sessions.json").write_text(json.dumps(data))
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         monkeypatch.setattr(mcp_serve, "_get_sessions_dir", lambda: sessions_dir)
         entries = mcp_serve._load_sessions_index()
         assert entries["agent:main:telegram:dm:111"]["platform"] == "telegram"
 
     def test_bridge_start_stop(self):
-        from mcp_serve import EventBridge
+        from jacky_cli.mcp_serve import EventBridge
         b = EventBridge()
         assert not b._running
         b._running = True
@@ -1060,7 +1060,7 @@ class TestEventBridgePollE2E:
 
     def test_poll_detects_new_messages(self, tmp_path, monkeypatch):
         """Write to SQLite + sessions.json, verify EventBridge picks it up."""
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         sessions_dir = tmp_path / "sessions"
         sessions_dir.mkdir()
         monkeypatch.setattr(mcp_serve, "_get_sessions_dir", lambda: sessions_dir)
@@ -1118,7 +1118,7 @@ class TestEventBridgePollE2E:
 
     def test_poll_skips_when_unchanged(self, tmp_path, monkeypatch):
         """Second poll with no file changes should be a no-op."""
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         sessions_dir = tmp_path / "sessions"
         sessions_dir.mkdir()
         monkeypatch.setattr(mcp_serve, "_get_sessions_dir", lambda: sessions_dir)
@@ -1170,7 +1170,7 @@ class TestEventBridgePollE2E:
 
     def test_poll_detects_new_message_after_db_write(self, tmp_path, monkeypatch):
         """Write a new message to the DB after first poll, verify it's detected."""
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
         sessions_dir = tmp_path / "sessions"
         sessions_dir.mkdir()
         monkeypatch.setattr(mcp_serve, "_get_sessions_dir", lambda: sessions_dir)
@@ -1246,7 +1246,7 @@ class TestEventBridgePollE2E:
         db-mtime bump, so a conversation the bridge has never seen before is
         emitted on the same tick.
         """
-        import mcp_serve
+        import jacky_cli.mcp_serve as mcp_serve
 
         sessions_dir = tmp_path / "sessions"
         sessions_dir.mkdir()
@@ -1297,5 +1297,5 @@ class TestEventBridgePollE2E:
 
     def test_poll_interval_is_200ms(self):
         """Verify the poll interval constant."""
-        from mcp_serve import POLL_INTERVAL
+        from jacky_cli.mcp_serve import POLL_INTERVAL
         assert POLL_INTERVAL == 0.2

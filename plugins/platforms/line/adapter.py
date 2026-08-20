@@ -1296,7 +1296,7 @@ class LineAdapter(BasePlatformAdapter):
             return web.Response(status=404, text="not found")
 
         try:
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             jacky_home = Path(get_jacky_home()).resolve()
         except Exception:
             jacky_home = Path.home().joinpath(".jacky").resolve()

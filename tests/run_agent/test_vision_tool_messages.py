@@ -23,7 +23,7 @@ import pytest
 
 def _make_agent(provider="openrouter", model="gpt-4o"):
     """Create a minimal AIAgent mock with provider/model attributes."""
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     agent = MagicMock(spec=AIAgent)
     agent.provider = provider
     agent.model = model

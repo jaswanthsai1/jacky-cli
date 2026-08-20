@@ -37,7 +37,7 @@ def _load_cli_config(home):
     call. (In real use cli is imported once per process with the real home, so
     this only matters for tests that swap JACKY_HOME.)
     """
-    import cli
+    import jacky_cli.cli as cli
 
     cli._jacky_home = home
     return cli.load_cli_config()

@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 import pytest
 
-from jacky_constants import reset_jacky_home_override, set_jacky_home_override
+from jacky_cli.jacky_constants import reset_jacky_home_override, set_jacky_home_override
 from jacky_cli.active_sessions import active_session_registry_snapshot
 from jacky_cli.browser_connect import ChromeDebugLaunch
 from tui_gateway import server
@@ -764,7 +764,7 @@ def test_load_enabled_toolsets_filters_invalid_tui_env(monkeypatch, capsys):
 def test_load_enabled_toolsets_accepts_plugin_env_after_discovery(monkeypatch):
     monkeypatch.setenv("JACKY_TUI_TOOLSETS", "plugin_demo")
 
-    import toolsets
+    import jacky_cli.toolsets as toolsets
 
     discovered = {"ready": False}
     original_validate = toolsets.validate_toolset
@@ -1066,7 +1066,7 @@ def test_session_resume_follows_compression_tip(monkeypatch, tmp_path):
     the response generated after compression. session.resume must follow the
     compression tip via resolve_resume_session_id.
     """
-    from jacky_state import SessionDB
+    from jacky_cli.jacky_state import SessionDB
 
     db = SessionDB(db_path=tmp_path / "state.db")
     base = int(time.time()) - 10_000
@@ -1233,7 +1233,7 @@ def test_session_resume_profile_uses_profile_db_cwd(monkeypatch, tmp_path):
 
     monkeypatch.setenv("TERMINAL_CWD", str(launch_cwd))
     monkeypatch.setattr(server, "_profile_home", lambda _profile: profile_home)
-    monkeypatch.setattr("jacky_state.SessionDB", lambda db_path=None: profile_db)
+    monkeypatch.setattr("jacky_cli.jacky_state.SessionDB", lambda db_path=None: profile_db)
     monkeypatch.setattr(server, "_get_db", lambda: launch_db)
     monkeypatch.setattr(server, "_enable_gateway_prompts", lambda: None)
     monkeypatch.setattr(server, "_set_session_context", lambda target: [])
@@ -1297,7 +1297,7 @@ def test_session_cwd_set_profile_session_updates_profile_db(monkeypatch, tmp_pat
 
     import tools.terminal_tool as terminal_tool
 
-    monkeypatch.setattr("jacky_state.SessionDB", lambda db_path=None: profile_db)
+    monkeypatch.setattr("jacky_cli.jacky_state.SessionDB", lambda db_path=None: profile_db)
     monkeypatch.setattr(server, "_get_db", lambda: LaunchDB())
     monkeypatch.setattr(terminal_tool, "cleanup_vm", lambda _key: None)
     monkeypatch.setattr(server, "_register_session_cwd", lambda _session: None)
@@ -1746,7 +1746,7 @@ def test_make_agent_passes_configured_fallback_chain(monkeypatch):
             "credential_pool": None,
         },
     )
-    monkeypatch.setattr("run_agent.AIAgent", fake_agent)
+    monkeypatch.setattr("jacky_cli.run_agent.AIAgent", fake_agent)
     monkeypatch.setattr(server, "_load_enabled_toolsets", lambda: ["file"])
     monkeypatch.setattr(server, "_get_db", lambda: None)
 
@@ -3631,7 +3631,7 @@ def test_config_set_model_global_persists(monkeypatch):
     monkeypatch.setattr(server, "_emit", lambda *args, **kwargs: None)
     # _persist_model_switch uses targeted save_config_value writes (#48305) so it
     # preserves sibling model.* keys instead of rewriting the whole block.
-    monkeypatch.setattr("cli.save_config_value", lambda key, value: saved_values.__setitem__(key, value) or True)
+    monkeypatch.setattr("jacky_cli.cli.save_config_value", lambda key, value: saved_values.__setitem__(key, value) or True)
 
     resp = server.handle_request(
         {
@@ -4214,7 +4214,7 @@ def test_image_attach_appends_local_image(monkeypatch):
     fake_cli._resolve_attachment_path = lambda raw: Path("/tmp/cat.png")
 
     server._sessions["sid"] = _session()
-    monkeypatch.setitem(sys.modules, "cli", fake_cli)
+    monkeypatch.setitem(sys.modules, "jacky_cli.cli", fake_cli)
 
     resp = server.handle_request(
         {
@@ -4245,7 +4245,7 @@ def test_image_attach_accepts_unquoted_screenshot_path_with_spaces(monkeypatch):
     fake_cli._resolve_attachment_path = lambda raw: None
 
     server._sessions["sid"] = _session()
-    monkeypatch.setitem(sys.modules, "cli", fake_cli)
+    monkeypatch.setitem(sys.modules, "jacky_cli.cli", fake_cli)
 
     resp = server.handle_request(
         {
@@ -4271,7 +4271,7 @@ def test_file_attach_uploads_remote_file_into_session_workspace(monkeypatch, tmp
     fake_cli._resolve_attachment_path = lambda raw: None
 
     server._sessions["sid"] = _session(cwd=str(workspace))
-    monkeypatch.setitem(sys.modules, "cli", fake_cli)
+    monkeypatch.setitem(sys.modules, "jacky_cli.cli", fake_cli)
 
     try:
         resp = server.handle_request(
@@ -4309,7 +4309,7 @@ def test_file_attach_copies_gateway_visible_file_outside_workspace(monkeypatch, 
     fake_cli._resolve_attachment_path = lambda raw: source
 
     server._sessions["sid"] = _session(cwd=str(workspace))
-    monkeypatch.setitem(sys.modules, "cli", fake_cli)
+    monkeypatch.setitem(sys.modules, "jacky_cli.cli", fake_cli)
 
     try:
         resp = server.handle_request(
@@ -4341,7 +4341,7 @@ def test_file_attach_uses_in_workspace_file_without_copying(monkeypatch, tmp_pat
     fake_cli._resolve_attachment_path = lambda raw: source
 
     server._sessions["sid"] = _session(cwd=str(workspace))
-    monkeypatch.setitem(sys.modules, "cli", fake_cli)
+    monkeypatch.setitem(sys.modules, "jacky_cli.cli", fake_cli)
 
     try:
         resp = server.handle_request(
@@ -4371,7 +4371,7 @@ def test_file_attach_errors_when_unresolvable_and_no_bytes(monkeypatch, tmp_path
     fake_cli._resolve_attachment_path = lambda raw: None
 
     server._sessions["sid"] = _session(cwd=str(workspace))
-    monkeypatch.setitem(sys.modules, "cli", fake_cli)
+    monkeypatch.setitem(sys.modules, "jacky_cli.cli", fake_cli)
 
     try:
         resp = server.handle_request(
@@ -4398,7 +4398,7 @@ def test_file_attach_quotes_ref_with_spaces(monkeypatch, tmp_path):
     fake_cli._resolve_attachment_path = lambda raw: None
 
     server._sessions["sid"] = _session(cwd=str(workspace))
-    monkeypatch.setitem(sys.modules, "cli", fake_cli)
+    monkeypatch.setitem(sys.modules, "jacky_cli.cli", fake_cli)
 
     try:
         resp = server.handle_request(
@@ -4639,7 +4639,7 @@ def test_input_detect_drop_attaches_image(monkeypatch):
     }
 
     server._sessions["sid"] = _session()
-    monkeypatch.setitem(sys.modules, "cli", fake_cli)
+    monkeypatch.setitem(sys.modules, "jacky_cli.cli", fake_cli)
 
     resp = server.handle_request(
         {
@@ -5796,7 +5796,7 @@ def test_get_db_degrades_cleanly_when_sessiondb_init_fails(monkeypatch):
             raise RuntimeError("locking protocol")
 
     fake_mod.SessionDB = _BrokenSessionDB
-    monkeypatch.setitem(sys.modules, "jacky_state", fake_mod)
+    monkeypatch.setitem(sys.modules, "jacky_cli.jacky_state", fake_mod)
     monkeypatch.setattr(server, "_db", None)
     monkeypatch.setattr(server, "_db_error", None)
 
@@ -7517,7 +7517,7 @@ def _setup_make_agent_mocks(monkeypatch, cfg):
 def test_make_agent_reads_nested_max_turns(monkeypatch):
     _setup_make_agent_mocks(monkeypatch, {"agent": {"max_turns": 200}})
 
-    with patch("run_agent.AIAgent") as mock_agent:
+    with patch("jacky_cli.run_agent.AIAgent") as mock_agent:
         server._make_agent("sid1", "key1")
 
     assert mock_agent.call_args.kwargs["max_iterations"] == 200
@@ -7535,7 +7535,7 @@ def test_make_agent_waits_for_shared_mcp_discovery(monkeypatch):
         lambda timeout=0.75: waited.append(timeout),
     )
 
-    with patch("run_agent.AIAgent"):
+    with patch("jacky_cli.run_agent.AIAgent"):
         server._make_agent("sid1", "key1")
 
     assert waited == [0.75]
@@ -7546,7 +7546,7 @@ def test_make_agent_nested_max_turns_takes_priority(monkeypatch):
         monkeypatch, {"agent": {"max_turns": 500}, "max_turns": 100}
     )
 
-    with patch("run_agent.AIAgent") as mock_agent:
+    with patch("jacky_cli.run_agent.AIAgent") as mock_agent:
         server._make_agent("sid1", "key1")
 
     assert mock_agent.call_args.kwargs["max_iterations"] == 500
@@ -7555,7 +7555,7 @@ def test_make_agent_nested_max_turns_takes_priority(monkeypatch):
 def test_make_agent_defaults_to_90(monkeypatch):
     _setup_make_agent_mocks(monkeypatch, {})
 
-    with patch("run_agent.AIAgent") as mock_agent:
+    with patch("jacky_cli.run_agent.AIAgent") as mock_agent:
         server._make_agent("sid1", "key1")
 
     assert mock_agent.call_args.kwargs["max_iterations"] == 90
@@ -7583,7 +7583,7 @@ def test_make_agent_uses_session_runtime_overrides(monkeypatch):
         fake_resolve_runtime_provider,
     )
 
-    with patch("run_agent.AIAgent") as mock_agent:
+    with patch("jacky_cli.run_agent.AIAgent") as mock_agent:
         server._make_agent(
             "sid1",
             "key1",
@@ -7603,7 +7603,7 @@ def test_make_agent_uses_session_runtime_overrides(monkeypatch):
 def test_make_agent_handles_null_agent_config(monkeypatch):
     _setup_make_agent_mocks(monkeypatch, {"agent": None, "max_turns": 80})
 
-    with patch("run_agent.AIAgent") as mock_agent:
+    with patch("jacky_cli.run_agent.AIAgent") as mock_agent:
         server._make_agent("sid1", "key1")
 
     assert mock_agent.call_args.kwargs["max_iterations"] == 80
@@ -8022,7 +8022,7 @@ _PNG_1X1_B64 = (
 def _attach_bytes_cli(monkeypatch):
     fake_cli = types.ModuleType("cli")
     fake_cli._IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"}
-    monkeypatch.setitem(sys.modules, "cli", fake_cli)
+    monkeypatch.setitem(sys.modules, "jacky_cli.cli", fake_cli)
 
 
 def test_image_attach_bytes_writes_to_gateway_dir(monkeypatch, tmp_path):
@@ -8652,7 +8652,7 @@ def test_persist_model_switch_preserves_sibling_model_keys(tmp_path, monkeypatch
     targeted save_config_value writes instead of rewriting the whole block."""
     import types
     import yaml
-    import cli
+    import jacky_cli.cli as cli
 
     cfg_path = tmp_path / "config.yaml"
     cfg_path.write_text(
@@ -8692,7 +8692,7 @@ def test_persist_model_switch_clears_stale_base_url(tmp_path, monkeypatch):
     pointing at the old host."""
     import types
     import yaml
-    import cli
+    import jacky_cli.cli as cli
 
     cfg_path = tmp_path / "config.yaml"
     cfg_path.write_text(
@@ -8846,7 +8846,7 @@ class TestResolveRuntimeWithFallback:
             "jacky_cli.runtime_provider.resolve_runtime_provider",
             fake_resolve,
         )
-        monkeypatch.setattr("run_agent.AIAgent", fake_agent)
+        monkeypatch.setattr("jacky_cli.run_agent.AIAgent", fake_agent)
         monkeypatch.setattr(server, "_load_enabled_toolsets", lambda: ["file"])
         monkeypatch.setattr(server, "_get_db", lambda: None)
 

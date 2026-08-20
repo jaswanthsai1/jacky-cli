@@ -81,7 +81,7 @@ jacky webhook subscribe todoist-jacky \
   --deliver telegram --deliver-chat-id "12345"
 ```
 
-Full filter syntax: https://jacky-agent.nousresearch.com/docs/user-guide/messaging/webhooks#payload-filters
+Full filter syntax: https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/webhooks#payload-filters
 
 ### List subscriptions
 ```bash

@@ -775,8 +775,8 @@ class TestProfileScopedStorage:
     def test_default_store_uses_global_dir(self, tmp_path, monkeypatch):
         """PairingStore() (no profile) keeps the legacy global path so the
         ``jacky pairing`` CLI continues to work without a profile context."""
-        from jacky_constants import get_jacky_home
-        monkeypatch.setattr("jacky_constants.get_jacky_home", lambda: tmp_path)
+        from jacky_cli.jacky_constants import get_jacky_home
+        monkeypatch.setattr("jacky_cli.jacky_constants.get_jacky_home", lambda: tmp_path)
         # Re-import PAIRING_DIR (it's a module-level constant resolved at
         # import time) so the test exercises the right path. We patch it
         # rather than re-importing so the assertion is unambiguous.
@@ -789,8 +789,8 @@ class TestProfileScopedStorage:
     def test_profile_store_uses_profiles_subdir(self, tmp_path, monkeypatch):
         """PairingStore(profile="yangyang") puts files under
         <JACKY_HOME>/profiles/yangyang/pairing/."""
-        from jacky_constants import get_jacky_home
-        monkeypatch.setattr("jacky_constants.get_jacky_home", lambda: tmp_path)
+        from jacky_cli.jacky_constants import get_jacky_home
+        monkeypatch.setattr("jacky_cli.jacky_constants.get_jacky_home", lambda: tmp_path)
         store = PairingStore(profile="yangyang")
         assert store.profile == "yangyang"
         expected = tmp_path / "profiles" / "yangyang" / "pairing"
@@ -802,8 +802,8 @@ class TestProfileScopedStorage:
     def test_profile_approval_does_not_leak_to_global(self, tmp_path, monkeypatch):
         """Approving in a profile-scoped store must not appear in the global
         store — and vice versa. This is the whole point of the fix."""
-        from jacky_constants import get_jacky_home
-        monkeypatch.setattr("jacky_constants.get_jacky_home", lambda: tmp_path)
+        from jacky_cli.jacky_constants import get_jacky_home
+        monkeypatch.setattr("jacky_cli.jacky_constants.get_jacky_home", lambda: tmp_path)
         with patch("gateway.pairing.PAIRING_DIR", tmp_path):
             global_store = PairingStore()
             profile_store = PairingStore(profile="yangyang")
@@ -822,8 +822,8 @@ class TestProfileScopedStorage:
     def test_profile_uses_distinct_rate_limit_file(self, tmp_path, monkeypatch):
         """Rate-limit state is per-profile, not shared globally — otherwise
         one profile's flood would lock out the other profile's users."""
-        from jacky_constants import get_jacky_home
-        monkeypatch.setattr("jacky_constants.get_jacky_home", lambda: tmp_path)
+        from jacky_cli.jacky_constants import get_jacky_home
+        monkeypatch.setattr("jacky_cli.jacky_constants.get_jacky_home", lambda: tmp_path)
         with patch("gateway.pairing.PAIRING_DIR", tmp_path):
             global_store = PairingStore()
             profile_store = PairingStore(profile="yangyang")

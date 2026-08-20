@@ -20,7 +20,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import IO, Callable, Protocol
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from jacky_cli._subprocess_compat import windows_hide_flags
 from tools.interrupt import is_interrupted
 
@@ -148,7 +148,7 @@ def _popen_bash(
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         stdin=subprocess.PIPE if stdin_data is not None else subprocess.DEVNULL,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
         **kwargs,
     )
     if stdin_data is not None:

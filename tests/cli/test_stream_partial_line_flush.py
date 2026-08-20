@@ -21,8 +21,8 @@ def _strip_ansi(s: str) -> str:
 
 @pytest.fixture
 def cli_stub(monkeypatch):
-    from cli import JackyCLI
-    import cli as climod
+    from jacky_cli.cli import JackyCLI
+    import jacky_cli.cli as climod
 
     cli = JackyCLI.__new__(JackyCLI)
     cli.show_reasoning = False
