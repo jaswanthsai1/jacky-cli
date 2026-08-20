@@ -2071,6 +2071,21 @@ def update_version_files(semver: str, calver_date: str):
         )
         desktop_pkg.write_text(pkg_text, encoding="utf-8")
 
+    # Keep the npm install shim (jacky-cli-agent) in lockstep with the Python
+    # package version too. This was previously missed entirely -- npm was
+    # only ever bumped by hand before running `npm publish`, which is
+    # exactly the kind of manual step that silently drifts.
+    npm_pkg = REPO_ROOT / "npm" / "package.json"
+    if npm_pkg.exists():
+        pkg_text = npm_pkg.read_text(encoding="utf-8")
+        pkg_text = re.sub(
+            r'("version"\s*:\s*)"[^"]+"',
+            rf'\g<1>"{semver}"',
+            pkg_text,
+            count=1,
+        )
+        npm_pkg.write_text(pkg_text, encoding="utf-8")
+
     # Update ACP Registry manifest + npm launcher (must stay version-locked
     # with pyproject — enforced by tests/acp/test_registry_manifest.py).
     _update_acp_registry_versions(semver)
@@ -2476,6 +2491,12 @@ def main():
             add_files = [str(VERSION_FILE), str(PYPROJECT_FILE)]
             if ACP_REGISTRY_MANIFEST.exists():
                 add_files.append(str(ACP_REGISTRY_MANIFEST))
+            desktop_pkg = REPO_ROOT / "apps" / "desktop" / "package.json"
+            if desktop_pkg.exists():
+                add_files.append(str(desktop_pkg))
+            npm_pkg = REPO_ROOT / "npm" / "package.json"
+            if npm_pkg.exists():
+                add_files.append(str(npm_pkg))
             add_result = git_result("add", *add_files)
             if add_result.returncode != 0:
                 print(f"  ✗ Failed to stage version files: {add_result.stderr.strip()}")
