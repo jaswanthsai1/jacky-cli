@@ -553,7 +553,7 @@ DEPENDENCY_AUDIT_SCHEMA = {
         "manifests, then query the free OSV.dev API for known vulnerabilities "
         "affecting the declared/resolved dependency versions. Returns a "
         "report of vulnerable dependencies with advisory IDs, severity, and "
-        "summaries. Fails open (reports 'audit incomplete', never raises) if "
+        "summaries. Never raises on failure -- reports 'audit incomplete' if "
         "OSV.dev is unreachable."
     ),
     "parameters": {
