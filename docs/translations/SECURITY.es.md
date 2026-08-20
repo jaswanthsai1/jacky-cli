@@ -1,14 +1,14 @@
-# Política de Seguridad de Jacky Agent
+# Política de Seguridad de Jacky
 
-Este documento describe el modelo de confianza de Jacky Agent, identifica el
+Este documento describe el modelo de confianza de Jacky, identifica el
 único límite de seguridad que el proyecto trata como estructural y define el
 alcance para los informes de vulnerabilidades.
 
 ## 1. Reportar una Vulnerabilidad
 
 Reporta de forma privada a través de [GitHub Security Advisories](https://github.com/jaswanthsai1/jacky-cli/security/advisories/new)
-o **security@nousresearch.com**. No abras issues públicos para
-vulnerabilidades de seguridad. **Jacky Agent no opera un programa de
+o **collegegamerff@gmail.com**. No abras issues públicos para
+vulnerabilidades de seguridad. **Jacky no opera un programa de
 recompensas por errores.**
 
 Un informe útil incluye:
@@ -30,13 +30,13 @@ a través del canal de seguridad privado.
 
 ## 2. Modelo de Confianza
 
-Jacky Agent es un agente personal de un solo inquilino. Su postura es
+Jacky es un agente personal de un solo inquilino. Su postura es
 por capas, y las capas no tienen el mismo peso. Los reportadores y
 operadores deben razonar sobre ellas en los mismos términos.
 
 ### 2.1 Definiciones
 
-- **Proceso del agente.** El intérprete Python que ejecuta Jacky Agent,
+- **Proceso del agente.** El intérprete Python que ejecuta Jacky,
   incluyendo cualquier módulo Python que haya cargado (habilidades, plugins,
   manejadores de hooks).
 - **Backend de terminal.** Un objetivo de ejecución conectado para la
@@ -47,9 +47,9 @@ operadores deben razonar sobre ellas en los mismos términos.
   contexto del agente: entrada del operador, fetches web, email, mensajes del gateway,
   lecturas de archivos, respuestas del servidor MCP, resultados de herramientas.
 - **Envolvente de confianza.** El conjunto de recursos a los que un operador ha otorgado
-  implícitamente acceso a Jacky Agent al ejecutarlo — típicamente, todo lo que
+  implícitamente acceso a Jacky al ejecutarlo — típicamente, todo lo que
   la propia cuenta de usuario del operador puede alcanzar en el host.
-- **Postura.** Una declaración explícita en la documentación o código de Jacky Agent
+- **Postura.** Una declaración explícita en la documentación o código de Jacky
   sobre cómo una capa consumidora (adaptador, UI, escritor de archivos,
   shell) debe tratar la salida del agente — ej. "el dashboard renderiza
   la salida del agente como HTML inerte."
@@ -63,7 +63,7 @@ escáner de patrones, ni ninguna lista de herramientas permitidas. Cualquier com
 del proceso que filtre la salida del LLM es una heurística operando sobre una
 cadena influenciada por el atacante, y esta política lo trata como tal.
 
-Jacky Agent admite dos posturas de aislamiento a nivel de SO. Abordan
+Jacky admite dos posturas de aislamiento a nivel de SO. Abordan
 diferentes amenazas y un operador debe elegir deliberadamente.
 
 #### Aislamiento del backend de terminal
@@ -92,9 +92,9 @@ sandbox. Cada ruta de código — shell, ejecución de código, MCP, herramienta
 plugins, hooks, carga de habilidades — está sujeta a la misma política de sistema de archivos,
 red, proceso e (donde sea aplicable) inferencia.
 
-Jacky Agent admite esto de dos maneras:
+Jacky admite esto de dos maneras:
 
-- **La propia imagen Docker de Jacky Agent y la configuración de Compose.** Más
+- **La propia imagen Docker de Jacky y la configuración de Compose.** Más
   liviana; el agente se ejecuta en un contenedor estándar con montajes y
   política de red configurados por el operador.
 - **[NVIDIA OpenShell](https://github.com/NVIDIA/OpenShell)**.
@@ -104,7 +104,7 @@ Jacky Agent admite esto de dos maneras:
   recargables en caliente. Las credenciales se inyectan desde un almacén de Proveedor
   y nunca tocan el sistema de archivos del sandbox.
 
-Bajo una envoltura de proceso completo, las heurísticas en proceso de Jacky Agent
+Bajo una envoltura de proceso completo, las heurísticas en proceso de Jacky
 (§2.4) funcionan como prevención de accidentes en capas sobre un límite real.
 Esta es la postura soportada cuando el agente ingiere contenido de superficies
 que el operador no controla — la web abierta, email entrante, canales de
@@ -118,7 +118,7 @@ seguridad soportada.
 
 ### 2.3 Alcance de Credenciales
 
-Jacky Agent filtra el entorno que pasa a sus componentes en proceso de
+Jacky filtra el entorno que pasa a sus componentes en proceso de
 menor confianza: subprocesos de shell, subprocesos MCP y el proceso hijo
 de ejecución de código. Las credenciales como las claves API del proveedor y los
 tokens del gateway se eliminan por defecto; las variables declaradas explícitamente
@@ -160,8 +160,8 @@ mencionado por separado porque los plugins son arquitectónicamente más pesados
 y a menudo incluyen sus propios servicios en segundo plano, oyentes de red
 y dependencias.
 
-Un plugin malicioso o con errores no es una vulnerabilidad en Jacky Agent
-en sí mismo. Los errores en la ruta de instalación o descubrimiento de plugins de Jacky Agent
+Un plugin malicioso o con errores no es una vulnerabilidad en Jacky
+en sí mismo. Los errores en la ruta de instalación o descubrimiento de plugins de Jacky
 que impidan al operador ver lo que está instalando están en alcance bajo el §3.1.
 
 ### 2.6 Superficies Externas
@@ -171,7 +171,7 @@ a través del cual un llamador puede despachar trabajo del agente, resolver
 aprobaciones o recibir salida del agente. Cada superficie tiene su propio
 modelo de autorización, pero las reglas a continuación se aplican uniformemente.
 
-**Superficies en Jacky Agent:**
+**Superficies en Jacky:**
 
 - **Adaptadores de plataforma del gateway.** Integraciones de mensajería en
   `gateway/platforms/` (Telegram, Discord, Slack, email, SMS, etc.)
@@ -203,7 +203,7 @@ modelo de autorización, pero las reglas a continuación se aplican uniformement
    la autorización siempre se vuelve a verificar contra la lista de permitidos (o equivalente
    a nivel de SO).
 4. **Dentro del conjunto autorizado, todos los llamadores tienen la misma confianza.**
-   Jacky Agent no modela capacidades por llamador dentro de un único adaptador.
+   Jacky no modela capacidades por llamador dentro de un único adaptador.
    Los operadores que necesiten separación de capacidades deben ejecutar instancias
    de agente separadas con listas de permitidos separadas.
 5. **Vincular una superficie solo local a una interfaz no-loopback es una decisión de
@@ -230,9 +230,9 @@ modelo de autorización, pero las reglas a continuación se aplican uniformement
   (error de saneamiento de entorno, registro del adaptador, error de transporte
   que vacía credenciales a un upstream, etc.).
 - Violaciones de la documentación del modelo de confianza: código que se comporta
-  contrariamente a lo que esta política, la propia documentación de Jacky Agent o
+  contrariamente a lo que esta política, la propia documentación de Jacky o
   las expectativas razonables del operador predecirían — incluyendo casos donde
-  Jacky Agent ha documentado una postura sobre cómo su salida debe ser
+  Jacky ha documentado una postura sobre cómo su salida debe ser
   renderizada por una capa consumidora (dashboard, adaptador de gateway,
   escritor de archivos, shell) y una ruta de código rompe esa postura.
 
@@ -271,11 +271,11 @@ divulgación privada y no reciben avisos.
   configuraciones no son vulnerabilidades — eso es el trabajo del flag.
 - **Habilidades y plugins contribuidos por la comunidad.** Las habilidades de terceros
   (incluyendo el repositorio de habilidades de la comunidad) y los plugins de terceros
-  están en la superficie de revisión del operador, no en la superficie de confianza de Jacky Agent
+  están en la superficie de revisión del operador, no en la superficie de confianza de Jacky
   (§2.4, §2.5). Una habilidad o plugin que haga algo
   malicioso es el modo de falla esperado de uno que no fue
-  revisado, no una vulnerabilidad en Jacky Agent. Los errores en la ruta de
-  instalación de habilidades o plugins de Jacky Agent que impidan al
+  revisado, no una vulnerabilidad en Jacky. Los errores en la ruta de
+  instalación de habilidades o plugins de Jacky que impidan al
   operador ver lo que está instalando están en alcance bajo el §3.1.
 - **Exposición pública sin controles externos.** Exponer el
   gateway o la API a la internet pública sin autenticación,
@@ -306,7 +306,7 @@ La decisión de fortalecimiento más importante es hacer coincidir el aislamient
   §2.5). Para las habilidades, esto significa leer el Python y los scripts,
   no solo SKILL.md. Los informes de Skills Guard y el registro de auditoría
   de instalación son la superficie de revisión.
-- Jacky Agent incluye guardias de cadena de suministro para lanzamientos de servidores
+- Jacky incluye guardias de cadena de suministro para lanzamientos de servidores
   MCP y para cambios de dependencias / paquetes incluidos en CI; consulta
   `CONTRIBUTING.es.md` para más detalles.
 
@@ -317,6 +317,6 @@ La decisión de fortalecimiento más importante es hacer coincidir el aislamient
 - **Ventana de divulgación coordinada:** 90 días desde el informe, o hasta que se
   publique una corrección, lo que ocurra primero.
 - **Canal:** el hilo GHSA o correspondencia por email con
-  security@nousresearch.com.
+  collegegamerff@gmail.com.
 - **Crédito:** los reportadores reciben crédito en las notas de versión a menos que
   se solicite anonimato.
