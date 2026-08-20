@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 from jacky_cli.commands import GATEWAY_KNOWN_COMMANDS, resolve_command
 
 

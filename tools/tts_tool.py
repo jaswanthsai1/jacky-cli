@@ -53,7 +53,7 @@ from typing import Callable, Dict, Any, Optional
 from urllib.parse import urljoin
 
 from jacky_cli._subprocess_compat import windows_hide_flags
-from jacky_constants import display_jacky_home
+from jacky_cli.jacky_constants import display_jacky_home
 
 logger = logging.getLogger(__name__)
 def get_env_value(name, default=None):
@@ -211,7 +211,7 @@ GEMINI_TTS_CHANNELS = 1
 GEMINI_TTS_SAMPLE_WIDTH = 2  # 16-bit PCM (L16)
 
 def _get_default_output_dir() -> str:
-    from jacky_constants import get_jacky_dir
+    from jacky_cli.jacky_constants import get_jacky_dir
     return str(get_jacky_dir("cache/audio", "audio_cache"))
 
 DEFAULT_OUTPUT_DIR = _get_default_output_dir()
@@ -1525,7 +1525,7 @@ def _resolve_gemini_persona_prompt_path(gemini_config: Dict[str, Any]) -> Option
     path = Path(expanded).expanduser()
     if not path.is_absolute():
         try:
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             path = get_jacky_home() / path
         except Exception:
             path = Path.cwd() / path
@@ -1881,7 +1881,7 @@ def _generate_neutts(text: str, output_path: str, tts_config: Dict[str, Any]) ->
         "--device", device,
     ]
 
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=120, stdin=subprocess.DEVNULL)
+    result = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120, stdin=subprocess.DEVNULL)
     if result.returncode != 0:
         stderr = result.stderr.strip()
         # Filter out the "OK:" line from stderr
@@ -1927,7 +1927,7 @@ def _get_piper_voices_dir() -> Path:
     Resolves to ``~/.jacky/cache/piper-voices/`` under the active
     JACKY_HOME so voice downloads follow profile boundaries.
     """
-    from jacky_constants import get_jacky_dir
+    from jacky_cli.jacky_constants import get_jacky_dir
     root = Path(get_jacky_dir("cache/piper-voices", "piper_voices_cache"))
     root.mkdir(parents=True, exist_ok=True)
     return root
@@ -1963,7 +1963,7 @@ def _resolve_piper_voice_path(voice: str, download_dir: Path) -> str:
         result = subprocess.run(
             [_sys.executable, "-m", "piper.download_voices", voice,
              "--download-dir", str(download_dir)],
-            capture_output=True, text=True, timeout=300,
+            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=300,
             stdin=subprocess.DEVNULL,
         )
     except subprocess.TimeoutExpired as exc:

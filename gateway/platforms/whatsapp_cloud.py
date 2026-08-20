@@ -80,7 +80,7 @@ from gateway.platforms.base import (
 )
 from gateway.platforms.whatsapp_common import WhatsAppBehaviorMixin
 from gateway import rich_sent_store
-from jacky_constants import get_jacky_dir
+from jacky_cli.jacky_constants import get_jacky_dir
 
 logger = logging.getLogger(__name__)
 

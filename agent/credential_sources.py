@@ -206,7 +206,7 @@ def _remove_claude_code(provider: str, removed) -> RemovalResult:
 
 def _remove_jacky_pkce(provider: str, removed) -> RemovalResult:
     """~/.jacky/.anthropic_oauth.json is ours — delete it outright."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     result = RemovalResult()
     oauth_file = get_jacky_home() / ".anthropic_oauth.json"

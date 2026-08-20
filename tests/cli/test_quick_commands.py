@@ -18,7 +18,7 @@ class TestCLIQuickCommands:
         return str(call_arg)
 
     def _make_cli(self, quick_commands):
-        from cli import JackyCLI
+        from jacky_cli.cli import JackyCLI
         cli = JackyCLI.__new__(JackyCLI)
         cli.config = {"quick_commands": quick_commands}
         cli.console = MagicMock()
@@ -44,7 +44,7 @@ class TestCLIQuickCommands:
         cli._app = object()
         live_console = MagicMock()
 
-        with patch("cli.ChatConsole", return_value=live_console):
+        with patch("jacky_cli.cli.ChatConsole", return_value=live_console):
             result = cli.process_command("/dn")
 
         assert result is True
@@ -106,7 +106,7 @@ class TestCLIQuickCommands:
     def test_quick_command_takes_priority_over_skill_commands(self):
         """Quick commands must be checked before skill slash commands."""
         cli = self._make_cli({"mygif": {"type": "exec", "command": "echo overridden"}})
-        with patch("cli._skill_commands", {"/mygif": {"name": "gif-search"}}):
+        with patch("jacky_cli.cli._skill_commands", {"/mygif": {"name": "gif-search"}}):
             cli.process_command("/mygif")
         cli.console.print.assert_called_once()
         printed = self._printed_plain(cli.console.print.call_args[0][0])
@@ -114,7 +114,7 @@ class TestCLIQuickCommands:
 
     def test_unknown_command_still_shows_error(self):
         cli = self._make_cli({})
-        with patch("cli._cprint") as mock_cprint:
+        with patch("jacky_cli.cli._cprint") as mock_cprint:
             cli.process_command("/nonexistent")
             mock_cprint.assert_called()
             printed = " ".join(str(c) for c in mock_cprint.call_args_list)

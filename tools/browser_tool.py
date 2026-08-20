@@ -66,8 +66,8 @@ from typing import Dict, Any, Optional, List, Tuple, Union
 from pathlib import Path
 from agent.auxiliary_client import call_llm
 from agent.redact import redact_cdp_url
-from jacky_constants import agent_browser_runnable, get_jacky_home
-from utils import env_int, is_truthy_value
+from jacky_cli.jacky_constants import agent_browser_runnable, get_jacky_home
+from jacky_cli.utils import env_int, is_truthy_value
 from jacky_cli.config import DEFAULT_CONFIG, cfg_get
 from jacky_cli._subprocess_compat import windows_hide_flags
 
@@ -140,6 +140,16 @@ from plugins.browser.firecrawl.provider import (  # noqa: F401
     FirecrawlBrowserProvider as FirecrawlProvider,
 )
 from tools.tool_backend_helpers import normalize_browser_cloud_provider
+# Imported eagerly (not lazily inside check_browser_vision_requirements) so
+# that tools.vision_tools' module-level `registry.register(...)` calls for
+# its ~7 vision tools happen during initial tool discovery, before any
+# check_fn runs. A lazy first-time import triggered from inside a check_fn
+# mutates the registry's tool dict while something else may be iterating
+# it, raising `RuntimeError: dictionary changed size during iteration`.
+try:
+    from tools.vision_tools import check_vision_requirements as _check_vision_requirements
+except ImportError:
+    _check_vision_requirements = None
 # Camofox local anti-detection browser backend (optional).
 # When CAMOFOX_URL is set, all browser operations route through the
 # camofox REST API instead of the agent-browser CLI.
@@ -758,7 +768,7 @@ def _get_cloud_provider() -> Optional[CloudBrowserProvider]:
     return _cached_cloud_provider
 
 
-from jacky_constants import is_termux as _is_termux_environment
+from jacky_cli.jacky_constants import is_termux as _is_termux_environment
 
 
 def _browser_install_hint() -> str:
@@ -3914,7 +3924,7 @@ def browser_vision(question: str, annotate: bool = False, task_id: Optional[str]
 
     import base64
     import uuid as uuid_mod
-    from jacky_constants import get_jacky_dir
+    from jacky_cli.jacky_constants import get_jacky_dir
     screenshots_dir = get_jacky_dir("cache/screenshots", "browser_screenshots")
     screenshot_path = screenshots_dir / f"browser_screenshot_{uuid_mod.uuid4().hex}.png"
     effective_task_id = _last_session_key(task_id or "default")
@@ -3973,7 +3983,7 @@ def browser_vision(question: str, annotate: bool = False, task_id: Optional[str]
             _lp_fallback_warning = fb_result.get("fallback_warning")
             fb_path = fb_result.get("data", {}).get("path", "")
             if fb_path and os.path.exists(fb_path):
-                from jacky_constants import get_jacky_dir
+                from jacky_cli.jacky_constants import get_jacky_dir
                 screenshots_dir = get_jacky_dir("cache/screenshots", "browser_screenshots")
                 screenshots_dir.mkdir(parents=True, exist_ok=True)
                 import shutil as _shutil_vision
@@ -4545,7 +4555,7 @@ def _maybe_autoinstall_chromium() -> bool:
         proc = subprocess.run(
             install_cmd,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=600,
             env=_build_browser_env(),
         )
@@ -4649,11 +4659,9 @@ def check_browser_vision_requirements() -> bool:
     """
     if not check_browser_requirements():
         return False
-    try:
-        from tools.vision_tools import check_vision_requirements
-    except ImportError:
+    if _check_vision_requirements is None:
         return False
-    return check_vision_requirements()
+    return _check_vision_requirements()
 
 
 # ============================================================================

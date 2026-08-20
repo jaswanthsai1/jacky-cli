@@ -223,7 +223,7 @@ def test_setup_gateway_in_container_shows_docker_guidance(monkeypatch, capsys):
     monkeypatch.setattr(gateway_mod, "_is_service_running", lambda: False)
 
     # Patch is_container at the import location in setup.py
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
     monkeypatch.setattr(jacky_constants, "is_container", lambda: True)
 
     setup_mod.setup_gateway({})

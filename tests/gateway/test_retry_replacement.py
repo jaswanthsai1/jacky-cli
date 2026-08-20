@@ -14,7 +14,7 @@ from gateway.session import SessionStore
 async def test_gateway_retry_replaces_last_user_turn_in_transcript(tmp_path, monkeypatch):
     # Pin DEFAULT_DB_PATH so SessionDB() doesn't write to the real ~/.jacky/state.db.
     # (Module-level constant snapshot, see test_load_transcript_db_only.)
-    import jacky_state
+    import jacky_cli.jacky_state as jacky_state
     monkeypatch.setattr(jacky_state, "DEFAULT_DB_PATH", tmp_path / "state.db")
 
     config = GatewayConfig()

@@ -34,7 +34,7 @@ import logging
 import time
 from typing import List, Optional
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 logger = logging.getLogger("gateway.run")
 

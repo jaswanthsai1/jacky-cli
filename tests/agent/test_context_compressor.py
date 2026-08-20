@@ -10,7 +10,7 @@ from agent.context_compressor import (
     SUMMARY_PREFIX,
     COMPRESSED_SUMMARY_METADATA_KEY,
 )
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 
 
 @pytest.fixture()
@@ -238,7 +238,7 @@ class TestCompress:
         from agent.context_compressor import MINIMUM_CONTEXT_LENGTH
         t = ContextCompressor._compute_threshold_tokens(MINIMUM_CONTEXT_LENGTH, 0.50)
         assert t < MINIMUM_CONTEXT_LENGTH
-        assert t == 54400  # 85% of 64000
+        assert t == 27200  # 85% of 32000
 
     def test_threshold_below_window_for_small_ctx(self):
         # 32K model: the 64000 floor exceeds the window — trigger at 85%.
@@ -250,8 +250,8 @@ class TestCompress:
         from agent.context_compressor import MINIMUM_CONTEXT_LENGTH
         # 200K model at 50% = 100000 (above floor) — unchanged.
         assert ContextCompressor._compute_threshold_tokens(200000, 0.50) == 100000
-        # 100K model at 50% = 50000 (below floor) — floored to MINIMUM.
-        assert ContextCompressor._compute_threshold_tokens(100000, 0.50) == MINIMUM_CONTEXT_LENGTH
+        # 60K model at 50% = 30000 (below floor) — floored to MINIMUM.
+        assert ContextCompressor._compute_threshold_tokens(60000, 0.50) == MINIMUM_CONTEXT_LENGTH
 
     def test_minimum_ctx_model_can_actually_compress(self):
         """End-to-end: a model at exactly the minimum context length must have
@@ -261,7 +261,7 @@ class TestCompress:
             c = ContextCompressor(model="small-64k", quiet_mode=True)
             c.context_length = 64000
             c.threshold_tokens = c._compute_threshold_tokens(64000, c.threshold_percent)
-        assert c.threshold_tokens == 54400
+        assert c.threshold_tokens == 48000  # 75% of 64000 (sub-512K floor)
         assert c.threshold_tokens < 64000
         # At 85%+ usage compaction fires; below it, it doesn't (no premature compact).
         assert c.should_compress(55000) is True
@@ -280,21 +280,25 @@ class TestCompress:
 
     def test_max_tokens_reservation_with_small_window_floors(self):
         """With a large reservation on a smaller window the effective budget
-        can drop near/below the minimum floor — the degenerate-window guard
-        then triggers at 85% of the EFFECTIVE budget, never the raw window."""
-        # 128K window, 65536 reserved → effective 62464 (< MINIMUM 64000).
-        # Floor (64000) >= effective window (62464) → 85% of effective.
+        can drop below the minimum floor — the threshold is raised to the
+        MINIMUM_CONTEXT_LENGTH floor (still below the effective window, so
+        the degenerate-window guard does not need to engage)."""
+        from agent.context_compressor import MINIMUM_CONTEXT_LENGTH
+        # 128K window, 65536 reserved → effective 62464. 50% of that is
+        # 31232, which is below the MINIMUM floor (32000) — floored up.
         t = ContextCompressor._compute_threshold_tokens(128000, 0.50, 65536)
-        assert t == int(62464 * 0.85)  # 53094
+        assert t == MINIMUM_CONTEXT_LENGTH  # 32000
         assert t < 62464
 
     def test_max_tokens_exceeding_window_falls_back_to_full(self):
         """Pathological: max_tokens >= context_length would make the effective
         budget <= 0; fall back to the full window rather than produce a
         non-positive threshold."""
+        from agent.context_compressor import MINIMUM_CONTEXT_LENGTH
         t = ContextCompressor._compute_threshold_tokens(64000, 0.50, 70000)
-        # effective_window <= 0 → fall back to full context (64000) → 85% guard.
-        assert t == 54400  # 85% of 64000, same as no-reservation small-ctx case
+        # effective_window <= 0 → fall back to full context (64000); 50% of
+        # that is 32000, which floors exactly to MINIMUM_CONTEXT_LENGTH.
+        assert t == MINIMUM_CONTEXT_LENGTH  # 32000
         assert t > 0
 
     def test_max_tokens_coercion_treats_non_int_as_no_reservation(self):

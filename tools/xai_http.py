@@ -36,7 +36,7 @@ def has_xai_credentials() -> bool:
     if os.environ.get("XAI_API_KEY", "").strip():
         return True
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         auth_path = get_jacky_home() / "auth.json"
         if not auth_path.exists():
@@ -208,7 +208,7 @@ def maybe_mark_xai_storage_notice_seen(section_name: str) -> Optional[str]:
     if not notice:
         return None
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         marker_dir = get_jacky_home() / "state"
         marker_dir.mkdir(parents=True, exist_ok=True)

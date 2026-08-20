@@ -8,7 +8,7 @@ history.
 """
 from __future__ import annotations
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 import copy
 import json
@@ -45,7 +45,7 @@ def _translate_acp_cwd(cwd: str) -> str:
     sessions all agree on the usable workspace. Native Linux/macOS keeps the
     original cwd unchanged.
     """
-    from jacky_constants import is_wsl
+    from jacky_cli.jacky_constants import is_wsl
 
     if not is_wsl():
         return cwd
@@ -412,7 +412,7 @@ class SessionManager:
         if self._db_instance is not None:
             return self._db_instance
         try:
-            from jacky_state import SessionDB
+            from jacky_cli.jacky_state import SessionDB
             jacky_home = get_jacky_home()
             self._db_instance = SessionDB(db_path=jacky_home / "state.db")
             return self._db_instance
@@ -605,7 +605,7 @@ class SessionManager:
         if self._agent_factory is not None:
             return self._agent_factory()
 
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         from jacky_cli.config import load_config
         from jacky_cli.runtime_provider import resolve_runtime_provider
 

@@ -7,7 +7,7 @@ from unittest.mock import patch, MagicMock, mock_open
 import pytest
 
 import jacky_cli.gateway as gateway
-import jacky_constants
+import jacky_cli.jacky_constants as jacky_constants
 
 
 # =============================================================================

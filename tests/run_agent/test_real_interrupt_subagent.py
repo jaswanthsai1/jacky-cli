@@ -47,7 +47,7 @@ class TestRealSubagentInterrupt(unittest.TestCase):
 
     def test_interrupt_child_during_api_call(self):
         """Real AIAgent child interrupted while making API call."""
-        from run_agent import AIAgent, IterationBudget
+        from jacky_cli.run_agent import AIAgent, IterationBudget
 
         # Create a real parent agent (just enough to be a parent)
         parent = AIAgent.__new__(AIAgent)
@@ -87,7 +87,7 @@ class TestRealSubagentInterrupt(unittest.TestCase):
         def run_delegate():
             try:
                 # Patch the OpenAI client creation inside AIAgent.__init__
-                with patch('run_agent.OpenAI') as MockOpenAI:
+                with patch('jacky_cli.run_agent.OpenAI') as MockOpenAI:
                     mock_client = MagicMock()
                     # API call takes 5 seconds — should be interrupted before that
                     mock_client.chat.completions.create = _make_slow_api_response(delay=5.0)
@@ -103,9 +103,20 @@ class TestRealSubagentInterrupt(unittest.TestCase):
                             child_started.set()
                             return original_run(self_agent, *args, **kwargs)
 
-                        with patch.object(AIAgent, 'run_conversation', patched_run):
+                        with patch.object(AIAgent, 'run_conversation', patched_run), \
+                             patch(
+                                 "agent.model_metadata.get_model_context_length",
+                                 return_value=128_000,
+                             ), patch(
+                                 "agent.context_compressor.get_model_context_length",
+                                 return_value=128_000,
+                             ):
                             # Build a real child agent (AIAgent is NOT patched here,
-                            # only run_conversation and _build_system_prompt are)
+                            # only run_conversation and _build_system_prompt are).
+                            # base_url is a real localhost socket the OS never
+                            # listens on — the context-length prober would
+                            # otherwise make a real (slow-to-refuse) network
+                            # call during __init__, so it's mocked out above.
                             child = AIAgent(
                                 base_url="http://localhost:1",
                                 api_key="test-key",

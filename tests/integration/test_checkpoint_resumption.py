@@ -134,7 +134,7 @@ def test_current_implementation():
         shutil.rmtree(output_dir)
     
     # Import here to avoid issues if module changes
-    from batch_runner import BatchRunner
+    from jacky_cli.batch_runner import BatchRunner
     
     checkpoint_file = output_dir / "checkpoint.json"
     
@@ -228,7 +228,7 @@ def test_interruption_and_resume():
     if output_dir.exists():
         shutil.rmtree(output_dir)
     
-    from batch_runner import BatchRunner
+    from jacky_cli.batch_runner import BatchRunner
     
     checkpoint_file = output_dir / "checkpoint.json"
     

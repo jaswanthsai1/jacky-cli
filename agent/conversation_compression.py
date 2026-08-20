@@ -793,7 +793,7 @@ def compress_context(
                     # compaction boundary (see #34089). Guarded separately so a logging
                     # failure can never regress the routing update above.
                     try:
-                        from jacky_logging import set_session_context
+                        from jacky_cli.jacky_logging import set_session_context
 
                         set_session_context(agent.session_id)
                     except Exception:
@@ -829,7 +829,7 @@ def compress_context(
                         except Exception:
                             os.environ["JACKY_SESSION_ID"] = agent.session_id
                         try:
-                            from jacky_logging import set_session_context
+                            from jacky_cli.jacky_logging import set_session_context
                             set_session_context(agent.session_id)
                         except Exception:
                             pass

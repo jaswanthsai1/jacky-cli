@@ -13,7 +13,7 @@ through a thin wrapper that mirrors the real dispatch shape.
 
 from unittest.mock import patch
 
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 
 
 def _make_cli():

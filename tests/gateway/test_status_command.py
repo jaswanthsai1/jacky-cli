@@ -1,4 +1,4 @@
-from jacky_state import AsyncSessionDB
+from jacky_cli.jacky_state import AsyncSessionDB
 """Tests for gateway /status behavior and token persistence."""
 
 from datetime import datetime

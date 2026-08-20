@@ -1,6 +1,6 @@
 """Tests for shared truthy-value helpers."""
 
-from utils import env_var_enabled, is_truthy_value
+from jacky_cli.utils import env_var_enabled, is_truthy_value
 
 
 def test_is_truthy_value_accepts_common_truthy_strings():

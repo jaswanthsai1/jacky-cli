@@ -60,7 +60,7 @@ class _FakeSessionDB:
 
 
 def test_desktop_session_search_merges_id_matches_before_content_matches(monkeypatch):
-    monkeypatch.setattr("jacky_state.SessionDB", _FakeSessionDB)
+    monkeypatch.setattr("jacky_cli.jacky_state.SessionDB", _FakeSessionDB)
 
     response = asyncio.run(web_server.search_sessions(q="20260603", limit=2))
 

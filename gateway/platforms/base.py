@@ -20,7 +20,7 @@ import uuid
 from abc import ABC, abstractmethod
 from urllib.parse import urlsplit
 
-from utils import normalize_proxy_url
+from jacky_cli.utils import normalize_proxy_url
 
 logger = logging.getLogger(__name__)
 
@@ -229,7 +229,7 @@ def _detect_macos_system_proxy() -> str | None:
         return None
     try:
         out = subprocess.check_output(
-            ["scutil", "--proxy"], timeout=3, text=True, stderr=subprocess.DEVNULL,
+            ["scutil", "--proxy"], timeout=3, text=True, encoding="utf-8", errors="replace", stderr=subprocess.DEVNULL,
         )
     except Exception:
         return None
@@ -492,7 +492,7 @@ sys.path.insert(0, str(_Path(__file__).resolve().parents[2]))
 
 from gateway.config import Platform, PlatformConfig
 from gateway.session import SessionSource, build_session_key
-from jacky_constants import get_default_jacky_root, get_jacky_dir, get_jacky_home
+from jacky_cli.jacky_constants import get_default_jacky_root, get_jacky_dir, get_jacky_home
 
 
 GATEWAY_SECRET_CAPTURE_UNSUPPORTED_MESSAGE = (

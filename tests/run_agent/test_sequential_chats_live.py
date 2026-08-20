@@ -56,7 +56,7 @@ LIVE_MODEL = "google/gemini-2.5-flash"
 
 
 def _make_live_agent():
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
 
     return AIAgent(
         model=LIVE_MODEL,

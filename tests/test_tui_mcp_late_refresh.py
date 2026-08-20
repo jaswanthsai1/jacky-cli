@@ -11,7 +11,7 @@ import threading
 import time
 import types
 
-import model_tools
+import jacky_cli.model_tools as model_tools
 from tui_gateway import server
 from tui_gateway import entry
 

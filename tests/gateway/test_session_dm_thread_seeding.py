@@ -29,7 +29,7 @@ def store(tmp_path, monkeypatch):
     at jacky_state import time, before pytest's JACKY_HOME monkeypatch
     fires — the autouse fixture's JACKY_HOME override doesn't help here.)
     """
-    import jacky_state
+    import jacky_cli.jacky_state as jacky_state
     monkeypatch.setattr(jacky_state, "DEFAULT_DB_PATH", tmp_path / "state.db")
     config = GatewayConfig()
     s = SessionStore(sessions_dir=tmp_path, config=config)

@@ -179,7 +179,7 @@ def describe_profile(
 
     try:
         if canon == "default":
-            from jacky_constants import get_jacky_home  # type: ignore
+            from jacky_cli.jacky_constants import get_jacky_home  # type: ignore
             profile_dir = Path(get_jacky_home())
         else:
             profile_dir = profiles_mod.get_profile_dir(canon)

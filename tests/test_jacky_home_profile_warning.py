@@ -22,7 +22,7 @@ import pytest
 def fresh_constants(monkeypatch, tmp_path):
     """Import jacky_constants fresh and reset the one-shot warn flag."""
     import importlib
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
     importlib.reload(jacky_constants)
     monkeypatch.setattr(Path, "home", lambda: tmp_path)
     monkeypatch.delenv("JACKY_HOME", raising=False)

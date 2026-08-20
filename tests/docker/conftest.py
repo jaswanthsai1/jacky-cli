@@ -60,8 +60,9 @@ def built_image() -> str:
     repo_root = os.path.abspath(
         os.path.join(os.path.dirname(__file__), "..", ".."),
     )
+    dockerfile = os.path.join(repo_root, "docker", "Dockerfile")
     result = subprocess.run(
-        ["docker", "build", "-t", IMAGE_TAG, repo_root],
+        ["docker", "build", "-f", dockerfile, "-t", IMAGE_TAG, repo_root],
         capture_output=True, text=True, timeout=1200,
     )
     assert result.returncode == 0, (

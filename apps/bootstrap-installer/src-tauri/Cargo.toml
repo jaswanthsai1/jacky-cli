@@ -2,7 +2,7 @@
 name = "jacky-bootstrap"
 version = "0.0.1"
 description = "Jacky Setup — signed installer that drives scripts/install.ps1"
-authors = ["Nous Research <info@nousresearch.com>"]
+authors = ["Jashu <collegegamerff@gmail.com>"]
 edition = "2021"
 rust-version = "1.77"
 

@@ -1,7 +1,7 @@
 import pytest
 
 from gateway.session_context import _UNSET, _VAR_MAP, clear_session_vars, set_session_vars
-from run_agent import _session_source_for_agent
+from jacky_cli.run_agent import _session_source_for_agent
 
 
 @pytest.fixture(autouse=True)

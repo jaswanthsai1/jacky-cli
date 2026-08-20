@@ -24,7 +24,7 @@ def _import_cli():
             "validated": False,
         }
 
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
 
     return cli_mod
 

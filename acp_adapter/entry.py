@@ -16,7 +16,7 @@ Usage::
 # IMPORTANT: jacky_bootstrap must be the very first import — UTF-8 stdio
 # on Windows.  No-op on POSIX.  See jacky_bootstrap.py for full rationale.
 try:
-    import jacky_bootstrap  # noqa: F401
+    import jacky_cli.jacky_bootstrap as jacky_bootstrap  # noqa: F401
 except ModuleNotFoundError:
     # Graceful fallback when jacky_bootstrap isn't registered in the venv
     # yet — happens during partial ``jacky update`` where git-reset landed
@@ -34,7 +34,7 @@ import asyncio
 import logging
 import sys
 from pathlib import Path
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 
 # Methods clients send as periodic liveness probes. They are not part of the

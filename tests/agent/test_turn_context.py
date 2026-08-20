@@ -15,7 +15,7 @@ import pytest
 
 from agent.context_compressor import ContextCompressor
 from agent.turn_context import TurnContext, build_turn_context
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 
 
 class _FakeTodoStore:
@@ -260,7 +260,7 @@ def test_between_turns_refresh_adds_late_tool_when_servers_registered():
 
     new_def = {"type": "function", "function": {"name": "mcp_x_tool", "description": "", "parameters": {}}}
 
-    import model_tools
+    import jacky_cli.model_tools as model_tools
     with patch("tools.mcp_tool.has_registered_mcp_tools", return_value=True), \
          patch.object(model_tools, "get_tool_definitions", return_value=[new_def]):
         _build(agent)
@@ -272,7 +272,7 @@ def test_between_turns_refresh_adds_late_tool_when_servers_registered():
 def test_between_turns_refresh_skipped_when_no_servers():
     """R6: the common case (no MCP servers) never walks the registry."""
     agent = _FakeAgent()
-    import model_tools
+    import jacky_cli.model_tools as model_tools
 
     with patch("tools.mcp_tool.has_registered_mcp_tools", return_value=False), \
          patch.object(model_tools, "get_tool_definitions") as gtd:
@@ -287,7 +287,7 @@ def test_between_turns_refresh_skipped_when_skip_flag_set():
     when MCP servers are registered."""
     agent = _FakeAgent()
     agent._skip_mcp_refresh = True
-    import model_tools
+    import jacky_cli.model_tools as model_tools
 
     with patch("tools.mcp_tool.has_registered_mcp_tools", return_value=True), \
          patch.object(model_tools, "get_tool_definitions") as gtd:
@@ -304,7 +304,7 @@ def test_between_turns_refresh_no_churn_when_unchanged():
     agent.tools = same
     agent.valid_tool_names = {"a"}
 
-    import model_tools
+    import jacky_cli.model_tools as model_tools
     with patch("tools.mcp_tool.has_registered_mcp_tools", return_value=True), \
          patch.object(
              model_tools, "get_tool_definitions",

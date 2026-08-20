@@ -10,7 +10,7 @@ import io
 
 import yaml
 
-from utils import fast_safe_load, _get_fast_yaml_loader
+from jacky_cli.utils import fast_safe_load, _get_fast_yaml_loader
 
 
 _DOCS = [

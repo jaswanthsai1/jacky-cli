@@ -36,13 +36,13 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 
 
 def _build_agent_with_db(db: SessionDB, session_id: str):
     """Build an AIAgent that's wired to ``db`` and pinned to ``session_id``."""
     with patch.dict(os.environ, {"OPENROUTER_API_KEY": "test-key"}):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             api_key="test-key",
@@ -495,7 +495,7 @@ def test_review_fork_disables_compression_to_prevent_stale_parent_fork(tmp_path:
 
     # The worker does a local ``from run_agent import AIAgent``; patching
     # the class method covers that import path.
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
 
     with patch.object(AIAgent, "run_conversation", _fake_run_conversation):
         br._run_review_in_thread(

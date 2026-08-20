@@ -8,7 +8,7 @@ from __future__ import annotations
 from unittest.mock import patch
 
 from agent.credits_tracker import CreditsState
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 def _agent_with_state(*, paid_access: bool = False) -> AIAgent:

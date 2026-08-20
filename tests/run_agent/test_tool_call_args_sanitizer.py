@@ -3,7 +3,7 @@
 import copy
 import logging
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 _MISSING = object()
@@ -55,10 +55,10 @@ def test_truncated_arguments_replaced_with_empty_object(caplog):
         _assistant_message(_tool_call(arguments='{"path": "/tmp/foo')),
     ]
 
-    with caplog.at_level(logging.WARNING, logger="run_agent"):
+    with caplog.at_level(logging.WARNING, logger="jacky_cli.run_agent"):
         repaired = AIAgent._sanitize_tool_call_arguments(
             messages,
-            logger=logging.getLogger("run_agent"),
+            logger=logging.getLogger("jacky_cli.run_agent"),
             session_id="session-123",
         )
 
@@ -137,10 +137,10 @@ def test_empty_string_arguments_treated_as_empty_object(caplog):
         _assistant_message(_tool_call(arguments="")),
     ]
 
-    with caplog.at_level(logging.WARNING, logger="run_agent"):
+    with caplog.at_level(logging.WARNING, logger="jacky_cli.run_agent"):
         repaired = AIAgent._sanitize_tool_call_arguments(
             messages,
-            logger=logging.getLogger("run_agent"),
+            logger=logging.getLogger("jacky_cli.run_agent"),
             session_id="session-123",
         )
 

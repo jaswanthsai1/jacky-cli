@@ -73,7 +73,7 @@ def _setup_isolated_home(tmp_path, monkeypatch, model_yaml_value):
         lambda **kw: _fake_switch_result(),
     )
     # save_config writes to ``get_jacky_home() / config.yaml`` — point it here.
-    monkeypatch.setattr("jacky_constants.get_jacky_home", lambda: jacky_home)
+    monkeypatch.setattr("jacky_cli.jacky_constants.get_jacky_home", lambda: jacky_home)
     monkeypatch.setattr("jacky_cli.config.get_jacky_home", lambda: jacky_home)
     return cfg_path
 
@@ -123,7 +123,7 @@ async def test_model_global_persists_when_config_has_missing_model(tmp_path, mon
         "jacky_cli.model_switch.switch_model",
         lambda **kw: _fake_switch_result(),
     )
-    monkeypatch.setattr("jacky_constants.get_jacky_home", lambda: jacky_home)
+    monkeypatch.setattr("jacky_cli.jacky_constants.get_jacky_home", lambda: jacky_home)
     monkeypatch.setattr("jacky_cli.config.get_jacky_home", lambda: jacky_home)
 
     result = await _make_runner()._handle_model_command(

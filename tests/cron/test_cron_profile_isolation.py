@@ -23,7 +23,7 @@ from pathlib import Path
 def _set_profile_env(monkeypatch, root: Path, profile_home: Path) -> None:
     """Pretend the platform default root is ``root`` and the active
     JACKY_HOME is a profile under it (``<root>/profiles/<name>``)."""
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
 
     monkeypatch.setattr(
         jacky_constants, "_get_platform_default_jacky_home", lambda: root
@@ -40,7 +40,7 @@ def test_cron_storage_anchors_at_profile_home(tmp_path, monkeypatch):
 
     _set_profile_env(monkeypatch, root, profile_home)
 
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
 
     # Sanity: the override is wired the way the gateway sees it.
     assert jacky_constants.get_jacky_home().resolve() == profile_home.resolve()
@@ -108,7 +108,7 @@ def test_cron_storage_unaffected_when_no_profile(tmp_path, monkeypatch):
     root = tmp_path / "jacky_home"
     root.mkdir(parents=True)
 
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
 
     monkeypatch.setattr(
         jacky_constants, "_get_platform_default_jacky_home", lambda: root

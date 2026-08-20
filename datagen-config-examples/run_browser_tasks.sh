@@ -29,7 +29,7 @@ echo "📝 Logging to: $LOG_FILE"
 # Point to the example dataset in this directory
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-python batch_runner.py \
+python -m jacky_cli.batch_runner \
   --dataset_file="$SCRIPT_DIR/example_browser_tasks.jsonl" \
   --batch_size=5 \
   --run_name="browser_tasks_example" \

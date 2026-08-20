@@ -33,7 +33,7 @@ def _resolve_profile_path(path_value: Any) -> Optional[Path]:
     raw = os.path.expandvars(path_value.strip())
     if not raw:
         return None
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     jacky_home = get_jacky_home()
     if raw == "~/.jacky":
@@ -50,7 +50,7 @@ def _resolve_script_path(script_value: Any) -> tuple[Optional[Path], Optional[st
     """Resolve a route script under JACKY_HOME/scripts."""
     if not isinstance(script_value, str) or not script_value.strip():
         return None, "script path is empty"
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     scripts_root = (get_jacky_home() / "scripts").resolve()
     raw_text = os.path.expandvars(script_value.strip())
@@ -252,7 +252,7 @@ class WebhookRouteProcessor:
                 argv,
                 input=json.dumps(payload),
                 capture_output=True,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
                 timeout=self.script_timeout_seconds,
                 cwd=str(path.parent),
                 env=_sanitize_subprocess_env(os.environ.copy()),

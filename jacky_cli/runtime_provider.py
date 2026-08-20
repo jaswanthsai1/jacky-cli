@@ -36,8 +36,8 @@ from jacky_cli.config import (
     load_config,
     normalize_extra_headers,
 )
-from jacky_constants import OPENROUTER_BASE_URL
-from utils import base_url_host_matches, base_url_hostname, env_int
+from jacky_cli.jacky_constants import OPENROUTER_BASE_URL
+from jacky_cli.utils import base_url_host_matches, base_url_hostname, env_int
 
 
 def _getenv(name: str, default: str = "") -> str:

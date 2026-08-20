@@ -229,7 +229,7 @@ def normalize_reference_images(value: Any) -> Optional[List[str]]:
 
 def _images_cache_dir() -> Path:
     """Return ``$JACKY_HOME/cache/images/``, creating parents as needed."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     path = get_jacky_home() / "cache" / "images"
     path.mkdir(parents=True, exist_ok=True)

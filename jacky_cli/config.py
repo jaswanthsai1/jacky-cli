@@ -475,7 +475,7 @@ def detect_install_method(project_root: Optional[Path] = None) -> str:
 def _running_in_container() -> bool:
     """Thin wrapper around ``jacky_constants.is_container`` (import-safe)."""
     try:
-        from jacky_constants import is_container
+        from jacky_cli.jacky_constants import is_container
 
         return is_container()
     except Exception:
@@ -571,7 +571,7 @@ def recommended_update_command() -> str:
 # banner, the TUI/desktop session info panel, and ``jacky update``. NixOS
 # stays fully supported (Tier 2) and must never hit this path.
 
-PLATFORM_SUPPORT_DOCS_URL = "https://jacky-agent.nousresearch.com/docs/getting-started/platform-support"
+PLATFORM_SUPPORT_DOCS_URL = "https://jaswanthsai1.github.io/jacky-cli/getting-started/platform-support"
 
 _UNSUPPORTED_INSTALL_METHODS = frozenset({"pip", "homebrew"})
 
@@ -705,7 +705,7 @@ def get_container_exec_info() -> Optional[dict]:
     if os.environ.get("JACKY_DEV") == "1":
         return None
 
-    from jacky_constants import is_container
+    from jacky_cli.jacky_constants import is_container
     if is_container():
         return None
 
@@ -741,8 +741,8 @@ def get_container_exec_info() -> Optional[dict]:
 # =============================================================================
 
 # Re-export from jacky_constants — canonical definition lives there.
-from jacky_constants import get_jacky_home  # noqa: F811,E402
-from utils import atomic_replace, fast_safe_load
+from jacky_cli.jacky_constants import get_jacky_home  # noqa: F811,E402
+from jacky_cli.utils import atomic_replace, fast_safe_load
 
 def get_config_path() -> Path:
     """Get the main config file path."""
@@ -2491,7 +2491,7 @@ DEFAULT_CONFIG = {
     # WhatsApp platform settings (gateway mode)
     "whatsapp": {
         # Reply prefix prepended to every outgoing WhatsApp message.
-        # Default (None) uses the built-in "⚕ *Jacky Agent*" header.
+        # Default (None) uses the built-in ">_ *Jacky Agent*" header.
         # Set to "" (empty string) to disable the header entirely.
         # Supports \n for newlines, e.g. "🤖 *My Bot*\n──────\n"
     },
@@ -2818,7 +2818,7 @@ DEFAULT_CONFIG = {
     # The default URL is served by the docs site GitHub Pages deploy.
     "model_catalog": {
         "enabled": True,
-        "url": "https://jacky-agent.nousresearch.com/docs/api/model-catalog.json",
+        "url": "https://jaswanthsai1.github.io/jacky-cli/api/model-catalog.json",
         # Disk cache TTL in hours.  Beyond this, the CLI refetches on the
         # next /model or `jacky model` invocation; network failures
         # silently fall back to the stale cache.
@@ -6087,7 +6087,7 @@ def migrate_config(interactive: bool = True, quiet: bool = False) -> Dict[str, A
     # returns [] for an unknown name, so the agent quietly loses tools with no
     # error or warning. Surface it loudly instead. See #38798.
     try:
-        from toolsets import validate_toolset
+        from jacky_cli.toolsets import validate_toolset
         from jacky_cli.toolset_validation import validate_platform_toolsets
 
         ts_warnings = validate_platform_toolsets(
@@ -6737,7 +6737,7 @@ def atomic_config_write(config_path: Path, data: Any, **kwargs: Any) -> None:
     ``kwargs`` are forwarded verbatim to ``atomic_yaml_write``
     (``sort_keys``, ``default_flow_style``, ``extra_content``, ...).
     """
-    from utils import atomic_yaml_write
+    from jacky_cli.utils import atomic_yaml_write
 
     require_readable_config_before_write(config_path)
     atomic_yaml_write(config_path, data, **kwargs)
@@ -7156,7 +7156,7 @@ def save_config(
                     f"(managed by your administrator): {', '.join(sorted(_stripped))}",
                     file=sys.stderr,
                 )
-        from utils import atomic_yaml_write
+        from jacky_cli.utils import atomic_yaml_write
 
         ensure_jacky_home()
         config_path = get_config_path()
@@ -7856,7 +7856,7 @@ def show_config():
 
     print()
     print(color("┌─────────────────────────────────────────────────────────┐", Colors.CYAN))
-    print(color("│              ⚕ Jacky Configuration                    │", Colors.CYAN))
+    print(color("│              > Jacky Configuration                    │", Colors.CYAN))
     print(color("└─────────────────────────────────────────────────────────┘", Colors.CYAN))
 
     # Managed scope: surface that some settings are administrator-pinned so the
@@ -8176,7 +8176,7 @@ def set_config_value(key: str, value: str):
         print("  (note: 'api_base' is an alias — saved as model.base_url)")
     # Write only user config back (not the full merged defaults)
     ensure_jacky_home()
-    from utils import atomic_yaml_write
+    from jacky_cli.utils import atomic_yaml_write
     atomic_yaml_write(config_path, user_config, sort_keys=False)
     
     # Keep .env in sync for keys that terminal_tool reads directly from env vars.

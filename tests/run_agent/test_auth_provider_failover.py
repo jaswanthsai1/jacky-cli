@@ -17,16 +17,16 @@ fell through to "switch providers manually" advice and never called
 
 from unittest.mock import MagicMock, patch
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 from agent.error_classifier import classify_api_error, FailoverReason
 from agent.turn_retry_state import TurnRetryState
 
 
 def _make_agent(fallback_model=None):
     with (
-        patch("run_agent.get_tool_definitions", return_value=[]),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
         agent = AIAgent(
             api_key="test-key",

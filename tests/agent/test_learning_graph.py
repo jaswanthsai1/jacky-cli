@@ -9,7 +9,7 @@ change-detector.
 from __future__ import annotations
 
 from agent import learning_graph
-from jacky_constants import reset_jacky_home_override, set_jacky_home_override
+from jacky_cli.jacky_constants import reset_jacky_home_override, set_jacky_home_override
 
 
 def _node(name: str, category: str, related=None):

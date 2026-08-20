@@ -55,7 +55,7 @@ def fresh_home(tmp_path, monkeypatch):
         monkeypatch.delenv(var, raising=False)
     # Also reset jacky_constants cache so get_default_jacky_root() re-reads.
     try:
-        import jacky_constants
+        import jacky_cli.jacky_constants as jacky_constants
         jacky_constants._cached_default_jacky_root = None  # type: ignore[attr-defined]
     except Exception:
         pass

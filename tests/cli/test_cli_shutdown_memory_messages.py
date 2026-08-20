@@ -22,7 +22,7 @@ from unittest.mock import MagicMock, patch
 @patch("jacky_cli.plugins.invoke_hook")
 def test_cleanup_forwards_session_messages(mock_invoke_hook):
     """_run_cleanup forwards a populated ``_session_messages`` list."""
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
 
     transcript = [
         {"role": "user", "content": "remember my dog is named Biscuit"},
@@ -49,7 +49,7 @@ def test_cleanup_empty_list_still_forwarded(mock_invoke_hook):
     """An agent that initialised but ran no turns has an empty list.
     Forwarding it (rather than falling through) matches the gateway-side
     behaviour and is explicit to providers."""
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
 
     agent = MagicMock()
     agent.session_id = "cli-session-id"
@@ -73,7 +73,7 @@ def test_cleanup_non_list_attribute_falls_back_to_no_arg(mock_invoke_hook):
     back to the no-arg path rather than passing a garbage value to
     providers expecting ``List[Dict]``.  This keeps existing CLI test
     suites that use bare ``MagicMock()`` agents green."""
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
 
     agent = MagicMock()
     agent.session_id = "cli-session-id"
@@ -93,7 +93,7 @@ def test_cleanup_non_list_attribute_falls_back_to_no_arg(mock_invoke_hook):
 @patch("jacky_cli.plugins.invoke_hook")
 def test_cleanup_provider_exception_is_swallowed(mock_invoke_hook):
     """A raising ``shutdown_memory_provider`` must not crash CLI exit."""
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
 
     agent = MagicMock()
     agent.session_id = "cli-session-id"
@@ -113,7 +113,7 @@ def test_cleanup_provider_exception_is_swallowed(mock_invoke_hook):
 
 def test_cli_close_persists_agent_session_messages_before_end_session():
     """CLI shutdown flushes live agent messages before closing the session."""
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
 
     transcript = [
         {"role": "user", "content": "long task"},
@@ -137,7 +137,7 @@ def test_cli_close_persists_agent_session_messages_before_end_session():
 
 def test_cli_close_persist_falls_back_to_conversation_history():
     """Bare MagicMock agents do not provide a real _session_messages list."""
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
 
     conversation_history = [{"role": "user", "content": "saved from cli"}]
     cli = object.__new__(cli_mod.JackyCLI)
@@ -154,7 +154,7 @@ def test_cli_close_persist_falls_back_to_conversation_history():
 
 def test_cli_close_persist_skips_empty_transcripts():
     """Do not create empty session writes for idle CLI startup/shutdown."""
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
 
     cli = object.__new__(cli_mod.JackyCLI)
     cli.conversation_history = []

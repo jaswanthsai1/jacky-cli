@@ -1692,7 +1692,7 @@ class TestDefaultInteractionDispatch:
         jacky_home = tmp_path / "jacky_home"
         jacky_home.mkdir()
         monkeypatch.setattr(
-            "jacky_constants.get_jacky_home",
+            "jacky_cli.jacky_constants.get_jacky_home",
             lambda: jacky_home,
         )
 
@@ -1713,7 +1713,7 @@ class TestDefaultInteractionDispatch:
         jacky_home = tmp_path / "jacky_home"
         jacky_home.mkdir()
         monkeypatch.setattr(
-            "jacky_constants.get_jacky_home",
+            "jacky_cli.jacky_constants.get_jacky_home",
             lambda: jacky_home,
         )
         from gateway.platforms.qqbot.keyboards import parse_interaction_event

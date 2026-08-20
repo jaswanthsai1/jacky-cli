@@ -522,7 +522,7 @@ class GoogleChatAdapter(BasePlatformAdapter):
         # made the in-memory version of this heuristic flaky for
         # multi-restart sessions).
         try:
-            from jacky_constants import get_jacky_home as _get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home as _get_jacky_home
             _jacky_home = _get_jacky_home()
         except (ModuleNotFoundError, ImportError):
             _jacky_home = _Path.home() / ".jacky"

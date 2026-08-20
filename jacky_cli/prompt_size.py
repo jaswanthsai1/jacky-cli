@@ -32,7 +32,7 @@ def _build_inspection_agent(platform: str) -> Any:
     ``run_agent.py`` (no provider auto-detection, no network). Toolsets and
     platform come from the caller so the breakdown matches a real session.
     """
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     from jacky_cli.config import load_config
     from jacky_cli.tools_config import _get_platform_tools
 

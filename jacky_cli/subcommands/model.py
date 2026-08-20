@@ -59,4 +59,10 @@ def build_model_parser(subparsers, *, cmd_model: Callable) -> None:
         action="store_true",
         help="Disable TLS verification for Nous login (testing only)",
     )
+    model_subparsers = model_parser.add_subparsers(dest="model_command")
+    model_subparsers.add_parser(
+        "list",
+        aliases=["ls"],
+        help="Show the configured model and which providers have credentials (non-interactive)",
+    )
     model_parser.set_defaults(func=cmd_model)

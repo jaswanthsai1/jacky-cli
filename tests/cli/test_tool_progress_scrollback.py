@@ -50,7 +50,7 @@ def _make_cli(tool_progress="all", verbose=_UNSET):
     }
     with patch.dict(sys.modules, prompt_toolkit_stubs), \
          patch.dict("os.environ", clean_env, clear=False):
-        import cli as mod
+        import jacky_cli.cli as mod
         mod = importlib.reload(mod)
         _cli_mod = mod
         with patch.object(mod, "get_tool_definitions", return_value=[]), \

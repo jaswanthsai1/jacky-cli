@@ -162,7 +162,7 @@ def build_trace_jsonl(
         if cwd:
             r = subprocess.run(
                 ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-                capture_output=True, text=True, timeout=3, cwd=cwd,
+                capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=3, cwd=cwd,
             )
             if r.returncode == 0:
                 git_branch = r.stdout.strip()
@@ -334,7 +334,7 @@ def load_session_messages(
     Returns ``(messages, meta)``. ``meta`` is ``{}`` when the session row is
     missing (messages may still be present for a live, untitled session).
     """
-    from jacky_state import SessionDB
+    from jacky_cli.jacky_state import SessionDB
     db = SessionDB(db_path=db_path) if db_path else SessionDB()
     resolved = db.resolve_session_id(session_id) or session_id
     meta = db.get_session(resolved) or {}

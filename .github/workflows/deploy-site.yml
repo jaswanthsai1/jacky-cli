@@ -39,11 +39,20 @@ jobs:
     # main commit needs to ship live before the next release tag — e.g.
     # a skills-index PR that doesn't touch website/** paths and so
     # doesn't auto-deploy via the deploy-docs path.
+    # Runs on release/manual dispatch; the step itself no-ops cleanly (exit 0)
+    # if VERCEL_DEPLOY_HOOK isn't configured, so forks without a Vercel
+    # project (repo Settings -> Secrets and variables -> Actions) never see
+    # this as a failure.
     if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Vercel Deploy
-        run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
+        run: |
+          if [ -z "${{ secrets.VERCEL_DEPLOY_HOOK }}" ]; then
+            echo "VERCEL_DEPLOY_HOOK not set — skipping Vercel deploy (this fork has no Vercel project configured)."
+            exit 0
+          fi
+          curl -f -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
 
   deploy-docs:
     if: github.repository == 'jaswanthsai1/jacky-cli'
@@ -133,15 +142,27 @@ jobs:
 
           echo "Downloading currently live skills index"
           if curl -fsSL --retry 3 --retry-delay 5 \
-            "https://jacky-agent.nousresearch.com/docs/api/skills-index.json" \
+            "https://jaswanthsai1.github.io/jacky-cli/api/skills-index.json" \
             -o "$INDEX_PATH" && validate_index; then
             exit 0
           fi
 
           echo "::warning::Live skills index unavailable or unhealthy; falling back to a fresh crawl"
           rm -f "$INDEX_PATH"
-          python3 scripts/build_skills_index.py
-          validate_index
+          # This crawl has proven flaky run-to-run on this fork (clawhub:
+          # 15029 then 4916; github: 0 on a later run) — almost certainly
+          # GITHUB_TOKEN rate-limiting during the ~2500-repo path-resolution
+          # pass, not real external drift. The skills marketplace catalog
+          # is a secondary feature; it must never block deploying the
+          # actual documentation. Degrade to a minimal placeholder index
+          # instead of failing the whole job when the crawl or its health
+          # check comes up short.
+          if python3 scripts/build_skills_index.py && validate_index; then
+            echo "Fresh crawl succeeded."
+          else
+            echo "::warning::Fresh skills-index crawl failed or came up short — shipping the docs site without an updated skills catalog this run. Not blocking the deploy."
+            echo '{"skills": [], "degraded": true}' > "$INDEX_PATH"
+          fi
 
       - name: Extract skill metadata for dashboard
         run: python3 website/scripts/extract-skills.py
@@ -159,18 +180,14 @@ jobs:
 
       - name: Stage deployment
         run: |
-          mkdir -p _site/docs
-          cp -r website/build/* _site/docs/
-          # llms.txt / llms-full.txt are also published at the site root
-          # (https://jacky-agent.nousresearch.com/llms.txt) because some
-          # agents and IDE plugins probe the classic root-level path rather
-          # than /docs/llms.txt. Same file, two URLs, one source of truth.
-          if [ -f website/build/llms.txt ]; then
-            cp website/build/llms.txt _site/llms.txt
-          fi
-          if [ -f website/build/llms-full.txt ]; then
-            cp website/build/llms-full.txt _site/llms-full.txt
-          fi
+          # docusaurus.config.ts's baseUrl is '/jacky-cli/' (this fork's
+          # GitHub Pages project-site root), so the built site must land at
+          # _site/ directly -- not _site/docs/. The upstream project served
+          # its docs under a /docs/ subpath because its custom domain root
+          # was a separate marketing page; this fork has no such page, so
+          # the docs site IS the root.
+          mkdir -p _site
+          cp -r website/build/* _site/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa  # v3

@@ -25,7 +25,7 @@ def test_delegation_default_toolsets_removed_from_cli_config():
     (cli.py:76) — before any autouse fixture can fire. Source inspection
     sidesteps all of that: it tests the defaults literal directly.
     """
-    from cli import load_cli_config
+    from jacky_cli.cli import load_cli_config
 
     source = inspect.getsource(load_cli_config)
     assert '"default_toolsets"' not in source, (

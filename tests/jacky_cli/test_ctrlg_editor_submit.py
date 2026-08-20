@@ -9,7 +9,7 @@ so ``_open_external_editor`` chains a done-callback that calls
 
 import queue
 
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 
 
 class _FakeBuf:

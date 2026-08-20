@@ -12,7 +12,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 from agent.context_compressor import ContextCompressor
 
 
@@ -98,10 +98,10 @@ def test_auto_corrects_threshold_when_aux_context_below_threshold(mock_get_clien
     assert agent.context_compressor.threshold_tokens == 80_000
 
 
-@patch("agent.model_metadata.get_model_context_length", return_value=32_768)
+@patch("agent.model_metadata.get_model_context_length", return_value=16_384)
 @patch("agent.auxiliary_client.get_text_auxiliary_client")
 def test_rejects_aux_below_minimum_context(mock_get_client, mock_ctx_len):
-    """Hard floor: aux context < MINIMUM_CONTEXT_LENGTH (64K) → session
+    """Hard floor: aux context < MINIMUM_CONTEXT_LENGTH (32K) → session
     refuses to start (ValueError), mirroring the main-model rejection."""
     agent = _make_agent(main_context=200_000, threshold_percent=0.50)
     mock_client = MagicMock()
@@ -116,8 +116,8 @@ def test_rejects_aux_below_minimum_context(mock_get_client, mock_ctx_len):
 
     err = str(exc_info.value)
     assert "tiny-aux-model" in err
-    assert "32,768" in err
-    assert "64,000" in err
+    assert "16,384" in err
+    assert "32,000" in err
     assert "below the minimum" in err
 
 
@@ -256,10 +256,10 @@ def test_init_feasibility_check_uses_aux_context_override_from_config():
 
     with (
         patch("jacky_cli.config.load_config", return_value=cfg),
-        patch("run_agent.get_tool_definitions", return_value=[]),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
-        patch("run_agent.ContextCompressor", new=_StubCompressor),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.ContextCompressor", new=_StubCompressor),
         patch("agent.auxiliary_client.get_text_auxiliary_client", return_value=(mock_client, "custom/big-model")),
         patch("agent.model_metadata.get_model_context_length", return_value=1_000_000) as mock_ctx_len,
     ):

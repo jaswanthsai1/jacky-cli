@@ -963,7 +963,7 @@ class TestDiscoverAndRegister:
         """MCP toolsets resolve through the live registry without TOOLSETS mutation."""
         from tools.registry import ToolRegistry
         from tools.mcp_tool import _discover_and_register_server, _servers, MCPServerTask
-        from toolsets import resolve_toolset, validate_toolset
+        from jacky_cli.toolsets import resolve_toolset, validate_toolset
 
         mock_registry = ToolRegistry()
         mock_tools = [_make_mcp_tool("ping", "Ping")]
@@ -1297,7 +1297,7 @@ class TestToolsetInjection:
         """Discovered MCP tools resolve through raw server-name aliases."""
         from tools.mcp_tool import MCPServerTask
         from tools.registry import ToolRegistry
-        from toolsets import resolve_toolset, validate_toolset
+        from jacky_cli.toolsets import resolve_toolset, validate_toolset
 
         mock_tools = [_make_mcp_tool("list_files", "List files")]
         mock_session = MagicMock()
@@ -1331,7 +1331,7 @@ class TestToolsetInjection:
         """MCP raw aliases never overwrite a built-in toolset name."""
         from tools.mcp_tool import MCPServerTask
         from tools.registry import ToolRegistry
-        from toolsets import resolve_toolset, validate_toolset
+        from jacky_cli.toolsets import resolve_toolset, validate_toolset
 
         mock_tools = [_make_mcp_tool("run", "Run command")]
         mock_session = MagicMock()
@@ -1356,7 +1356,7 @@ class TestToolsetInjection:
              patch("tools.mcp_tool._load_mcp_config", return_value=fake_config), \
              patch("tools.mcp_tool._connect_server", side_effect=fake_connect), \
              patch("tools.registry.registry", mock_registry), \
-             patch("toolsets.TOOLSETS", fake_toolsets):
+             patch("jacky_cli.toolsets.TOOLSETS", fake_toolsets):
             from tools.mcp_tool import discover_mcp_tools
             discover_mcp_tools()
 
@@ -1397,7 +1397,7 @@ class TestToolsetInjection:
              patch("tools.mcp_tool._servers", fresh_servers), \
              patch("tools.mcp_tool._load_mcp_config", return_value=fake_config), \
              patch("tools.mcp_tool._connect_server", side_effect=flaky_connect), \
-             patch("toolsets.TOOLSETS", fake_toolsets):
+             patch("jacky_cli.toolsets.TOOLSETS", fake_toolsets):
             from tools.mcp_tool import discover_mcp_tools
             result = discover_mcp_tools()
 
@@ -1439,7 +1439,7 @@ class TestToolsetInjection:
              patch("tools.mcp_tool._servers", fresh_servers), \
              patch("tools.mcp_tool._load_mcp_config", return_value=fake_config), \
              patch("tools.mcp_tool._connect_server", side_effect=flaky_connect), \
-             patch("toolsets.TOOLSETS", fake_toolsets):
+             patch("jacky_cli.toolsets.TOOLSETS", fake_toolsets):
             from tools.mcp_tool import discover_mcp_tools
 
             # First call: good connects, broken fails
@@ -1519,7 +1519,7 @@ class TestShutdown:
         import tools.mcp_tool as mcp_mod
         from tools.mcp_tool import MCPServerTask, shutdown_mcp_servers, _servers
         from tools.registry import registry
-        from toolsets import resolve_toolset, validate_toolset
+        from jacky_cli.toolsets import resolve_toolset, validate_toolset
 
         _servers.clear()
         registry.register(
@@ -3725,7 +3725,7 @@ class TestMCPSelectiveToolLoading:
         async def run():
             with patch("tools.mcp_tool._connect_server", side_effect=fake_connect), \
                  patch("tools.registry.registry", mock_registry), \
-                 patch("toolsets.create_custom_toolset"):
+                 patch("jacky_cli.toolsets.create_custom_toolset"):
                 return await _discover_and_register_server(name, config)
 
         try:
@@ -3850,7 +3850,7 @@ class TestMCPSelectiveToolLoading:
             with patch("tools.mcp_tool._connect_server", side_effect=fake_connect), \
                  patch.dict("tools.mcp_tool._servers", {}, clear=True), \
                  patch("tools.registry.registry", mock_registry), \
-                 patch("toolsets.create_custom_toolset"):
+                 patch("jacky_cli.toolsets.create_custom_toolset"):
                 registered = await _discover_and_register_server(
                     "ink_existing",
                     {"url": "https://mcp.example.com", "tools": {"include": ["create_service"]}},
@@ -3878,7 +3878,7 @@ class TestMCPSelectiveToolLoading:
         async def run():
             with patch("tools.mcp_tool._connect_server", side_effect=fake_connect), \
                  patch("tools.registry.registry", mock_registry), \
-                 patch("toolsets.create_custom_toolset", mock_create):
+                 patch("jacky_cli.toolsets.create_custom_toolset", mock_create):
                 return await _discover_and_register_server(
                     "ink_none",
                     {
@@ -3922,7 +3922,7 @@ class TestMCPSelectiveToolLoading:
              patch("tools.mcp_tool._servers", {}), \
              patch("tools.mcp_tool._load_mcp_config", return_value=fake_config), \
              patch("tools.mcp_tool._connect_server", side_effect=fake_connect), \
-             patch("toolsets.TOOLSETS", fake_toolsets):
+             patch("jacky_cli.toolsets.TOOLSETS", fake_toolsets):
             result = discover_mcp_tools()
 
         assert connect_called == []
@@ -4141,7 +4141,7 @@ class TestSanitizeMcpNameComponent:
     def test_slash_in_server_alias_resolution(self):
         """Server names with slashes resolve through their live MCP alias."""
         from tools.registry import ToolRegistry
-        from toolsets import resolve_toolset, validate_toolset
+        from jacky_cli.toolsets import resolve_toolset, validate_toolset
 
         reg = ToolRegistry()
         reg.register(

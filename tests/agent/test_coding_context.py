@@ -117,7 +117,7 @@ class TestCodingSelection:
         assert cc.coding_selection(platform="cli", cwd=tmp_path, config=cfg) is None
 
     def test_coding_toolset_is_registered(self):
-        from toolsets import resolve_toolset
+        from jacky_cli.toolsets import resolve_toolset
 
         tools = resolve_toolset(cc.CODING_TOOLSET)
         # Coding essentials present…

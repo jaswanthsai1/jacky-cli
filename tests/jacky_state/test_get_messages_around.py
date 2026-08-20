@@ -7,7 +7,7 @@ boundaries.
 """
 import pytest
 
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 
 
 @pytest.fixture

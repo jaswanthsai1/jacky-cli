@@ -5,7 +5,7 @@ import os
 from unittest.mock import patch
 
 from agent.secret_scope import reset_secret_scope, set_secret_scope
-from jacky_constants import reset_jacky_home_override, set_jacky_home_override
+from jacky_cli.jacky_constants import reset_jacky_home_override, set_jacky_home_override
 from gateway.config import (
     ChannelOverride,
     GatewayConfig,

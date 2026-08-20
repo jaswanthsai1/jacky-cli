@@ -163,7 +163,7 @@ def test_export_record_count_switches_unit_for_prompt_only_exports():
 
 def test_sessions_export_cli_prompt_only_stdout(monkeypatch, capsys):
     import jacky_cli.main as main_mod
-    import jacky_state
+    import jacky_cli.jacky_state as jacky_state
 
     captured = {}
 
@@ -203,7 +203,7 @@ def test_sessions_export_cli_prompt_only_stdout(monkeypatch, capsys):
 
 def test_sessions_export_cli_prompt_only_markdown_file(monkeypatch, capsys, tmp_path):
     import jacky_cli.main as main_mod
-    import jacky_state
+    import jacky_cli.jacky_state as jacky_state
 
     class FakeDB:
         def resolve_session_id(self, _session_id):
@@ -245,7 +245,7 @@ def test_sessions_export_cli_prompt_only_markdown_file(monkeypatch, capsys, tmp_
 
 def test_sessions_export_only_rejects_unsupported_format(monkeypatch, capsys):
     import jacky_cli.main as main_mod
-    import jacky_state
+    import jacky_cli.jacky_state as jacky_state
 
     class FakeDB:
         def export_all(self, source=None):

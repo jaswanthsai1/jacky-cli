@@ -1,7 +1,7 @@
 from pathlib import Path
 from unittest.mock import patch
 
-from cli import (
+from jacky_cli.cli import (
     JackyCLI,
     _collect_query_images,
     _format_image_attachment_badges,
@@ -26,7 +26,7 @@ class TestImageCommand:
         img = _make_image(tmp_path / "photo.png")
         cli_obj = _make_cli()
 
-        with patch("cli._cprint"):
+        with patch("jacky_cli.cli._cprint"):
             cli_obj._handle_image_command(f"/image {img}")
 
         assert cli_obj._attached_images == [img]
@@ -35,7 +35,7 @@ class TestImageCommand:
         img = _make_image(tmp_path / "my photo.png")
         cli_obj = _make_cli()
 
-        with patch("cli._cprint"):
+        with patch("jacky_cli.cli._cprint"):
             cli_obj._handle_image_command(f'/image "{img}"')
 
         assert cli_obj._attached_images == [img]
@@ -45,7 +45,7 @@ class TestImageCommand:
         file_path.write_text("hello\n", encoding="utf-8")
         cli_obj = _make_cli()
 
-        with patch("cli._cprint") as mock_print:
+        with patch("jacky_cli.cli._cprint") as mock_print:
             cli_obj._handle_image_command(f"/image {file_path}")
 
         assert cli_obj._attached_images == []
@@ -84,7 +84,7 @@ class TestCollectQueryImages:
 class TestTermuxImageHints:
     def test_termux_example_image_path_prefers_real_shared_storage_root(self, monkeypatch):
         existing = {"/sdcard", "/storage/emulated/0"}
-        monkeypatch.setattr("cli.os.path.isdir", lambda path: path in existing)
+        monkeypatch.setattr("jacky_cli.cli.os.path.isdir", lambda path: path in existing)
 
         hint = _termux_example_image_path()
 

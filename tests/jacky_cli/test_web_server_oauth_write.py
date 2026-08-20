@@ -38,7 +38,7 @@ def test_dashboard_oauth_write_uses_owner_only_permissions(oauth_file):
 
 def test_dashboard_oauth_write_is_atomic_and_cleans_temp_on_failure(oauth_file, monkeypatch):
     """If the atomic replace fails, no partial file or temp file is left."""
-    import utils
+    import jacky_cli.utils as utils
 
     def flaky_replace(src, dst):
         raise OSError('simulated replace failure')
@@ -57,7 +57,7 @@ def test_dashboard_oauth_write_uses_atomic_json_write_with_owner_only_mode(oauth
     """The OAuth token file must be written 0o600 from creation via
     ``atomic_json_write(mode=0o600)``, so it is never briefly world-readable
     (the old ``os.replace`` + post-hoc ``chmod`` TOCTOU)."""
-    import utils
+    import jacky_cli.utils as utils
 
     calls = {}
     real = utils.atomic_json_write

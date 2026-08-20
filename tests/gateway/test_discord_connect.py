@@ -720,7 +720,7 @@ async def test_post_connect_initialization_skips_sync_when_policy_off(monkeypatc
 @pytest.mark.asyncio
 async def test_post_connect_initialization_skips_same_fingerprint_after_success(tmp_path, monkeypatch):
     adapter = DiscordAdapter(PlatformConfig(enabled=True, token="test-token"))
-    monkeypatch.setattr("jacky_constants.get_jacky_home", lambda: tmp_path)
+    monkeypatch.setattr("jacky_cli.jacky_constants.get_jacky_home", lambda: tmp_path)
 
     class _DesiredCommand:
         def to_dict(self, tree):
@@ -757,7 +757,7 @@ async def test_post_connect_initialization_skips_same_fingerprint_after_success(
 @pytest.mark.asyncio
 async def test_post_connect_initialization_respects_discord_retry_after(tmp_path, monkeypatch):
     adapter = DiscordAdapter(PlatformConfig(enabled=True, token="test-token"))
-    monkeypatch.setattr("jacky_constants.get_jacky_home", lambda: tmp_path)
+    monkeypatch.setattr("jacky_cli.jacky_constants.get_jacky_home", lambda: tmp_path)
 
     class _DesiredCommand:
         def to_dict(self, tree):
@@ -798,7 +798,7 @@ async def test_post_connect_initialization_respects_discord_retry_after(tmp_path
 async def test_post_connect_initialization_reraises_non_rate_limit_exceptions(tmp_path, monkeypatch):
     """Arbitrary failures during sync must surface, not be swallowed as rate-limits."""
     adapter = DiscordAdapter(PlatformConfig(enabled=True, token="test-token"))
-    monkeypatch.setattr("jacky_constants.get_jacky_home", lambda: tmp_path)
+    monkeypatch.setattr("jacky_cli.jacky_constants.get_jacky_home", lambda: tmp_path)
 
     class _DesiredCommand:
         def to_dict(self, tree):

@@ -129,8 +129,8 @@ conservative at the waist.
   this repo. They place an ongoing maintenance burden on us to keep them working
   against a fast-moving core, for a backend we don't own. Ship them as a
   **standalone plugin repo** users install into `~/.jacky/plugins/` (or via a
-  pip entry point), and promote them in the Nous Research Discord
-  (`#plugins-skills-and-skins`). This is a coupling-and-maintenance decision, not
+  pip entry point), and promote them through the project's own community
+  channels. This is a coupling-and-maintenance decision, not
   a quality bar — the plugin can be excellent and still be a close. PRs that add
   such a directory to the tree are closed with a pointer to publish it as its own
   repo.
@@ -229,16 +229,17 @@ entry points you'll actually edit.
 
 ```
 jacky-agent/
-├── run_agent.py          # AIAgent class — core conversation loop (~12k LOC)
-├── model_tools.py        # Tool orchestration, discover_builtin_tools(), handle_function_call()
-├── toolsets.py           # Toolset definitions, _JACKY_CORE_TOOLS list
-├── cli.py                # JackyCLI class — interactive CLI orchestrator (~11k LOC)
-├── jacky_state.py       # SessionDB — SQLite session store (FTS5 search)
-├── jacky_constants.py   # get_jacky_home(), display_jacky_home() — profile-aware paths
-├── jacky_logging.py     # setup_logging() — agent.log / errors.log / gateway.log (profile-aware)
-├── batch_runner.py       # Parallel batch processing
 ├── agent/                # Agent internals (provider adapters, memory, caching, compression, etc.)
-├── jacky_cli/           # CLI subcommands, setup wizard, plugins loader, skin engine
+├── jacky_cli/           # CLI subcommands, setup wizard, plugins loader, skin engine, and the
+│   │                     #   former root-level modules (now jacky_cli.<name>):
+│   ├── run_agent.py      #   AIAgent class — core conversation loop (~12k LOC)
+│   ├── model_tools.py    #   Tool orchestration, discover_builtin_tools(), handle_function_call()
+│   ├── toolsets.py       #   Toolset definitions, _JACKY_CORE_TOOLS list
+│   ├── cli.py            #   JackyCLI class — interactive CLI orchestrator (~11k LOC)
+│   ├── jacky_state.py   #   SessionDB — SQLite session store (FTS5 search)
+│   ├── jacky_constants.py #   get_jacky_home(), display_jacky_home() — profile-aware paths
+│   ├── jacky_logging.py #   setup_logging() — agent.log / errors.log / gateway.log (profile-aware)
+│   └── batch_runner.py   #   Parallel batch processing
 ├── tools/                # Tool implementations — auto-discovered via tools/registry.py
 │   └── environments/     # Terminal backends (local, docker, ssh, modal, daytona, singularity)
 ├── gateway/              # Messaging gateway — run.py + session.py + platforms/
@@ -804,8 +805,8 @@ the existing plugin discovery path and use the ABCs/hooks/ctx surface
 we expose; nothing special is needed in core. The reason is
 maintenance load: every product we absorb into the tree becomes our
 burden to keep working against a fast-moving core, for a backend we
-don't own. Promote standalone plugins in the Nous Research Discord
-(`#plugins-skills-and-skins`). PRs that add such a directory under
+don't own. Promote standalone plugins through the project's own
+community channels. PRs that add such a directory under
 `plugins/` are closed with a pointer to publish it as its own repo —
 this is a coupling decision, not a quality judgment. (The
 `observability/`, `kanban/`, `disk-cleanup/`, etc. directories already

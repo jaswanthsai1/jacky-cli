@@ -4,7 +4,7 @@ import importlib
 
 import pytest
 
-from model_tools import get_tool_definitions
+from jacky_cli.model_tools import get_tool_definitions
 
 terminal_tool_module = importlib.import_module("tools.terminal_tool")
 
@@ -14,7 +14,7 @@ def _clear_caches():
     """Invalidate check_fn and tool-definitions caches before each test
     so that monkeypatched env vars / config take effect."""
     from tools.registry import invalidate_check_fn_cache
-    from model_tools import _clear_tool_defs_cache
+    from jacky_cli.model_tools import _clear_tool_defs_cache
     invalidate_check_fn_cache()
     _clear_tool_defs_cache()
     yield
@@ -179,7 +179,7 @@ class TestCheckFnTransientFailureSuppression:
         t = {"now": 5000.0}
         monkeypatch.setattr(reg.time, "monotonic", lambda: t["now"])
 
-        from model_tools import get_tool_definitions, _clear_tool_defs_cache
+        from jacky_cli.model_tools import get_tool_definitions, _clear_tool_defs_cache
 
         reg.invalidate_check_fn_cache()
         _clear_tool_defs_cache()

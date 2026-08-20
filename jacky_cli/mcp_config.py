@@ -24,7 +24,7 @@ from jacky_cli.config import (
     get_jacky_home,  # noqa: F401 — used by test mocks
 )
 from jacky_cli.colors import Colors, color
-from jacky_constants import display_jacky_home
+from jacky_cli.jacky_constants import display_jacky_home
 from jacky_cli.mcp_security import validate_mcp_server_entry
 from tools.mcp_tool import _ENV_VAR_PATTERN, _env_ref_name
 
@@ -1021,7 +1021,7 @@ def mcp_command(args):
     action = getattr(args, "mcp_action", None)
 
     if action == "serve":
-        from mcp_serve import run_mcp_server
+        from jacky_cli.mcp_serve import run_mcp_server
         run_mcp_server(verbose=getattr(args, "verbose", False))
         return
 

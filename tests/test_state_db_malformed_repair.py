@@ -18,8 +18,8 @@ from pathlib import Path
 
 import pytest
 
-import jacky_state
-from jacky_state import (
+import jacky_cli.jacky_state as jacky_state
+from jacky_cli.jacky_state import (
     SessionDB,
     is_malformed_db_error,
     repair_state_db_schema,
@@ -277,7 +277,7 @@ def _corrupt_fts_index_data(db_path: Path) -> None:
 
 def test_fts_write_corruption_detected_by_write_probe(tmp_path):
     """_db_opens_cleanly's rolled-back write probe flags FTS write corruption."""
-    from jacky_state import _db_opens_cleanly
+    from jacky_cli.jacky_state import _db_opens_cleanly
 
     db_path = tmp_path / "state.db"
     _build_healthy_db(db_path)
@@ -298,7 +298,7 @@ def test_fts_write_corruption_detected_by_write_probe(tmp_path):
 
 def test_fts_write_corruption_repaired_in_place(tmp_path):
     """repair_state_db_schema rebuilds the FTS index; reads + writes resume."""
-    from jacky_state import _db_opens_cleanly
+    from jacky_cli.jacky_state import _db_opens_cleanly
 
     db_path = tmp_path / "state.db"
     _build_healthy_db(db_path)

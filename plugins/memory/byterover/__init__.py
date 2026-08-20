@@ -140,7 +140,7 @@ def _run_brv(args: List[str], timeout: int = _QUERY_TIMEOUT,
 
     try:
         result = subprocess.run(
-            cmd, capture_output=True, text=True,
+            cmd, capture_output=True, text=True, encoding="utf-8", errors="replace",
             timeout=timeout, cwd=effective_cwd, env=env,
             stdin=subprocess.DEVNULL,
         )
@@ -164,7 +164,7 @@ def _run_brv(args: List[str], timeout: int = _QUERY_TIMEOUT,
 
 def _get_brv_cwd() -> Path:
     """Profile-scoped working directory for the brv context tree."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     return get_jacky_home() / "byterover"
 
 

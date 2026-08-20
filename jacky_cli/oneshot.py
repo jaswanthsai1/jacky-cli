@@ -55,7 +55,7 @@ def _validate_explicit_toolsets(toolsets: object = None) -> tuple[list[str] | No
         return None, None
 
     try:
-        from toolsets import validate_toolset
+        from jacky_cli.toolsets import validate_toolset
     except Exception as exc:
         return None, f"jacky -z: failed to validate --toolsets: {exc}\n"
 
@@ -286,7 +286,7 @@ def _create_session_db_for_oneshot():
     advertised but every call returns "Session database not available.".
     """
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         return SessionDB()
     except Exception as exc:
@@ -309,7 +309,7 @@ def _run_agent(
     from jacky_cli.models import detect_provider_for_model
     from jacky_cli.runtime_provider import resolve_runtime_provider
     from jacky_cli.tools_config import _get_platform_tools
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
 
     cfg = load_config()
 

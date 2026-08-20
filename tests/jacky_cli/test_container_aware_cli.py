@@ -42,7 +42,7 @@ def container_env(tmp_path, monkeypatch):
 
 def test_get_container_exec_info_returns_metadata(container_env):
     """Reads .container-mode and returns all fields including exec_user."""
-    with patch("jacky_constants.is_container", return_value=False):
+    with patch("jacky_cli.jacky_constants.is_container", return_value=False):
         info = get_container_exec_info()
 
     assert info is not None
@@ -54,7 +54,7 @@ def test_get_container_exec_info_returns_metadata(container_env):
 
 def test_get_container_exec_info_none_inside_container(container_env):
     """Returns None when we're already inside a container."""
-    with patch("jacky_constants.is_container", return_value=True):
+    with patch("jacky_cli.jacky_constants.is_container", return_value=True):
         info = get_container_exec_info()
 
     assert info is None
@@ -67,7 +67,7 @@ def test_get_container_exec_info_none_without_file(tmp_path, monkeypatch):
     monkeypatch.setenv("JACKY_HOME", str(jacky_home))
     monkeypatch.delenv("JACKY_DEV", raising=False)
 
-    with patch("jacky_constants.is_container", return_value=False):
+    with patch("jacky_cli.jacky_constants.is_container", return_value=False):
         info = get_container_exec_info()
 
     assert info is None
@@ -77,7 +77,7 @@ def test_get_container_exec_info_skipped_when_jacky_dev(container_env, monkeypat
     """Returns None when JACKY_DEV=1 is set (dev mode bypass)."""
     monkeypatch.setenv("JACKY_DEV", "1")
 
-    with patch("jacky_constants.is_container", return_value=False):
+    with patch("jacky_cli.jacky_constants.is_container", return_value=False):
         info = get_container_exec_info()
 
     assert info is None
@@ -87,7 +87,7 @@ def test_get_container_exec_info_not_skipped_when_jacky_dev_zero(container_env, 
     """JACKY_DEV=0 does NOT trigger bypass — only '1' does."""
     monkeypatch.setenv("JACKY_DEV", "0")
 
-    with patch("jacky_constants.is_container", return_value=False):
+    with patch("jacky_cli.jacky_constants.is_container", return_value=False):
         info = get_container_exec_info()
 
     assert info is not None
@@ -104,7 +104,7 @@ def test_get_container_exec_info_defaults():
             "# minimal file with no keys\n"
         )
 
-        with patch("jacky_constants.is_container", return_value=False), \
+        with patch("jacky_cli.jacky_constants.is_container", return_value=False), \
              patch.dict(get_container_exec_info.__globals__, {"get_jacky_home": lambda: jacky_home}), \
              patch.dict(os.environ, {}, clear=False):
             os.environ.pop("JACKY_DEV", None)
@@ -126,7 +126,7 @@ def test_get_container_exec_info_docker_backend(container_env):
         "jacky_bin=/opt/jacky/bin/jacky\n"
     )
 
-    with patch("jacky_constants.is_container", return_value=False):
+    with patch("jacky_cli.jacky_constants.is_container", return_value=False):
         info = get_container_exec_info()
 
     assert info["backend"] == "docker"
@@ -137,7 +137,7 @@ def test_get_container_exec_info_docker_backend(container_env):
 
 def test_get_container_exec_info_crashes_on_permission_error(container_env):
     """PermissionError propagates instead of being silently swallowed."""
-    with patch("jacky_constants.is_container", return_value=False), \
+    with patch("jacky_cli.jacky_constants.is_container", return_value=False), \
          patch("builtins.open", side_effect=PermissionError("permission denied")):
         with pytest.raises(PermissionError):
             get_container_exec_info()

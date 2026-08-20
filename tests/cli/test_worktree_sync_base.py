@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-import cli
+import jacky_cli.cli as cli
 
 
 def _run(args, cwd):

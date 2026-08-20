@@ -91,7 +91,7 @@ def list_providers() -> list[ProviderProfile]:
 def _user_plugins_dir() -> Path | None:
     """Return ``$JACKY_HOME/plugins/model-providers/`` if it exists."""
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         d = get_jacky_home() / "plugins" / "model-providers"
         return d if d.is_dir() else None

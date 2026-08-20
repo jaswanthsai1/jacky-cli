@@ -980,7 +980,7 @@ class SlackAdapter(BasePlatformAdapter):
         bot_tokens = [t.strip() for t in raw_token.split(",") if t.strip()]
 
         # Also load tokens from OAuth token file
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         tokens_file = get_jacky_home() / "slack_tokens.json"
         if tokens_file.exists():
@@ -4390,7 +4390,7 @@ def interactive_setup() -> None:
         paste-into-Slack instructions. Failures are non-fatal."""
         try:
             from jacky_cli.slack_cli import _build_full_manifest
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             import json as _json
 
             manifest = _build_full_manifest(
@@ -4439,7 +4439,7 @@ def interactive_setup() -> None:
     print_info("   3. Install to Workspace: Settings → Install App")
     print_info("   4. After installing, invite the bot to channels: /invite @YourBot")
     print()
-    print_info("   Full guide: https://jacky-agent.nousresearch.com/docs/user-guide/messaging/slack/")
+    print_info("   Full guide: https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/slack/")
     print()
 
     # Generate and write manifest up-front so the user can paste it into

@@ -12,7 +12,7 @@ import threading
 import pytest
 
 from agent.prompt_builder import STEER_MARKER_OPEN, format_steer_marker
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 def _bare_agent() -> AIAgent:

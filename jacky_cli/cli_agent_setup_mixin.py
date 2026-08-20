@@ -29,7 +29,7 @@ class CLIAgentSetupMixin:
         are picked up without restarting the CLI.
         Returns True if credentials are ready, False on auth failure.
         """
-        from cli import ChatConsole, _cprint, logger
+        from jacky_cli.cli import ChatConsole, _cprint, logger
         from jacky_cli.runtime_provider import (
             resolve_runtime_provider,
             format_runtime_provider_error,
@@ -223,7 +223,7 @@ class CLIAgentSetupMixin:
         Returns:
             bool: True if successful, False otherwise
         """
-        from cli import AIAgent, ChatConsole, _DIM, _RST, _accent_hex, _cprint, _prepare_deferred_agent_startup, logger
+        from jacky_cli.cli import AIAgent, ChatConsole, _DIM, _RST, _accent_hex, _cprint, _prepare_deferred_agent_startup, logger
         if self.agent is not None:
             return True
 
@@ -241,7 +241,7 @@ class CLIAgentSetupMixin:
         # Initialize SQLite session store for CLI sessions (if not already done in __init__)
         if self._session_db is None:
             try:
-                from jacky_state import SessionDB
+                from jacky_cli.jacky_state import SessionDB
                 self._session_db = SessionDB()
             except Exception as e:
                 logger.warning("SQLite session store not available — session will NOT be indexed: %s", e)
@@ -401,7 +401,7 @@ class CLIAgentSetupMixin:
             # god-file extraction into this mixin a ``global`` here would bind
             # *this module's* namespace, leaving ``cli._active_agent_ref`` None
             # forever — so memory shutdown never ran on /exit (#49287).
-            import cli as _cli
+            import jacky_cli.cli as _cli
             _cli._active_agent_ref = self.agent
             # Route agent status output through prompt_toolkit so ANSI escape
             # sequences aren't garbled by patch_stdout's StdoutProxy (#2262).
@@ -453,7 +453,7 @@ class CLIAgentSetupMixin:
         The corresponding block in ``_init_agent()`` checks whether history is
         already populated and skips the DB round-trip.
         """
-        from cli import _accent_hex
+        from jacky_cli.cli import _accent_hex
         if not self._resumed or not self._session_db:
             return False
 
@@ -529,7 +529,7 @@ class CLIAgentSetupMixin:
         last ``MAX_DISPLAY_EXCHANGES`` user/assistant exchanges and shows
         an indicator for earlier hidden messages.
         """
-        from cli import CLI_CONFIG, _record_output_history_entry, _strip_reasoning_tags, _suspend_output_history
+        from jacky_cli.cli import CLI_CONFIG, _record_output_history_entry, _strip_reasoning_tags, _suspend_output_history
         if not self.conversation_history:
             return
 

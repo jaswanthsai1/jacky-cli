@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 def _make_cli_stub():
     """Create a minimal JackyCLI-like object with stream state."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     cli = JackyCLI.__new__(JackyCLI)
     cli.show_reasoning = False
@@ -144,7 +144,7 @@ class TestFlushRecovery:
         from unittest.mock import patch
         import shutil
         with patch.object(shutil, "get_terminal_size", return_value=os.terminal_size((80, 24))):
-            with patch("cli._cprint"):
+            with patch("jacky_cli.cli._cprint"):
                 cli._flush_stream()
 
         assert not cli._in_reasoning_block

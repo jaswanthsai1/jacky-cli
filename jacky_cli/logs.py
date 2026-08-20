@@ -26,7 +26,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional, Sequence
 
-from jacky_constants import get_jacky_home, display_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home, display_jacky_home
 
 # Known log files (name → filename)
 LOG_FILES = {
@@ -198,7 +198,7 @@ def tail_log(
     # Resolve component to logger name prefixes
     component_prefixes = None
     if component:
-        from jacky_logging import COMPONENT_PREFIXES
+        from jacky_cli.jacky_logging import COMPONENT_PREFIXES
         component_lower = component.lower()
         if component_lower not in COMPONENT_PREFIXES:
             available = ", ".join(sorted(COMPONENT_PREFIXES))

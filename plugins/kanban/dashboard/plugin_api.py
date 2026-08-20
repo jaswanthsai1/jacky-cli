@@ -2155,7 +2155,7 @@ def update_profile_description(profile_name: str, payload: DescribeBody):
         from jacky_cli import profiles as profiles_mod
         canon = profiles_mod.normalize_profile_name(profile_name)
         if canon == "default":
-            from jacky_constants import get_jacky_home  # type: ignore
+            from jacky_cli.jacky_constants import get_jacky_home  # type: ignore
             from pathlib import Path as _Path
             profile_dir = _Path(get_jacky_home())
         else:

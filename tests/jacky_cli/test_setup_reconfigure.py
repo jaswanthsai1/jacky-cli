@@ -192,8 +192,8 @@ class TestFreshInstall:
         with ExitStack() as stack:
             m = _enter_fresh_install_patches(
                 stack,
-                prompt=("jacky_cli.setup.prompt_choice", {"return_value": 0}),
-                first="jacky_cli.setup._run_first_time_quick_setup",
+                prompt=("jacky_cli.setup.prompt_choice", {"return_value": 1}),
+                first="jacky_cli.setup._run_blank_slate_setup",
             )
             from jacky_cli.setup import run_setup_wizard
             run_setup_wizard(args)
@@ -207,8 +207,8 @@ class TestFreshInstall:
         with ExitStack() as stack:
             m = _enter_fresh_install_patches(
                 stack,
-                prompt=("jacky_cli.setup.prompt_choice", {"return_value": 0}),
-                first="jacky_cli.setup._run_first_time_quick_setup",
+                prompt=("jacky_cli.setup.prompt_choice", {"return_value": 1}),
+                first="jacky_cli.setup._run_blank_slate_setup",
             )
             from jacky_cli.setup import run_setup_wizard
             run_setup_wizard(args)
@@ -222,8 +222,8 @@ class TestFreshInstall:
         with ExitStack() as stack:
             m = _enter_fresh_install_patches(
                 stack,
-                prompt=("jacky_cli.setup.prompt_choice", {"return_value": 0}),
-                first="jacky_cli.setup._run_first_time_quick_setup",
+                prompt=("jacky_cli.setup.prompt_choice", {"return_value": 1}),
+                first="jacky_cli.setup._run_blank_slate_setup",
             )
             from jacky_cli.setup import run_setup_wizard
             run_setup_wizard(args)

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 import json
 import sys
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 def _mock_response(*, usage: dict, content: str = "done"):
@@ -18,9 +18,9 @@ def _mock_response(*, usage: dict, content: str = "done"):
 
 def _make_agent(session_db, *, platform: str):
     with (
-        patch("run_agent.get_tool_definitions", return_value=[]),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
         agent = AIAgent(
             api_key="test-key",
@@ -75,7 +75,7 @@ def test_session_search_lazily_opens_db_when_entrypoint_did_not_pass_one(monkeyp
 
     jacky_state = ModuleType("jacky_state")
     jacky_state.SessionDB = FakeSessionDB
-    monkeypatch.setitem(sys.modules, "jacky_state", jacky_state)
+    monkeypatch.setitem(sys.modules, "jacky_cli.jacky_state", jacky_state)
 
     session_search_mod = ModuleType("tools.session_search_tool")
 

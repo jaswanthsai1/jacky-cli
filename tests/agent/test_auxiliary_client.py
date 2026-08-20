@@ -5303,21 +5303,21 @@ class TestCompressionFallbackContextFilter:
         small_client_b = MagicMock(name="small_b")
         large_client = MagicMock(name="large")
         entries = [
-            self._make_chain_entry("p1", "small-a-32k"),
-            self._make_chain_entry("p2", "small-b-48k"),
+            self._make_chain_entry("p1", "small-a-16k"),
+            self._make_chain_entry("p2", "small-b-24k"),
             self._make_chain_entry("p3", "large-512k"),
         ]
 
         def fake_resolve(entry):
             if entry is entries[0]:
-                return small_client_a, "small-a-32k"
+                return small_client_a, "small-a-16k"
             if entry is entries[1]:
-                return small_client_b, "small-b-48k"
+                return small_client_b, "small-b-24k"
             return large_client, "large-512k"
 
         def fake_ctx(model, base_url="", api_key="", **kwargs):
-            return {"small-a-32k": 32_000,
-                    "small-b-48k": 48_000,
+            return {"small-a-16k": 16_000,
+                    "small-b-24k": 24_000,
                     "large-512k": 512_000}.get(model, 256_000)
 
         monkeypatch.setattr(

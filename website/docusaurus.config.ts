@@ -3,15 +3,28 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'Jacky Agent',
-  tagline: 'The self-improving AI agent',
+  title: 'Jacky CLI',
+  tagline: 'The AI CLI built for hunting and building',
   favicon: 'img/favicon.ico',
 
-  url: 'https://jacky-agent.nousresearch.com',
-  baseUrl: '/docs/',
+  // Deployed today at https://jaswanthsai1.github.io/jacky-cli/ (a GitHub
+  // Pages *project* site), so `url` is the Pages domain and `baseUrl` is
+  // the repo subpath. If this site is later pointed at a custom domain
+  // (e.g. jacky-cli.dev) as a Pages *user/org* site or via Vercel/Netlify,
+  // change BOTH of the following:
+  //   1. `url`: the new domain, e.g. 'https://jacky-cli.dev'
+  //   2. `baseUrl`: '/' (root — no more /jacky-cli/ subpath)
+  // ...and add a `website/static/CNAME` file containing the domain (for
+  // GitHub Pages specifically; not needed for Vercel/Netlify custom
+  // domains, which are configured in their dashboards instead). Do NOT
+  // add a CNAME file while still deploying to the jaswanthsai1.github.io
+  // subpath — GitHub Pages will start redirecting the project site to the
+  // (unconfigured) custom domain and break the current deployment.
+  url: 'https://jaswanthsai1.github.io',
+  baseUrl: '/jacky-cli/',
 
-  organizationName: 'NousResearch',
-  projectName: 'jacky-agent',
+  organizationName: 'jaswanthsai1',
+  projectName: 'jacky-cli',
 
   onBrokenLinks: 'warn',
 
@@ -119,9 +132,9 @@ const config: Config = {
       },
     },
     navbar: {
-      title: 'Jacky Agent',
+      title: 'Jacky CLI',
       logo: {
-        alt: 'Jacky Agent',
+        alt: 'Jacky CLI — hooded AI hacker-bot mascot',
         src: 'img/logo.png',
       },
       items: [
@@ -132,12 +145,17 @@ const config: Config = {
           label: 'Docs',
         },
         {
+          to: '/methodology/',
+          label: 'Methodology',
+          position: 'left',
+        },
+        {
           to: '/skills',
           label: 'Skills',
           position: 'left',
         },
         {
-          href: 'https://jacky-agent.nousresearch.com/',
+          to: '/#quick-start',
           label: 'Download',
           position: 'left',
         },
@@ -146,18 +164,13 @@ const config: Config = {
           position: 'right',
         },
         {
-          href: 'https://jacky-agent.nousresearch.com',
+          to: '/',
           label: 'Home',
           position: 'right',
         },
         {
           href: 'https://github.com/jaswanthsai1/jacky-cli',
           label: 'GitHub',
-          position: 'right',
-        },
-        {
-          href: 'https://discord.gg/NousResearch',
-          label: 'Discord',
           position: 'right',
         },
       ],
@@ -169,6 +182,7 @@ const config: Config = {
           title: 'Docs',
           items: [
             { label: 'Getting Started', to: '/getting-started/quickstart' },
+            { label: 'Methodology', to: '/methodology/' },
             { label: 'User Guide', to: '/user-guide/cli' },
             { label: 'Developer Guide', to: '/developer-guide/architecture' },
             { label: 'Reference', to: '/reference/cli-commands' },
@@ -177,7 +191,6 @@ const config: Config = {
         {
           title: 'Community',
           items: [
-            { label: 'Discord', href: 'https://discord.gg/NousResearch' },
             { label: 'GitHub Issues', href: 'https://github.com/jaswanthsai1/jacky-cli/issues' },
             { label: 'Skills Hub', href: 'https://agentskills.io' },
           ],
@@ -185,13 +198,12 @@ const config: Config = {
         {
           title: 'More',
           items: [
-            { label: 'Desktop Download', href: 'https://jacky-agent.nousresearch.com/' },
+            { label: 'Quick Start', href: 'https://github.com/jaswanthsai1/jacky-cli#quick-start' },
             { label: 'GitHub', href: 'https://github.com/jaswanthsai1/jacky-cli' },
-            { label: 'Nous Research', href: 'https://nousresearch.com' },
           ],
         },
       ],
-      copyright: `Built by <a href="https://nousresearch.com">Nous Research</a> · MIT License · ${new Date().getFullYear()}`,
+      copyright: `Jacky CLI · a fork of <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research · MIT License · ${new Date().getFullYear()}`,
     },
     prism: {
       theme: prismThemes.github,

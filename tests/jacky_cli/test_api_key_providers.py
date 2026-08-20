@@ -1294,7 +1294,7 @@ class TestMinimaxOAuthProvider:
         # agent/auxiliary_client.py. The profile layer is the source
         # of truth; _get_aux_model_for_provider() reads from it first
         # and only falls back to the dict when no profile is registered.
-        import model_tools  # noqa: F401  -- triggers plugin discovery
+        import jacky_cli.model_tools as model_tools  # noqa: F401  -- triggers plugin discovery
         import providers
 
         profile = providers.get_provider_profile("minimax-oauth")

@@ -367,7 +367,7 @@ class TestGatewayPidState:
         for a named profile), gateway identity files should still be written to
         the process-level JACKY_HOME, not the profile's directory.  See #56986.
         """
-        from jacky_constants import set_jacky_home_override, reset_jacky_home_override
+        from jacky_cli.jacky_constants import set_jacky_home_override, reset_jacky_home_override
 
         process_home = tmp_path / "default"
         process_home.mkdir()
@@ -722,7 +722,7 @@ class TestTerminatePid:
         calls = []
         monkeypatch.setattr(status, "_IS_WINDOWS", True)
 
-        def fake_run(cmd, capture_output=False, text=False, timeout=None, creationflags=0):
+        def fake_run(cmd, capture_output=False, text=False, timeout=None, creationflags=0, encoding=None, errors=None):
             calls.append((cmd, capture_output, text, timeout, creationflags))
             return SimpleNamespace(returncode=0, stdout="", stderr="")
 

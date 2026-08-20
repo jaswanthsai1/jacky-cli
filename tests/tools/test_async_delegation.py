@@ -291,6 +291,67 @@ def test_delegate_task_background_routes_async_and_does_not_block(monkeypatch):
     assert "the real task" in text
 
 
+def test_delegate_task_background_record_carries_child_session_id(monkeypatch):
+    """The delegation record must carry the CHILD's real, SessionDB-backed
+    session_id (and subagent_id) — not just the parent's — so /agents and
+    `jacky agents attach` can point at a live `jacky --resume <id>` or poll
+    the child's real-time progress instead of only its eventual completion
+    event (#watch-subagent)."""
+    from unittest.mock import MagicMock
+    import tools.delegate_tool as dt
+
+    parent = MagicMock()
+    parent._delegate_depth = 0
+    parent.session_id = "sess"
+    parent._interrupt_requested = False
+    parent._active_children = []
+    parent._active_children_lock = None
+    fake_child = MagicMock()
+    fake_child._delegate_role = "leaf"
+    fake_child._subagent_id = "s1"
+    fake_child.session_id = "child_sess_abc"
+
+    gate = threading.Event()
+
+    def slow_child(task_index, goal, child=None, parent_agent=None, **kw):
+        gate.wait(timeout=5)
+        return {
+            "task_index": 0, "status": "completed", "summary": "done",
+            "api_calls": 1, "duration_seconds": 0.1, "model": "m",
+            "exit_reason": "completed",
+        }
+
+    creds = {
+        "model": "m", "provider": None, "base_url": None, "api_key": None,
+        "api_mode": None, "command": None, "args": None,
+    }
+    monkeypatch.setattr(dt, "_build_child_agent", lambda **kw: fake_child)
+    monkeypatch.setattr(dt, "_run_single_child", slow_child)
+    monkeypatch.setattr(dt, "_resolve_delegation_credentials", lambda *a, **k: creds)
+    out = dt.delegate_task(goal="watch me", background=True, parent_agent=parent)
+
+    import json
+    parsed = json.loads(out)
+    delegation_id = parsed["delegation_id"]
+
+    # While still running (gate not released), the record already carries the
+    # child's session_id/subagent_id — this is what makes attach possible
+    # BEFORE completion, which is the whole point.
+    record = ad.get_async_delegation(delegation_id)
+    assert record is not None
+    assert record["status"] == "running"
+    assert record["session_id"] == "child_sess_abc"
+    assert record["session_ids"] == ["child_sess_abc"]
+    assert record["subagent_ids"] == ["s1"]
+
+    gate.set()
+    _drain_one()  # let the worker finish so it doesn't leak into other tests
+
+
+def test_get_async_delegation_returns_none_for_unknown_id():
+    assert ad.get_async_delegation("deleg_does_not_exist") is None
+
+
 def test_delegate_task_background_uses_live_tui_agent_session_id(monkeypatch):
     """TUI async delegation must route to the live/compressed agent id.
 
@@ -459,7 +520,7 @@ def test_run_agent_dispatch_forces_background():
     background on for any top-level delegation (single OR batch) and off for a
     subagent."""
     from unittest.mock import patch
-    import run_agent
+    import jacky_cli.run_agent as run_agent
 
     class _FakeAgent:
         _delegate_depth = 0
@@ -492,7 +553,7 @@ def test_dispatch_never_forwards_model_toolsets():
     tool-call args, the live dispatch path must NOT forward it to
     delegate_task (which no longer accepts it) and must not crash."""
     from unittest.mock import patch
-    import run_agent
+    import jacky_cli.run_agent as run_agent
 
     class _FakeAgent:
         _delegate_depth = 0

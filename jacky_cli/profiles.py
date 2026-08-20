@@ -282,7 +282,7 @@ def _get_default_jacky_home() -> Path:
     In Docker/custom deployments where JACKY_HOME is outside ``~/.jacky``
     (e.g. ``/opt/data``), returns JACKY_HOME directly.
     """
-    from jacky_constants import get_default_jacky_root
+    from jacky_cli.jacky_constants import get_default_jacky_root
     return get_default_jacky_root()
 
 
@@ -406,7 +406,7 @@ def check_alias_collision(name: str) -> Optional[str]:
     try:
         result = subprocess.run(
             ["where" if is_windows else "which", canon],
-            capture_output=True, text=True, timeout=5,
+            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5,
         )
         if result.returncode == 0:
             existing_path = result.stdout.strip().splitlines()[0]
@@ -519,7 +519,7 @@ def _migrate_profile_config_if_outdated(profile_dir: Path) -> None:
         return
 
     try:
-        from jacky_constants import reset_jacky_home_override, set_jacky_home_override
+        from jacky_cli.jacky_constants import reset_jacky_home_override, set_jacky_home_override
         from jacky_cli.config import check_config_version, migrate_config
 
         token = set_jacky_home_override(str(profile_dir))
@@ -1045,7 +1045,7 @@ def create_profile(
     if clone_from is not None or clone_all or clone_config:
         if clone_from is None:
             # Default: clone from active profile
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             source_dir = get_jacky_home()
         else:
             clone_from = normalize_profile_name(clone_from)
@@ -1206,7 +1206,7 @@ def seed_profile_skills(profile_dir: Path, quiet: bool = False) -> Optional[dict
              "r = sync_skills(quiet=True); print(json.dumps(r))"],
             env={**os.environ, "JACKY_HOME": str(profile_dir)},
             cwd=str(project_root),
-            capture_output=True, text=True, timeout=60,
+            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60,
         )
         if result.returncode == 0 and result.stdout.strip():
             return json.loads(result.stdout.strip())
@@ -1836,7 +1836,7 @@ def get_active_profile_name() -> str:
     Returns the profile name if JACKY_HOME points into ``~/.jacky/profiles/<name>``.
     Returns ``"custom"`` if JACKY_HOME is set to an unrecognized path.
     """
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     jacky_home = get_jacky_home()
     resolved = jacky_home.resolve()
 

@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock, patch
 
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 
 
 def _make_cli() -> JackyCLI:
@@ -64,7 +64,7 @@ def test_copy_invalid_index_does_not_copy():
     cli_obj = _make_cli()
     cli_obj.conversation_history = [{"role": "assistant", "content": "only"}]
 
-    with patch.object(cli_obj, "_write_osc52_clipboard") as mock_copy, patch("cli._cprint") as mock_print:
+    with patch.object(cli_obj, "_write_osc52_clipboard") as mock_copy, patch("jacky_cli.cli._cprint") as mock_print:
         cli_obj.process_command("/copy 99")
 
     mock_copy.assert_not_called()

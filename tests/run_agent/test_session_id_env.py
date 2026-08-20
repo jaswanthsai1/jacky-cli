@@ -7,7 +7,7 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 @pytest.fixture(autouse=True)

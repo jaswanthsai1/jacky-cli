@@ -24,7 +24,7 @@ class TestFlushDeduplication:
     def _make_agent(self, session_db):
         """Create a minimal AIAgent with a real session DB."""
         with patch.dict(os.environ, {"OPENROUTER_API_KEY": "test-key"}):
-            from run_agent import AIAgent
+            from jacky_cli.run_agent import AIAgent
             agent = AIAgent(
                 api_key="test-key",
                 base_url="https://openrouter.ai/api/v1",
@@ -41,7 +41,7 @@ class TestFlushDeduplication:
 
     def test_flush_writes_only_new_messages(self):
         """First flush writes all new messages, second flush writes none."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -73,7 +73,7 @@ class TestFlushDeduplication:
 
     def test_flush_writes_incrementally(self):
         """Messages added between flushes are written exactly once."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -104,7 +104,7 @@ class TestFlushDeduplication:
 
     def test_persist_session_multiple_calls_no_duplication(self):
         """Multiple _persist_session calls don't duplicate DB entries."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -131,7 +131,7 @@ class TestFlushDeduplication:
 
     def test_flush_reset_after_compression(self):
         """After compression creates a new session, flush index resets."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -181,7 +181,7 @@ class TestAppendToTranscriptSkipDb:
         """With skip_db=True and a real DB, message does NOT appear in SQLite."""
         from gateway.config import GatewayConfig
         from gateway.session import SessionStore
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db_path = tmp_path / "test_skip.db"
         db = SessionDB(db_path=db_path)
@@ -206,7 +206,7 @@ class TestAppendToTranscriptSkipDb:
         """Without skip_db, message appears in SQLite."""
         from gateway.config import GatewayConfig
         from gateway.session import SessionStore
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         db_path = tmp_path / "test_both.db"
         db = SessionDB(db_path=db_path)
@@ -238,7 +238,7 @@ class TestFlushIdxInit:
     def test_init_zero(self):
         """Agent starts with _last_flushed_db_idx = 0."""
         with patch.dict(os.environ, {"OPENROUTER_API_KEY": "test-key"}):
-            from run_agent import AIAgent
+            from jacky_cli.run_agent import AIAgent
             agent = AIAgent(
                 api_key="test-key",
                 base_url="https://openrouter.ai/api/v1",
@@ -252,7 +252,7 @@ class TestFlushIdxInit:
     def test_no_session_db_noop(self):
         """Without session_db, flush is a no-op and doesn't crash."""
         with patch.dict(os.environ, {"OPENROUTER_API_KEY": "test-key"}):
-            from run_agent import AIAgent
+            from jacky_cli.run_agent import AIAgent
             agent = AIAgent(
                 api_key="test-key",
                 base_url="https://openrouter.ai/api/v1",

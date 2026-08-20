@@ -20,7 +20,7 @@ def store(tmp_path, monkeypatch):
     home.mkdir()
     monkeypatch.setenv("JACKY_HOME", str(home))
     # Reload so module-level CRON_DIR/SUGGESTIONS_FILE pick up the temp home.
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
     importlib.reload(jacky_constants)
     import cron.suggestions as s
     importlib.reload(s)

@@ -15,7 +15,7 @@ import tools.web_tools as wt
 def test_store_full_text_is_bounded(tmp_path, monkeypatch):
     monkeypatch.setenv("JACKY_HOME", str(tmp_path))
     # Force the cache dir under the temp home.
-    from jacky_constants import get_jacky_dir  # noqa: F401
+    from jacky_cli.jacky_constants import get_jacky_dir  # noqa: F401
     huge = "x\n" * (wt.MAX_STORED_TEXT_CHARS)  # > MAX_STORED_TEXT_CHARS chars
     assert len(huge) > wt.MAX_STORED_TEXT_CHARS
     path = wt._store_full_text("https://example.com/big", huge)
