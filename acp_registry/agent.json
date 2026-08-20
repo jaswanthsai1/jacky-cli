@@ -1,7 +1,7 @@
 {
   "id": "jacky-agent",
   "name": "Jacky Agent",
-  "version": "0.18.8",
+  "version": "0.18.9",
   "description": "Self-improving open-source AI agent by Nous Research with ACP editor integration, persistent memory, skills, and rich tool support.",
   "repository": "https://github.com/jaswanthsai1/jacky-cli",
   "website": "https://jaswanthsai1.github.io/jacky-cli/user-guide/features/acp",
@@ -11,7 +11,7 @@
   "license": "MIT",
   "distribution": {
     "uvx": {
-      "package": "jacky-agent[acp]==0.18.8",
+      "package": "jacky-agent[acp]==0.18.9",
       "args": [
         "jacky-acp"
       ]
