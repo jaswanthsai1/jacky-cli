@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jacky-cli"
-version = "0.18.9"
+version = "0.18.10"
 description = "Jacky — a self-improving AI agent CLI with a built-in bug-bounty/offensive-security hunt-loop methodology. Local model or cloud, your choice of provider."
 readme = "README.md"
 # Upper bound is load-bearing, not cosmetic. uv resolves the project's
