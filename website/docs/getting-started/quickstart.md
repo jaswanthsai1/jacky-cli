@@ -81,10 +81,9 @@ That logs you in, sets Nous as your provider, and turns on the Tool Gateway in o
 :::
 
 :::info Setup modes
-On a fresh install, `jacky setup` offers three modes:
+On a fresh install, `jacky setup` offers two modes:
 
-- **Quick Setup (Nous Portal)** — free OAuth login, no API keys; sets up a model plus the Tool Gateway tools. The recommended fast path.
-- **Full Setup** — walk through every provider, tool, and option yourself (bring your own keys).
+- **Full Setup (recommended)** — walk through every provider, tool, and option yourself (bring your own keys). Prefer Nous Portal instead? Run `jacky setup --portal` any time to do that one-shot setup directly, no need to go through the wizard.
 - **Blank Slate** — everything starts **off** except the bare minimum needed to run an agent: **provider & model, the File Operations toolset, and the Terminal toolset**. No web, browser, code execution, vision, memory, delegation, cron, skills, plugins, or MCP servers — and compression, checkpoints, smart routing, and memory capture are all disabled. After the minimal baseline is applied, you choose one of two paths: **start with everything disabled** (finish now with the minimal agent), or **walk through all configurations** (opt in to tools, skills, plugins, MCP, and messaging). Pick this when you want a minimal, fully-controlled agent and intend to enable only exactly what you need.
 
 Blank Slate writes an explicit `platform_toolsets.cli` list plus `agent.disabled_toolsets`, so nothing you didn't choose ever loads — not even after `jacky update`. Re-enable anything later with `jacky tools`, seed skills with `jacky skills opt-in --sync`, or tune settings with `jacky setup agent`.

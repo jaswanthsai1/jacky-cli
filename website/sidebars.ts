@@ -787,7 +787,6 @@ const sidebars: SidebarsConfig = {
       label: 'Guides & Tutorials',
       collapsed: true,
       items: [
-        'guides/run-nemotron-3-ultra-free',
         'guides/run-jacky-with-nous-portal',
         'guides/tips',
         'guides/local-llm-on-mac',
