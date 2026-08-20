@@ -151,7 +151,7 @@
     "wait-on": "^9.0.5"
   },
   "build": {
-    "electronVersion": "40.10.2",
+    "electronVersion": "41.10.3",
     "appId": "com.your-org.jacky",
     "productName": "Jacky",
     "executableName": "Jacky",
