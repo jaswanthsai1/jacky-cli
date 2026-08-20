@@ -126,6 +126,16 @@
   background: #000;
   width: 100%;
   max-width: 100%;
+  /* The <img> carries explicit width/height HTML attributes (Docusaurus
+     adds these for layout-shift prevention). Without an explicit height
+     here, the browser's default img sizing keeps height pinned to the
+     attribute's pixel value while width scales via the 100% rule above,
+     stretching the image instead of scaling it proportionally. aspect-ratio
+     is the belt-and-suspenders fix -- height: auto alone was observed being
+     dropped by the production CSS minifier as a spurious "redundant with
+     initial value" optimization. */
+  aspect-ratio: 1 / 1;
+  height: auto;
 }
 
 /* ---------- shared section chrome ---------- */
