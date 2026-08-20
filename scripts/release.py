@@ -2056,6 +2056,25 @@ def update_version_files(semver: str, calver_date: str):
     )
     PYPROJECT_FILE.write_text(pyproject)
 
+    # Regenerate uv.lock so it matches the new pyproject.toml version. This
+    # was previously left to be done by hand before every publish -- missing
+    # it fails CI's `uv lock --check` job, which then cascades into every
+    # downstream job that depends on a clean `uv sync` (test slices, Docker
+    # builds), turning one stale-lock miss into a dozen unrelated-looking
+    # red checks on the release commit.
+    uv_bin = shutil.which("uv")
+    if uv_bin:
+        lock_result = subprocess.run(
+            [uv_bin, "lock"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            cwd=str(REPO_ROOT),
+        )
+        if lock_result.returncode != 0:
+            print(f"  ✗ uv lock failed: {lock_result.stderr.strip()}")
+            print("    Run `uv lock` manually before committing.")
+    else:
+        print("  ✗ uv not found on PATH -- run `uv lock` manually before committing.")
+
     # Keep the desktop Electron app's package.json version in lockstep with the
     # Python package version. The desktop About panel reads the live Jacky
     # version at runtime, but app.getVersion()/packaging metadata still come
@@ -2497,6 +2516,9 @@ def main():
             npm_pkg = REPO_ROOT / "npm" / "package.json"
             if npm_pkg.exists():
                 add_files.append(str(npm_pkg))
+            uv_lock_file = REPO_ROOT / "uv.lock"
+            if uv_lock_file.exists():
+                add_files.append(str(uv_lock_file))
             add_result = git_result("add", *add_files)
             if add_result.returncode != 0:
                 print(f"  ✗ Failed to stage version files: {add_result.stderr.strip()}")
