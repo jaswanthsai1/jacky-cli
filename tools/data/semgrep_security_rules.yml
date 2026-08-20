@@ -1,0 +1,198 @@
+# Bundled offline Semgrep rule pack for tools/static_analysis_tool.py.
+#
+# Deliberately small and pattern-based (no taint-mode / registry fetch) so
+# `static_analysis` runs fully offline and deterministically: no network
+# call to the Semgrep registry is made when this file is used as --config.
+# Covers the vulnerability classes called out in the tool's spec across
+# Python and JavaScript/TypeScript: SQL injection, command injection, SSRF,
+# hardcoded secrets, and unsafe deserialization.
+rules:
+  - id: python-sql-injection-string-format
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Possible SQL injection: query string is built with string
+      concatenation/formatting instead of a parameterized query.
+    metadata:
+      category: sql-injection
+      cwe: "CWE-89"
+    patterns:
+      - pattern-either:
+          - pattern: $CURSOR.execute($QUERY % (...))
+          - pattern: $CURSOR.execute(f"...")
+          - pattern: $CURSOR.execute("..." + ...)
+          - pattern: $CURSOR.execute("...".format(...))
+
+  - id: python-command-injection-os-system
+    languages: [python]
+    severity: ERROR
+    message: >-
+      os.system()/os.popen() executes a shell command — verify no
+      attacker-controlled input reaches this call.
+    metadata:
+      category: command-injection
+      cwe: "CWE-78"
+    patterns:
+      - pattern-either:
+          - pattern: os.system(...)
+          - pattern: os.popen(...)
+
+  - id: python-command-injection-subprocess-shell-true
+    languages: [python]
+    severity: ERROR
+    message: >-
+      subprocess call with shell=True — shell metacharacters in the
+      command string can lead to command injection.
+    metadata:
+      category: command-injection
+      cwe: "CWE-78"
+    patterns:
+      - pattern-either:
+          - pattern: subprocess.run(..., shell=True, ...)
+          - pattern: subprocess.call(..., shell=True, ...)
+          - pattern: subprocess.Popen(..., shell=True, ...)
+          - pattern: subprocess.check_output(..., shell=True, ...)
+
+  - id: python-unsafe-deserialization-pickle
+    languages: [python]
+    severity: ERROR
+    message: >-
+      pickle.load()/pickle.loads() on untrusted data allows arbitrary
+      code execution during unpickling.
+    metadata:
+      category: unsafe-deserialization
+      cwe: "CWE-502"
+    patterns:
+      - pattern-either:
+          - pattern: pickle.load(...)
+          - pattern: pickle.loads(...)
+
+  - id: python-unsafe-yaml-load
+    languages: [python]
+    severity: WARNING
+    message: >-
+      yaml.load() without Loader=yaml.SafeLoader can execute arbitrary
+      Python objects embedded in the YAML document.
+    metadata:
+      category: unsafe-deserialization
+      cwe: "CWE-502"
+    pattern: yaml.load($DATA)
+
+  - id: python-ssrf-requests-dynamic-url
+    languages: [python]
+    severity: WARNING
+    message: >-
+      HTTP request with a non-literal URL — verify the destination is
+      validated/allow-listed to prevent SSRF.
+    metadata:
+      category: ssrf
+      cwe: "CWE-918"
+    patterns:
+      - pattern-either:
+          - pattern: requests.get($URL, ...)
+          - pattern: requests.post($URL, ...)
+          - pattern: urllib.request.urlopen($URL)
+      - metavariable-regex:
+          metavariable: $URL
+          regex: "^(?!['\"]).*$"
+
+  - id: python-hardcoded-secret-assignment
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Hardcoded credential-shaped string literal assigned to a
+      secret-looking variable name.
+    metadata:
+      category: hardcoded-secret
+      cwe: "CWE-798"
+    patterns:
+      - pattern-either:
+          - pattern: $VAR = "..."
+      - metavariable-regex:
+          metavariable: $VAR
+          regex: "(?i)(password|passwd|secret|api_key|apikey|access_key|auth_token|private_key)"
+
+  - id: javascript-eval-injection
+    languages: [js, ts]
+    severity: ERROR
+    message: >-
+      eval()/Function() executes a dynamically-built string as code —
+      classic code injection vector.
+    metadata:
+      category: command-injection
+      cwe: "CWE-95"
+    patterns:
+      - pattern-either:
+          - pattern: eval(...)
+          - pattern: new Function(...)
+
+  - id: javascript-command-injection-child-process
+    languages: [js, ts]
+    severity: ERROR
+    message: >-
+      child_process.exec()/execSync() with a non-literal command string
+      can lead to shell command injection.
+    metadata:
+      category: command-injection
+      cwe: "CWE-78"
+    patterns:
+      - pattern-either:
+          - pattern: child_process.exec($CMD, ...)
+          - pattern: child_process.execSync($CMD, ...)
+          - pattern: exec($CMD, ...)
+          - pattern: execSync($CMD, ...)
+      - metavariable-regex:
+          metavariable: $CMD
+          regex: "^(?!['\"]).*$"
+
+  - id: javascript-xss-dom-innerhtml
+    languages: [js, ts]
+    severity: WARNING
+    message: >-
+      Assignment to innerHTML/outerHTML with dynamic content — potential
+      DOM-based XSS if the value includes attacker-controlled data.
+    metadata:
+      category: xss
+      cwe: "CWE-79"
+    patterns:
+      - pattern-either:
+          - pattern: $EL.innerHTML = $VAL
+          - pattern: $EL.outerHTML = $VAL
+      - metavariable-regex:
+          metavariable: $VAL
+          regex: "^(?!['\"]).*$"
+
+  - id: javascript-ssrf-dynamic-url
+    languages: [js, ts]
+    severity: WARNING
+    message: >-
+      HTTP request with a non-literal URL — verify the destination is
+      validated/allow-listed to prevent SSRF.
+    metadata:
+      category: ssrf
+      cwe: "CWE-918"
+    patterns:
+      - pattern-either:
+          - pattern: fetch($URL, ...)
+          - pattern: axios.get($URL, ...)
+      - metavariable-regex:
+          metavariable: $URL
+          regex: "^(?!['\"]).*$"
+
+  - id: javascript-hardcoded-secret-assignment
+    languages: [js, ts]
+    severity: WARNING
+    message: >-
+      Hardcoded credential-shaped string literal assigned to a
+      secret-looking variable name.
+    metadata:
+      category: hardcoded-secret
+      cwe: "CWE-798"
+    patterns:
+      - pattern-either:
+          - pattern: const $VAR = "..."
+          - pattern: let $VAR = "..."
+          - pattern: var $VAR = "..."
+      - metavariable-regex:
+          metavariable: $VAR
+          regex: "(?i)(password|passwd|secret|apiKey|api_key|accessKey|access_key|authToken|privateKey)"

@@ -347,6 +347,12 @@ locales = ["locales/*.yaml"]
 [tool.setuptools.package-data]
 jacky_cli = ["web_dist/**/*", "tui_dist/**/*", "scripts/install.sh", "scripts/install.ps1"]
 gateway = ["assets/**/*"]
+# Bundled data for the security toolsets (severity_calculator's Bugcrowd VRT
+# extract, static_analysis's offline semgrep rule pack). Without this, the
+# wheel/sdist ship zero files from tools/data/ (same "invisible non-Python
+# data" gap as skills/ above) -- severity_calculator's lookup mode silently
+# returns 0 entries on every real install.
+tools = ["data/**/*"]
 # jacky-doctrine (the default persona skill, always preloaded — see
 # jacky_cli/main.py::_resolve_persona_skills) lives here. Without this, the
 # wheel/sdist ship zero files from skills/ (it's a bare data directory with
