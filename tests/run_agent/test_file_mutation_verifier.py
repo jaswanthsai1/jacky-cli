@@ -23,7 +23,7 @@ import json
 
 import pytest
 
-from run_agent import (
+from jacky_cli.run_agent import (
     AIAgent,
     _FILE_MUTATING_TOOLS,
     _extract_error_preview,

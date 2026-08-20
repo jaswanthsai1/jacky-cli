@@ -12,7 +12,7 @@ removes any such stray harness message (and the assistant reply that followed
 it) so a polluted session resumes clean.
 """
 
-from jacky_state import (
+from jacky_cli.jacky_state import (
     _is_background_review_harness_message,
     _strip_background_review_harness,
 )
@@ -112,7 +112,7 @@ class TestGetMessagesAsConversationStripsHarness:
     def test_polluted_session_resumes_without_harness(self):
         import tempfile
         from pathlib import Path
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmp:
             db = SessionDB(db_path=Path(tmp) / "t.db")
@@ -152,13 +152,13 @@ class TestPersistDisabledHardStop:
         import tempfile
         from pathlib import Path
         from unittest.mock import patch
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmp:
             db = SessionDB(db_path=Path(tmp) / "t.db")
             try:
                 with patch.dict(os.environ, {"OPENROUTER_API_KEY": "test-key"}):
-                    from run_agent import AIAgent
+                    from jacky_cli.run_agent import AIAgent
                     agent = AIAgent(
                         api_key="test-key",
                         base_url="https://openrouter.ai/api/v1",

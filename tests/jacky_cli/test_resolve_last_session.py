@@ -40,7 +40,7 @@ def test_resolve_last_session_prefers_last_active_over_started_at(monkeypatch):
     ]
 
     fake_db = _FakeDB(rows)
-    monkeypatch.setattr("jacky_state.SessionDB", lambda: fake_db)
+    monkeypatch.setattr("jacky_cli.jacky_state.SessionDB", lambda: fake_db)
 
     assert _resolve_last_session("cli") == "old_started_recently_active"
     assert fake_db.closed
@@ -51,7 +51,7 @@ def test_search_sessions_exposes_last_active_column(tmp_path, monkeypatch):
     monkeypatch.setenv("JACKY_HOME", str(tmp_path))
     monkeypatch.setattr("pathlib.Path.home", lambda: tmp_path)
 
-    import jacky_state
+    import jacky_cli.jacky_state as jacky_state
 
     from pathlib import Path
 
@@ -85,7 +85,7 @@ def test_search_sessions_exposes_last_active_column(tmp_path, monkeypatch):
 
 
 def test_resolve_last_session_returns_none_when_empty(monkeypatch):
-    monkeypatch.setattr("jacky_state.SessionDB", lambda: _FakeDB([]))
+    monkeypatch.setattr("jacky_cli.jacky_state.SessionDB", lambda: _FakeDB([]))
     assert _resolve_last_session("cli") is None
 
 
@@ -101,7 +101,7 @@ def test_resolve_last_session_closes_db_on_search_error(monkeypatch):
             self.closed = True
 
     db = _FailingDB()
-    monkeypatch.setattr("jacky_state.SessionDB", lambda: db)
+    monkeypatch.setattr("jacky_cli.jacky_state.SessionDB", lambda: db)
 
     assert _resolve_last_session("cli") is None
     assert db.closed is True
@@ -114,7 +114,7 @@ def test_resolve_last_session_falls_back_to_started_at(monkeypatch):
         {"id": "older", "source": "cli", "started_at": 10.0},
         {"id": "newer", "source": "cli", "started_at": 20.0},
     ]
-    monkeypatch.setattr("jacky_state.SessionDB", lambda: _FakeDB(rows))
+    monkeypatch.setattr("jacky_cli.jacky_state.SessionDB", lambda: _FakeDB(rows))
     assert _resolve_last_session("cli") == "newer"
 
 
@@ -124,7 +124,7 @@ def test_resolve_last_session_not_limited_to_newest_started_20(tmp_path, monkeyp
     monkeypatch.setenv("JACKY_HOME", str(tmp_path))
     monkeypatch.setattr("pathlib.Path.home", lambda: tmp_path)
 
-    import jacky_state
+    import jacky_cli.jacky_state as jacky_state
 
     from pathlib import Path
 
@@ -153,5 +153,5 @@ def test_resolve_last_session_not_limited_to_newest_started_20(tmp_path, monkeyp
     finally:
         db.close()
 
-    monkeypatch.setattr("jacky_state.SessionDB", lambda: real_session_db(db_path=state_db))
+    monkeypatch.setattr("jacky_cli.jacky_state.SessionDB", lambda: real_session_db(db_path=state_db))
     assert _resolve_last_session("cli") == target

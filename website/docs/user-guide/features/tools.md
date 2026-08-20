@@ -28,6 +28,7 @@ High-level categories:
 | **Agent orchestration** | `todo`, `clarify`, `execute_code`, `delegate_task` | Planning, clarification, code execution, and subagent delegation. |
 | **Memory & recall** | `memory`, `session_search` | Persistent memory and session search. |
 | **Automation** | `cronjob` | Scheduled tasks with create/list/update/pause/resume/run/remove actions. Outbound delivery is handled by cron's own delivery, the `jacky send` CLI, and the gateway notifier — not by an agent-callable tool. |
+| **Security & recon** | `http_client`, `secret_scan`, `dependency_audit`, `severity_calculator`, `evidence_bundler`, `static_analysis`, `passive_recon` | API testing, secret scanning, SCA against OSV.dev, CVSS/Bugcrowd VRT severity scoring, semgrep-backed static analysis, passive CT-log/DNS recon, and finding report assembly — on by default. |
 | **Integrations** | `ha_*`, MCP server tools | Home Assistant, MCP, and other integrations. |
 
 For the authoritative code-derived registry, see [Built-in Tools Reference](/reference/tools-reference) and [Toolsets Reference](/reference/toolsets-reference).

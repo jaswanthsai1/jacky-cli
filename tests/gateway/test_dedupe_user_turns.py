@@ -7,7 +7,7 @@ The dedupe guard checks has_platform_message_id before persisting.
 """
 
 from gateway.session import SessionStore
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 
 
 class TestHasPlatformMessageId:

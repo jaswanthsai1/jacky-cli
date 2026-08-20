@@ -22,7 +22,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from jacky_constants import agent_browser_runnable
+from jacky_cli.jacky_constants import agent_browser_runnable
 from tools.environments.local import jacky_subprocess_env
 
 _IS_WINDOWS = platform.system() == "Windows"
@@ -58,7 +58,7 @@ def _has_system_browser() -> bool:
 
 
 def _has_jacky_agent_browser() -> bool:
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     home = get_jacky_home()
     if _IS_WINDOWS:
         # npm -g --prefix puts .cmd shims directly in the prefix dir on Windows
@@ -133,7 +133,7 @@ def ensure_dependency(
             return False
 
     if shell == "powershell":
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         ps_bin = shutil.which("powershell") or shutil.which("pwsh")
         if not ps_bin:
             if interactive:

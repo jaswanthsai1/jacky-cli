@@ -76,7 +76,7 @@ class TestIsWriteDenied:
     )
     def test_oauth_mcp_tokens_and_pairing_denied(self, path):
         """PKCE creds, mcp-tokens, and pairing entries must be write-denied."""
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         jacky_home = get_jacky_home()
         full_path = str(jacky_home / path)
         assert _is_write_denied(full_path) is True
@@ -86,7 +86,7 @@ class TestIsWriteDenied:
         ["auth.json", "config.yaml", "webhook_subscriptions.json"],
     )
     def test_jacky_control_files_requested_writable(self, path):
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         assert _is_write_denied(str(get_jacky_home() / path)) is False
 
@@ -98,7 +98,7 @@ class TestIsWriteDenied:
     )
     def test_oauth_traversal_denied(self, path):
         """Path traversal attempts to protected OAuth files must be blocked."""
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         jacky_home = get_jacky_home()
         full_path = str(jacky_home / path)
         assert _is_write_denied(full_path) is True

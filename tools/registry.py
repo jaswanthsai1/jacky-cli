@@ -616,7 +616,7 @@ class ToolRegistry:
             return json.dumps({"error": f"Unknown tool: {name}"})
         try:
             if entry.is_async:
-                from model_tools import _run_async
+                from jacky_cli.model_tools import _run_async
                 result = _run_async(entry.handler(args, **kwargs))
             else:
                 result = entry.handler(args, **kwargs)
@@ -628,7 +628,7 @@ class ToolRegistry:
             # See model_tools._sanitize_tool_error for rationale.
             raw = f"Tool execution failed: {type(e).__name__}: {e}"
             try:
-                from model_tools import _sanitize_tool_error
+                from jacky_cli.model_tools import _sanitize_tool_error
                 sanitized = _sanitize_tool_error(raw)
             except Exception:
                 sanitized = raw  # defensive: never let the sanitizer block error propagation

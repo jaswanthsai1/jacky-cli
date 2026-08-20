@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from jacky_cli.config import get_jacky_home
-from utils import atomic_json_write
+from jacky_cli.utils import atomic_json_write
 
 logger = logging.getLogger(__name__)
 
@@ -292,7 +292,7 @@ def _build_from_sessions_db(platform_name: str) -> List[Dict[str, str]]:
     """Pull channels/contacts from state.db gateway session rows."""
     entries: List[Dict[str, str]] = []
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
         db = SessionDB()
         try:
             lister = getattr(db, "list_gateway_sessions", None)

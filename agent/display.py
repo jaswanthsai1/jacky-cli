@@ -15,7 +15,7 @@ from difflib import unified_diff
 from pathlib import Path
 from typing import Any
 
-from utils import safe_json_loads
+from jacky_cli.utils import safe_json_loads
 from agent.redact import redact_sensitive_text
 from agent.tool_result_classification import file_mutation_result_landed
 

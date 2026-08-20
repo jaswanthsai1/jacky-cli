@@ -1,0 +1,253 @@
+/* Jacky CLI homepage — hero, feature grid, hunt-loop diagram.
+ * Uses the site's existing Infima theme tokens (--ifm-color-primary etc.,
+ * set in src/css/custom.css) so it tracks the amber/gold dark-terminal
+ * palette already used by the rest of the docs, in both light and dark
+ * mode, instead of hardcoding a separate color scheme.
+ */
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 2.5rem;
+  align-items: center;
+  padding: 1.5rem 0 3rem;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 0.5rem;
+    gap: 2rem;
+  }
+  .heroVisual {
+    order: -1;
+  }
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ifm-color-primary);
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: 1px solid var(--ifm-toc-border-color);
+  padding: 6px 12px;
+  border-radius: 20px;
+  margin-bottom: 1.4rem;
+}
+
+.eyebrowDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ifm-color-primary);
+  box-shadow: 0 0 8px var(--ifm-color-primary);
+}
+
+.heroTitle {
+  font-size: clamp(2rem, 4.6vw, 3.1rem);
+  line-height: 1.08;
+  margin: 0 0 1.1rem;
+  letter-spacing: -0.5px;
+}
+
+.grad {
+  background: linear-gradient(90deg, var(--ifm-color-primary), var(--ifm-color-primary-lighter, var(--ifm-color-primary)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.heroLede {
+  color: var(--ifm-font-color-secondary);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 560px;
+  margin: 0 0 1.8rem;
+}
+
+.heroCtas {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.btnPrimary,
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.75rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: 1px solid var(--ifm-color-primary);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  text-decoration: none !important;
+}
+
+.btnPrimary {
+  background: var(--ifm-color-primary);
+  color: var(--ifm-background-color, #07070d) !important;
+}
+.btnPrimary:hover {
+  background: transparent;
+  color: var(--ifm-color-primary) !important;
+  box-shadow: 0 0 22px rgba(120, 184, 43, 0.25);
+}
+
+.btnSecondary {
+  background: transparent;
+  color: var(--ifm-color-primary) !important;
+}
+.btnSecondary:hover {
+  background: rgba(120, 184, 43, 0.08);
+}
+
+.heroVisual {
+  display: flex;
+  justify-content: center;
+}
+
+.frame {
+  position: relative;
+  width: min(100%, 380px);
+  border-radius: 20px;
+  padding: 3px;
+  background: linear-gradient(135deg, var(--ifm-color-primary), var(--ifm-color-primary-lighter, var(--ifm-color-primary)));
+}
+
+.frame img {
+  display: block;
+  border-radius: 18px;
+  background: #000;
+  width: 100%;
+  max-width: 100%;
+  /* The <img> carries explicit width/height HTML attributes (Docusaurus
+     adds these for layout-shift prevention). Without an explicit height
+     here, the browser's default img sizing keeps height pinned to the
+     attribute's pixel value while width scales via the 100% rule above,
+     stretching the image instead of scaling it proportionally. aspect-ratio
+     is the belt-and-suspenders fix -- height: auto alone was observed being
+     dropped by the production CSS minifier as a spurious "redundant with
+     initial value" optimization. */
+  aspect-ratio: 1 / 1;
+  height: auto;
+}
+
+/* ---------- shared section chrome ---------- */
+
+.section {
+  padding: 3rem 0;
+  border-top: 1px solid var(--ifm-toc-border-color);
+}
+
+.sectionHead {
+  max-width: 640px;
+  margin: 0 auto 2.2rem;
+  text-align: center;
+}
+
+.kicker {
+  color: var(--ifm-color-primary);
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.sectionHead h2 {
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  margin: 0 0 0.6rem;
+}
+
+.sectionHead p {
+  color: var(--ifm-font-color-secondary);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ---------- feature grid ---------- */
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.1rem;
+}
+
+.featureCard {
+  background: var(--ifm-background-surface-color, var(--ifm-card-background-color));
+  border: 1px solid var(--ifm-toc-border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.featureCard:hover {
+  border-color: var(--ifm-color-primary);
+  transform: translateY(-3px);
+}
+
+.featureIcon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(120, 184, 43, 0.08);
+  border: 1px solid var(--ifm-toc-border-color);
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.featureCard h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.featureCard p {
+  margin: 0;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.featureCard code {
+  font-size: 0.85em;
+}
+
+/* ---------- hunt loop ---------- */
+
+.loopRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+}
+
+.stage {
+  background: rgba(120, 184, 43, 0.06);
+  border: 1px solid var(--ifm-toc-border-color);
+  color: var(--ifm-color-primary);
+  padding: 0.5rem 1.1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-family: var(--ifm-font-family-monospace);
+}
+
+.arrow {
+  color: var(--ifm-font-color-secondary);
+  align-self: center;
+}
+
+.loopNote {
+  text-align: center;
+  color: var(--ifm-font-color-secondary);
+  max-width: 720px;
+  margin: 1.4rem auto 0;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}

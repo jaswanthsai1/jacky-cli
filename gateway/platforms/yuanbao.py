@@ -1659,7 +1659,7 @@ class AutoSetHomeMiddleware(InboundMiddleware):
                 adapter._auto_sethome_done = True  # DM seen — no further upgrades needed
             if _should_set:
                 try:
-                    from jacky_constants import get_jacky_home
+                    from jacky_cli.jacky_constants import get_jacky_home
                     from jacky_cli.config import atomic_config_write
                     import yaml
 

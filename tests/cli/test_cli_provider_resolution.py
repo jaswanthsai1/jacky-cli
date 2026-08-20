@@ -120,7 +120,7 @@ def _import_cli():
         importlib.import_module("prompt_toolkit")
     except ModuleNotFoundError:
         _install_prompt_toolkit_stubs()
-    return importlib.import_module("cli")
+    return importlib.import_module("jacky_cli.cli")
 
 
 def test_jacky_cli_init_does_not_eagerly_resolve_runtime_provider(monkeypatch):

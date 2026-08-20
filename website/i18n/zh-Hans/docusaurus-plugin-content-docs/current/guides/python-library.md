@@ -190,7 +190,7 @@ print(response)
 如需并行运行大量 prompt，Jacky 提供了 `batch_runner.py`，它可管理并发的 `AIAgent` 实例并进行适当的资源隔离：
 
 ```bash
-python batch_runner.py --input prompts.jsonl --output results.jsonl
+python -m jacky_cli.batch_runner --input prompts.jsonl --output results.jsonl
 ```
 
 每个 prompt 都有自己的 `task_id` 和隔离环境。如果需要自定义批处理逻辑，可以直接使用 `AIAgent` 构建：

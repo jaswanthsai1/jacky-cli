@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DOCKERFILE = REPO_ROOT / "Dockerfile"
+DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile"
 
 
 def _dockerfile_text() -> str:

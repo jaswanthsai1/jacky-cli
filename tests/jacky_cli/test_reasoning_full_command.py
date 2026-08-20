@@ -39,7 +39,7 @@ def _seed_config(tmp_path, monkeypatch):
     (hh / "config.yaml").write_text("display:\n  show_reasoning: true\n")
     monkeypatch.setenv("JACKY_HOME", str(hh))
     # cli captures _jacky_home at import; force it to the temp home.
-    import cli
+    import jacky_cli.cli as cli
 
     monkeypatch.setattr(cli, "_jacky_home", hh, raising=False)
     return hh

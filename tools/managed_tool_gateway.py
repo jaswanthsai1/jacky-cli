@@ -11,7 +11,7 @@ from typing import Callable, Optional
 
 logger = logging.getLogger(__name__)
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from tools.tool_backend_helpers import managed_nous_tools_enabled
 
 _DEFAULT_TOOL_GATEWAY_DOMAIN = "nousresearch.com"

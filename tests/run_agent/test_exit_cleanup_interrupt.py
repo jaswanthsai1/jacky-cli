@@ -47,12 +47,12 @@ class TestCronJobCleanup:
             "model": "test/model",
         }
 
-        with patch("jacky_state.SessionDB", return_value=mock_db), \
+        with patch("jacky_cli.jacky_state.SessionDB", return_value=mock_db), \
              patch.object(scheduler, "_build_job_prompt", return_value="hello"), \
              patch.object(scheduler, "_resolve_origin", return_value=None), \
              patch.object(scheduler, "_resolve_delivery_target", return_value=None), \
              patch("dotenv.load_dotenv", return_value=None), \
-             patch("run_agent.AIAgent") as MockAgent:
+             patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             # Make the agent raise immediately so we hit the finally block
             MockAgent.return_value.run_conversation.side_effect = RuntimeError("boom")
             scheduler.run_job(job)
@@ -75,12 +75,12 @@ class TestCronJobCleanup:
             "model": "test/model",
         }
 
-        with patch("jacky_state.SessionDB", return_value=mock_db), \
+        with patch("jacky_cli.jacky_state.SessionDB", return_value=mock_db), \
              patch.object(scheduler, "_build_job_prompt", return_value="hello"), \
              patch.object(scheduler, "_resolve_origin", return_value=None), \
              patch.object(scheduler, "_resolve_delivery_target", return_value=None), \
              patch("dotenv.load_dotenv", return_value=None), \
-             patch("run_agent.AIAgent") as MockAgent:
+             patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             MockAgent.return_value.run_conversation.side_effect = RuntimeError("boom")
             # Must not raise
             scheduler.run_job(job)

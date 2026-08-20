@@ -365,7 +365,7 @@ class TestDelegateTask(unittest.TestCase):
         """Verify child gets parent's depth + 1."""
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.return_value = {
                 "final_response": "done", "completed": True, "api_calls": 1
@@ -379,7 +379,7 @@ class TestDelegateTask(unittest.TestCase):
         """Verify children are registered/unregistered for interrupt propagation."""
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.return_value = {
                 "final_response": "done", "completed": True, "api_calls": 1
@@ -396,7 +396,7 @@ class TestDelegateTask(unittest.TestCase):
         parent.provider = "openai-codex"
         parent.api_mode = "codex_responses"
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.return_value = {
                 "final_response": "ok",
@@ -418,7 +418,7 @@ class TestDelegateTask(unittest.TestCase):
         sink = MagicMock()
         parent._print_fn = sink
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             MockAgent.return_value = mock_child
 
@@ -439,7 +439,7 @@ class TestDelegateTask(unittest.TestCase):
         parent = _make_mock_parent(depth=0)
         parent.tool_progress_callback = MagicMock()
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             MockAgent.return_value = mock_child
 
@@ -466,13 +466,13 @@ class TestToolNamePreservation(unittest.TestCase):
         """The process-global _last_resolved_tool_names must be restored
         after a subagent completes so the parent's execute_code sandbox
         generates correct imports."""
-        import model_tools
+        import jacky_cli.model_tools as model_tools
 
         parent = _make_mock_parent(depth=0)
         original_tools = ["terminal", "read_file", "web_search", "execute_code", "delegate_task"]
         model_tools._last_resolved_tool_names = list(original_tools)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.return_value = {
                 "final_response": "done", "completed": True, "api_calls": 1,
@@ -485,13 +485,13 @@ class TestToolNamePreservation(unittest.TestCase):
 
     def test_global_tool_names_restored_after_child_failure(self):
         """Even when the child agent raises, the global must be restored."""
-        import model_tools
+        import jacky_cli.model_tools as model_tools
 
         parent = _make_mock_parent(depth=0)
         original_tools = ["terminal", "read_file", "web_search"]
         model_tools._last_resolved_tool_names = list(original_tools)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.side_effect = RuntimeError("boom")
             MockAgent.return_value = mock_child
@@ -511,7 +511,7 @@ class TestToolNamePreservation(unittest.TestCase):
         """
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent"):
+        with patch("jacky_cli.run_agent.AIAgent"):
             try:
                 _build_child_agent(
                     task_index=0,
@@ -539,7 +539,7 @@ class TestToolNamePreservation(unittest.TestCase):
         parent.acp_args = []
         captured = {}
 
-        with patch("run_agent.AIAgent") as MockAgent, \
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent, \
              patch("shutil.which", return_value=None) as mock_which:
             mock_child = MagicMock()
             MockAgent.return_value = mock_child
@@ -580,7 +580,7 @@ class TestToolNamePreservation(unittest.TestCase):
         parent = _make_mock_parent(depth=0)
         captured = {}
 
-        with patch("run_agent.AIAgent") as MockAgent, \
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent, \
              patch("shutil.which", return_value="/usr/local/bin/copilot"):
             mock_child = MagicMock()
             MockAgent.return_value = mock_child
@@ -623,7 +623,7 @@ class TestToolNamePreservation(unittest.TestCase):
     def test_saved_tool_names_set_on_child_before_run(self):
         """_run_single_child must set _delegate_saved_tool_names on the child
         from model_tools._last_resolved_tool_names before run_conversation."""
-        import model_tools
+        import jacky_cli.model_tools as model_tools
 
         parent = _make_mock_parent(depth=0)
         expected_tools = ["read_file", "web_search", "execute_code"]
@@ -631,7 +631,7 @@ class TestToolNamePreservation(unittest.TestCase):
 
         captured = {}
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
 
             def capture_and_return(user_message, task_id=None, stream_callback=None):
@@ -653,7 +653,7 @@ class TestDelegateObservability(unittest.TestCase):
         """Completed child should return tool_trace, tokens, model, exit_reason."""
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.model = "claude-sonnet-4-6"
             mock_child.session_prompt_tokens = 5000
@@ -694,7 +694,7 @@ class TestDelegateObservability(unittest.TestCase):
         """Tool-result content blocks should not crash observability metadata."""
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.model = "claude-sonnet-4-6"
             mock_child.session_prompt_tokens = 0
@@ -759,7 +759,7 @@ class TestDelegateObservability(unittest.TestCase):
         """Tool results containing 'error' should be marked as error status."""
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.model = "claude-sonnet-4-6"
             mock_child.session_prompt_tokens = 0
@@ -786,7 +786,7 @@ class TestDelegateObservability(unittest.TestCase):
         """Parallel tool calls should each get their own result via tool_call_id matching."""
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.model = "claude-sonnet-4-6"
             mock_child.session_prompt_tokens = 3000
@@ -835,7 +835,7 @@ class TestDelegateObservability(unittest.TestCase):
         """Interrupted child should report exit_reason='interrupted'."""
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.model = "claude-sonnet-4-6"
             mock_child.session_prompt_tokens = 0
@@ -856,7 +856,7 @@ class TestDelegateObservability(unittest.TestCase):
         """Child that didn't complete and wasn't interrupted hit max_iterations."""
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.model = "claude-sonnet-4-6"
             mock_child.session_prompt_tokens = 0
@@ -881,7 +881,7 @@ class TestDelegateObservability(unittest.TestCase):
         surfaces an empty string as if the subagent succeeded."""
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.model = "claude-sonnet-4-6"
             mock_child.session_prompt_tokens = 0
@@ -916,7 +916,7 @@ class TestSubagentCostRollup(unittest.TestCase):
     def test_single_child_cost_folded_into_parent(self):
         parent = self._make_parent_with_cost_counters(starting_cost=0.10)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.model = "claude-sonnet-4-6"
             mock_child.session_prompt_tokens = 1000
@@ -1387,7 +1387,7 @@ class TestDelegationProviderIntegration(unittest.TestCase):
         }
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.return_value = {
                 "final_response": "done", "completed": True, "api_calls": 1
@@ -1424,7 +1424,7 @@ class TestDelegationProviderIntegration(unittest.TestCase):
         parent.base_url = "https://inference-api.nousresearch.com/v1"
         parent.api_key = "nous-key-abc"
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.return_value = {
                 "final_response": "done", "completed": True, "api_calls": 1
@@ -1467,7 +1467,7 @@ class TestDelegationProviderIntegration(unittest.TestCase):
         parent.provider_require_parameters = True
         parent.provider_data_collection = "deny"
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.return_value = {
                 "final_response": "done",
@@ -1507,7 +1507,7 @@ class TestDelegationProviderIntegration(unittest.TestCase):
         parent.provider_require_parameters = True
         parent.provider_data_collection = "deny"
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.return_value = {
                 "final_response": "done", "completed": True, "api_calls": 1
@@ -1541,7 +1541,7 @@ class TestDelegationProviderIntegration(unittest.TestCase):
         }
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.return_value = {
                 "final_response": "done", "completed": True, "api_calls": 1
@@ -1571,7 +1571,7 @@ class TestDelegationProviderIntegration(unittest.TestCase):
         }
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.return_value = {
                 "final_response": "done", "completed": True, "api_calls": 1
@@ -1608,7 +1608,7 @@ class TestDelegationProviderIntegration(unittest.TestCase):
             "base_url": "http://localhost:11434/v1",
         }
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             MockAgent.return_value = mock_child
             _build_child_agent(
@@ -1738,7 +1738,7 @@ class TestDelegationProviderIntegration(unittest.TestCase):
         }
         parent = _make_mock_parent(depth=0)
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.return_value = {
                 "final_response": "done", "completed": True, "api_calls": 1
@@ -1875,7 +1875,7 @@ class TestChildCredentialPoolResolution(unittest.TestCase):
         mock_pool = MagicMock()
         parent._credential_pool = mock_pool
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             MockAgent.return_value = mock_child
 
@@ -1897,7 +1897,7 @@ class TestChildCredentialPoolResolution(unittest.TestCase):
         parent = _make_mock_parent()
         parent.enabled_toolsets = ["web", "browser", "mcp-MiniMax"]
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             MockAgent.return_value = mock_child
 
@@ -1925,7 +1925,7 @@ class TestChildCredentialPoolResolution(unittest.TestCase):
         parent = _make_mock_parent()
         parent.enabled_toolsets = ["web", "browser", "mcp-MiniMax"]
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             MockAgent.return_value = mock_child
 
@@ -2215,7 +2215,7 @@ class TestDelegationReasoningEffort(unittest.TestCase):
     """Tests for delegation.reasoning_effort config override."""
 
     @patch("tools.delegate_tool._load_config")
-    @patch("run_agent.AIAgent")
+    @patch("jacky_cli.run_agent.AIAgent")
     def test_inherits_parent_reasoning_when_no_override(self, MockAgent, mock_cfg):
         """With no delegation.reasoning_effort, child inherits parent's config."""
         mock_cfg.return_value = {"max_iterations": 50, "reasoning_effort": ""}
@@ -2232,7 +2232,7 @@ class TestDelegationReasoningEffort(unittest.TestCase):
         self.assertEqual(call_kwargs["reasoning_config"], {"enabled": True, "effort": "xhigh"})
 
     @patch("tools.delegate_tool._load_config")
-    @patch("run_agent.AIAgent")
+    @patch("jacky_cli.run_agent.AIAgent")
     def test_override_reasoning_effort_from_config(self, MockAgent, mock_cfg):
         """delegation.reasoning_effort overrides the parent's level."""
         mock_cfg.return_value = {"max_iterations": 50, "reasoning_effort": "low"}
@@ -2249,7 +2249,7 @@ class TestDelegationReasoningEffort(unittest.TestCase):
         self.assertEqual(call_kwargs["reasoning_config"], {"enabled": True, "effort": "low"})
 
     @patch("tools.delegate_tool._load_config")
-    @patch("run_agent.AIAgent")
+    @patch("jacky_cli.run_agent.AIAgent")
     def test_override_reasoning_effort_none_disables(self, MockAgent, mock_cfg):
         """delegation.reasoning_effort: 'none' disables thinking for subagents."""
         mock_cfg.return_value = {"max_iterations": 50, "reasoning_effort": "none"}
@@ -2266,7 +2266,7 @@ class TestDelegationReasoningEffort(unittest.TestCase):
         self.assertEqual(call_kwargs["reasoning_config"], {"enabled": False})
 
     @patch("tools.delegate_tool._load_config")
-    @patch("run_agent.AIAgent")
+    @patch("jacky_cli.run_agent.AIAgent")
     def test_invalid_reasoning_effort_falls_back_to_parent(self, MockAgent, mock_cfg):
         """Invalid delegation.reasoning_effort falls back to parent's config."""
         mock_cfg.return_value = {"max_iterations": 50, "reasoning_effort": "banana"}
@@ -2292,7 +2292,7 @@ class TestDispatchDelegateTask(unittest.TestCase):
 
     def test_model_acp_args_not_forwarded(self):
         """The live model dispatch path strips hidden ACP transport args."""
-        import run_agent
+        import jacky_cli.run_agent as run_agent
 
         captured = {}
 
@@ -2469,7 +2469,7 @@ class TestConcurrencyDefaults(unittest.TestCase):
             }
         }
 
-        with patch.dict("sys.modules", {"cli": stale_cli}):
+        with patch.dict("sys.modules", {"jacky_cli.cli": stale_cli}):
             with patch(
                 "jacky_cli.config.load_config_readonly", return_value=active_config
             ):
@@ -2485,7 +2485,7 @@ class TestConcurrencyDefaults(unittest.TestCase):
             }
         }
 
-        with patch.dict("sys.modules", {"cli": fallback_cli}):
+        with patch.dict("sys.modules", {"jacky_cli.cli": fallback_cli}):
             with patch(
                 "jacky_cli.config.load_config_readonly",
                 side_effect=RuntimeError("boom"),
@@ -2506,7 +2506,7 @@ class TestConcurrencyDefaults(unittest.TestCase):
         }
         user_config = {"delegation": {"max_concurrent_children": 50}}
 
-        with patch.dict("sys.modules", {"cli": ignoring_cli}):
+        with patch.dict("sys.modules", {"jacky_cli.cli": ignoring_cli}):
             with patch.dict(os.environ, {"JACKY_IGNORE_USER_CONFIG": "1"}):
                 with patch(
                     "jacky_cli.config.load_config_readonly",
@@ -2630,7 +2630,7 @@ class TestOrchestratorRoleSchema(unittest.TestCase):
             "api_key": None, "api_mode": None, "model": None,
         }
         parent = _make_mock_parent(depth=0)
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = MagicMock()
             mock_child.run_conversation.return_value = {
                 "final_response": "done", "completed": True,
@@ -2730,7 +2730,7 @@ class TestOrchestratorRoleBehavior(unittest.TestCase):
         }
         parent = _make_mock_parent(depth=0)
         parent.enabled_toolsets = ["terminal", "file"]
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = _make_role_mock_child()
             MockAgent.return_value = mock_child
             delegate_task(goal="test", role="orchestrator", parent_agent=parent)
@@ -2752,7 +2752,7 @@ class TestOrchestratorRoleBehavior(unittest.TestCase):
         }
         parent = _make_mock_parent(depth=1)
         parent.enabled_toolsets = ["terminal", "delegation"]
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = _make_role_mock_child()
             MockAgent.return_value = mock_child
             delegate_task(goal="test", role="orchestrator", parent_agent=parent)
@@ -2775,7 +2775,7 @@ class TestOrchestratorRoleBehavior(unittest.TestCase):
         }
         parent = _make_mock_parent(depth=0)
         parent.enabled_toolsets = ["terminal", "file", "delegation"]
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = _make_role_mock_child()
             MockAgent.return_value = mock_child
             delegate_task(goal="test", role="orchestrator", parent_agent=parent)
@@ -2795,7 +2795,7 @@ class TestOrchestratorRoleBehavior(unittest.TestCase):
         parent.enabled_toolsets = ["terminal", "delegation"]
         with patch("tools.delegate_tool._load_config",
                    return_value={"orchestrator_enabled": False}):
-            with patch("run_agent.AIAgent") as MockAgent:
+            with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
                 mock_child = _make_role_mock_child()
                 MockAgent.return_value = mock_child
                 delegate_task(goal="test", role="orchestrator",
@@ -2868,7 +2868,7 @@ class TestOrchestratorRoleBehavior(unittest.TestCase):
             built_toolsets.append(kw.get("enabled_toolsets"))
             return m
 
-        with patch("run_agent.AIAgent", side_effect=_factory):
+        with patch("jacky_cli.run_agent.AIAgent", side_effect=_factory):
             delegate_task(
                 tasks=[
                     {"goal": "A", "role": "orchestrator"},
@@ -2903,7 +2903,7 @@ class TestOrchestratorRoleBehavior(unittest.TestCase):
         }
         parent = _make_mock_parent(depth=0)
         parent.enabled_toolsets = ["terminal", "file"]  # no delegation
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             mock_child = _make_role_mock_child()
             MockAgent.return_value = mock_child
             delegate_task(goal="test", role="orchestrator",
@@ -2991,7 +2991,7 @@ class TestOrchestratorEndToEnd(unittest.TestCase):
 
             return m
 
-        with patch("run_agent.AIAgent", side_effect=_factory) as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent", side_effect=_factory) as MockAgent:
             delegate_task(
                 goal="top-level orchestration",
                 role="orchestrator",
@@ -3117,7 +3117,7 @@ class TestFallbackModelInheritance(unittest.TestCase):
         fallback_entry = {"provider": "openrouter", "model": "gpt-4o-mini", "api_key": "sk-or-x"}
         parent._fallback_chain = [fallback_entry]
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             MockAgent.return_value = MagicMock()
             _build_child_agent(
                 task_index=0,
@@ -3138,7 +3138,7 @@ class TestFallbackModelInheritance(unittest.TestCase):
         parent = _make_mock_parent(depth=0)
         parent._fallback_chain = []
 
-        with patch("run_agent.AIAgent") as MockAgent:
+        with patch("jacky_cli.run_agent.AIAgent") as MockAgent:
             MockAgent.return_value = MagicMock()
             _build_child_agent(
                 task_index=0,

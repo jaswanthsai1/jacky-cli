@@ -4,7 +4,7 @@ import json
 from unittest.mock import ANY, call, patch
 
 
-from model_tools import (
+from jacky_cli.model_tools import (
     handle_function_call,
     get_all_tool_names,
     get_toolset_for_tool,
@@ -41,7 +41,7 @@ class TestHandleFunctionCall:
 
     def test_tool_hooks_receive_session_and_tool_call_ids(self):
         with (
-            patch("model_tools.registry.dispatch", return_value='{"ok":true}'),
+            patch("jacky_cli.model_tools.registry.dispatch", return_value='{"ok":true}'),
             patch("jacky_cli.plugins.has_hook", return_value=True),
             patch("jacky_cli.plugins.invoke_hook") as mock_invoke_hook,
         ):
@@ -106,7 +106,7 @@ class TestHandleFunctionCall:
         ``duration_ms`` to its PostToolUse hook inputs.
         """
         with (
-            patch("model_tools.registry.dispatch", return_value='{"ok":true}'),
+            patch("jacky_cli.model_tools.registry.dispatch", return_value='{"ok":true}'),
             patch("jacky_cli.plugins.has_hook", return_value=True),
             patch("jacky_cli.plugins.invoke_hook") as mock_invoke_hook,
         ):
@@ -136,7 +136,7 @@ class TestHandleFunctionCall:
         emits must not.
         """
         with (
-            patch("model_tools.registry.dispatch", return_value='{"ok":true}'),
+            patch("jacky_cli.model_tools.registry.dispatch", return_value='{"ok":true}'),
             patch("jacky_cli.plugins.has_hook", return_value=False),
             patch("jacky_cli.plugins.invoke_hook") as mock_invoke_hook,
         ):
@@ -180,7 +180,7 @@ class TestHandleFunctionCall:
             lambda hook_name, **kwargs: hook_calls.append((hook_name, kwargs)) or [],
         )
         monkeypatch.setattr("jacky_cli.plugins.has_hook", lambda name: True)
-        monkeypatch.setattr("model_tools.registry.dispatch", fake_dispatch)
+        monkeypatch.setattr("jacky_cli.model_tools.registry.dispatch", fake_dispatch)
 
         result = json.loads(
             handle_function_call(
@@ -244,7 +244,7 @@ class TestPreToolCallBlocking:
 
         monkeypatch.setattr("jacky_cli.plugins.invoke_hook", fake_invoke_hook)
         monkeypatch.setattr("jacky_cli.plugins.has_hook", lambda name: True)
-        monkeypatch.setattr("model_tools.registry.dispatch", fake_dispatch)
+        monkeypatch.setattr("jacky_cli.model_tools.registry.dispatch", fake_dispatch)
 
         result = json.loads(handle_function_call("read_file", {"path": "test.txt"}, task_id="t1"))
         assert result == {"error": "Blocked by policy"}
@@ -264,7 +264,7 @@ class TestPreToolCallBlocking:
             return []
 
         monkeypatch.setattr("jacky_cli.plugins.invoke_hook", fake_invoke_hook)
-        monkeypatch.setattr("model_tools.registry.dispatch",
+        monkeypatch.setattr("jacky_cli.model_tools.registry.dispatch",
                             lambda *a, **kw: (_ for _ in ()).throw(AssertionError("should not run")))
         monkeypatch.setattr("tools.file_tools.notify_other_tool_call",
                             lambda task_id: notifications.append(task_id))
@@ -285,7 +285,7 @@ class TestPreToolCallBlocking:
             return []
 
         monkeypatch.setattr("jacky_cli.plugins.invoke_hook", fake_invoke_hook)
-        monkeypatch.setattr("model_tools.registry.dispatch",
+        monkeypatch.setattr("jacky_cli.model_tools.registry.dispatch",
                             lambda *a, **kw: json.dumps({"ok": True}))
 
         result = json.loads(handle_function_call("read_file", {"path": "test.txt"}, task_id="t1"))
@@ -308,7 +308,7 @@ class TestPreToolCallBlocking:
 
         monkeypatch.setattr("jacky_cli.plugins.invoke_hook", fake_invoke_hook)
         monkeypatch.setattr("jacky_cli.plugins.has_hook", lambda name: True)
-        monkeypatch.setattr("model_tools.registry.dispatch",
+        monkeypatch.setattr("jacky_cli.model_tools.registry.dispatch",
                             lambda *a, **kw: json.dumps({"ok": True}))
 
         handle_function_call("web_search", {"q": "test"}, task_id="t1",
@@ -346,7 +346,7 @@ class TestPreToolCallBlocking:
             return []
 
         monkeypatch.setattr("jacky_cli.plugins.invoke_hook", fake_invoke_hook)
-        monkeypatch.setattr("model_tools.registry.dispatch",
+        monkeypatch.setattr("jacky_cli.model_tools.registry.dispatch",
                             lambda *a, **kw: json.dumps({"ok": True}))
 
         # Step 1: caller checks for a block directive (this fires pre_tool_call once).
@@ -427,33 +427,33 @@ class TestCoerceNumberInfNan:
     float('nan') are not JSON-compliant under strict serialization."""
 
     def test_inf_returns_original_string(self):
-        from model_tools import _coerce_number
+        from jacky_cli.model_tools import _coerce_number
         assert _coerce_number("inf") == "inf"
 
     def test_negative_inf_returns_original_string(self):
-        from model_tools import _coerce_number
+        from jacky_cli.model_tools import _coerce_number
         assert _coerce_number("-inf") == "-inf"
 
     def test_nan_returns_original_string(self):
-        from model_tools import _coerce_number
+        from jacky_cli.model_tools import _coerce_number
         assert _coerce_number("nan") == "nan"
 
     def test_infinity_spelling_returns_original_string(self):
-        from model_tools import _coerce_number
+        from jacky_cli.model_tools import _coerce_number
         # Python's float() parses "Infinity" too — still not JSON-safe.
         assert _coerce_number("Infinity") == "Infinity"
 
     def test_coerced_result_is_strict_json_safe(self):
         """Whatever _coerce_number returns for inf/nan must round-trip
         through strict (allow_nan=False) json.dumps without raising."""
-        from model_tools import _coerce_number
+        from jacky_cli.model_tools import _coerce_number
         for s in ("inf", "-inf", "nan", "Infinity"):
             result = _coerce_number(s)
             json.dumps({"x": result}, allow_nan=False)  # must not raise
 
     def test_normal_numbers_still_coerce(self):
         """Guard against over-correction — real numbers still coerce."""
-        from model_tools import _coerce_number
+        from jacky_cli.model_tools import _coerce_number
         assert _coerce_number("42") == 42
         assert _coerce_number("3.14") == 3.14
         assert _coerce_number("1e3") == 1000
@@ -464,7 +464,7 @@ class TestDisabledToolsetsPlatformBundle:
 
     def test_disabling_platform_bundle_preserves_core_tools(self):
         """Disabling jacky-yuanbao should not strip core tools from jacky-telegram."""
-        from model_tools import get_tool_definitions
+        from jacky_cli.model_tools import get_tool_definitions
 
         tools_telegram = get_tool_definitions(
             enabled_toolsets=["jacky-telegram"],
@@ -486,7 +486,7 @@ class TestDisabledToolsetsPlatformBundle:
 
     def test_disabling_platform_bundle_removes_own_tools(self):
         """Disabling jacky-discord should remove discord-specific tools."""
-        from model_tools import get_tool_definitions
+        from jacky_cli.model_tools import get_tool_definitions
 
         tools = get_tool_definitions(
             enabled_toolsets=["jacky-discord"],
@@ -498,7 +498,7 @@ class TestDisabledToolsetsPlatformBundle:
 
     def test_disabling_non_platform_toolset_still_works(self):
         """Disabling a regular (non-jacky-) toolset still subtracts all tools."""
-        from model_tools import get_tool_definitions
+        from jacky_cli.model_tools import get_tool_definitions
 
         tools_normal = get_tool_definitions(
             enabled_toolsets=["jacky-telegram"],
@@ -524,7 +524,7 @@ class TestDisabledToolsetsPlatformBundle:
     def test_disabling_bundle_removes_platform_tools_but_keeps_core(self):
         """Disabling jacky-discord (when enabled) removes discord/discord_admin
         from the resolved delta but keeps core tools — via bundle_non_core_tools."""
-        from toolsets import bundle_non_core_tools, _JACKY_CORE_TOOLS
+        from jacky_cli.toolsets import bundle_non_core_tools, _JACKY_CORE_TOOLS
 
         delta = bundle_non_core_tools("jacky-yuanbao")
         # The delta is the bundle's platform-specific tools, NOT core.
@@ -533,7 +533,7 @@ class TestDisabledToolsetsPlatformBundle:
 
     def test_bundle_non_core_tools_unknown_falls_back(self):
         """An unknown/garbage bundle name falls back to full resolution (best effort)."""
-        from toolsets import bundle_non_core_tools
+        from jacky_cli.toolsets import bundle_non_core_tools
         # A non-existent bundle resolves to an empty set (no tools), not a crash.
         assert bundle_non_core_tools("jacky-does-not-exist") == set()
 
@@ -545,7 +545,7 @@ class TestDisabledToolsetsPostureToolset:
     while atomic toolsets stay fully removable."""
 
     def test_disabling_coding_preserves_core_but_atomic_disables_still_remove(self):
-        from model_tools import get_tool_definitions
+        from jacky_cli.model_tools import get_tool_definitions
 
         # web_search is check_fn-gated (needs an API key); probe only the core
         # tools actually present in baseline so gating cannot mask the fix.

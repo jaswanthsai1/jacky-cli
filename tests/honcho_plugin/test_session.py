@@ -639,7 +639,7 @@ class TestToolsModeInitBehavior:
         with patch("plugins.memory.honcho.client.HonchoClientConfig.from_global_config", return_value=cfg), \
              patch("plugins.memory.honcho.client.get_honcho_client", return_value=MagicMock()), \
              patch("plugins.memory.honcho.session.HonchoSessionManager", return_value=mock_manager) as mock_manager_cls, \
-             patch("jacky_constants.get_jacky_home", return_value=MagicMock()):
+             patch("jacky_cli.jacky_constants.get_jacky_home", return_value=MagicMock()):
             provider.initialize(session_id="test-session-001", **init_kwargs)
 
         return provider, cfg, mock_manager_cls
@@ -734,7 +734,7 @@ class TestPerSessionMigrateGuard:
         with patch("plugins.memory.honcho.client.HonchoClientConfig.from_global_config", return_value=cfg), \
              patch("plugins.memory.honcho.client.get_honcho_client", return_value=MagicMock()), \
              patch("plugins.memory.honcho.session.HonchoSessionManager", return_value=mock_manager), \
-             patch("jacky_constants.get_jacky_home", return_value=MagicMock()):
+             patch("jacky_cli.jacky_constants.get_jacky_home", return_value=MagicMock()):
             provider.initialize(session_id="test-session-001")
 
         return provider, mock_manager
@@ -938,7 +938,7 @@ class TestDialecticCadenceDefaults:
         with patch("plugins.memory.honcho.client.HonchoClientConfig.from_global_config", return_value=cfg), \
              patch("plugins.memory.honcho.client.get_honcho_client", return_value=MagicMock()), \
              patch("plugins.memory.honcho.session.HonchoSessionManager", return_value=mock_manager), \
-             patch("jacky_constants.get_jacky_home", return_value=MagicMock()):
+             patch("jacky_cli.jacky_constants.get_jacky_home", return_value=MagicMock()):
             provider.initialize(session_id="test-session-001")
 
         _settle_prewarm(provider)
@@ -1009,7 +1009,7 @@ class TestDialecticDepth:
         with patch("plugins.memory.honcho.client.HonchoClientConfig.from_global_config", return_value=cfg), \
              patch("plugins.memory.honcho.client.get_honcho_client", return_value=MagicMock()), \
              patch("plugins.memory.honcho.session.HonchoSessionManager", return_value=mock_manager), \
-             patch("jacky_constants.get_jacky_home", return_value=MagicMock()):
+             patch("jacky_cli.jacky_constants.get_jacky_home", return_value=MagicMock()):
             provider.initialize(session_id="test-session-001")
 
         _settle_prewarm(provider)
@@ -1171,7 +1171,7 @@ class TestTrivialPromptHeuristic:
         with patch("plugins.memory.honcho.client.HonchoClientConfig.from_global_config", return_value=cfg), \
              patch("plugins.memory.honcho.client.get_honcho_client", return_value=MagicMock()), \
              patch("plugins.memory.honcho.session.HonchoSessionManager", return_value=mock_manager), \
-             patch("jacky_constants.get_jacky_home", return_value=MagicMock()):
+             patch("jacky_cli.jacky_constants.get_jacky_home", return_value=MagicMock()):
             provider.initialize(session_id="test-session-trivial")
         _settle_prewarm(provider)
         return provider
@@ -1233,7 +1233,7 @@ class TestDialecticCadenceAdvancesOnSuccess:
         with patch("plugins.memory.honcho.client.HonchoClientConfig.from_global_config", return_value=cfg), \
              patch("plugins.memory.honcho.client.get_honcho_client", return_value=MagicMock()), \
              patch("plugins.memory.honcho.session.HonchoSessionManager", return_value=mock_manager), \
-             patch("jacky_constants.get_jacky_home", return_value=MagicMock()):
+             patch("jacky_cli.jacky_constants.get_jacky_home", return_value=MagicMock()):
             provider.initialize(session_id="test-session-retry")
         _settle_prewarm(provider)
         return provider
@@ -1317,7 +1317,7 @@ class TestSessionStartDialecticPrewarm:
         with patch("plugins.memory.honcho.client.HonchoClientConfig.from_global_config", return_value=cfg), \
              patch("plugins.memory.honcho.client.get_honcho_client", return_value=MagicMock()), \
              patch("plugins.memory.honcho.session.HonchoSessionManager", return_value=mock_manager), \
-             patch("jacky_constants.get_jacky_home", return_value=MagicMock()):
+             patch("jacky_cli.jacky_constants.get_jacky_home", return_value=MagicMock()):
             provider.initialize(session_id="test-prewarm")
         return provider
 
@@ -1389,7 +1389,7 @@ class TestDialecticLiveness:
         with patch("plugins.memory.honcho.client.HonchoClientConfig.from_global_config", return_value=cfg), \
              patch("plugins.memory.honcho.client.get_honcho_client", return_value=MagicMock()), \
              patch("plugins.memory.honcho.session.HonchoSessionManager", return_value=mock_manager), \
-             patch("jacky_constants.get_jacky_home", return_value=MagicMock()):
+             patch("jacky_cli.jacky_constants.get_jacky_home", return_value=MagicMock()):
             provider.initialize(session_id="test-liveness")
         _settle_prewarm(provider)
         return provider
@@ -1536,7 +1536,7 @@ class TestDialecticLifecycleSmoke:
         with patch("plugins.memory.honcho.client.HonchoClientConfig.from_global_config", return_value=cfg), \
              patch("plugins.memory.honcho.client.get_honcho_client", return_value=MagicMock()), \
              patch("plugins.memory.honcho.session.HonchoSessionManager", return_value=mock_manager), \
-             patch("jacky_constants.get_jacky_home", return_value=MagicMock()):
+             patch("jacky_cli.jacky_constants.get_jacky_home", return_value=MagicMock()):
             return provider, mock_manager, cfg
 
     def _await_thread(self, provider):
@@ -1589,7 +1589,7 @@ class TestDialecticLifecycleSmoke:
         with patch("plugins.memory.honcho.client.HonchoClientConfig.from_global_config", return_value=cfg), \
              patch("plugins.memory.honcho.client.get_honcho_client", return_value=MagicMock()), \
              patch("plugins.memory.honcho.session.HonchoSessionManager", return_value=mgr), \
-             patch("jacky_constants.get_jacky_home", return_value=MagicMock()):
+             patch("jacky_cli.jacky_constants.get_jacky_home", return_value=MagicMock()):
             provider.initialize(session_id="smoke-test")
 
         self._await_thread(provider)
@@ -1689,7 +1689,7 @@ class TestReasoningHeuristic:
         with patch("plugins.memory.honcho.client.HonchoClientConfig.from_global_config", return_value=cfg), \
              patch("plugins.memory.honcho.client.get_honcho_client", return_value=MagicMock()), \
              patch("plugins.memory.honcho.session.HonchoSessionManager", return_value=mock_manager), \
-             patch("jacky_constants.get_jacky_home", return_value=MagicMock()):
+             patch("jacky_cli.jacky_constants.get_jacky_home", return_value=MagicMock()):
             provider.initialize(session_id="test-heuristic")
         _settle_prewarm(provider)
         return provider

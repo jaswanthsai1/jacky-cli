@@ -83,7 +83,7 @@ def test_all_invalid_reports_each_and_the_zero_state():
 def test_real_validate_toolset_treats_jacky_cli_valid_and_jacky_invalid():
     # Ties the helper to reality: the canonical registry check agrees that
     # `jacky-cli` is the real toolset and `jacky` is not (the #38798 crux).
-    from toolsets import validate_toolset
+    from jacky_cli.toolsets import validate_toolset
 
     assert validate_toolset("jacky-cli") is True
     assert validate_toolset("jacky") is False

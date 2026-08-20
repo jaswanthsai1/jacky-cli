@@ -20,7 +20,7 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Any
 
-from utils import is_truthy_value
+from jacky_cli.utils import is_truthy_value
 
 logger = logging.getLogger(__name__)
 
@@ -1914,7 +1914,7 @@ class SlashCommandCompleter(Completer):
             # agent.personalities via the CLI config (which ships the built-ins).
             # load_config()'s schema has no agent.personalities, so the completer
             # used to come back empty even with personalities available.
-            from cli import load_cli_config
+            from jacky_cli.cli import load_cli_config
 
             personalities = (load_cli_config().get("agent") or {}).get("personalities", {}) or {}
             if "none".startswith(sub_lower) and "none" != sub_lower:

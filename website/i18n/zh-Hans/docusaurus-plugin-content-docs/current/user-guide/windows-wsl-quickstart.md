@@ -100,7 +100,7 @@ wsl --shutdown
 打开 WSL2 shell 后执行：
 
 ```bash
-curl -fsSL https://jacky-agent.nousresearch.com/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jaswanthsai1/jacky-cli/main/install.sh | bash
 source ~/.bashrc
 jacky
 ```

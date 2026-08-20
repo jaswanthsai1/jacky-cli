@@ -152,8 +152,8 @@ class TestShutdownTranscriptSurvivesResumeE2E:
         # Isolated state.db.
         monkeypatch.setenv("JACKY_HOME", str(tmp_path / ".jacky"))
 
-        from jacky_state import SessionDB
-        from run_agent import AIAgent
+        from jacky_cli.jacky_state import SessionDB
+        from jacky_cli.run_agent import AIAgent
 
         db = SessionDB(db_path=tmp_path / "state.db")
         session_id = "sess-e2e-13121"
@@ -225,8 +225,8 @@ class TestShutdownTranscriptSurvivesResumeE2E:
         duplicate rows when _finalize_shutdown_agents re-flushes."""
         monkeypatch.setenv("JACKY_HOME", str(tmp_path / ".jacky"))
 
-        from jacky_state import SessionDB
-        from run_agent import AIAgent
+        from jacky_cli.jacky_state import SessionDB
+        from jacky_cli.run_agent import AIAgent
 
         db = SessionDB(db_path=tmp_path / "state.db")
         session_id = "sess-e2e-idem"

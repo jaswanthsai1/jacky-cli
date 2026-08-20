@@ -1,0 +1,35 @@
+{
+  "name": "jacky-cli-agent",
+  "version": "0.18.15",
+  "description": "npm install shim for Jacky CLI (self-improving AI agent) \u2014 installs the Python package into a managed venv under ~/.jacky and exposes the `jacky` command.",
+  "license": "MIT",
+  "author": {
+    "name": "Maturi Jaswanth Sai Madhu Mohan",
+    "url": "https://github.com/jaswanthsai1"
+  },
+  "homepage": "https://github.com/jaswanthsai1/jacky-cli#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaswanthsai1/jacky-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jaswanthsai1/jacky-cli/issues"
+  },
+  "bin": {
+    "jacky": "bin/jacky-npm.js"
+  },
+  "scripts": {
+    "postinstall": "node bin/jacky-npm.js --jacky-npm-setup"
+  },
+  "files": [
+    "bin/"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ]
+}

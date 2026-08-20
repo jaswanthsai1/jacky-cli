@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 
 import jacky_cli.plugins as plugins_mod
-import model_tools
+import jacky_cli.model_tools as model_tools
 
 
 _UNSET = object()

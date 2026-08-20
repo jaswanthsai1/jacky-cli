@@ -341,7 +341,7 @@ gateway:
     not_git_repo:            "✗ Not a git repository — cannot update."
     jacky_cmd_not_found:    "✗ Could not locate the `jacky` command. Jacky is running, but the update command could not find the executable on PATH or via the current Python interpreter. Try running `jacky update` manually in your terminal."
     start_failed:            "✗ Failed to start update: {error}"
-    starting:                "⚕ Starting Jacky update… I'll stream progress here."
+    starting:                ">_ Starting Jacky update… I'll stream progress here."
 
   usage:
     rate_limits:              "⏱️ **Rate Limits:** {state}"

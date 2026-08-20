@@ -118,7 +118,7 @@ def _resolve_spill_dir(directory_override: Optional[str], session_id: Optional[s
         base = Path(os.path.expanduser(directory_override))
     else:
         try:
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             base = Path(get_jacky_home()) / "hook_outputs"
         except Exception:
             # Last-resort fallback: JACKY_HOME env var, then ~/.jacky

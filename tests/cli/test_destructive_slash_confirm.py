@@ -18,7 +18,7 @@ def _bound(fn, instance):
 
 def _make_self(prompt_response):
     """Build a minimal stand-in 'self' for _confirm_destructive_slash."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     self_ = SimpleNamespace(
         _app=None,
@@ -34,12 +34,12 @@ def _make_self(prompt_response):
 def test_gate_off_returns_once_without_prompting():
     """When approvals.destructive_slash_confirm is False, return 'once'
     immediately (caller proceeds without showing a prompt)."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     self_ = _make_self(prompt_response="should not be called")
 
     with patch(
-        "cli.load_cli_config",
+        "jacky_cli.cli.load_cli_config",
         return_value={"approvals": {"destructive_slash_confirm": False}},
     ):
         result = _bound(JackyCLI._confirm_destructive_slash, self_)(
@@ -51,12 +51,12 @@ def test_gate_off_returns_once_without_prompting():
 
 def test_gate_on_choice_once_returns_once():
     """When the gate is on and the user picks '1', return 'once'."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     self_ = _make_self(prompt_response="1")
 
     with patch(
-        "cli.load_cli_config",
+        "jacky_cli.cli.load_cli_config",
         return_value={"approvals": {"destructive_slash_confirm": True}},
     ):
         result = _bound(JackyCLI._confirm_destructive_slash, self_)(
@@ -68,12 +68,12 @@ def test_gate_on_choice_once_returns_once():
 
 def test_gate_on_choice_cancel_returns_none():
     """When the user picks '3' (cancel), return None — caller must abort."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     self_ = _make_self(prompt_response="3")
 
     with patch(
-        "cli.load_cli_config",
+        "jacky_cli.cli.load_cli_config",
         return_value={"approvals": {"destructive_slash_confirm": True}},
     ):
         result = _bound(JackyCLI._confirm_destructive_slash, self_)(
@@ -85,12 +85,12 @@ def test_gate_on_choice_cancel_returns_none():
 
 def test_gate_on_no_input_returns_none():
     """No input (None / EOF / Ctrl-C) treated as cancel."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     self_ = _make_self(prompt_response=None)
 
     with patch(
-        "cli.load_cli_config",
+        "jacky_cli.cli.load_cli_config",
         return_value={"approvals": {"destructive_slash_confirm": True}},
     ):
         result = _bound(JackyCLI._confirm_destructive_slash, self_)(
@@ -102,12 +102,12 @@ def test_gate_on_no_input_returns_none():
 
 def test_gate_on_unknown_choice_returns_none():
     """Garbage input is treated as cancel — fail safe, don't destroy state."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     self_ = _make_self(prompt_response="maybe")
 
     with patch(
-        "cli.load_cli_config",
+        "jacky_cli.cli.load_cli_config",
         return_value={"approvals": {"destructive_slash_confirm": True}},
     ):
         result = _bound(JackyCLI._confirm_destructive_slash, self_)(
@@ -120,7 +120,7 @@ def test_gate_on_unknown_choice_returns_none():
 def test_gate_on_choice_always_persists_and_returns_always():
     """User picks 'always' → returns 'always' AND
     save_config_value('approvals.destructive_slash_confirm', False) was called."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     self_ = _make_self(prompt_response="2")
 
@@ -130,9 +130,9 @@ def test_gate_on_choice_always_persists_and_returns_always():
         return True
 
     with patch(
-        "cli.load_cli_config",
+        "jacky_cli.cli.load_cli_config",
         return_value={"approvals": {"destructive_slash_confirm": True}},
-    ), patch("cli.save_config_value", _fake_save):
+    ), patch("jacky_cli.cli.save_config_value", _fake_save):
         result = _bound(JackyCLI._confirm_destructive_slash, self_)(
             "clear", "detail",
         )
@@ -144,11 +144,11 @@ def test_gate_on_choice_always_persists_and_returns_always():
 def test_gate_default_true_when_config_missing():
     """If load_cli_config raises or returns malformed data, treat as
     'gate on' (default safe) — must prompt."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     self_ = _make_self(prompt_response="3")  # cancel
 
-    with patch("cli.load_cli_config", side_effect=Exception("boom")):
+    with patch("jacky_cli.cli.load_cli_config", side_effect=Exception("boom")):
         result = _bound(JackyCLI._confirm_destructive_slash, self_)(
             "clear", "detail",
         )
@@ -161,7 +161,7 @@ def test_gate_default_true_when_config_missing():
 
 def test_slash_confirm_modal_number_selection_submits_without_raw_input():
     """Pressing 2 in the TUI modal should resolve to Always Approve directly."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     q = queue.Queue()
     self_ = SimpleNamespace(
@@ -187,7 +187,7 @@ def test_slash_confirm_modal_number_selection_submits_without_raw_input():
 
 def test_slash_confirm_display_fragments_include_choice_mapping():
     """The modal itself must show what 1/2/3 mean, not only 'Choice [1/2/3]'."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     self_ = SimpleNamespace(
         _slash_confirm_state={
@@ -223,7 +223,7 @@ def test_slash_confirm_display_fragments_include_choice_mapping():
 
 def test_split_destructive_skip_recognized_tokens():
     """``now``, ``--yes``, and ``-y`` are recognized as skip tokens."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     assert JackyCLI._split_destructive_skip("/reset now") == ("", True)
     assert JackyCLI._split_destructive_skip("/clear --yes") == ("", True)
@@ -232,7 +232,7 @@ def test_split_destructive_skip_recognized_tokens():
 
 def test_split_destructive_skip_strips_command_word():
     """Leading ``/cmd`` token is stripped; remaining args survive."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     assert JackyCLI._split_destructive_skip("/new My title") == ("My title", False)
     assert JackyCLI._split_destructive_skip("/new --yes My title") == ("My title", True)
@@ -240,7 +240,7 @@ def test_split_destructive_skip_strips_command_word():
 
 def test_split_destructive_skip_case_insensitive():
     """Token matching is case-insensitive but not a substring match."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     assert JackyCLI._split_destructive_skip("/new NOW") == ("", True)
     # Substring match must NOT trigger — "Now-Title" is a literal title token.
@@ -249,7 +249,7 @@ def test_split_destructive_skip_case_insensitive():
 
 def test_split_destructive_skip_handles_empty_and_none():
     """Defensive against missing/empty input."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     assert JackyCLI._split_destructive_skip(None) == ("", False)
     assert JackyCLI._split_destructive_skip("") == ("", False)
@@ -258,7 +258,7 @@ def test_split_destructive_skip_handles_empty_and_none():
 
 def test_confirm_destructive_slash_now_skips_modal():
     """``/reset now`` skips the modal even when the gate is on."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     # Build a prompt stub that fails the test if invoked — proving the modal
     # was never reached.
@@ -275,7 +275,7 @@ def test_confirm_destructive_slash_now_skips_modal():
     self_._split_destructive_skip = JackyCLI._split_destructive_skip  # classmethod
 
     with patch(
-        "cli.load_cli_config",
+        "jacky_cli.cli.load_cli_config",
         return_value={"approvals": {"destructive_slash_confirm": True}},
     ):
         result = _bound(JackyCLI._confirm_destructive_slash, self_)(
@@ -287,7 +287,7 @@ def test_confirm_destructive_slash_now_skips_modal():
 
 def test_confirm_destructive_slash_yes_flag_skips_modal():
     """``--yes`` flag is equivalent to ``now``."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     def _explode(**_kw):
         raise AssertionError("modal must not be invoked when --yes present")
@@ -302,7 +302,7 @@ def test_confirm_destructive_slash_yes_flag_skips_modal():
     self_._split_destructive_skip = JackyCLI._split_destructive_skip
 
     with patch(
-        "cli.load_cli_config",
+        "jacky_cli.cli.load_cli_config",
         return_value={"approvals": {"destructive_slash_confirm": True}},
     ):
         result = _bound(JackyCLI._confirm_destructive_slash, self_)(
@@ -314,13 +314,13 @@ def test_confirm_destructive_slash_yes_flag_skips_modal():
 
 def test_confirm_destructive_slash_no_skip_token_still_prompts():
     """Without a skip token the gate-on path still consults the modal."""
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     self_ = _make_self(prompt_response="3")  # cancel
     self_._split_destructive_skip = JackyCLI._split_destructive_skip
 
     with patch(
-        "cli.load_cli_config",
+        "jacky_cli.cli.load_cli_config",
         return_value={"approvals": {"destructive_slash_confirm": True}},
     ):
         result = _bound(JackyCLI._confirm_destructive_slash, self_)(

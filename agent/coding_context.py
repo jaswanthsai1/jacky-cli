@@ -179,7 +179,7 @@ _EDIT_FORMAT_GUIDANCE: dict[str, tuple[tuple[str, ...], str]] = {
     "replace": (
         ("claude", "sonnet", "opus", "haiku",
          "gemini", "gemma", "deepseek", "qwen", "kimi", "glm", "grok",
-         "jacky", "llama", "mistral", "devstral", "minimax"),
+         "hermes", "llama", "mistral", "devstral", "minimax"),
         "- Edit format: author new files with `write_file`; for edits to "
         "existing code prefer `patch` in `mode='replace'` — match a unique "
         "snippet and swap it. Reach for `mode='patch'` (V4A) only when an edit "
@@ -694,7 +694,7 @@ def _git(cwd: Path, *args: str) -> str:
         out = subprocess.run(
             ["git", "-C", str(cwd), *args],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=_GIT_TIMEOUT,
             **_popen_kwargs,
         )

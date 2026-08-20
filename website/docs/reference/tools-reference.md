@@ -8,7 +8,7 @@ description: "Authoritative reference for Jacky built-in tools, grouped by tools
 
 This page documents Jacky' built-in tools, grouped by toolset. Availability varies by platform, credentials, and enabled toolsets.
 
-**Quick counts (current registry):** ~73 tools — 10 browser tools (core) + 2 CDP-gated browser tools, 4 file tools, 4 Home Assistant tools, 3 terminal tools (`terminal`, `process`, `read_terminal`), 2 web tools, 5 Feishu tools, 7 Spotify tools (registered by the bundled `spotify` plugin), 5 Yuanbao tools, 9 kanban tools (registered when the kanban dispatcher spawns the agent), 3 project tools (desktop/GUI sessions), 2 Discord tools, and a handful of standalone tools (`memory`, `clarify`, `delegate_task`, `execute_code`, `cronjob`, `session_search`, `skill_view`/`skill_manage`/`skills_list`, `text_to_speech`, `image_generate`, `video_generate`, `vision_analyze`, `video_analyze`, `todo`, `computer_use`).
+**Quick counts (current registry):** ~80 tools — 10 browser tools (core) + 2 CDP-gated browser tools, 4 file tools, 4 Home Assistant tools, 3 terminal tools (`terminal`, `process`, `read_terminal`), 2 web tools, 5 Feishu tools, 7 Spotify tools (registered by the bundled `spotify` plugin), 5 Yuanbao tools, 9 kanban tools (registered when the kanban dispatcher spawns the agent), 3 project tools (desktop/GUI sessions), 2 Discord tools, 7 security/recon tools (`http_client`, `secret_scan`, `dependency_audit`, `severity_calculator`, `evidence_bundler`, `static_analysis`, `passive_recon`), and a handful of standalone tools (`memory`, `clarify`, `delegate_task`, `execute_code`, `cronjob`, `session_search`, `skill_view`/`skill_manage`/`skills_list`, `text_to_speech`, `image_generate`, `video_generate`, `vision_analyze`, `video_analyze`, `todo`, `computer_use`).
 
 :::tip MCP Tools
 In addition to built-in tools, Jacky can load tools dynamically from MCP servers. MCP tools appear with the prefix `mcp_<server>_` (e.g., `mcp_github_create_issue` for the `github` MCP server). See [MCP Integration](/user-guide/features/mcp) for configuration.
@@ -267,3 +267,17 @@ Registered only on the `jacky-yuanbao` platform toolset. Yuanbao is Tencent's ch
 | `yb_send_sticker` | Send a built-in sticker to the current Yuanbao chat. | Yuanbao credentials |
 
 
+
+## Security & recon toolsets
+
+Seven built-in tools for security-auditing and bug-bounty workflows. All are always available (pure-stdlib fallbacks; no required external service) and enabled by default — toggle any of them off in `jacky tools`.
+
+| Tool | Toolset | Description | Requires environment |
+|------|---------|-------------|----------------------|
+| `http_client` | `http_client` | Raw HTTP client for API testing: `action='request'` sends GET/POST/PUT/DELETE/OPTIONS/HEAD/PATCH with custom headers/params/body/cookies; `action='tls_info'` inspects a host:port's TLS certificate (issuer, subject, SANs, expiry). | — |
+| `secret_scan` | `secret_scan` | Scan a directory (or its git history) for leaked credentials: AWS keys, GitHub tokens, Google API keys, OpenAI/Anthropic-style keys, Slack tokens, Stripe keys, private key PEM blocks, generic `api_key=`/`password=`/`secret=` assignments. | — |
+| `dependency_audit` | `dependency_audit` | SCA scan: parses `package.json`, `requirements*.txt`, `pyproject.toml`, `go.mod`, `Cargo.lock`, then queries the free [OSV.dev](https://osv.dev) API for known vulnerabilities in the declared/resolved dependencies. | — |
+| `severity_calculator` | `severity_calc` | Two modes: `lookup` fuzzy-matches a free-text vulnerability description against the real Bugcrowd Vulnerability Rating Taxonomy (2,626 entries) for a P1–P5 rating; `cvss` computes an exact CVSS v3.1 base score from AV/AC/PR/UI/S/C/I/A metrics. | — |
+| `evidence_bundler` | `evidence` | Assembles raw finding evidence (description, HTTP request/response, code snippets, notes, screenshot references, timestamps) into one structured markdown finding report (Summary / Vulnerability Details / Root Cause / Steps to Reproduce / Impact / Recommended Fix / Supporting Materials / Evidence). | — |
+| `static_analysis` | `static_analysis` | Semgrep-style AST scan for SQL injection, command injection, SSRF, hardcoded secrets, and unsafe deserialization across Python and JS/TS. Uses the real `semgrep` CLI against a bundled offline rule pack when `semgrep` is on PATH; falls back to a built-in `ast`-based (Python) + regex-based (JS/TS) heuristic engine otherwise — never fails for a missing binary. | `semgrep` (optional, auto-detected) |
+| `passive_recon` | `passive_recon` | Passive-only subdomain enumeration: queries crt.sh's public Certificate Transparency log for hostnames under a domain, then resolves DNS records for each (A/AAAA always via stdlib; CNAME/MX/TXT/NS when `dnspython` is installed). No port scanning or active probing — safe/legal by construction. | `dnspython` (optional, enriches record types) |

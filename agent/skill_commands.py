@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from jacky_constants import display_jacky_home
+from jacky_cli.jacky_constants import display_jacky_home
 from agent.skill_preprocessing import (
     expand_inline_shell as _expand_inline_shell,
     load_skills_config as _load_skills_config,

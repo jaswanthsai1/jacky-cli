@@ -832,7 +832,7 @@ _nous_recommended_cache: dict[str, tuple[dict[str, Any], float]] = {}
 
 def _nous_recommended_disk_path() -> "Path":
     """Disk path for the persisted recommended-models cache."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     return get_jacky_home() / "cache" / "nous_recommended_cache.json"
 
 
@@ -2553,7 +2553,7 @@ _PROVIDER_MODELS_CACHE_TTL = 3600  # 1h
 
 
 def _provider_models_cache_path() -> Path:
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     return get_jacky_home() / "provider_models_cache.json"
 
 
@@ -2590,7 +2590,7 @@ def _credential_fingerprint(provider: str) -> str:
 
     # OAuth / external-file mtimes that change on re-auth
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         for rel in ("auth.json", "credentials.json"):
             p = get_jacky_home() / rel
             try:
@@ -2644,7 +2644,7 @@ def _load_provider_models_cache() -> dict:
 def _save_provider_models_cache(data: dict) -> None:
     """Persist the cache dict. Best-effort — silent on any error."""
     try:
-        from utils import atomic_json_write
+        from jacky_cli.utils import atomic_json_write
         path = _provider_models_cache_path()
         path.parent.mkdir(parents=True, exist_ok=True)
         atomic_json_write(path, data, indent=None)
@@ -3671,7 +3671,7 @@ def _strip_ollama_cloud_suffix(model_id: str) -> str:
 
 def _ollama_cloud_cache_path() -> Path:
     """Return the path for the Ollama Cloud model cache."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     return get_jacky_home() / "ollama_cloud_models_cache.json"
 
 
@@ -3705,7 +3705,7 @@ def _load_ollama_cloud_cache(*, ignore_ttl: bool = False) -> Optional[dict]:
 def _save_ollama_cloud_cache(models: list[str]) -> None:
     """Persist the merged Ollama Cloud model list to disk."""
     try:
-        from utils import atomic_json_write
+        from jacky_cli.utils import atomic_json_write
         cache_path = _ollama_cloud_cache_path()
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         atomic_json_write(cache_path, {"models": models, "cached_at": time.time()}, indent=None)

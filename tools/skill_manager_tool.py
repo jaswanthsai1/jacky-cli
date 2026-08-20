@@ -42,8 +42,8 @@ import contextvars as _ctxvars
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from jacky_constants import get_jacky_home, display_jacky_home
-from utils import atomic_replace, is_truthy_value
+from jacky_cli.jacky_constants import get_jacky_home, display_jacky_home
+from jacky_cli.utils import atomic_replace, is_truthy_value
 from jacky_cli.config import cfg_get
 
 logger = logging.getLogger(__name__)
@@ -613,7 +613,7 @@ def _find_skill_in_other_profiles(name: str) -> List[Tuple[str, Path]]:
     """
     matches: List[Tuple[str, Path]] = []
     try:
-        from jacky_constants import get_default_jacky_root
+        from jacky_cli.jacky_constants import get_default_jacky_root
         from agent.skill_utils import is_excluded_skill_path
     except Exception:
         return matches

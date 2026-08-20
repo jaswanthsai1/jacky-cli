@@ -7,7 +7,7 @@ to prevent spinner/status bar overlap (#2718).
 from unittest.mock import MagicMock, patch
 
 
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 
 
 def _make_cli():

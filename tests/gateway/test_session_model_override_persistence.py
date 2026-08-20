@@ -53,7 +53,7 @@ def store_factory(tmp_path, monkeypatch):
     def _raise():
         raise RuntimeError("SQLite disabled in test")
 
-    import jacky_state
+    import jacky_cli.jacky_state as jacky_state
 
     monkeypatch.setattr(jacky_state, "SessionDB", _raise)
 

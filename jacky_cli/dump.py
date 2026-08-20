@@ -15,7 +15,7 @@ from pathlib import Path
 
 from jacky_cli.config import get_jacky_home, get_env_path, get_project_root, load_config
 from jacky_cli.env_loader import load_jacky_dotenv
-from jacky_constants import display_jacky_home
+from jacky_cli.jacky_constants import display_jacky_home
 from agent.skill_utils import is_excluded_skill_path
 
 
@@ -64,7 +64,7 @@ def _get_git_commit(project_root: Path) -> str:
     try:
         result = subprocess.run(
             ["git", "rev-parse", "--short=8", "HEAD"],
-            capture_output=True, text=True, timeout=5,
+            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5,
             cwd=str(project_root),
         )
         if result.returncode == 0:
@@ -99,7 +99,7 @@ def _get_git_commit_date(project_root: Path) -> str:
     try:
         result = subprocess.run(
             ["git", "log", "-1", "--format=%cd", "--date=short", "HEAD"],
-            capture_output=True, text=True, timeout=5,
+            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5,
             cwd=str(project_root),
         )
         if result.returncode == 0:

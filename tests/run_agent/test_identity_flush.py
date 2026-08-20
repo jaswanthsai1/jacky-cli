@@ -10,7 +10,7 @@ SESSION_ID = "test-identity-flush"
 
 def _make_agent(session_db, session_id=SESSION_ID):
     with patch.dict(os.environ, {"OPENROUTER_API_KEY": "test-key"}):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             api_key="test-key",
@@ -33,7 +33,7 @@ def _contents(db, session_id=SESSION_ID):
 class TestIdentityFlush:
     def test_repair_shrunk_messages_below_history_length_still_persists_assistant(self):
         """When repair shortens messages below conversation_history, don't slice empty."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db = SessionDB(db_path=Path(tmpdir) / "t.db")
@@ -71,7 +71,7 @@ class TestIdentityFlush:
 
     def test_overlapping_turn_stale_cursor_does_not_drop_assistant(self):
         """A stale cached-agent cursor must not suppress this turn's new dicts."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db = SessionDB(db_path=Path(tmpdir) / "t.db")
@@ -106,7 +106,7 @@ class TestIdentityFlush:
 
     def test_repeated_flush_same_turn_writes_once(self):
         """Identity tracking preserves #860 same-turn dedup behavior."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db = SessionDB(db_path=Path(tmpdir) / "t.db")
@@ -125,7 +125,7 @@ class TestIdentityFlush:
 
     def test_cursor_reset_starts_new_turn_identity_window(self):
         """Gateway resets _last_flushed_db_idx=0 before a cached-agent turn."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db = SessionDB(db_path=Path(tmpdir) / "t.db")
@@ -161,7 +161,7 @@ class TestIdentityFlush:
         written to state.db. Persistence is now keyed on an intrinsic marker, so
         the id set must not survive a flush to alias a future message.
         """
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db = SessionDB(db_path=Path(tmpdir) / "t.db")
@@ -194,7 +194,7 @@ class TestIdentityFlush:
         the seed is a one-shot that is cleared after every flush and the message
         is written because it carries no _db_persisted marker.
         """
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db = SessionDB(db_path=Path(tmpdir) / "t.db")

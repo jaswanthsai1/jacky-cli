@@ -9,7 +9,7 @@ finally block, so len() reflects truly-running tasks.
 import threading
 from datetime import datetime
 
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 
 
 def _stub_thread() -> threading.Thread:

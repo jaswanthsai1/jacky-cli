@@ -498,7 +498,7 @@ def _rpc_server_loop(
     Accept one client connection and dispatch tool-call requests until
     the client disconnects or the call limit is reached.
     """
-    from model_tools import handle_function_call
+    from jacky_cli.model_tools import handle_function_call
 
     conn = None
     try:
@@ -777,7 +777,7 @@ def _rpc_poll_loop(
     independent process, so these calls run safely concurrent with the
     script-execution thread.
     """
-    from model_tools import handle_function_call
+    from jacky_cli.model_tools import handle_function_call
 
     poll_interval = 0.1  # 100 ms
 
@@ -1329,7 +1329,7 @@ def execute_code(
             child_env["TZ"] = _tz_name
         child_env.pop("JACKY_TIMEZONE", None)
 
-        from jacky_constants import apply_subprocess_home_env
+        from jacky_cli.jacky_constants import apply_subprocess_home_env
         apply_subprocess_home_env(child_env)
 
         # Resolve interpreter + CWD based on execute_code mode.

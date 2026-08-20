@@ -19,22 +19,22 @@ class TestSaveConfigValueAtomic:
             "model": {"default": "test-model", "provider": "openrouter"},
             "display": {"skin": "default"},
         }))
-        monkeypatch.setattr("cli._jacky_home", jacky_home)
+        monkeypatch.setattr("jacky_cli.cli._jacky_home", jacky_home)
         return config_path
 
     def test_calls_roundtrip_yaml_update(self, config_env, monkeypatch):
         """save_config_value must preserve user-edited YAML structure."""
         mock_update = MagicMock()
-        monkeypatch.setattr("utils.atomic_roundtrip_yaml_update", mock_update)
+        monkeypatch.setattr("jacky_cli.utils.atomic_roundtrip_yaml_update", mock_update)
 
-        from cli import save_config_value
+        from jacky_cli.cli import save_config_value
         save_config_value("display.skin", "mono")
 
         mock_update.assert_called_once_with(config_env, "display.skin", "mono")
 
     def test_preserves_existing_keys(self, config_env):
         """Writing a new key must not clobber existing config entries."""
-        from cli import save_config_value
+        from jacky_cli.cli import save_config_value
         save_config_value("agent.max_turns", 50)
 
         result = yaml.safe_load(config_env.read_text())
@@ -45,7 +45,7 @@ class TestSaveConfigValueAtomic:
 
     def test_creates_nested_keys(self, config_env):
         """Dot-separated paths create intermediate dicts as needed."""
-        from cli import save_config_value
+        from jacky_cli.cli import save_config_value
         save_config_value("auxiliary.compression.model", "google/gemini-3-flash-preview")
 
         result = yaml.safe_load(config_env.read_text())
@@ -53,7 +53,7 @@ class TestSaveConfigValueAtomic:
 
     def test_overwrites_existing_value(self, config_env):
         """Updating an existing key replaces the value."""
-        from cli import save_config_value
+        from jacky_cli.cli import save_config_value
         save_config_value("display.skin", "ares")
 
         result = yaml.safe_load(config_env.read_text())
@@ -70,7 +70,7 @@ class TestSaveConfigValueAtomic:
             "model": {"default": "test-model", "provider": "openrouter"},
         }))
 
-        from cli import save_config_value
+        from jacky_cli.cli import save_config_value
         save_config_value("model.default", "doubao-pro")
 
         result = yaml.safe_load(config_env.read_text())
@@ -89,7 +89,7 @@ class TestSaveConfigValueAtomic:
             encoding="utf-8",
         )
 
-        from cli import save_config_value
+        from jacky_cli.cli import save_config_value
         save_config_value("display.skin", "mono")
 
         text = config_env.read_text(encoding="utf-8")
@@ -109,7 +109,7 @@ class TestSaveConfigValueAtomic:
             encoding="utf-8",
         )
 
-        from cli import save_config_value
+        from jacky_cli.cli import save_config_value
         save_config_value("display.skin", "mono")
 
         text = config_env.read_text(encoding="utf-8")
@@ -125,9 +125,9 @@ class TestSaveConfigValueAtomic:
         def exploding_write(*args, **kwargs):
             raise OSError("disk full")
 
-        monkeypatch.setattr("utils.atomic_roundtrip_yaml_update", exploding_write)
+        monkeypatch.setattr("jacky_cli.utils.atomic_roundtrip_yaml_update", exploding_write)
 
-        from cli import save_config_value
+        from jacky_cli.cli import save_config_value
         result = save_config_value("display.skin", "broken")
 
         assert result is False

@@ -8,7 +8,7 @@ from aiohttp.test_utils import TestClient, TestServer
 
 from gateway.config import PlatformConfig
 from gateway.platforms.api_server import APIServerAdapter
-from jacky_state import SessionDB
+from jacky_cli.jacky_state import SessionDB
 
 
 @pytest.fixture

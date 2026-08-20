@@ -23,7 +23,7 @@ def _write_skill(skills_dir, name, description="test skill"):
 @pytest.fixture
 def isolated_profiles(tmp_path, monkeypatch, _isolate_jacky_home):
     """Isolated default home + one named profile, each with its own skills."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     from jacky_cli import profiles
 
     default_home = get_jacky_home()
@@ -48,8 +48,8 @@ def client(monkeypatch, isolated_profiles):
     except ImportError:
         pytest.skip("fastapi/starlette not installed")
 
-    import jacky_state
-    from jacky_constants import get_jacky_home
+    import jacky_cli.jacky_state as jacky_state
+    from jacky_cli.jacky_constants import get_jacky_home
     from jacky_cli.web_server import app, _SESSION_HEADER_NAME, _SESSION_TOKEN
 
     monkeypatch.setattr(jacky_state, "DEFAULT_DB_PATH", get_jacky_home() / "state.db")

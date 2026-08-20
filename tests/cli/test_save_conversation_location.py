@@ -26,7 +26,7 @@ def jacky_home(tmp_path, monkeypatch):
     monkeypatch.setattr(Path, "home", lambda: tmp_path)
     monkeypatch.setenv("JACKY_HOME", str(home))
     # Clear any cached jacky_home computation
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
     if hasattr(jacky_constants, "_jacky_home_cache"):
         jacky_constants._jacky_home_cache = None
     return home
@@ -50,10 +50,10 @@ def test_save_conversation_writes_under_jacky_home(jacky_home, tmp_path, monkeyp
     monkeypatch.chdir(work)
 
     # Import fresh to pick up the JACKY_HOME fixture
-    for mod in [m for m in sys.modules if m.startswith("cli") or m == "jacky_constants"]:
+    for mod in [m for m in sys.modules if m.startswith("jacky_cli.cli") or m == "jacky_cli.jacky_constants"]:
         sys.modules.pop(mod, None)
 
-    import cli  # noqa: F401  (module under test)
+    import jacky_cli.cli as cli  # noqa: F401  (module under test)
 
     stub = _make_stub_cli([
         {"role": "user", "content": "hi"},
@@ -88,9 +88,9 @@ def test_save_conversation_writes_under_jacky_home(jacky_home, tmp_path, monkeyp
 
 
 def test_save_conversation_empty_history_does_nothing(jacky_home, capsys):
-    for mod in [m for m in sys.modules if m.startswith("cli") or m == "jacky_constants"]:
+    for mod in [m for m in sys.modules if m.startswith("jacky_cli.cli") or m == "jacky_cli.jacky_constants"]:
         sys.modules.pop(mod, None)
-    import cli
+    import jacky_cli.cli as cli
 
     stub = _make_stub_cli([])
     cli.JackyCLI.save_conversation(stub)

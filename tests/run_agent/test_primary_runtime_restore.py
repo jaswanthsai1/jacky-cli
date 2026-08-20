@@ -13,7 +13,7 @@ import time
 from unittest.mock import MagicMock, patch
 
 
-from run_agent import AIAgent
+from jacky_cli.run_agent import AIAgent
 
 
 def _make_tool_defs(*names: str) -> list:
@@ -33,9 +33,9 @@ def _make_tool_defs(*names: str) -> list:
 def _make_agent(fallback_model=None, provider="custom", base_url="https://my-llm.example.com/v1"):
     """Create a minimal AIAgent with optional fallback config."""
     with (
-        patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
         agent = AIAgent(
             api_key="test-key-12345678",
@@ -86,9 +86,9 @@ class TestPrimaryRuntimeSnapshot:
     def test_snapshot_includes_anthropic_state_when_applicable(self):
         """Anthropic-mode agents should snapshot Anthropic-specific state."""
         with (
-            patch("run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
-            patch("run_agent.check_toolset_requirements", return_value={}),
-            patch("run_agent.OpenAI"),
+            patch("jacky_cli.run_agent.get_tool_definitions", return_value=_make_tool_defs("web_search")),
+            patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+            patch("jacky_cli.run_agent.OpenAI"),
             patch("agent.anthropic_adapter.build_anthropic_client", return_value=MagicMock()),
         ):
             agent = AIAgent(
@@ -138,7 +138,7 @@ class TestRestorePrimaryRuntime:
         assert agent.provider == "openrouter"
 
         # Restore should bring back the primary
-        with patch("run_agent.OpenAI", return_value=MagicMock()):
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()):
             result = agent._restore_primary_runtime()
 
         assert result is True
@@ -161,7 +161,7 @@ class TestRestorePrimaryRuntime:
 
         assert agent._fallback_index == 1  # consumed one entry
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()):
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()):
             agent._restore_primary_runtime()
 
         assert agent._fallback_index == 0  # reset for next turn
@@ -182,7 +182,7 @@ class TestRestorePrimaryRuntime:
         agent.context_compressor.context_length = 32000
         agent.context_compressor.threshold_tokens = 25600
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()):
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()):
             agent._restore_primary_runtime()
 
         assert agent.context_compressor.context_length == original_ctx_len
@@ -196,7 +196,7 @@ class TestRestorePrimaryRuntime:
         agent._fallback_activated = True
         agent._use_prompt_caching = not original_caching
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()):
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()):
             agent._restore_primary_runtime()
 
         assert agent._use_prompt_caching == original_caching
@@ -233,7 +233,7 @@ class TestRestorePrimaryRuntime:
         agent._credential_pool = _Pool()
         agent._swap_credential = MagicMock()
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()):
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()):
             result = agent._restore_primary_runtime()
 
         assert result is True
@@ -290,7 +290,7 @@ class TestRestorePrimaryRuntime:
         primary_pool.provider = primary_provider
         primary_pool.has_available.return_value = False
         with (
-            patch("run_agent.OpenAI", return_value=MagicMock()),
+            patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()),
             patch("agent.credential_pool.load_pool", return_value=primary_pool) as load_pool,
         ):
             result = agent._restore_primary_runtime()
@@ -315,7 +315,7 @@ class TestRestorePrimaryRuntime:
         agent._credential_pool = fallback_pool
 
         with (
-            patch("run_agent.OpenAI", return_value=MagicMock()),
+            patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()),
             patch(
                 "agent.credential_pool.load_pool",
                 side_effect=RuntimeError("auth store unavailable"),
@@ -358,7 +358,7 @@ class TestRestorePrimaryRuntime:
                 "agent.credential_pool.get_custom_provider_pool_key",
                 return_value="custom:myllm",
             ),
-            patch("run_agent.OpenAI", return_value=MagicMock()),
+            patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()),
         ):
             result = agent._restore_primary_runtime()
 
@@ -398,7 +398,7 @@ class TestRestorePrimaryRuntime:
                 "agent.credential_pool.get_custom_provider_pool_key",
                 return_value="custom:myllm",  # primary resolves to a DIFFERENT key
             ),
-            patch("run_agent.OpenAI", return_value=MagicMock()),
+            patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()),
         ):
             result = agent._restore_primary_runtime()
 
@@ -411,7 +411,7 @@ class TestRestorePrimaryRuntime:
         agent = _make_agent()
         agent._fallback_activated = True
 
-        with patch("run_agent.OpenAI", side_effect=Exception("connection refused")):
+        with patch("jacky_cli.run_agent.OpenAI", side_effect=Exception("connection refused")):
             result = agent._restore_primary_runtime()
 
         assert result is False
@@ -433,7 +433,7 @@ class TestTryRecoverPrimaryTransport:
         agent = _make_agent(provider="custom")
         error = _make_transport_error("ReadTimeout")
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()), \
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()), \
              patch("time.sleep"):
             result = agent._try_recover_primary_transport(
                 error, retry_count=3, max_retries=3,
@@ -445,7 +445,7 @@ class TestTryRecoverPrimaryTransport:
         agent = _make_agent(provider="custom")
         error = _make_transport_error("ConnectTimeout")
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()), \
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()), \
              patch("time.sleep"):
             result = agent._try_recover_primary_transport(
                 error, retry_count=3, max_retries=3,
@@ -457,7 +457,7 @@ class TestTryRecoverPrimaryTransport:
         agent = _make_agent(provider="zai")
         error = _make_transport_error("PoolTimeout")
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()), \
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()), \
              patch("time.sleep"):
             result = agent._try_recover_primary_transport(
                 error, retry_count=3, max_retries=3,
@@ -469,7 +469,7 @@ class TestTryRecoverPrimaryTransport:
         agent = _make_agent(provider="custom")
         error = _make_transport_error("APIConnectionError")
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()), \
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()), \
              patch("time.sleep"):
             result = agent._try_recover_primary_transport(
                 error, retry_count=3, max_retries=3,
@@ -481,7 +481,7 @@ class TestTryRecoverPrimaryTransport:
         agent = _make_agent(provider="custom")
         error = _make_transport_error("APITimeoutError")
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()), \
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()), \
              patch("time.sleep"):
             result = agent._try_recover_primary_transport(
                 error, retry_count=3, max_retries=3,
@@ -533,7 +533,7 @@ class TestTryRecoverPrimaryTransport:
         # For non-anthropic_messages api_mode, it will use OpenAI client
         error = _make_transport_error("ConnectError")
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()), \
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()), \
              patch("time.sleep"):
             result = agent._try_recover_primary_transport(
                 error, retry_count=3, max_retries=3,
@@ -545,7 +545,7 @@ class TestTryRecoverPrimaryTransport:
         agent = _make_agent(provider="ollama", base_url="http://localhost:11434/v1")
         error = _make_transport_error("ConnectTimeout")
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()), \
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()), \
              patch("time.sleep"):
             result = agent._try_recover_primary_transport(
                 error, retry_count=3, max_retries=3,
@@ -557,7 +557,7 @@ class TestTryRecoverPrimaryTransport:
         agent = _make_agent(provider="custom")
         error = _make_transport_error("ReadTimeout")
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()), \
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()), \
              patch("time.sleep") as mock_sleep:
             agent._try_recover_primary_transport(
                 error, retry_count=3, max_retries=3,
@@ -569,7 +569,7 @@ class TestTryRecoverPrimaryTransport:
         agent = _make_agent(provider="custom")
         error = _make_transport_error("ReadTimeout")
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()), \
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()), \
              patch("time.sleep") as mock_sleep:
             agent._try_recover_primary_transport(
                 error, retry_count=10, max_retries=3,
@@ -582,7 +582,7 @@ class TestTryRecoverPrimaryTransport:
         old_client = agent.client
         error = _make_transport_error("ReadTimeout")
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()), \
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()), \
              patch("time.sleep"), \
              patch.object(agent, "_close_openai_client") as mock_close:
             agent._try_recover_primary_transport(
@@ -597,7 +597,7 @@ class TestTryRecoverPrimaryTransport:
         agent = _make_agent(provider="custom")
         error = _make_transport_error("ReadTimeout")
 
-        with patch("run_agent.OpenAI", side_effect=Exception("socket error")), \
+        with patch("jacky_cli.run_agent.OpenAI", side_effect=Exception("socket error")), \
              patch("time.sleep"):
             result = agent._try_recover_primary_transport(
                 error, retry_count=3, max_retries=3,
@@ -642,7 +642,7 @@ class TestRestoreInRunConversation:
         assert agent._fallback_index == 1
 
         # Turn 2: restore primary
-        with patch("run_agent.OpenAI", return_value=MagicMock()):
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()):
             assert agent._restore_primary_runtime() is True
 
         assert agent._fallback_activated is False
@@ -690,7 +690,7 @@ class TestRateLimitCooldown:
         # Cooldown already expired
         agent._rate_limited_until = time.monotonic() - 1
 
-        with patch("run_agent.OpenAI", return_value=MagicMock()):
+        with patch("jacky_cli.run_agent.OpenAI", return_value=MagicMock()):
             result = agent._restore_primary_runtime()
 
         assert result is True
@@ -698,7 +698,7 @@ class TestRateLimitCooldown:
 
     def test_cooldown_set_on_rate_limit_reason(self):
         """_try_activate_fallback with rate_limit reason sets _rate_limited_until."""
-        from run_agent import FailoverReason
+        from jacky_cli.run_agent import FailoverReason
         agent = _make_agent(
             fallback_model={"provider": "openrouter", "model": "anthropic/claude-sonnet-4"},
         )
@@ -712,7 +712,7 @@ class TestRateLimitCooldown:
 
     def test_cooldown_not_set_when_already_on_fallback(self):
         """Chain-switching while already on fallback must not reset cooldown."""
-        from run_agent import FailoverReason
+        from jacky_cli.run_agent import FailoverReason
         agent = _make_agent(
             fallback_model=[
                 {"provider": "openrouter", "model": "model-a"},

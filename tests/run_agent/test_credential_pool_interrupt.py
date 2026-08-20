@@ -40,8 +40,8 @@ def test_rotate_immediately_when_credential_already_exhausted():
     pool = _make_pool(entries)
     pool.mark_exhausted_and_rotate.return_value = entries[1]
 
-    from run_agent import AIAgent
-    with patch("run_agent.get_tool_definitions", return_value=[]),          patch("run_agent.check_toolset_requirements", return_value={}),          patch("run_agent.OpenAI"):
+    from jacky_cli.run_agent import AIAgent
+    with patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),          patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),          patch("jacky_cli.run_agent.OpenAI"):
         agent = MagicMock(spec=AIAgent)
         agent._credential_pool = pool
         agent._swap_credential = MagicMock()
@@ -63,8 +63,8 @@ def test_normal_retry_when_credential_not_exhausted():
     entries = [_make_entry(0, last_status=None), _make_entry(1)]
     pool = _make_pool(entries)
 
-    from run_agent import AIAgent
-    with patch("run_agent.get_tool_definitions", return_value=[]),          patch("run_agent.check_toolset_requirements", return_value={}),          patch("run_agent.OpenAI"):
+    from jacky_cli.run_agent import AIAgent
+    with patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),          patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),          patch("jacky_cli.run_agent.OpenAI"):
         agent = MagicMock(spec=AIAgent)
         agent._credential_pool = pool
         recovered, retried = AIAgent._recover_with_credential_pool(
@@ -85,8 +85,8 @@ def test_rotate_on_second_429_when_not_exhausted():
     pool = _make_pool(entries)
     pool.mark_exhausted_and_rotate.return_value = entries[1]
 
-    from run_agent import AIAgent
-    with patch("run_agent.get_tool_definitions", return_value=[]),          patch("run_agent.check_toolset_requirements", return_value={}),          patch("run_agent.OpenAI"):
+    from jacky_cli.run_agent import AIAgent
+    with patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),          patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),          patch("jacky_cli.run_agent.OpenAI"):
         agent = MagicMock(spec=AIAgent)
         agent._credential_pool = pool
         agent._swap_credential = MagicMock()

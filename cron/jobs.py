@@ -33,13 +33,13 @@ except ImportError:  # pragma: no cover - non-Windows
     msvcrt = None
 from datetime import datetime, timedelta
 from pathlib import Path
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from typing import Optional, Dict, List, Any, Set, Tuple, Union
 
 logger = logging.getLogger(__name__)
 
-from jacky_time import now as _jacky_now
-from utils import atomic_replace
+from jacky_cli.jacky_time import now as _jacky_now
+from jacky_cli.utils import atomic_replace
 
 try:
     from croniter import croniter

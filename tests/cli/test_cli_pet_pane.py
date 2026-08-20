@@ -14,7 +14,7 @@ import pytest
 from agent.pet import store
 from agent.pet.constants import FRAME_H, FRAME_W
 from agent.pet.render import PetRenderer
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 
 
 @pytest.fixture

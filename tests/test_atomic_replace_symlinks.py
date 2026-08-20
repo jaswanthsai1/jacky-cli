@@ -26,7 +26,7 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from utils import (
+from jacky_cli.utils import (
     atomic_json_write,
     atomic_replace,
     atomic_roundtrip_yaml_update,
@@ -162,9 +162,9 @@ def test_atomic_yaml_write_restores_owner_on_real_symlink_target(
     link.symlink_to(real)
 
     chown_calls: list[tuple[Path, int, int]] = []
-    monkeypatch.setattr("utils._preserve_file_owner", lambda _path: (123, 456))
+    monkeypatch.setattr("jacky_cli.utils._preserve_file_owner", lambda _path: (123, 456))
     monkeypatch.setattr(
-        "utils.os.chown",
+        "jacky_cli.utils.os.chown",
         lambda path, uid, gid: chown_calls.append((Path(path), uid, gid)),
     )
 
@@ -183,9 +183,9 @@ def test_atomic_json_write_restores_owner_with_explicit_mode(
     target.write_text("{}", encoding="utf-8")
 
     chown_calls: list[tuple[Path, int, int]] = []
-    monkeypatch.setattr("utils._preserve_file_owner", lambda _path: (234, 567))
+    monkeypatch.setattr("jacky_cli.utils._preserve_file_owner", lambda _path: (234, 567))
     monkeypatch.setattr(
-        "utils.os.chown",
+        "jacky_cli.utils.os.chown",
         lambda path, uid, gid: chown_calls.append((Path(path), uid, gid)),
     )
 
@@ -205,9 +205,9 @@ def test_atomic_roundtrip_yaml_update_restores_owner(
     target.write_text("model:\n  provider: openrouter\n", encoding="utf-8")
 
     chown_calls: list[tuple[Path, int, int]] = []
-    monkeypatch.setattr("utils._preserve_file_owner", lambda _path: (345, 678))
+    monkeypatch.setattr("jacky_cli.utils._preserve_file_owner", lambda _path: (345, 678))
     monkeypatch.setattr(
-        "utils.os.chown",
+        "jacky_cli.utils.os.chown",
         lambda path, uid, gid: chown_calls.append((Path(path), uid, gid)),
     )
 
@@ -253,7 +253,7 @@ def test_atomic_replace_copy_fallback(
     def fail_replace(src: str, dst: str) -> None:
         raise OSError(fail_errno, os.strerror(fail_errno), src, None, dst)
 
-    monkeypatch.setattr("utils.os.replace", fail_replace)
+    monkeypatch.setattr("jacky_cli.utils.os.replace", fail_replace)
 
     assert Path(atomic_replace(tmp, target)) == target
     assert target.read_text(encoding="utf-8") == "new\n"
@@ -272,7 +272,7 @@ def test_atomic_replace_copy_fallback_preserves_symlink(
     def fail_replace(src: str, dst: str) -> None:
         raise OSError(errno.EXDEV, os.strerror(errno.EXDEV), src, None, dst)
 
-    monkeypatch.setattr("utils.os.replace", fail_replace)
+    monkeypatch.setattr("jacky_cli.utils.os.replace", fail_replace)
 
     assert Path(atomic_replace(tmp, link)) == real
     assert link.is_symlink()
@@ -295,7 +295,7 @@ def test_atomic_replace_copy_fallback_preserves_metadata(
     def fail_replace(src: str, dst: str) -> None:
         raise OSError(errno.EBUSY, os.strerror(errno.EBUSY), src, None, dst)
 
-    monkeypatch.setattr("utils.os.replace", fail_replace)
+    monkeypatch.setattr("jacky_cli.utils.os.replace", fail_replace)
 
     atomic_replace(tmp, target)
     assert target.read_text(encoding="utf-8") == "new\n"
@@ -312,7 +312,7 @@ def test_atomic_replace_other_oserror_propagates(
     def fail_replace(src: str, dst: str) -> None:
         raise OSError(errno.EACCES, os.strerror(errno.EACCES), src, None, dst)
 
-    monkeypatch.setattr("utils.os.replace", fail_replace)
+    monkeypatch.setattr("jacky_cli.utils.os.replace", fail_replace)
 
     with pytest.raises(OSError) as excinfo:
         atomic_replace(tmp, target)

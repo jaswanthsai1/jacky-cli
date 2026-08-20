@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/jaswanthsai1/jacky-cli/releases"><img src="https://img.shields.io/badge/Download-macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-FFD700?style=for-the-badge" alt="Download"></a>
-  <a href="https://jacky-agent.nousresearch.com/docs/"><img src="https://img.shields.io/badge/Docs-jacky--agent.nousresearch.com-FFD700?style=for-the-badge" alt="Documentation"></a>
+  <a href="https://jaswanthsai1.github.io/jacky-cli/"><img src="https://img.shields.io/badge/Docs-jacky--agent.nousresearch.com-FFD700?style=for-the-badge" alt="Documentation"></a>
   <a href="https://discord.gg/NousResearch"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"></a>
   <a href="https://github.com/jaswanthsai1/jacky-cli/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
 </p>
@@ -34,7 +34,7 @@ It builds and launches the GUI against your existing install — same config, ke
 
 ### Prebuilt installers
 
-Prebuilt installers are built and distributed via [the Jacky Desktop website.](https://jacky-agent.nousresearch.com/).
+Prebuilt installers are built and distributed via [the Jacky Desktop website.](https://jaswanthsai1.github.io/jacky-cli/).
 
 ---
 
@@ -131,7 +131,7 @@ Remove-Item -Recurse -Force "$env:LOCALAPPDATA\jacky\jacky-agent\venv"
 ## Community
 
 - 💬 [Discord](https://discord.gg/NousResearch)
-- 📖 [Documentation](https://jacky-agent.nousresearch.com/docs/)
+- 📖 [Documentation](https://jaswanthsai1.github.io/jacky-cli/)
 - 🐛 [Issues](https://github.com/jaswanthsai1/jacky-cli/issues)
 
 ---

@@ -214,7 +214,7 @@ def test_cli_show_credits_non_interactive_renders_text_not_modal(monkeypatch, ca
     would survive). Regression for that exact failure.
     """
     import agent.account_usage as account_usage
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     monkeypatch.setattr(
         account_usage,
@@ -249,7 +249,7 @@ def test_cli_show_credits_non_interactive_renders_text_not_modal(monkeypatch, ca
 
 def test_cli_show_credits_logged_out(monkeypatch, capsys):
     import agent.account_usage as account_usage
-    from cli import JackyCLI
+    from jacky_cli.cli import JackyCLI
 
     monkeypatch.setattr(
         account_usage, "build_credits_view", lambda *a, **k: CreditsView(logged_in=False)

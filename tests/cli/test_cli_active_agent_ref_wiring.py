@@ -23,7 +23,7 @@ import inspect
 def test_mixin_writes_active_agent_ref_to_cli_module():
     """The mixin's agent-setup code must publish the agent reference where
     ``_run_cleanup`` reads it — on the ``cli`` module, not the mixin module."""
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
     from jacky_cli import cli_agent_setup_mixin as mixin_mod
 
     sentinel = object()
@@ -32,7 +32,7 @@ def test_mixin_writes_active_agent_ref_to_cli_module():
     try:
         # Reproduce the exact assignment the mixin performs after building
         # the agent (see CLIAgentSetupMixin near the AIAgent(...) construction).
-        import cli as _cli
+        import jacky_cli.cli as _cli
         _cli._active_agent_ref = sentinel
 
         # The cleanup path reads cli._active_agent_ref — it must see the value.

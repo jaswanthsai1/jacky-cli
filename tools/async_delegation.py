@@ -134,6 +134,8 @@ def dispatch_async_delegation(
     origin_ui_session_id: str = "",
     interrupt_fn: Optional[Callable[[], None]] = None,
     max_async_children: int = _DEFAULT_MAX_ASYNC_CHILDREN,
+    session_id: Optional[str] = None,
+    subagent_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Spawn ``runner`` on the daemon executor and return a handle immediately.
 
@@ -162,6 +164,17 @@ def dispatch_async_delegation(
         Concurrency cap. When at capacity the dispatch is REJECTED (the caller
         should fall back to sync or tell the user) rather than queued, so a
         runaway model can't pile up unbounded background work.
+    session_id
+        The child agent's own durable ``state.db`` session id (distinct from
+        ``parent_session_id``). Captured here so ``/agents`` and
+        ``jacky agents attach`` can point the user at ``jacky --resume
+        <session_id>`` — or at a live tail — for a still-running delegation,
+        not just its final completion block (#watch-subagent).
+    subagent_id
+        The child's entry in ``tools.delegate_tool``'s live
+        ``_active_subagents`` registry, when one was registered. Lets
+        ``jacky agents attach`` poll real-time tool/iteration progress
+        instead of only the static dispatch-time snapshot.
 
     Returns
     -------
@@ -185,6 +198,9 @@ def dispatch_async_delegation(
         "dispatched_at": dispatched_at,
         "completed_at": None,
         "interrupt_fn": interrupt_fn,
+        "session_id": session_id,
+        "session_ids": [session_id] if session_id else [],
+        "subagent_ids": [subagent_id] if subagent_id else [],
     }
     # Capacity check and record insert under ONE lock hold — checking
     # active_count() separately would let two concurrent dispatches (e.g.
@@ -332,6 +348,8 @@ def dispatch_async_delegation_batch(
     origin_ui_session_id: str = "",
     interrupt_fn: Optional[Callable[[], None]] = None,
     max_async_children: int = _DEFAULT_MAX_ASYNC_CHILDREN,
+    session_ids: Optional[List[str]] = None,
+    subagent_ids: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     """Dispatch a WHOLE fan-out batch as ONE background unit.
 
@@ -352,6 +370,12 @@ def dispatch_async_delegation_batch(
     Returns ``{"status": "dispatched", "delegation_id": ...}`` on success or
     ``{"status": "rejected", "error": ...}`` when the async pool is at
     capacity.
+
+    ``session_ids``/``subagent_ids`` (one entry per goal, same order) are
+    optional — when supplied they ride on the record so ``/agents`` and
+    ``jacky agents attach`` can point at a live ``jacky --resume
+    <session_id>`` or poll ``tools.delegate_tool.list_active_subagents()``
+    for real-time progress instead of only the eventual completion block.
     """
     delegation_id = _new_delegation_id()
     dispatched_at = time.time()
@@ -360,6 +384,7 @@ def dispatch_async_delegation_batch(
     combined_goal = (
         goals[0] if n == 1 else f"{n} parallel subagents: " + "; ".join(g[:40] for g in goals)
     )
+    _session_ids = list(session_ids) if session_ids else []
     record: Dict[str, Any] = {
         "delegation_id": delegation_id,
         "goal": combined_goal,
@@ -376,6 +401,12 @@ def dispatch_async_delegation_batch(
         "completed_at": None,
         "interrupt_fn": interrupt_fn,
         "is_batch": True,
+        # Convenience single-value field for the common n==1 case — mirrors
+        # dispatch_async_delegation's "session_id" so callers don't need to
+        # special-case batch-of-one records.
+        "session_id": _session_ids[0] if len(_session_ids) == 1 else None,
+        "session_ids": _session_ids,
+        "subagent_ids": list(subagent_ids) if subagent_ids else [],
     }
     with _records_lock:
         running = sum(
@@ -506,6 +537,20 @@ def list_async_delegations() -> List[Dict[str, Any]]:
             {k: v for k, v in r.items() if k != "interrupt_fn"}
             for r in _records.values()
         ]
+
+
+def get_async_delegation(delegation_id: str) -> Optional[Dict[str, Any]]:
+    """Snapshot of ONE async delegation by id, or None if unknown.
+
+    Safe to call from any thread. Excludes the non-serialisable interrupt_fn.
+    Backs ``/agents attach <delegation_id>`` and ``jacky agents attach`` —
+    both need a single-record lookup rather than scanning the full list.
+    """
+    with _records_lock:
+        record = _records.get(delegation_id)
+        if record is None:
+            return None
+        return {k: v for k, v in record.items() if k != "interrupt_fn"}
 
 
 def interrupt_all(reason: str = "shutdown") -> int:

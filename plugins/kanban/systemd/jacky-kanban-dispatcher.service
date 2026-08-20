@@ -15,7 +15,7 @@
 
 [Unit]
 Description=Jacky Kanban dispatcher (DEPRECATED standalone daemon — prefer gateway-embedded dispatch)
-Documentation=https://jacky-agent.nousresearch.com/docs/user-guide/features/kanban
+Documentation=https://jaswanthsai1.github.io/jacky-cli/user-guide/features/kanban
 After=network.target
 
 [Service]

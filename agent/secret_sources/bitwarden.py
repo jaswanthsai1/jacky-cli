@@ -120,7 +120,7 @@ def _disk_cache_path(home_path: Optional[Path] = None) -> Path:
 
 def _jacky_bin_dir() -> Path:
     """Where Jacky stores its managed binaries.  Profile-aware."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     return get_jacky_home() / "bin"
 
@@ -184,7 +184,7 @@ def _platform_asset_name() -> str:
             res = subprocess.run(
                 ["ldd", "--version"],
                 capture_output=True,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
                 timeout=2,
                 stdin=subprocess.DEVNULL,
             )
@@ -436,7 +436,7 @@ def _run_bws_list(
             cmd,
             env=env,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=_BWS_RUN_TIMEOUT,
             stdin=subprocess.DEVNULL,
         )

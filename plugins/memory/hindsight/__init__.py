@@ -44,7 +44,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List
 
 from agent.memory_provider import MemoryProvider
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from tools.registry import tool_error
 from jacky_cli.config import cfg_get
 
@@ -750,7 +750,7 @@ class HindsightMemoryProvider(MemoryProvider):
             except Exception:
                 pass
         existing.update(values)
-        from utils import atomic_json_write
+        from jacky_cli.utils import atomic_json_write
         atomic_json_write(config_path, existing, mode=0o600)
 
     def post_setup(self, jacky_home: str, config: dict) -> None:

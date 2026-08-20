@@ -54,7 +54,7 @@ class WhatsAppBehaviorMixin:
     MAX_MESSAGE_LENGTH: int = 4096
     supports_code_blocks = True  # WhatsApp renders fenced code blocks (monospace)
 
-    DEFAULT_REPLY_PREFIX: str = "⚕ *Jacky Agent*\n────────────\n"
+    DEFAULT_REPLY_PREFIX: str = ">_ *Jacky Agent*\n────────────\n"
 
     _OUTBOUND_INVISIBLE_CHARS_RE = re.compile(r"[\u200b\u2060\u2063\ufeff]")
     _OUTBOUND_ODD_SPACE_RE = re.compile(r"[\u00a0\u1680\u180e\u2000-\u200a\u202f\u205f\u3000]")
@@ -474,7 +474,7 @@ def resolve_whatsapp_bridge_dir() -> Path:
     from pathlib import Path as _Path
 
     # Default location in install tree (may be read-only)
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     install_bridge = _Path(__file__).resolve().parents[2] / "scripts" / "whatsapp-bridge"
 
     # Try JACKY_HOME location first

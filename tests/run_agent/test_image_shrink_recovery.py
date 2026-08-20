@@ -156,7 +156,7 @@ def _install_fake_pillow(
 
 def _make_agent():
     """Build a bare AIAgent for method-level testing, no provider setup."""
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     agent = object.__new__(AIAgent)
     agent.provider = "anthropic"
     agent.model = "claude-sonnet-4-6"

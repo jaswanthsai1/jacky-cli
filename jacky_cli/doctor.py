@@ -12,8 +12,8 @@ from pathlib import Path
 
 from jacky_cli.config import get_project_root, get_jacky_home, get_env_path
 from jacky_cli.env_loader import load_jacky_dotenv
-from jacky_constants import display_jacky_home
-from jacky_constants import agent_browser_runnable
+from jacky_cli.jacky_constants import display_jacky_home
+from jacky_cli.jacky_constants import agent_browser_runnable
 
 PROJECT_ROOT = get_project_root()
 JACKY_HOME = get_jacky_home()
@@ -25,8 +25,8 @@ load_jacky_dotenv(jacky_home=_env_path.parent, project_env=PROJECT_ROOT / ".env"
 
 from jacky_cli.colors import Colors, color
 from jacky_cli.models import _JACKY_USER_AGENT
-from jacky_constants import OPENROUTER_MODELS_URL
-from utils import base_url_host_matches
+from jacky_cli.jacky_constants import OPENROUTER_MODELS_URL
+from jacky_cli.utils import base_url_host_matches
 
 
 _PROVIDER_ENV_HINTS = (
@@ -56,7 +56,7 @@ _PROVIDER_ENV_HINTS = (
 )
 
 
-from jacky_constants import is_termux as _is_termux
+from jacky_cli.jacky_constants import is_termux as _is_termux
 
 
 def _python_install_cmd() -> str:
@@ -1228,7 +1228,7 @@ def run_doctor(args):
     if state_db_path.exists():
         try:
             import sqlite3
-            conn = sqlite3.connect(str(state_db_path))
+            conn = sqlite3.connect(str(state_db_path), timeout=30.0)
             cursor = conn.execute("SELECT COUNT(*) FROM sessions")
             count = cursor.fetchone()[0]
             conn.close()
@@ -1239,7 +1239,7 @@ def run_doctor(args):
             # through the triggers. `_db_opens_cleanly` now drives a rolled-back
             # write so this otherwise-silent corruption class is surfaced (and
             # repaired in place with --fix).
-            from jacky_state import _db_opens_cleanly, repair_state_db_schema
+            from jacky_cli.jacky_state import _db_opens_cleanly, repair_state_db_schema
 
             _write_reason = _db_opens_cleanly(state_db_path)
             if _write_reason is not None:
@@ -1274,7 +1274,7 @@ def run_doctor(args):
                         "(or 'jacky sessions repair') to rebuild the FTS index"
                     )
         except Exception as e:
-            from jacky_state import is_malformed_db_error, repair_state_db_schema
+            from jacky_cli.jacky_state import is_malformed_db_error, repair_state_db_schema
 
             if is_malformed_db_error(e):
                 # sqlite_master itself is malformed (e.g. duplicate
@@ -1289,7 +1289,7 @@ def run_doctor(args):
                     report = repair_state_db_schema(state_db_path)
                     if report.get("repaired"):
                         try:
-                            conn = sqlite3.connect(str(state_db_path))
+                            conn = sqlite3.connect(str(state_db_path), timeout=30.0)
                             count = conn.execute(
                                 "SELECT COUNT(*) FROM sessions"
                             ).fetchone()[0]
@@ -1336,7 +1336,7 @@ def run_doctor(args):
                 )
                 if should_fix:
                     import sqlite3
-                    conn = sqlite3.connect(str(state_db_path))
+                    conn = sqlite3.connect(str(state_db_path), timeout=30.0)
                     conn.execute("PRAGMA wal_checkpoint(PASSIVE)")
                     conn.close()
                     new_size = wal_path.stat().st_size if wal_path.exists() else 0
@@ -1444,7 +1444,7 @@ def run_doctor(args):
     # Docker (optional)
     terminal_env = os.getenv("TERMINAL_ENV", "local")
     try:
-        from jacky_constants import is_container as _is_container
+        from jacky_cli.jacky_constants import is_container as _is_container
         running_in_container = _is_container()
     except Exception:
         running_in_container = False
@@ -1509,7 +1509,7 @@ def run_doctor(args):
                 result = subprocess.run(
                     cmd,
                     capture_output=True,
-                    text=True,
+                    text=True, encoding="utf-8", errors="replace",
                     timeout=15
                 )
             except subprocess.TimeoutExpired:
@@ -1673,7 +1673,7 @@ def run_doctor(args):
                 audit_result = subprocess.run(
                     [_npm_bin, "audit", "--json", *audit_extra],
                     cwd=str(npm_dir),
-                    capture_output=True, text=True, timeout=30,
+                    capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=30,
                 )
                 import json as _json
                 audit_data = _json.loads(audit_result.stdout) if audit_result.stdout.strip() else {}
@@ -2175,7 +2175,7 @@ def run_doctor(args):
     try:
         # Add project root to path for imports
         sys.path.insert(0, str(PROJECT_ROOT))
-        from model_tools import check_tool_availability, TOOLSET_REQUIREMENTS
+        from jacky_cli.model_tools import check_tool_availability, TOOLSET_REQUIREMENTS
         
         available, unavailable = check_tool_availability()
         available, unavailable = _apply_doctor_tool_availability_overrides(available, unavailable)

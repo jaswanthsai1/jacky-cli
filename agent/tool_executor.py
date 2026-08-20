@@ -132,7 +132,7 @@ def _flush_session_db_after_tool_progress(
 
 def _ra():
     """Lazy reference to ``run_agent`` so patches like ``run_agent._set_interrupt`` work."""
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     return run_agent
 
 
@@ -155,7 +155,7 @@ def _emit_terminal_post_tool_call(
     middleware_trace: Optional[list[dict[str, Any]]] = None,
 ) -> None:
     try:
-        from model_tools import _emit_post_tool_call_hook
+        from jacky_cli.model_tools import _emit_post_tool_call_hook
         _emit_post_tool_call_hook(
             function_name=function_name,
             function_args=function_args,
@@ -230,7 +230,7 @@ def _tool_search_scoped_names(agent) -> frozenset:
     a dict lookup, not a full tool-defs rebuild on every tool call.
     """
     try:
-        import model_tools
+        import jacky_cli.model_tools as model_tools
         from tools import tool_search as _ts
         from tools.registry import registry as _registry
     except Exception:
@@ -1256,7 +1256,7 @@ def execute_tool_calls_sequential(agent, assistant_message, messages: list, effe
             def _execute(next_args: dict) -> Any:
                 session_db = agent._get_session_db_for_recall()
                 if not session_db:
-                    from jacky_state import format_session_db_unavailable
+                    from jacky_cli.jacky_state import format_session_db_unavailable
                     return json.dumps({"success": False, "error": format_session_db_unavailable()})
                 from tools.session_search_tool import session_search as _session_search
                 return _session_search(

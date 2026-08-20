@@ -107,7 +107,7 @@ sys.path.insert(0, str(_Path(__file__).resolve().parents[3]))
 from gateway.config import Platform, PlatformConfig
 
 from gateway.platforms.helpers import MessageDeduplicator, ThreadParticipationTracker, convert_table_to_bullets
-from utils import atomic_json_write, env_float, env_int
+from jacky_cli.utils import atomic_json_write, env_float, env_int
 from gateway.platforms.base import (
     BasePlatformAdapter,
     MessageEvent,
@@ -200,7 +200,7 @@ class _DiscordNonConversationalMessageTracker:
         self._ids: dict[str, None] = dict.fromkeys(self._load())
 
     def _state_path(self) -> _Path:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         return (
             get_jacky_home()
@@ -1483,7 +1483,7 @@ class DiscordAdapter(BasePlatformAdapter):
         logger.info("[%s] Disconnected", self.name)
 
     def _command_sync_state_path(self) -> _Path:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         directory = get_jacky_home() / _DISCORD_COMMAND_SYNC_STATE_SUBDIR
         try:
@@ -5852,7 +5852,7 @@ class DiscordAdapter(BasePlatformAdapter):
 
             default_hint = f" (default: {default})" if default else ""
             embed = discord.Embed(
-                title="⚕ Update Needs Your Input",
+                title=">_ Update Needs Your Input",
                 description=f"{prompt}{default_hint}",
                 color=discord.Color.gold(),
             )
@@ -5864,7 +5864,7 @@ class DiscordAdapter(BasePlatformAdapter):
             # Mirror the prompt in plain content — embeds are invisible on
             # some clients (see send_exec_approval).
             content = self._self_contained_prompt_content(
-                "⚕ **Update Needs Your Input**", f"{prompt}{default_hint}"
+                ">_ **Update Needs Your Input**", f"{prompt}{default_hint}"
             )
             msg = await channel.send(content=content, embed=embed, view=view)
             view._message = msg  # store for on_timeout expiration editing
@@ -7136,7 +7136,7 @@ def _define_discord_view_classes() -> None:
 
             # Write response file
             try:
-                from jacky_constants import get_jacky_home
+                from jacky_cli.jacky_constants import get_jacky_home
                 home = get_jacky_home()
                 response_path = home / ".update_response"
                 tmp = response_path.with_suffix(".tmp")

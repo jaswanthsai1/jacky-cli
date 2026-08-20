@@ -13,7 +13,7 @@ import yaml
 @pytest.fixture
 def isolated_profiles(tmp_path, monkeypatch, _isolate_jacky_home):
     """Isolated default home + one named profile, each with config + .env."""
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     from jacky_cli import profiles
 
     default_home = get_jacky_home()
@@ -36,8 +36,8 @@ def client(monkeypatch, isolated_profiles):
     except ImportError:
         pytest.skip("fastapi/starlette not installed")
 
-    import jacky_state
-    from jacky_constants import get_jacky_home
+    import jacky_cli.jacky_state as jacky_state
+    from jacky_cli.jacky_constants import get_jacky_home
     from jacky_cli.web_server import app, _SESSION_HEADER_NAME, _SESSION_TOKEN
 
     monkeypatch.setattr(jacky_state, "DEFAULT_DB_PATH", get_jacky_home() / "state.db")
@@ -180,7 +180,7 @@ class TestProfileScopedMcp:
         scope active so env-placeholder expansion reads the profile's .env,
         matching the config the server was saved into."""
         import jacky_cli.mcp_config as mcp_config
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         (isolated_profiles["worker_beta"] / "config.yaml").write_text(
             "mcp_servers:\n  probe-srv:\n    url: http://x/sse\n",
@@ -449,7 +449,7 @@ class TestProfileScopedGateway:
         self, client, isolated_profiles, monkeypatch
     ):
         import jacky_cli.web_server as web_server
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
 
         seen_homes = []
 

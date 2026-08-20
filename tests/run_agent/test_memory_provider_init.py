@@ -39,11 +39,11 @@ def test_blank_memory_provider_does_not_auto_enable_honcho():
         ) as from_global_config,
         patch("plugins.memory.load_memory_provider") as load_memory_provider,
         patch("agent.model_metadata.get_model_context_length", return_value=204_800),
-        patch("run_agent.get_tool_definitions", return_value=[]),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             api_key="test-key-1234567890",
@@ -67,11 +67,11 @@ def test_aiagent_forwards_user_id_alt_to_memory_provider():
         patch("jacky_cli.config.load_config", return_value=cfg),
         patch("plugins.memory.load_memory_provider", return_value=provider),
         patch("agent.model_metadata.get_model_context_length", return_value=204_800),
-        patch("run_agent.get_tool_definitions", return_value=[]),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             api_key="test-key-1234567890",
@@ -144,11 +144,11 @@ def test_aiagent_forwards_warning_callback_to_cli_memory_provider():
         patch("jacky_cli.config.load_config", return_value=cfg),
         patch("plugins.memory.load_memory_provider", return_value=provider),
         patch("agent.model_metadata.get_model_context_length", return_value=204_800),
-        patch("run_agent.get_tool_definitions", return_value=[]),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent(
             api_key="test-key-1234567890",

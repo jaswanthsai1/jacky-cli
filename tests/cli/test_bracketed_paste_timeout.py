@@ -15,7 +15,7 @@ from prompt_toolkit.keys import Keys
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CLI_PATH = ROOT / "cli.py"
+CLI_PATH = ROOT / "jacky_cli" / "cli.py"
 
 
 def _load_production_patch_helper():

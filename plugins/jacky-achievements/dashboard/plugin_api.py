@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
 try:
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 except ImportError:
     import os as _os
     def get_jacky_home() -> Path:  # type: ignore[misc]
@@ -585,7 +585,7 @@ def scan_sessions(
     at the end.
     """
     try:
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
     except Exception as exc:
         return {"sessions": [], "aggregate": {}, "error": f"Could not import SessionDB: {exc}", "scan_meta": {"mode": "failed", "sessions_total": 0, "sessions_rescanned": 0, "sessions_reused": 0}}
 

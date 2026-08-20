@@ -265,7 +265,7 @@ def _install_npm(
             [npm, "install", "--prefix", str(staging), "--silent", "--no-fund", "--no-audit", *install_targets],
             check=False,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=300,
             stdin=subprocess.DEVNULL,
         )
@@ -313,7 +313,7 @@ def _install_go(pkg: str, bin_name: str) -> Optional[str]:
             [go, "install", pkg],
             check=False,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=600,
             env=env,
             stdin=subprocess.DEVNULL,

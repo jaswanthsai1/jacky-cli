@@ -49,8 +49,8 @@ from agent.tool_guardrails import (
 )
 from jacky_cli.config import cfg_get
 from jacky_cli.timeouts import get_provider_request_timeout
-from jacky_constants import get_jacky_home
-from utils import base_url_host_matches, is_truthy_value
+from jacky_cli.jacky_constants import get_jacky_home
+from jacky_cli.utils import base_url_host_matches, is_truthy_value
 
 # Use the same logger name as run_agent so tests patching ``run_agent.logger``
 # capture our warnings.  (run_agent.py also does
@@ -64,7 +64,7 @@ def _ra():
     ``run_agent.OpenAI`` / ``run_agent.cleanup_vm`` / ... and have those
     patches reach this code path.
     """
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     return run_agent
 
 
@@ -668,7 +668,7 @@ def init_agent(
     # Centralized logging — agent.log (INFO+) and errors.log (WARNING+)
     # both live under ~/.jacky/logs/.  Idempotent, so gateway mode
     # (which creates a new AIAgent per message) won't duplicate handlers.
-    from jacky_logging import setup_logging, setup_verbose_logging
+    from jacky_cli.jacky_logging import setup_logging, setup_verbose_logging
     setup_logging(jacky_home=_ra()._jacky_home)
 
     if agent.verbose_logging:

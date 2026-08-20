@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 import pytest
 
-import cli
+import jacky_cli.cli as cli
 
 
 @pytest.fixture(autouse=True)
@@ -151,7 +151,7 @@ def test_notify_single_query_session_finalize_uses_agent_session(monkeypatch):
 def test_human_single_query_main_finalizes_after_query(monkeypatch):
     calls = []
 
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
 
     class _Console:
         def print(self, *_args, **_kwargs):
@@ -203,7 +203,7 @@ def test_human_single_query_main_finalizes_after_query(monkeypatch):
 def test_quiet_single_query_main_finalizes_while_preserving_exit_code(monkeypatch):
     calls = []
 
-    import cli as cli_mod
+    import jacky_cli.cli as cli_mod
 
     def run_conversation(*, user_message, conversation_history):
         calls.append(("run", user_message, conversation_history))

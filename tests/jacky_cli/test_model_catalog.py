@@ -180,7 +180,7 @@ class TestFallbackChain:
     releases (opus 4.8, etc.) never reach the picker.
     """
 
-    PRIMARY = "https://jacky-agent.nousresearch.com/docs/api/model-catalog.json"
+    PRIMARY = "https://jaswanthsai1.github.io/jacky-cli/api/model-catalog.json"
     FALLBACK = (
         "https://raw.githubusercontent.com/jaswanthsai1/jacky-cli"
         "/main/website/static/api/model-catalog.json"

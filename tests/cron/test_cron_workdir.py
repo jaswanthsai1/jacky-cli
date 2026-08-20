@@ -289,7 +289,7 @@ class TestRunJobTerminalCwd:
 
         fake_mod = type(sys)("run_agent")
         fake_mod.AIAgent = FakeAgent
-        monkeypatch.setitem(sys.modules, "run_agent", fake_mod)
+        monkeypatch.setitem(sys.modules, "jacky_cli.run_agent", fake_mod)
 
         # Bypass the real provider resolver — it reads ~/.jacky and credentials.
         from jacky_cli import runtime_provider as _rtp

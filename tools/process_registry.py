@@ -593,7 +593,7 @@ class ProcessRegistry:
                 subprocess.run(
                     ["taskkill", "/PID", str(pid), "/T", "/F"],
                     capture_output=True,
-                    text=True,
+                    text=True, encoding="utf-8", errors="replace",
                     timeout=10,
                     creationflags=windows_hide_flags(),
                     stdin=subprocess.DEVNULL,
@@ -1823,7 +1823,7 @@ class ProcessRegistry:
                         })
             
             # Atomic write to avoid corruption on crash
-            from utils import atomic_json_write
+            from jacky_cli.utils import atomic_json_write
             atomic_json_write(CHECKPOINT_PATH, entries)
         except Exception as e:
             logger.debug("Failed to write checkpoint file: %s", e, exc_info=True)

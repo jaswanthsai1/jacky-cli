@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, patch, MagicMock
 
 import pytest
 
-from trajectory_compressor import (
+from jacky_cli.trajectory_compressor import (
     CompressionConfig,
     TrajectoryMetrics,
     AggregateMetrics,
@@ -24,8 +24,8 @@ def test_import_loads_env_from_jacky_home(tmp_path, monkeypatch):
     monkeypatch.setenv("JACKY_HOME", str(home))
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
 
-    sys.modules.pop("trajectory_compressor", None)
-    importlib.import_module("trajectory_compressor")
+    sys.modules.pop("jacky_cli.trajectory_compressor", None)
+    importlib.import_module("jacky_cli.trajectory_compressor")
 
     assert os.getenv("OPENROUTER_API_KEY") == "from-jacky-home"
 

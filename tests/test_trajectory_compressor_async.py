@@ -21,7 +21,7 @@ class TestAsyncClientLazyCreation:
 
     def test_async_client_none_after_init(self):
         """async_client should be None after __init__ (not eagerly created)."""
-        from trajectory_compressor import TrajectoryCompressor
+        from jacky_cli.trajectory_compressor import TrajectoryCompressor
 
         comp = TrajectoryCompressor.__new__(TrajectoryCompressor)
         comp.config = MagicMock()
@@ -35,7 +35,7 @@ class TestAsyncClientLazyCreation:
 
     def test_get_async_client_creates_new_client(self):
         """_get_async_client() should create a fresh AsyncOpenAI instance."""
-        from trajectory_compressor import TrajectoryCompressor
+        from jacky_cli.trajectory_compressor import TrajectoryCompressor
 
         comp = TrajectoryCompressor.__new__(TrajectoryCompressor)
         comp.config = MagicMock()
@@ -56,7 +56,7 @@ class TestAsyncClientLazyCreation:
     def test_get_async_client_creates_fresh_each_call(self):
         """Each call to _get_async_client() creates a NEW client instance,
         so it binds to the current event loop."""
-        from trajectory_compressor import TrajectoryCompressor
+        from jacky_cli.trajectory_compressor import TrajectoryCompressor
 
         comp = TrajectoryCompressor.__new__(TrajectoryCompressor)
         comp.config = MagicMock()
@@ -90,7 +90,7 @@ class TestSourceLineVerification:
     def _read_file() -> str:
         import os
         base = os.path.dirname(os.path.dirname(__file__))
-        with open(os.path.join(base, "trajectory_compressor.py")) as f:
+        with open(os.path.join(base, "jacky_cli", "trajectory_compressor.py")) as f:
             return f.read()
 
     def test_no_eager_async_openai_in_init(self):
@@ -118,7 +118,7 @@ class TestSourceLineVerification:
 @pytest.mark.asyncio
 async def test_generate_summary_async_kimi_omits_temperature():
     """Kimi models should have temperature omitted — server manages it."""
-    from trajectory_compressor import CompressionConfig, TrajectoryCompressor, TrajectoryMetrics
+    from jacky_cli.trajectory_compressor import CompressionConfig, TrajectoryCompressor, TrajectoryMetrics
 
     config = CompressionConfig(
         summarization_model="kimi-for-coding",
@@ -146,7 +146,7 @@ async def test_generate_summary_async_kimi_omits_temperature():
 @pytest.mark.asyncio
 async def test_generate_summary_async_public_moonshot_kimi_k2_5_omits_temperature():
     """kimi-k2.5 on the public Moonshot API should not get a forced temperature."""
-    from trajectory_compressor import CompressionConfig, TrajectoryCompressor, TrajectoryMetrics
+    from jacky_cli.trajectory_compressor import CompressionConfig, TrajectoryCompressor, TrajectoryMetrics
 
     config = CompressionConfig(
         summarization_model="kimi-k2.5",
@@ -175,7 +175,7 @@ async def test_generate_summary_async_public_moonshot_kimi_k2_5_omits_temperatur
 @pytest.mark.asyncio
 async def test_generate_summary_async_public_moonshot_cn_kimi_k2_5_omits_temperature():
     """kimi-k2.5 on api.moonshot.cn should not get a forced temperature."""
-    from trajectory_compressor import CompressionConfig, TrajectoryCompressor, TrajectoryMetrics
+    from jacky_cli.trajectory_compressor import CompressionConfig, TrajectoryCompressor, TrajectoryMetrics
 
     config = CompressionConfig(
         summarization_model="kimi-k2.5",

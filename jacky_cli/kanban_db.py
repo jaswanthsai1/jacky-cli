@@ -90,7 +90,7 @@ from pathlib import Path
 from typing import Any, Iterable, Optional
 
 from jacky_cli.sqlite_util import add_column_if_missing as _add_column_if_missing
-from toolsets import get_toolset_names
+from jacky_cli.toolsets import get_toolset_names
 
 _log = logging.getLogger(__name__)
 
@@ -386,7 +386,7 @@ def kanban_home() -> Path:
     override = os.environ.get("JACKY_KANBAN_HOME", "").strip()
     if override:
         return Path(override).expanduser()
-    from jacky_constants import get_default_jacky_root
+    from jacky_cli.jacky_constants import get_default_jacky_root
     return get_default_jacky_root()
 
 
@@ -1723,7 +1723,7 @@ def connect(
         try:
             conn.row_factory = sqlite3.Row
             with _INIT_LOCK:
-                from jacky_state import apply_wal_with_fallback
+                from jacky_cli.jacky_state import apply_wal_with_fallback
                 apply_wal_with_fallback(conn, db_label=f"kanban.db ({path.name})")
                 conn.execute("PRAGMA synchronous=FULL")
                 conn.execute("PRAGMA wal_autocheckpoint=100")
@@ -1755,7 +1755,7 @@ def connect(
                 # WAL doesn't work on network filesystems (NFS/SMB/FUSE). Shared helper
                 # falls back to DELETE with one WARNING so kanban stays usable there.
                 # See jacky_state._WAL_INCOMPAT_MARKERS for detection logic.
-                from jacky_state import apply_wal_with_fallback
+                from jacky_cli.jacky_state import apply_wal_with_fallback
                 apply_wal_with_fallback(conn, db_label=f"kanban.db ({path.name})")
                 # FULL (was NORMAL): fsync before each checkpoint to narrow the
                 # crash window that can leave a b-tree page header torn.
@@ -4372,7 +4372,7 @@ def _cleanup_worker_tmux(conn: sqlite3.Connection, task_id: str) -> None:
         # Check if session exists and pane is dead before killing
         out = subprocess.run(
             ["tmux", "list-panes", "-t", session, "-F", "#{pane_dead}"],
-            capture_output=True, text=True, timeout=5,
+            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5,
         )
         if out.stdout.strip() == "1":
             subprocess.run(
@@ -5289,7 +5289,7 @@ def _git_toplevel(path: Path) -> Optional[Path]:
         result = subprocess.run(
             ["git", "-C", str(path), "rev-parse", "--show-toplevel"],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=30,
             check=False,
         )
@@ -5311,7 +5311,7 @@ def _git_branch_exists(repo_root: Path, branch_name: str) -> bool:
         result = subprocess.run(
             ["git", "-C", str(repo_root), "show-ref", "--verify", f"refs/heads/{branch_name}"],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=30,
             check=False,
         )
@@ -5325,7 +5325,7 @@ def _git_common_dir(path: Path) -> Optional[Path]:
         result = subprocess.run(
             ["git", "-C", str(path), "rev-parse", "--path-format=absolute", "--git-common-dir"],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=30,
             check=False,
         )
@@ -5344,7 +5344,7 @@ def _git_dir(path: Path) -> Optional[Path]:
         result = subprocess.run(
             ["git", "-C", str(path), "rev-parse", "--path-format=absolute", "--git-dir"],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=30,
             check=False,
         )
@@ -5363,7 +5363,7 @@ def _git_current_branch(path: Path) -> Optional[str]:
         result = subprocess.run(
             ["git", "-C", str(path), "branch", "--show-current"],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=30,
             check=False,
         )
@@ -5420,7 +5420,7 @@ def _ensure_git_worktree(repo_root: Path, target: Path, branch_name: str) -> Non
     result = subprocess.run(
         cmd,
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
         timeout=60,
         check=False,
     )
@@ -5898,7 +5898,7 @@ def _pid_alive(pid: Optional[int]) -> bool:
                 ["ps", "-o", "stat=", "-p", str(int(pid))],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
                 timeout=1,
                 check=False,
             )
@@ -7657,7 +7657,7 @@ def _resolve_worker_cli_toolsets(jacky_home: Optional[str]) -> Optional[list[str
     if not jacky_home:
         return None
     try:
-        from jacky_constants import reset_jacky_home_override, set_jacky_home_override
+        from jacky_cli.jacky_constants import reset_jacky_home_override, set_jacky_home_override
         from jacky_cli.config import load_config
         from jacky_cli.tools_config import _get_platform_tools
 
@@ -8578,7 +8578,7 @@ def list_profiles_on_disk() -> list[str]:
     path).
     """
     try:
-        from jacky_constants import get_default_jacky_root
+        from jacky_cli.jacky_constants import get_default_jacky_root
         default_root = get_default_jacky_root()
         profiles_dir = default_root / "profiles"
     except Exception:

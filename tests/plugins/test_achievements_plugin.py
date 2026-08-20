@@ -51,7 +51,7 @@ def plugin_api(tmp_path, monkeypatch):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     # Stash monkeypatch so ``_install_fake_session_db`` can use it to
-    # swap ``sys.modules['jacky_state']`` with auto-restoration. Without
+    # swap ``sys.modules['jacky_cli.jacky_state']`` with auto-restoration. Without
     # this, a raw ``sys.modules[...] = fake`` assignment would leak the
     # fake into later tests in the same xdist worker — breaking every
     # test that does ``from jacky_state import SessionDB``.
@@ -119,12 +119,12 @@ def _install_fake_session_db(plugin_api, fake_db):
     """Inject a fake SessionDB so ``scan_sessions`` finds it via its local import.
 
     Uses the monkeypatch stashed on ``plugin_api`` by the fixture, so the
-    ``sys.modules['jacky_state']`` swap is auto-restored at test teardown
+    ``sys.modules['jacky_cli.jacky_state']`` swap is auto-restored at test teardown
     and cannot leak into unrelated tests in the same xdist worker.
     """
     fake_module = type(sys)("jacky_state")
     fake_module.SessionDB = lambda: fake_db
-    plugin_api._test_monkeypatch.setitem(sys.modules, "jacky_state", fake_module)
+    plugin_api._test_monkeypatch.setitem(sys.modules, "jacky_cli.jacky_state", fake_module)
 
 
 def test_scan_sessions_default_scans_all_history_not_first_200(plugin_api):

@@ -26,7 +26,7 @@ import pytest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DOCKERFILE = REPO_ROOT / "Dockerfile"
+DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile"
 DOCKERIGNORE = REPO_ROOT / ".dockerignore"
 
 

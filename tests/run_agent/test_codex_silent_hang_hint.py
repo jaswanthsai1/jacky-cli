@@ -15,7 +15,7 @@ import pytest
 
 
 def _make_agent(tmp_path: Path, **overrides):
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     kwargs = dict(
         model="gpt-5.5",
         provider="openai-codex",

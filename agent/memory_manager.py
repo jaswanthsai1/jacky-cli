@@ -89,7 +89,7 @@ def memory_provider_tools_enabled(enabled_toolsets: Optional[List[str]]) -> bool
         return True
 
     try:
-        from toolsets import resolve_toolset
+        from jacky_cli.toolsets import resolve_toolset
 
         return any("memory" in resolve_toolset(name) for name in enabled_toolsets)
     except Exception:
@@ -404,7 +404,7 @@ class MemoryManager:
         # (#40466). Reject it here, at the door, so it never enters the routing
         # table at all — matching the built-ins-always-win invariant used by
         # the TTS/browser/search provider registries.
-        from toolsets import _JACKY_CORE_TOOLS
+        from jacky_cli.toolsets import _JACKY_CORE_TOOLS
 
         _core_tool_names = set(_JACKY_CORE_TOOLS)
 
@@ -698,7 +698,7 @@ class MemoryManager:
         :meth:`add_provider`, so the manager must not advertise a schema it
         will never route. Built-ins always win (#40466).
         """
-        from toolsets import _JACKY_CORE_TOOLS
+        from jacky_cli.toolsets import _JACKY_CORE_TOOLS
 
         _core_tool_names = set(_JACKY_CORE_TOOLS)
         schemas = []
@@ -1123,7 +1123,7 @@ class MemoryManager:
         ``get_jacky_home()`` themselves.
         """
         if "jacky_home" not in kwargs:
-            from jacky_constants import get_jacky_home
+            from jacky_cli.jacky_constants import get_jacky_home
             kwargs["jacky_home"] = str(get_jacky_home())
         for provider in self._providers:
             try:

@@ -129,8 +129,8 @@ try:
 except ImportError:  # pragma: no cover
     fcntl = None  # type: ignore[assignment]
 
-from jacky_constants import get_jacky_home
-from utils import atomic_replace
+from jacky_cli.jacky_constants import get_jacky_home
+from jacky_cli.utils import atomic_replace
 
 logger = logging.getLogger(__name__)
 
@@ -227,7 +227,7 @@ def register_from_config(
     # Safe mode (--safe-mode / JACKY_SAFE_MODE=1): shell hooks are user
     # customizations too — skip registration entirely so a troubleshooting
     # run fires zero user-configured code (plugins, MCP, AND hooks).
-    from utils import env_var_enabled
+    from jacky_cli.utils import env_var_enabled
 
     if env_var_enabled("JACKY_SAFE_MODE"):
         logger.info("JACKY_SAFE_MODE=1 — shell-hook registration skipped")
@@ -464,7 +464,7 @@ def _spawn(spec: ShellHookSpec, stdin_json: str) -> Dict[str, Any]:
             input=stdin_json,
             capture_output=True,
             timeout=spec.timeout,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             shell=False,
             **_popen_kwargs,
         )

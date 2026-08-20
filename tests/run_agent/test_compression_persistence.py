@@ -34,7 +34,7 @@ class TestFlushAfterCompression:
 
     def _make_agent(self, session_db):
         with patch.dict(os.environ, {"OPENROUTER_API_KEY": "test-key"}):
-            from run_agent import AIAgent
+            from jacky_cli.run_agent import AIAgent
             agent = AIAgent(
                 api_key="test-key",
                 base_url="https://openrouter.ai/api/v1",
@@ -55,7 +55,7 @@ class TestFlushAfterCompression:
         After the fix, conversation_history is cleared to None after compression,
         so flush_from = max(0, 0) = 0, and ALL compressed messages are written.
         """
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -102,7 +102,7 @@ class TestFlushAfterCompression:
 
     def test_flush_with_stale_history_loses_messages(self):
         """Stale conversation_history no longer causes data loss."""
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -138,7 +138,7 @@ class TestFlushAfterCompression:
         the compacted dicts again, doubling live context.
         """
         from agent.conversation_compression import conversation_history_after_compression
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -194,7 +194,7 @@ class TestFlushAfterCompression:
     def test_rotation_child_session_flushes_full_compressed_transcript_with_markers(self):
         """Regression for #57491: live cached-agent markers must not block child flush."""
         from agent.conversation_compression import compress_context
-        from jacky_state import SessionDB
+        from jacky_cli.jacky_state import SessionDB
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"

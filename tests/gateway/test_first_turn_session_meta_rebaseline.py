@@ -71,7 +71,7 @@ def _bootstrap(monkeypatch, tmp_path, db):
     # REAL SessionDB behind the async facade the gateway holds — the
     # production re-baseline does ``await self._session_db.get_session(...)``,
     # so it must be the AsyncSessionDB wrapper, not the raw sync DB.
-    from jacky_state import AsyncSessionDB
+    from jacky_cli.jacky_state import AsyncSessionDB
 
     runner._session_db = AsyncSessionDB(db)
     runner._recover_telegram_topic_thread_id = lambda _source: None
@@ -166,7 +166,7 @@ async def test_first_turn_session_meta_is_captured_by_rebaseline(
     session_meta append, leaving the snapshot one short; the cross-process
     guard then rebuilds the cached agent on turn 2 (prompt-cache churn).
     """
-    from jacky_state import SessionDB
+    from jacky_cli.jacky_state import SessionDB
 
     db = SessionDB(db_path=tmp_path / "sessions.db")
     db.create_session(SESSION_ID, source="telegram")
@@ -225,7 +225,7 @@ async def test_next_turn_guard_reuses_cached_agent_after_first_turn(
     """End-to-end consequence: with the snapshot correctly re-baselined, the
     production cross-process guard's reuse condition (live == snapshot) holds
     on turn 2 — no rebuild, prompt cache preserved."""
-    from jacky_state import SessionDB
+    from jacky_cli.jacky_state import SessionDB
 
     db = SessionDB(db_path=tmp_path / "sessions.db")
     db.create_session(SESSION_ID, source="telegram")

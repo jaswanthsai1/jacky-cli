@@ -308,7 +308,7 @@ def _expand_git_reference(
             ["git", *args],
             cwd=cwd,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=30,
             stdin=subprocess.DEVNULL,
             **_popen_kwargs,
@@ -362,7 +362,7 @@ def _resolve_path(cwd: Path, target: str, *, allowed_root: Path | None = None) -
 
 
 def _ensure_reference_path_allowed(path: Path) -> None:
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     home = Path(os.path.expanduser("~")).resolve()
     jacky_home = get_jacky_home().resolve()
 
@@ -534,7 +534,7 @@ def _rg_files(path: Path, cwd: Path, limit: int) -> list[Path] | None:
             ["rg", "--files", str(path.relative_to(cwd))],
             cwd=cwd,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=10,
             stdin=subprocess.DEVNULL,
             **_popen_kwargs,

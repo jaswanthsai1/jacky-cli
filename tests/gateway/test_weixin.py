@@ -249,7 +249,7 @@ class TestWeixinStatePersistence:
         def _boom(_src, _dst):
             raise OSError("disk full")
 
-        monkeypatch.setattr("utils.os.replace", _boom)
+        monkeypatch.setattr("jacky_cli.utils.os.replace", _boom)
 
         try:
             weixin.save_weixin_account(
@@ -274,7 +274,7 @@ class TestWeixinStatePersistence:
         def _boom(_src, _dst):
             raise OSError("disk full")
 
-        monkeypatch.setattr("utils.os.replace", _boom)
+        monkeypatch.setattr("jacky_cli.utils.os.replace", _boom)
 
         store = ContextTokenStore(str(tmp_path))
         with patch.object(weixin.logger, "warning") as warning_mock:
@@ -291,7 +291,7 @@ class TestWeixinStatePersistence:
         def _boom(_src, _dst):
             raise OSError("disk full")
 
-        monkeypatch.setattr("utils.os.replace", _boom)
+        monkeypatch.setattr("jacky_cli.utils.os.replace", _boom)
 
         try:
             weixin._save_sync_buf(str(tmp_path), "acct", "new-sync")

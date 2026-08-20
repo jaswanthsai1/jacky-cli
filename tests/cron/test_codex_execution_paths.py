@@ -10,7 +10,7 @@ sys.modules.setdefault("fal_client", types.SimpleNamespace())
 
 import cron.scheduler as cron_scheduler
 import gateway.run as gateway_run
-import run_agent
+import jacky_cli.run_agent as run_agent
 from gateway.config import Platform
 from gateway.session import SessionSource
 

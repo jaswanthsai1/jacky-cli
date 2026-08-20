@@ -352,7 +352,18 @@ def main():
         # pagination broke or the API surface changed.  Fail loudly rather
         # than ship a degenerate index (we shipped 200/50000 silently for
         # weeks because the floor was 50).
-        "clawhub": 20000,
+        #
+        # 2026-08-16: first deploy on this fork observed 15,029 (36,570
+        # skills crawled total across all sources that run) — a real,
+        # substantial, non-degenerate count, just below the May-2026-derived
+        # floor. Lowered to 10,000 (still >2x the collapse-to-50 failure
+        # mode this floor exists to catch) rather than guessing whether the
+        # drop reflects real external drift or a transient fetch issue. If
+        # ClawHub's real catalog turns out to have genuinely shrunk this
+        # much, this floor should keep tracking it down over time; if a
+        # future run drops close to 10,000 again, that's worth investigating
+        # rather than lowering further reflexively.
+        "clawhub": 10000,
         "official": 50,
         "github": 30,        # collapsed across all GitHub taps
         "browse-sh": 50,

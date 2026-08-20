@@ -159,7 +159,7 @@ def isolated_home(tmp_path, monkeypatch):
     home = tmp_path / ".jacky"
     home.mkdir()
     monkeypatch.setenv("JACKY_HOME", str(home))
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
     importlib.reload(jacky_constants)
     import cron.jobs as jobs
     importlib.reload(jobs)

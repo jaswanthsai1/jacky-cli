@@ -25,7 +25,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from jacky_cli._subprocess_compat import windows_hide_flags
 from agent.skill_utils import is_excluded_skill_path
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -362,7 +362,7 @@ class GitHubAuth:
         try:
             result = subprocess.run(
                 ["gh", "auth", "token"],
-                capture_output=True, text=True, timeout=5,
+                capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5,
                 stdin=subprocess.DEVNULL,
                 creationflags=windows_hide_flags(),
             )
@@ -3056,7 +3056,7 @@ class OptionalSkillSource(SkillSource):
     OFFICIAL_REPO = "jaswanthsai1/jacky-cli"
 
     def __init__(self):
-        from jacky_constants import get_optional_skills_dir
+        from jacky_cli.jacky_constants import get_optional_skills_dir
 
         self._optional_dir = get_optional_skills_dir(
             Path(__file__).parent.parent / "optional-skills"
@@ -3654,7 +3654,7 @@ def check_for_skill_updates(
 # Jacky centralized index source
 # ---------------------------------------------------------------------------
 
-JACKY_INDEX_URL = "https://jacky-agent.nousresearch.com/docs/api/skills-index.json"
+JACKY_INDEX_URL = "https://jaswanthsai1.github.io/jacky-cli/api/skills-index.json"
 JACKY_INDEX_TTL = 6 * 3600  # 6 hours
 
 

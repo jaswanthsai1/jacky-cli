@@ -40,7 +40,7 @@ from typing import Optional
 
 from jacky_cli import kanban_db as kb
 
-from utils import env_int
+from jacky_cli.utils import env_int
 
 JACKY_KANBAN_SPECIFY_MAX_TOKENS = max(
     1500,

@@ -51,11 +51,11 @@ class TestCreateOpenAIClientCallable:
             return MagicMock(api_key=kwargs.get("api_key"))
 
         # Patch the module-level OpenAI proxy used by ``_create_openai_client``.
-        monkeypatch.setattr("run_agent.OpenAI", fake_openai)
+        monkeypatch.setattr("jacky_cli.run_agent.OpenAI", fake_openai)
 
         # Build a minimal stand-in for AIAgent so we can call the bound
         # method directly without paying the full __init__ cost.
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         agent = AIAgent.__new__(AIAgent)
         # Attributes consulted by _create_openai_client / _client_log_context.
@@ -247,7 +247,7 @@ class TestBatchRunnerCallableHandling:
         importing avoids spinning up the full BatchRunner."""
         from pathlib import Path
         src = (Path(__file__).resolve().parent.parent.parent
-               / "batch_runner.py").read_text()
+               / "jacky_cli" / "batch_runner.py").read_text()
         assert "callable(self.api_key) and not isinstance(self.api_key, str)" in src, (
             "BatchRunner.api_key callable check changed — update test or "
             "verify the new predicate still routes Entra token providers "
@@ -327,7 +327,7 @@ class TestInlinedDisplayMasks:
         run_agent banners."""
         from pathlib import Path
         src = (Path(__file__).resolve().parent.parent.parent
-               / "cli.py").read_text()
+               / "jacky_cli" / "cli.py").read_text()
         assert "is_token_provider(self.api_key)" in src, (
             "cli.JackyCLI.show_config must guard self.api_key via "
             "is_token_provider so callable Entra ID providers don't "
@@ -348,7 +348,7 @@ class TestInlinedDisplayMasks:
         ``len(callable)``."""
         from pathlib import Path
         src = (Path(__file__).resolve().parent.parent.parent
-               / "run_agent.py").read_text()
+               / "jacky_cli" / "run_agent.py").read_text()
         # The function now starts with a callable check.
         assert (
             "if callable(key) and not isinstance(key, str):" in src

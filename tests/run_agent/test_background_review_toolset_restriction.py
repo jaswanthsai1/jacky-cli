@@ -56,7 +56,7 @@ class _SyncThread:
 
 def test_background_review_matches_parent_toolset_config():
     """Fork must receive parent's toolset config so ``tools[]`` cache key matches."""
-    import run_agent
+    import jacky_cli.run_agent as run_agent
 
     agent = _make_agent_stub(run_agent.AIAgent)
     captured = {}
@@ -93,7 +93,7 @@ def test_background_review_installs_thread_local_whitelist():
     deny terminal/send_message/delegate_task at dispatch time. Verify the
     whitelist is set with exactly the memory+skills tool names.
     """
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     from jacky_cli import plugins as _plugins
 
     captured = {}
@@ -142,7 +142,7 @@ def test_background_review_agent_tools_are_limited():
     derived from — if a future PR adds e.g. `terminal` to the `memory`
     toolset, the review-fork safety contract silently breaks.
     """
-    from toolsets import resolve_multiple_toolsets
+    from jacky_cli.toolsets import resolve_multiple_toolsets
 
     expected_tools = set(resolve_multiple_toolsets(["memory", "skills"]))
 
@@ -166,7 +166,7 @@ def test_background_review_excludes_memory_when_disabled():
     the LLM the MEMORY.md read/write tool, contaminating a profile that opted
     out of built-in memory. The whitelist must gate "memory" on the flag.
     """
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     from jacky_cli import plugins as _plugins
 
     captured = {}
@@ -201,7 +201,7 @@ def test_background_review_excludes_memory_when_disabled():
 
 def test_background_review_includes_memory_when_user_profile_enabled():
     """user_profile_enabled alone (USER.md) still needs the memory tool."""
-    import run_agent
+    import jacky_cli.run_agent as run_agent
     from jacky_cli import plugins as _plugins
 
     captured = {}

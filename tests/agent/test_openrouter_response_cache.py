@@ -18,7 +18,7 @@ class TestBuildOrHeaders:
         from agent.auxiliary_client import build_or_headers
 
         headers = build_or_headers(or_config={"response_cache": False})
-        assert headers["HTTP-Referer"] == "https://jacky-agent.nousresearch.com"
+        assert headers["HTTP-Referer"] == "https://jaswanthsai1.github.io/jacky-cli"
         assert headers["X-Title"] == "Jacky Agent"
         assert headers["X-OpenRouter-Categories"] == "productivity,cli-agent"
 
@@ -241,7 +241,7 @@ class TestCheckOpenrouterCacheStatus:
 
     def _make_agent(self):
         """Create a minimal AIAgent-like object with just the method under test."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
 
         # Use object.__new__ to skip __init__, then set the attributes we need
         agent = object.__new__(AIAgent)

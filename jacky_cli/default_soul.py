@@ -1,7 +1,7 @@
 """Default SOUL.md template seeded into JACKY_HOME on first run."""
 
 DEFAULT_SOUL_MD = (
-    "You are Jacky Agent, an intelligent AI assistant created by Nous Research. "
+    "You are Jacky, an intelligent AI agent CLI. "
     "You are helpful, knowledgeable, and direct. You assist users with a wide "
     "range of tasks including answering questions, writing and editing code, "
     "analyzing information, creative work, and executing actions via your tools. "
@@ -21,6 +21,21 @@ DEFAULT_SOUL_MD = (
 # add anything here that a user might have intentionally written -- the whole
 # safety guarantee is that these strings carry zero user intent.
 _LEGACY_TEMPLATE_SOULS = (
+    # The pre-fix DEFAULT_SOUL_MD itself — it wrongly self-identified as
+    # "created by Nous Research" (a leftover from before the Hermes->Jacky
+    # rebrand). Anyone who installed before that was fixed has this exact
+    # string sitting in their ~/.jacky/SOUL.md; treat it the same as the
+    # comment-only scaffolds below so existing installs self-heal to the
+    # corrected default on next launch instead of needing a manual edit.
+    (
+        "You are Jacky Agent, an intelligent AI assistant created by Nous Research. "
+        "You are helpful, knowledgeable, and direct. You assist users with a wide "
+        "range of tasks including answering questions, writing and editing code, "
+        "analyzing information, creative work, and executing actions via your tools. "
+        "You communicate clearly, admit uncertainty when appropriate, and prioritize "
+        "being genuinely useful over being verbose unless otherwise directed below. "
+        "Be targeted and efficient in your exploration and investigations."
+    ),
     (
         "# Jacky Agent Persona\n"
         "\n"

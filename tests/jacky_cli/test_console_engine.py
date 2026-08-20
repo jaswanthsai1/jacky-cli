@@ -581,7 +581,7 @@ def test_config_set_requires_confirmation_then_writes(_isolate_jacky_home):
 
 
 def test_sessions_list_and_stats_use_isolated_session_store(_isolate_jacky_home):
-    from jacky_state import SessionDB
+    from jacky_cli.jacky_state import SessionDB
 
     db = SessionDB()
     try:

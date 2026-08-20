@@ -1183,7 +1183,7 @@ def test_make_agent_accepts_list_system_prompt(server, monkeypatch):
             captured.update(kwargs)
             self.model = kwargs.get("model", "")
 
-    monkeypatch.setitem(sys.modules, "run_agent", types.SimpleNamespace(AIAgent=_Agent))
+    monkeypatch.setitem(sys.modules, "jacky_cli.run_agent", types.SimpleNamespace(AIAgent=_Agent))
     monkeypatch.setitem(
         sys.modules,
         "jacky_cli.runtime_provider",

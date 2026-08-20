@@ -166,7 +166,7 @@ def test_resolved_api_call_timeout_priority(monkeypatch, tmp_path):
         """)
     monkeypatch.setenv("JACKY_API_TIMEOUT", "999")
 
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     agent = AIAgent(
         model="openai/gpt-4o-mini",
         provider="openrouter",
@@ -192,7 +192,7 @@ def test_resolved_api_call_timeout_priority(monkeypatch, tmp_path):
     importlib.reload(cfg_mod)
     from jacky_cli import timeouts as to_mod
     importlib.reload(to_mod)
-    import run_agent as ra_mod
+    import jacky_cli.run_agent as ra_mod
     importlib.reload(ra_mod)
 
     agent2 = ra_mod.AIAgent(
@@ -227,7 +227,7 @@ def test_resolved_api_call_stale_timeout_priority(monkeypatch, tmp_path):
         """)
     monkeypatch.setenv("JACKY_API_CALL_STALE_TIMEOUT", "999")
 
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     agent = AIAgent(
         model="gpt-5.4",
         provider="openai-codex",
@@ -249,7 +249,7 @@ def test_resolved_api_call_stale_timeout_priority(monkeypatch, tmp_path):
     importlib.reload(cfg_mod)
     from jacky_cli import timeouts as to_mod
     importlib.reload(to_mod)
-    import run_agent as ra_mod
+    import jacky_cli.run_agent as ra_mod
     importlib.reload(ra_mod)
 
     agent2 = ra_mod.AIAgent(
@@ -273,7 +273,7 @@ def test_default_non_stream_stale_timeout_auto_disables_for_local_endpoints(monk
     (tmp_path / ".env").write_text("", encoding="utf-8")
     monkeypatch.delenv("JACKY_API_CALL_STALE_TIMEOUT", raising=False)
 
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     agent = AIAgent(
         model="qwen3:32b",
         provider="ollama-local",
@@ -293,7 +293,7 @@ def test_explicit_non_stream_stale_timeout_is_honored_for_local_endpoints(monkey
     (tmp_path / ".env").write_text("", encoding="utf-8")
     monkeypatch.setenv("JACKY_API_CALL_STALE_TIMEOUT", "300")
 
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     agent = AIAgent(
         model="qwen3:32b",
         provider="ollama-local",

@@ -6,7 +6,7 @@ from unittest.mock import patch
 from rich.console import Console
 
 import jacky_cli.banner as banner
-import model_tools
+import jacky_cli.model_tools as model_tools
 import tools.mcp_tool
 
 

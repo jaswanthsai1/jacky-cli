@@ -224,7 +224,7 @@ class TestReasoningCommand:
         )
         fake_run_agent = types.ModuleType("run_agent")
         fake_run_agent.AIAgent = _CapturingAgent
-        monkeypatch.setitem(sys.modules, "run_agent", fake_run_agent)
+        monkeypatch.setitem(sys.modules, "jacky_cli.run_agent", fake_run_agent)
 
         _CapturingAgent.last_init = None
         runner = _make_runner()
@@ -273,7 +273,7 @@ class TestReasoningCommand:
         )
         fake_run_agent = types.ModuleType("run_agent")
         fake_run_agent.AIAgent = _CapturingAgent
-        monkeypatch.setitem(sys.modules, "run_agent", fake_run_agent)
+        monkeypatch.setitem(sys.modules, "jacky_cli.run_agent", fake_run_agent)
 
         _CapturingAgent.last_init = None
         runner = _make_runner()
@@ -332,7 +332,7 @@ class TestReasoningCommand:
         )
         fake_run_agent = types.ModuleType("run_agent")
         fake_run_agent.AIAgent = _CapturingAgent
-        monkeypatch.setitem(sys.modules, "run_agent", fake_run_agent)
+        monkeypatch.setitem(sys.modules, "jacky_cli.run_agent", fake_run_agent)
 
         _CapturingAgent.last_init = None
         runner = _make_runner()
@@ -384,7 +384,7 @@ class TestReasoningCommand:
         )
         fake_run_agent = types.ModuleType("run_agent")
         fake_run_agent.AIAgent = _CapturingAgent
-        monkeypatch.setitem(sys.modules, "run_agent", fake_run_agent)
+        monkeypatch.setitem(sys.modules, "jacky_cli.run_agent", fake_run_agent)
 
         _CapturingAgent.last_init = None
         runner = _make_runner()

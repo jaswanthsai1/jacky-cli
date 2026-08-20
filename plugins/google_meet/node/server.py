@@ -30,7 +30,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 from plugins.google_meet.node import protocol as _proto
 
 

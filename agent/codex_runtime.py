@@ -602,7 +602,7 @@ def _raise_stream_error(event: Any) -> None:
     Imported lazily so this module stays importable from places that don't
     pull in ``run_agent`` (e.g. plugin code, doc tools).
     """
-    from run_agent import _StreamErrorEvent
+    from jacky_cli.run_agent import _StreamErrorEvent
     message = (_event_field(event, "message", "") or "stream emitted error event").strip()
     raise _StreamErrorEvent(
         message,

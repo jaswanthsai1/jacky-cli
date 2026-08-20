@@ -506,7 +506,7 @@ class RetainDBMemoryProvider(MemoryProvider):
         self._user_id = kwargs.get("user_id", "default") or "default"
         self._agent_id = kwargs.get("agent_id", "jacky") or "jacky"
 
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         jacky_home_path = get_jacky_home()
         db_path = jacky_home_path / "retaindb_queue.db"
         self._queue = _WriteQueue(self._client, db_path)

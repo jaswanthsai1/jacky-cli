@@ -50,7 +50,7 @@ _config_files: List[Dict[str, str]] | None = None
 
 
 def _resolve_jacky_home() -> Path:
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
     return get_jacky_home()
 
 
@@ -363,7 +363,7 @@ def get_cache_directory_mounts(
     ``container_path`` keys.  The host path is resolved via
     ``get_jacky_dir()`` for backward compatibility with old directory layouts.
     """
-    from jacky_constants import get_jacky_dir
+    from jacky_cli.jacky_constants import get_jacky_dir
 
     mounts: List[Dict[str, str]] = []
     for new_subpath, old_name in _CACHE_DIRS:
@@ -455,7 +455,7 @@ def iter_cache_files(
     Used by Modal to upload files individually and resync before each command.
     Skips symlinks.  The container paths use the new ``cache/<subdir>`` layout.
     """
-    from jacky_constants import get_jacky_dir
+    from jacky_cli.jacky_constants import get_jacky_dir
 
     result: List[Dict[str, str]] = []
     for new_subpath, old_name in _CACHE_DIRS:

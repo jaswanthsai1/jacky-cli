@@ -57,7 +57,7 @@ def fake_jacky(tmp_path, monkeypatch):
 
     # Monkeypatch the resolver functions used by file_safety so each test
     # can choose which profile is "active".
-    import jacky_constants
+    import jacky_cli.jacky_constants as jacky_constants
     monkeypatch.setattr(jacky_constants, "get_default_jacky_root", lambda: root)
 
     # The reloads below ensure get_cross_profile_warning/classify see the patched root.

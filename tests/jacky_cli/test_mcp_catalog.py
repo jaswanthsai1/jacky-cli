@@ -61,7 +61,7 @@ def _isolate_jacky_home(tmp_path, monkeypatch):
     )
     # mcp_catalog grabs get_jacky_home() lazily through jacky_constants
     monkeypatch.setattr(
-        "jacky_constants.get_jacky_home", lambda: hh
+        "jacky_cli.jacky_constants.get_jacky_home", lambda: hh
     )
     return hh
 

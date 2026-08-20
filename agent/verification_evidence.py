@@ -18,7 +18,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-from jacky_constants import get_jacky_home
+from jacky_cli.jacky_constants import get_jacky_home
 
 
 _DB_LOCK = threading.Lock()
@@ -62,9 +62,9 @@ def _db_path() -> Path:
 def _connect() -> sqlite3.Connection:
     path = _db_path()
     path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(path)
+    conn = sqlite3.connect(path, timeout=30.0)
     conn.execute("PRAGMA journal_mode=WAL")
-    conn.execute("PRAGMA busy_timeout=5000")
+    conn.execute("PRAGMA busy_timeout=30000")
     conn.row_factory = sqlite3.Row
     _ensure_schema(conn)
     return conn

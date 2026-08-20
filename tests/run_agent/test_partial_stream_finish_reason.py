@@ -20,7 +20,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from jacky_constants import PARTIAL_STREAM_STUB_ID, FINISH_REASON_LENGTH
+from jacky_cli.jacky_constants import PARTIAL_STREAM_STUB_ID, FINISH_REASON_LENGTH
 from agent.conversation_loop import _get_continuation_prompt
 
 
@@ -41,7 +41,7 @@ def _make_tool_call_delta(index=0, tc_id=None, name=None, arguments=None):
 
 
 def _make_agent():
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     agent = AIAgent(
         api_key="test-key",
         base_url="https://example.com/v1",
@@ -61,8 +61,8 @@ class TestPartialStreamStubFinishReason:
     """The stub returned by interruptible_streaming_api_call when the
     upstream connection dies mid-flight."""
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_text_only_partial_returns_length(self, _mock_close, mock_create, monkeypatch):
         """#30963: text-only partials must classify as length so the loop
         keeps continuing instead of exiting with budget remaining."""
@@ -90,8 +90,8 @@ class TestPartialStreamStubFinishReason:
         assert response.choices[0].message.content == "Here's my answer so far"
         assert response.choices[0].message.tool_calls is None
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_partial_tool_call_uses_length(self, _mock_close, mock_create, monkeypatch):
         """Mid-tool-call partials now use finish_reason=length so the
         conversation loop's continuation machinery fires — bounded 3-retry
@@ -151,8 +151,8 @@ class TestCleanStreamEndMidToolCall:
     an honest mid-tool-call drop and asks the model to chunk its output.
     """
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_no_finish_reason_partial_tool_args_routes_to_stub(
         self, _mock_close, mock_create, monkeypatch,
     ):
@@ -192,8 +192,8 @@ class TestCleanStreamEndMidToolCall:
         )
         assert getattr(response, "_dropped_tool_names", None) == ["execute_code"]
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_real_length_truncation_still_uses_uuid_id(
         self, _mock_close, mock_create, monkeypatch,
     ):
@@ -278,11 +278,11 @@ class TestLengthContinuationPromptBranching:
 def loop_agent():
     """AIAgent with a mocked OpenAI client (mirrors test_run_agent's fixture)
     so we can stage a stub + continuation pair on .chat.completions.create."""
-    from run_agent import AIAgent
+    from jacky_cli.run_agent import AIAgent
     with (
-        patch("run_agent.get_tool_definitions", return_value=[]),
-        patch("run_agent.check_toolset_requirements", return_value={}),
-        patch("run_agent.OpenAI"),
+        patch("jacky_cli.run_agent.get_tool_definitions", return_value=[]),
+        patch("jacky_cli.run_agent.check_toolset_requirements", return_value={}),
+        patch("jacky_cli.run_agent.OpenAI"),
     ):
         a = AIAgent(
             api_key="test-key-1234567890",
@@ -383,8 +383,8 @@ class TestContentFilterStallActivatesFallback:
          burning any continuation retries.
     """
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_streaming_call_tags_content_filter_stub(
         self, _mock_close, mock_create, monkeypatch,
     ):
@@ -420,8 +420,8 @@ class TestContentFilterStallActivatesFallback:
             "can route to fallback (#32421)."
         )
 
-    @patch("run_agent.AIAgent._create_request_openai_client")
-    @patch("run_agent.AIAgent._close_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._create_request_openai_client")
+    @patch("jacky_cli.run_agent.AIAgent._close_request_openai_client")
     def test_plain_network_stall_not_tagged(
         self, _mock_close, mock_create, monkeypatch,
     ):

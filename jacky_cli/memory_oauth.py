@@ -38,7 +38,7 @@ def _scope_to_profile(profile: Optional[str]):
         return
 
     from jacky_cli import profiles as profiles_mod
-    from jacky_constants import reset_jacky_home_override, set_jacky_home_override
+    from jacky_cli.jacky_constants import reset_jacky_home_override, set_jacky_home_override
 
     try:
         profiles_mod.validate_profile_name(requested)

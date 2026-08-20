@@ -18,7 +18,7 @@ from enum import Enum
 
 from jacky_cli.config import get_jacky_home
 from agent.secret_scope import current_secret_scope, get_secret as _get_secret
-from utils import is_truthy_value
+from jacky_cli.utils import is_truthy_value
 
 logger = logging.getLogger(__name__)
 

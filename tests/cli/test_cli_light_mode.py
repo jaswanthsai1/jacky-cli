@@ -15,7 +15,7 @@ import pytest
 @pytest.fixture
 def cli_mod(monkeypatch):
     """Import cli with the light-mode cache cleared each test."""
-    import cli as _cli
+    import jacky_cli.cli as _cli
 
     # The module-level _install_skin_light_mode_hook() and import-time
     # _detect_light_mode() prime ran once at first import.  We just reset

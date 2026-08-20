@@ -970,7 +970,7 @@ class TestRunJobSessionPersistence:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -980,7 +980,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -1007,7 +1007,7 @@ class TestRunJobSessionPersistence:
         """An empty model turn becomes the '⚠️ No reply…' explainer (#34452).
         For cron, that abnormal-empty explainer must be treated as empty so it
         is suppressed instead of delivered (Manfredi's Telegram symptom)."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         explainer = AIAgent._format_turn_completion_explanation("empty_response_exhausted")
         assert explainer  # sanity: the explainer text exists
         job = {"id": "test-job", "name": "test", "prompt": "hello"}
@@ -1017,7 +1017,7 @@ class TestRunJobSessionPersistence:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1027,7 +1027,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent._format_turn_completion_explanation = (
                 AIAgent._format_turn_completion_explanation
@@ -1053,7 +1053,7 @@ class TestRunJobSessionPersistence:
     def test_run_job_real_report_on_empty_reason_still_delivers(self, tmp_path):
         """Defensive: a real report must NOT be suppressed even if the result
         carries an abnormal turn_exit_reason — only the exact explainer text is."""
-        from run_agent import AIAgent
+        from jacky_cli.run_agent import AIAgent
         job = {"id": "test-job", "name": "test", "prompt": "hello"}
         fake_db = MagicMock()
 
@@ -1061,7 +1061,7 @@ class TestRunJobSessionPersistence:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1071,7 +1071,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {
                 "final_response": "Daily report: 4 PRs merged.",
@@ -1102,7 +1102,7 @@ class TestRunJobSessionPersistence:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1112,7 +1112,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -1140,7 +1140,7 @@ class TestRunJobSessionPersistence:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1150,7 +1150,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.side_effect = RuntimeError("boom")
             mock_agent_cls.return_value = mock_agent
@@ -1178,7 +1178,7 @@ class TestRunJobSessionPersistence:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1188,7 +1188,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent") as mock_agent_cls, \
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls, \
              patch("agent.auxiliary_client.cleanup_stale_async_clients") as cleanup_mock:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
@@ -1221,7 +1221,7 @@ class TestRunJobSessionPersistence:
             patch("cron.scheduler._resolve_origin", return_value=None),
             patch("jacky_cli.env_loader.load_jacky_dotenv"),
             patch("jacky_cli.env_loader.reset_secret_source_cache"),
-            patch("jacky_state.SessionDB", return_value=fake_db),
+            patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db),
             patch(
                 "jacky_cli.runtime_provider.resolve_runtime_provider",
                 return_value={
@@ -1231,7 +1231,7 @@ class TestRunJobSessionPersistence:
                     "api_mode": "chat_completions",
                 },
             ),
-            patch("run_agent.AIAgent", return_value=mock_agent),
+            patch("jacky_cli.run_agent.AIAgent", return_value=mock_agent),
         ]
         with contextlib.ExitStack() as stack:
             entered = [stack.enter_context(cm) for cm in base]
@@ -1345,7 +1345,7 @@ class TestRunJobSessionPersistence:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1355,7 +1355,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             # Agent did work via tools but returned no text
             mock_agent.run_conversation.return_value = {"final_response": ""}
@@ -1422,7 +1422,7 @@ class TestRunJobSessionPersistence:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1432,7 +1432,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = agent_result
             mock_agent_cls.return_value = mock_agent
@@ -1462,7 +1462,7 @@ class TestRunJobSessionPersistence:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1472,7 +1472,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {
                 "final_response": "all good",
@@ -1505,7 +1505,7 @@ class TestRunJobSessionPersistence:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1515,7 +1515,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {
                 "final_response": "final fallback report",
@@ -1597,7 +1597,7 @@ class TestRunJobSessionPersistence:
                 return {"final_response": "ok"}
 
         with patch("cron.scheduler._jacky_home", tmp_path), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1607,7 +1607,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent", FakeAgent):
+             patch("jacky_cli.run_agent.AIAgent", FakeAgent):
             success, output, final_response, error = run_job(job)
 
         assert success is True
@@ -1657,7 +1657,7 @@ class TestRunJobSessionPersistence:
         monkeypatch.setenv("JACKY_CRON_TIMEOUT", timeout_value)
 
         with patch("cron.scheduler._jacky_home", tmp_path), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1667,7 +1667,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent", FakeAgent), \
+             patch("jacky_cli.run_agent.AIAgent", FakeAgent), \
              patch("cron.scheduler.concurrent.futures.ThreadPoolExecutor", return_value=fake_pool), \
              patch("cron.scheduler.concurrent.futures.wait", side_effect=wait_results), \
              patch("cron.scheduler.time.monotonic", side_effect=monotonic_ticks.__next__), \
@@ -1707,7 +1707,7 @@ class TestRunJobSessionPersistence:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.reset_secret_source_cache", _record_reset), \
              patch("jacky_cli.env_loader.load_jacky_dotenv", _record_load), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1717,7 +1717,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -1767,7 +1767,7 @@ class TestRunJobSessionPersistence:
                 return {"final_response": "ok"}
 
         with patch("cron.scheduler._jacky_home", tmp_path), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -1777,7 +1777,7 @@ class TestRunJobSessionPersistence:
                      "api_mode": "chat_completions",
                  },
              ), \
-             patch("run_agent.AIAgent", FakeAgent):
+             patch("jacky_cli.run_agent.AIAgent", FakeAgent):
             for job in jobs:
                 success, output, final_response, error = run_job(job)
                 assert success is True
@@ -1831,7 +1831,7 @@ class TestRunJobConfigLogging:
                                  "base_url": "https://example.invalid",
                                  "api_mode": "chat_completions"}), \
              patch("tools.mcp_tool.discover_mcp_tools", return_value=[]), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -1866,7 +1866,7 @@ class TestRunJobConfigLogging:
                                  "base_url": "https://example.invalid",
                                  "api_mode": "chat_completions"}), \
              patch("tools.mcp_tool.discover_mcp_tools", return_value=[]), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -1900,10 +1900,10 @@ class TestRunJobConfigEnvVarExpansion:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -1934,11 +1934,11 @@ class TestRunJobConfigEnvVarExpansion:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
              patch("tools.mcp_tool.discover_mcp_tools", return_value=[]), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -1965,10 +1965,10 @@ class TestRunJobConfigEnvVarExpansion:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -2000,10 +2000,10 @@ class TestRunJobConfigEnvVarExpansion:
         with patch("cron.scheduler._jacky_home", tmp_path), \
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("dotenv.load_dotenv"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -2025,10 +2025,10 @@ class TestRunJobConfigEnvVarExpansion:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -2070,10 +2070,10 @@ class TestRunJobModelResolution:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -2095,10 +2095,10 @@ class TestRunJobModelResolution:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -2128,10 +2128,10 @@ class TestRunJobModelResolution:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -2152,10 +2152,10 @@ class TestRunJobModelResolution:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             success, _, _, error = run_job(job)
 
         assert success is False
@@ -2182,10 +2182,10 @@ class TestRunJobModelResolution:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -2209,10 +2209,10 @@ class TestRunJobModelResolution:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -2240,10 +2240,10 @@ class TestRunJobModelResolution:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -2265,10 +2265,10 @@ class TestRunJobModelResolution:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch("jacky_cli.runtime_provider.resolve_runtime_provider",
                    return_value=self._RUNTIME), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -2308,7 +2308,7 @@ class TestRunJobSkillBacked:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -2319,7 +2319,7 @@ class TestRunJobSkillBacked:
                  },
              ), \
              patch("tools.skills_tool.skill_view", side_effect=_skill_view), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.side_effect = _run_conversation
             mock_agent_cls.return_value = mock_agent
@@ -2369,7 +2369,7 @@ class TestRunJobSkillBacked:
              patch("tools.credential_files._resolve_jacky_home", return_value=tmp_path), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -2380,7 +2380,7 @@ class TestRunJobSkillBacked:
                  },
              ), \
              patch("tools.skills_tool.skill_view", side_effect=_skill_view), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.side_effect = _run_conversation
             mock_agent_cls.return_value = mock_agent
@@ -2408,7 +2408,7 @@ class TestRunJobSkillBacked:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -2419,7 +2419,7 @@ class TestRunJobSkillBacked:
                  },
              ), \
              patch("tools.skills_tool.skill_view", return_value=json.dumps({"success": True, "content": "# Blogwatcher\nFollow this skill."})), \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -2455,7 +2455,7 @@ class TestRunJobSkillBacked:
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("jacky_cli.env_loader.load_jacky_dotenv"), \
              patch("jacky_cli.env_loader.reset_secret_source_cache"), \
-             patch("jacky_state.SessionDB", return_value=fake_db), \
+             patch("jacky_cli.jacky_state.SessionDB", return_value=fake_db), \
              patch(
                  "jacky_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
@@ -2466,7 +2466,7 @@ class TestRunJobSkillBacked:
                  },
              ), \
              patch("tools.skills_tool.skill_view", side_effect=_skill_view) as skill_view_mock, \
-             patch("run_agent.AIAgent") as mock_agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
             mock_agent_cls.return_value = mock_agent
@@ -2811,7 +2811,7 @@ class TestRunJobWakeGate:
 
         with patch.object(scheduler, "_run_job_script",
                           return_value=(True, '{"wakeAgent": false}')), \
-             patch("run_agent.AIAgent") as agent_cls:
+             patch("jacky_cli.run_agent.AIAgent") as agent_cls:
             success, doc, final, err = scheduler.run_job(self._make_job())
 
         assert success is True
@@ -2832,7 +2832,7 @@ class TestRunJobWakeGate:
         })
         with patch.object(scheduler, "_run_job_script",
                           return_value=(True, script_output)), \
-             patch("run_agent.AIAgent", return_value=agent) as agent_cls:
+             patch("jacky_cli.run_agent.AIAgent", return_value=agent) as agent_cls:
             success, doc, final, err = scheduler.run_job(self._make_job())
 
         agent_cls.assert_called_once()
@@ -2861,7 +2861,7 @@ class TestRunJobWakeGate:
             "final_response": "ok", "messages": []
         })
         with patch.object(scheduler, "_run_job_script", side_effect=_script_stub), \
-             patch("run_agent.AIAgent", return_value=agent):
+             patch("jacky_cli.run_agent.AIAgent", return_value=agent):
             scheduler.run_job(self._make_job())
 
         assert call_count == 1, f"script ran {call_count}x, expected exactly 1"
@@ -2879,7 +2879,7 @@ class TestRunJobWakeGate:
         })
         with patch.object(scheduler, "_run_job_script",
                           return_value=(False, '{"wakeAgent": false}')), \
-             patch("run_agent.AIAgent", return_value=agent) as agent_cls:
+             patch("jacky_cli.run_agent.AIAgent", return_value=agent) as agent_cls:
             success, doc, final, err = scheduler.run_job(self._make_job())
 
         agent_cls.assert_called_once()  # Agent DID wake despite the gate-like text
@@ -2895,7 +2895,7 @@ class TestRunJobWakeGate:
         job = self._make_job(script=None)
         job.pop("script", None)
         with patch.object(scheduler, "_run_job_script") as script_fn, \
-             patch("run_agent.AIAgent", return_value=agent) as agent_cls:
+             patch("jacky_cli.run_agent.AIAgent", return_value=agent) as agent_cls:
             scheduler.run_job(job)
 
         script_fn.assert_not_called()

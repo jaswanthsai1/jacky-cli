@@ -84,7 +84,7 @@ from gateway.status import (
     parse_active_agents,
     read_runtime_status,
 )
-from utils import env_var_enabled
+from jacky_cli.utils import env_var_enabled
 
 try:
     from fastapi import (
@@ -1188,7 +1188,7 @@ def _count_status_active_sessions() -> int:
     connection so /api/status never tries to initialise or migrate state.db
     while another Jacky process is writing to it.
     """
-    from jacky_state import DEFAULT_DB_PATH, SessionDB
+    from jacky_cli.jacky_state import DEFAULT_DB_PATH, SessionDB
 
     # read_only opens require the DB to already exist (see SessionDB.__init__
     # read_only contract) — on a fresh install every /api/status poll would
@@ -1617,7 +1617,7 @@ def _default_jacky_root_is_opt_data() -> bool:
     if not raw:
         return False
     try:
-        from jacky_constants import get_default_jacky_root
+        from jacky_cli.jacky_constants import get_default_jacky_root
 
         root = get_default_jacky_root().expanduser().resolve(strict=False)
     except (OSError, RuntimeError):
@@ -1643,7 +1643,7 @@ def _dashboard_local_update_managed_externally() -> bool:
     if _default_jacky_root_is_opt_data():
         return True
     try:
-        from jacky_constants import is_container
+        from jacky_cli.jacky_constants import is_container
 
         if not is_container():
             return False
@@ -3532,7 +3532,7 @@ def _recent_upstream_commits(n: int = 20) -> List[Dict[str, Any]]:
                 f"-n{int(n)}",
             ],
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=5,
         )
         if out.returncode != 0:
@@ -4069,7 +4069,7 @@ def get_profiles_sessions(
     if order not in ("created", "recent"):
         raise HTTPException(status_code=400, detail="order must be one of: created, recent")
 
-    from jacky_state import SessionDB
+    from jacky_cli.jacky_state import SessionDB
     from jacky_cli import profiles as profiles_mod
 
     targets: List[Tuple[str, Path]] = []
@@ -4510,7 +4510,7 @@ def _run_setup_command(
         executable="/bin/bash" if shell else None,
         env=_memory_provider_setup_env(),
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
         timeout=timeout,
         check=False,
     )
@@ -6337,7 +6337,7 @@ _PLATFORM_OVERRIDES: dict[str, dict[str, Any]] = {
     "email": {
         "name": "Email",
         "description": "Talk to Jacky through an IMAP/SMTP mailbox.",
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/",
         "env_vars": (
             "EMAIL_ADDRESS",
             "EMAIL_PASSWORD",
@@ -6380,7 +6380,7 @@ _PLATFORM_OVERRIDES: dict[str, dict[str, Any]] = {
     "google_chat": {
         "name": "Google Chat",
         "description": "Connect Jacky to Google Chat via Cloud Pub/Sub.",
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/google_chat",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/google_chat",
     },
     "wecom": {
         "name": "WeCom (group bot)",
@@ -6409,7 +6409,7 @@ _PLATFORM_OVERRIDES: dict[str, dict[str, Any]] = {
     "weixin": {
         "name": "Weixin / WeChat (Personal)",
         "description": "Connect a personal WeChat account through Tencent's iLink Bot API.",
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/weixin/",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/weixin/",
         "env_vars": ("WEIXIN_ACCOUNT_ID", "WEIXIN_TOKEN", "WEIXIN_BASE_URL"),
         "required_env": ("WEIXIN_ACCOUNT_ID", "WEIXIN_TOKEN"),
     },
@@ -6435,7 +6435,7 @@ _PLATFORM_OVERRIDES: dict[str, dict[str, Any]] = {
     # plugin registry. Only the docs link needs an override here so the
     # Channels page can point at the Microsoft Teams setup guide.
     "teams": {
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/teams",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/teams",
     },
     "yuanbao": {
         "name": "Yuanbao (元宝)",
@@ -6446,7 +6446,7 @@ _PLATFORM_OVERRIDES: dict[str, dict[str, Any]] = {
     "api_server": {
         "name": "API server",
         "description": "Expose Jacky as an OpenAI-compatible HTTP API for tools like Open WebUI.",
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/",
         "env_vars": (
             "API_SERVER_ENABLED",
             "API_SERVER_KEY",
@@ -6459,7 +6459,7 @@ _PLATFORM_OVERRIDES: dict[str, dict[str, Any]] = {
     "webhook": {
         "name": "Webhooks",
         "description": "Receive events from GitHub, GitLab, and other webhook sources.",
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/user-guide/messaging/webhooks/",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/user-guide/messaging/webhooks/",
         "env_vars": ("WEBHOOK_ENABLED", "WEBHOOK_PORT", "WEBHOOK_SECRET"),
         "required_env": (),
     },
@@ -7007,7 +7007,7 @@ def _normalize_whatsapp_allowed_users(value: Any) -> str:
 
 
 def _whatsapp_session_path() -> Path:
-    from jacky_constants import get_jacky_dir
+    from jacky_cli.jacky_constants import get_jacky_dir
 
     return get_jacky_dir("platforms/whatsapp/session", "whatsapp/session")
 
@@ -7059,8 +7059,8 @@ def _ensure_whatsapp_bridge_dependencies(bridge_dir: Path) -> None:
     if (bridge_dir / "node_modules").exists():
         return
 
-    from jacky_constants import find_node_executable, with_jacky_node_path
-    from utils import env_int
+    from jacky_cli.jacky_constants import find_node_executable, with_jacky_node_path
+    from jacky_cli.utils import env_int
 
     npm = find_node_executable("npm")
     if not npm:
@@ -7075,7 +7075,7 @@ def _ensure_whatsapp_bridge_dependencies(bridge_dir: Path) -> None:
             [npm, "install", "--silent"],
             cwd=str(bridge_dir),
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=timeout,
             env=with_jacky_node_path(),
             creationflags=windows_hide_flags(),
@@ -7103,7 +7103,7 @@ def _ensure_whatsapp_bridge_dependencies(bridge_dir: Path) -> None:
 
 def _spawn_whatsapp_pairing_process(session_path: Path, mode: str) -> subprocess.Popen:
     from gateway.platforms.whatsapp_common import resolve_whatsapp_bridge_dir
-    from jacky_constants import find_node_executable, with_jacky_node_path
+    from jacky_cli.jacky_constants import find_node_executable, with_jacky_node_path
 
     bridge_dir = resolve_whatsapp_bridge_dir()
     bridge_script = bridge_dir / "bridge.js"
@@ -8150,7 +8150,7 @@ _OAUTH_PROVIDER_CATALOG: tuple[Dict[str, Any], ...] = (
         # 127.0.0.1 callback.
         "flow": "device_code",
         "cli_command": "jacky auth add xai-oauth",
-        "docs_url": "https://jacky-agent.nousresearch.com/docs/guides/xai-grok-oauth",
+        "docs_url": "https://jaswanthsai1.github.io/jacky-cli/guides/xai-grok-oauth",
         "status_fn": None,  # dispatched via auth.get_xai_oauth_auth_status
     },
     {
@@ -8608,7 +8608,7 @@ def _save_anthropic_oauth_creds(access_token: str, refresh_token: str, expires_a
     # OAuth token file was world-readable at the default umask (0o644 on most
     # hosts) between the rename and the chmod. atomic_json_write also preserves
     # the existing file's owner and cleans up its temp on failure.
-    from utils import atomic_json_write
+    from jacky_cli.utils import atomic_json_write
 
     atomic_json_write(oauth_file, payload, indent=2, mode=0o600)
     # Best-effort credential-pool insert. Failure here doesn't invalidate
@@ -9639,6 +9639,28 @@ async def delete_empty_sessions_endpoint(profile: Optional[str] = None):
         db.close()
 
 
+@app.get("/api/agents/delegations")
+async def list_agent_delegations():
+    """Background ``delegate_task(background=true)`` delegations (running +
+    recently completed), for a dashboard "Agents" panel.
+
+    Mirrors the CLI's ``/agents`` listing. Each entry now carries
+    ``session_id``/``session_ids`` — the child agent's real, SessionDB-backed
+    session id(s), assigned at dispatch — so the dashboard can link straight
+    to a live session (``jacky --resume <session_id>``) instead of only
+    showing a status line for a delegation that's still running. Best-effort:
+    the async-delegation module is optional in some embed contexts, so an
+    import failure degrades to an empty list rather than a 500.
+    """
+    try:
+        from tools.async_delegation import list_async_delegations
+        delegations = list_async_delegations()
+    except Exception:
+        delegations = []
+    running = [d for d in delegations if d.get("status") == "running"]
+    return {"delegations": delegations, "running_count": len(running)}
+
+
 @app.get("/api/sessions/stats")
 async def get_session_stats(profile: Optional[str] = None):
     """Session-store statistics for the Sessions page (mirrors `jacky sessions stats`).
@@ -9678,7 +9700,7 @@ def _open_session_db_for_profile(profile: Optional[str]):
     ``state.db`` directly so the primary backend can serve cross-profile reads
     (transcripts, detail) without spawning that profile's backend.
     """
-    from jacky_state import SessionDB
+    from jacky_cli.jacky_state import SessionDB
     if not profile:
         return SessionDB()
     _name, home = _cron_profile_home(profile)
@@ -9966,7 +9988,7 @@ async def get_logs(
         return {"file": file, "lines": []}
 
     try:
-        from jacky_logging import COMPONENT_PREFIXES
+        from jacky_cli.jacky_logging import COMPONENT_PREFIXES
     except ImportError:
         COMPONENT_PREFIXES = {}
 
@@ -10185,7 +10207,7 @@ def _call_cron_for_profile(target_profile: Optional[str], func_name: str, *args,
     """
     profile_name, home = _cron_profile_home(target_profile)
     from cron import jobs as cron_jobs
-    from jacky_constants import (
+    from jacky_cli.jacky_constants import (
         reset_jacky_home_override,
         set_jacky_home_override,
     )
@@ -10497,7 +10519,7 @@ def _fire_cron_job_for_profile(profile: str, job_id: str) -> bool:
     _profile_name, home = _cron_profile_home(profile)
     from cron import jobs as cron_jobs
     from cron.scheduler_provider import resolve_cron_scheduler
-    from jacky_constants import (
+    from jacky_cli.jacky_constants import (
         reset_jacky_home_override,
         set_jacky_home_override,
     )
@@ -12655,7 +12677,7 @@ def _write_profile_model(profile_dir: Path, provider: str, model: str) -> None:
     Clears any stale ``base_url`` / ``context_length`` the same way
     ``POST /api/model/set`` does, since the new model may differ.
     """
-    from jacky_constants import set_jacky_home_override, reset_jacky_home_override
+    from jacky_cli.jacky_constants import set_jacky_home_override, reset_jacky_home_override
 
     token = set_jacky_home_override(str(profile_dir))
     try:
@@ -12679,7 +12701,7 @@ def _write_profile_mcp_servers(profile_dir: Path, servers: List["MCPServerCreate
     but batched so the whole profile-create write is a single config save.
     Returns the number of servers written.
     """
-    from jacky_constants import set_jacky_home_override, reset_jacky_home_override
+    from jacky_cli.jacky_constants import set_jacky_home_override, reset_jacky_home_override
     from jacky_cli.mcp_security import validate_mcp_server_entry
 
     written = 0
@@ -12735,7 +12757,7 @@ def _disable_unselected_skills(profile_dir: Path, keep: List[str]) -> int:
     install.) Scoped to the profile via the JACKY_HOME override. Returns the
     number of skills newly disabled.
     """
-    from jacky_constants import set_jacky_home_override, reset_jacky_home_override
+    from jacky_cli.jacky_constants import set_jacky_home_override, reset_jacky_home_override
     from jacky_cli.skills_config import get_disabled_skills, save_disabled_skills
 
     keep_set = {s.strip() for s in keep if s and s.strip()}
@@ -13151,7 +13173,7 @@ def _profile_scope(profile: Optional[str]):
     """
     requested = (profile or "").strip()
 
-    from jacky_constants import (
+    from jacky_cli.jacky_constants import (
         get_jacky_home,
         set_jacky_home_override,
         reset_jacky_home_override,
@@ -13207,7 +13229,7 @@ def _config_profile_scope(profile: Optional[str]):
         yield None
         return
 
-    from jacky_constants import (
+    from jacky_cli.jacky_constants import (
         set_jacky_home_override,
         reset_jacky_home_override,
     )
@@ -13359,7 +13381,7 @@ async def get_toolsets(profile: Optional[str] = None):
         _toolset_has_keys,
         gui_toolset_label,
     )
-    from toolsets import resolve_toolset
+    from jacky_cli.toolsets import resolve_toolset
 
     with _profile_scope(profile):
         config = load_config()

@@ -50,7 +50,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, urlparse
-from jacky_constants import secure_parent_dir
+from jacky_cli.jacky_constants import secure_parent_dir
 
 logger = logging.getLogger(__name__)
 
@@ -136,7 +136,7 @@ def _get_token_dir() -> Path:
     Layout: ``JACKY_HOME/mcp-tokens/``
     """
     try:
-        from jacky_constants import get_jacky_home
+        from jacky_cli.jacky_constants import get_jacky_home
         base = Path(get_jacky_home())
     except ImportError:
         base = Path(os.environ.get("JACKY_HOME", str(Path.home() / ".jacky")))
@@ -587,7 +587,7 @@ async def _redirect_handler(authorization_url: str) -> None:
             f"         ssh -N -L {_oauth_port}:127.0.0.1:{_oauth_port} <user>@<this-host>\n"
             f"       then open the URL above and let it redirect normally.\n"
             f"\n"
-            f"  See: https://jacky-agent.nousresearch.com/docs/guides/oauth-over-ssh\n",
+            f"  See: https://jaswanthsai1.github.io/jacky-cli/guides/oauth-over-ssh\n",
             file=sys.stderr,
         )
 

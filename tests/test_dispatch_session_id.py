@@ -21,8 +21,8 @@ class TestSessionIdForwarding:
     def test_standard_path_forwards_session_id(self):
         """registry.dispatch receives session_id on the normal tool path."""
         captured = {}
-        with patch("model_tools.registry", _make_registry(captured)):
-            from model_tools import handle_function_call
+        with patch("jacky_cli.model_tools.registry", _make_registry(captured)):
+            from jacky_cli.model_tools import handle_function_call
             handle_function_call(
                 "web_search",
                 {"query": "test"},
@@ -35,8 +35,8 @@ class TestSessionIdForwarding:
     def test_execute_code_path_forwards_session_id(self):
         """registry.dispatch receives session_id on the execute_code path."""
         captured = {}
-        with patch("model_tools.registry", _make_registry(captured)):
-            from model_tools import handle_function_call
+        with patch("jacky_cli.model_tools.registry", _make_registry(captured)):
+            from jacky_cli.model_tools import handle_function_call
             handle_function_call(
                 "execute_code",
                 {"code": "print(1)"},
@@ -49,8 +49,8 @@ class TestSessionIdForwarding:
     def test_session_id_default_is_none(self):
         """When session_id is omitted, dispatch receives None."""
         captured = {}
-        with patch("model_tools.registry", _make_registry(captured)):
-            from model_tools import handle_function_call
+        with patch("jacky_cli.model_tools.registry", _make_registry(captured)):
+            from jacky_cli.model_tools import handle_function_call
             handle_function_call(
                 "web_search",
                 {"query": "test"},
@@ -63,8 +63,8 @@ class TestSessionIdForwarding:
     def test_task_id_still_forwarded(self):
         """Existing task_id forwarding is not broken by this change."""
         captured = {}
-        with patch("model_tools.registry", _make_registry(captured)):
-            from model_tools import handle_function_call
+        with patch("jacky_cli.model_tools.registry", _make_registry(captured)):
+            from jacky_cli.model_tools import handle_function_call
             handle_function_call(
                 "web_search",
                 {"query": "test"},

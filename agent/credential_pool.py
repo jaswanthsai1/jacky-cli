@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-from jacky_constants import OPENROUTER_BASE_URL
+from jacky_cli.jacky_constants import OPENROUTER_BASE_URL
 from jacky_cli.config import load_env
 from agent.secret_scope import get_secret as _get_secret
 from agent.credential_persistence import (

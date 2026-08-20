@@ -36,9 +36,9 @@ import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from jacky_constants import get_jacky_home
-from jacky_time import now as _jacky_now
-from utils import atomic_replace
+from jacky_cli.jacky_constants import get_jacky_home
+from jacky_cli.jacky_time import now as _jacky_now
+from jacky_cli.utils import atomic_replace
 
 logger = logging.getLogger(__name__)
 

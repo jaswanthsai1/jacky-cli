@@ -104,5 +104,5 @@ acp_registry/
 .env.example
 .envrc
 .gitattributes
-.hadolint.yaml
+docker/.hadolint.yaml
 .mailmap

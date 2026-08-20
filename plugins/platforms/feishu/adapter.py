@@ -142,8 +142,8 @@ from gateway.platforms.base import (
     cache_image_from_bytes,
 )
 from gateway.status import acquire_scoped_lock, release_scoped_lock
-from jacky_constants import get_jacky_home
-from utils import atomic_json_write, env_float, env_int
+from jacky_cli.jacky_constants import get_jacky_home
+from jacky_cli.utils import atomic_json_write, env_float, env_int
 
 logger = logging.getLogger(__name__)
 
@@ -2064,7 +2064,7 @@ class FeishuAdapter(BasePlatformAdapter):
         return {
             "config": {"wide_screen_mode": True},
             "header": {
-                "title": {"content": "⚕ Update Needs Your Input", "tag": "plain_text"},
+                "title": {"content": ">_ Update Needs Your Input", "tag": "plain_text"},
                 "template": "orange",
             },
             "elements": [

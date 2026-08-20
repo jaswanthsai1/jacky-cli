@@ -111,7 +111,7 @@ sharper with every engagement, not reset every time.
 | Screenshot/HAR/PoC redaction discipline before submitting evidence | `evidence-hygiene` |
 | Writing the actual report | `report-writing` |
 
-See `METHODOLOGY.md` at the repo root for the full picture, including how
+See `docs/METHODOLOGY.md` for the full picture, including how
 this doctrine relates to Jacky's other agentic capabilities (skills that
 self-improve, persistent memory, subagents).
 

@@ -14,7 +14,7 @@ from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 
-from cli import JackyCLI
+from jacky_cli.cli import JackyCLI
 
 
 def _make_cli(quiet=False, session_id="20260524_111111_xyz", db=None):
@@ -47,7 +47,7 @@ class TestResumeQuietStderr:
         db.get_session.return_value = None
         cli = _make_cli(quiet=True, db=db)
 
-        with patch("cli._prepare_deferred_agent_startup"):
+        with patch("jacky_cli.cli._prepare_deferred_agent_startup"):
             result = cli._init_agent()
 
         captured = capsys.readouterr()
@@ -63,7 +63,7 @@ class TestResumeQuietStderr:
         db.get_session.return_value = None
         cli = _make_cli(quiet=False, db=db)
 
-        with patch("cli._prepare_deferred_agent_startup"):
+        with patch("jacky_cli.cli._prepare_deferred_agent_startup"):
             result = cli._init_agent()
 
         captured = capsys.readouterr()
@@ -84,7 +84,7 @@ class TestResumeQuietStderr:
         cli = _make_cli(quiet=True, db=db)
         # Stop _init_agent right after the resume banner: prevent it from
         # constructing a real AIAgent (the next code path).
-        with patch("cli._prepare_deferred_agent_startup"):
+        with patch("jacky_cli.cli._prepare_deferred_agent_startup"):
             try:
                 cli._init_agent()
             except Exception:
@@ -108,7 +108,7 @@ class TestResumeQuietStderr:
         db._conn = MagicMock()
 
         cli = _make_cli(quiet=True, db=db)
-        with patch("cli._prepare_deferred_agent_startup"):
+        with patch("jacky_cli.cli._prepare_deferred_agent_startup"):
             try:
                 cli._init_agent()
             except Exception:

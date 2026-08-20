@@ -238,7 +238,7 @@ def run_whatsapp_cloud_setup() -> int:
     from jacky_cli.config import get_env_value, save_env_value
 
     print()
-    print("⚕ WhatsApp Business Cloud API Setup")
+    print(">_ WhatsApp Business Cloud API Setup")
     print("=" * 50)
     print()
     print("This wizard configures Jacky to talk to WhatsApp via Meta's")
@@ -535,7 +535,7 @@ def run_whatsapp_cloud_setup() -> int:
     print("        Requires Meta's business verification process —")
     print("        Business Manager → Security Center → Start Verification.")
     print()
-    print("  Docs: https://jacky-agent.nousresearch.com/docs/user-guide/")
+    print("  Docs: https://jaswanthsai1.github.io/jacky-cli/user-guide/")
     print("        messaging/whatsapp-cloud")
     print()
     return 0

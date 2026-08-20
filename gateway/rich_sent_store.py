@@ -26,7 +26,7 @@ _MAX_TEXT_CHARS = 2000
 
 def _store_path() -> str:
     # Resolve via get_jacky_home() so the active profile override is honored.
-    from jacky_constants import get_jacky_home
+    from jacky_cli.jacky_constants import get_jacky_home
 
     home = get_jacky_home()
     return os.path.join(str(home), "state", "rich_sent_index.json")

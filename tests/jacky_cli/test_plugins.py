@@ -1570,7 +1570,7 @@ class TestPluginToolVisibility:
         mgr.discover_and_load()
         monkeypatch.setattr(plugins_mod, "_plugin_manager", mgr)
 
-        from model_tools import get_tool_definitions
+        from jacky_cli.model_tools import get_tool_definitions
 
         # Plugin tools are included when their toolset is explicitly enabled
         tools = get_tool_definitions(enabled_toolsets=["terminal", "plugin_vis_plugin"], quiet_mode=True)

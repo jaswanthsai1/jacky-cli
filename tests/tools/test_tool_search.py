@@ -354,7 +354,7 @@ class TestBridgeDispatch:
 class TestHandleFunctionCallIntegration:
     def test_tool_search_dispatch_through_handle_function_call(self):
         """The dispatcher recognizes the bridge tool by name."""
-        import model_tools
+        import jacky_cli.model_tools as model_tools
         result = model_tools.handle_function_call(
             function_name="tool_search",
             function_args={"query": "nothing matches this"},
@@ -448,7 +448,7 @@ class TestRegression_ToolsetScoping:
         )
 
     def test_search_catalog_is_scoped_to_session_toolsets(self):
-        import model_tools
+        import jacky_cli.model_tools as model_tools
 
         for i in range(12):
             self._register(f"mcp_scoped_gh_{i}", "mcp-scoped-gh")
@@ -470,7 +470,7 @@ class TestRegression_ToolsetScoping:
         assert "scoped_oos_plugin" not in hit_names
 
     def test_tool_call_rejects_out_of_scope_tool(self):
-        import model_tools
+        import jacky_cli.model_tools as model_tools
 
         self._register("mcp_inscope_gh_op", "mcp-inscope-gh")
         self._register("inscope_oos_plugin", "inscopeoosplugin")
@@ -495,7 +495,7 @@ class TestRegression_ToolsetScoping:
         assert ok.get("tool") == "mcp_inscope_gh_op"
 
     def test_bridge_dispatch_does_not_pollute_global_resolved_names(self):
-        import model_tools
+        import jacky_cli.model_tools as model_tools
 
         self._register("mcp_pollute_op_0", "mcp-pollute")
         self._register("mcp_pollute_op_1", "mcp-pollute")
@@ -525,7 +525,7 @@ class TestRegression_ToolsetScoping:
         from tools.tool_search import scoped_deferrable_names
 
         self._register("mcp_helper_op", "mcp-helper")
-        import model_tools
+        import jacky_cli.model_tools as model_tools
         defs = model_tools.get_tool_definitions(
             enabled_toolsets=["mcp-helper"],
             quiet_mode=True,

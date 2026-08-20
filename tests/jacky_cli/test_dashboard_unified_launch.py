@@ -84,7 +84,7 @@ class TestUnifiedDashboardRouting:
         # JACKY_HOME.  For a standard install (JACKY_HOME unset) that root is
         # the platform-native default (~/.jacky), NOT dropped — see the Docker
         # test below for why we resolve explicitly instead of popping.
-        from jacky_constants import get_default_jacky_root
+        from jacky_cli.jacky_constants import get_default_jacky_root
         assert env.get("JACKY_HOME") == str(get_default_jacky_root())
 
     def test_reexec_pins_docker_machine_root(self, main_mod, monkeypatch):

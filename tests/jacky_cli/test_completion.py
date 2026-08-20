@@ -184,7 +184,12 @@ class TestGenerateZsh:
                 text=True,
             )
             assert result.returncode == 0, result.stderr
-            assert result.stderr == ""
+            # Ignore unrelated system compinit noise (e.g. a stale completion
+            # dump referencing a vendor completion file — such as
+            # /usr/share/zsh/vendor-completions/_docker — that isn't
+            # installed on this machine). Only errors touching our own
+            # generated script/function are a real regression.
+            assert "jacky" not in result.stderr, result.stderr
         finally:
             os.unlink(path)
 

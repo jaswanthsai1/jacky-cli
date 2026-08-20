@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Jacky Agent Release Script
+"""Jacky Release Script
 
 Generates changelogs and creates GitHub releases with CalVer tags.
 
@@ -1962,7 +1962,7 @@ def git(*args, cwd=None):
     """Run a git command and return stdout."""
     result = subprocess.run(
         ["git"] + list(args),
-        capture_output=True, text=True,
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
         cwd=cwd or str(REPO_ROOT),
     )
     if result.returncode != 0:
@@ -1976,7 +1976,7 @@ def git_result(*args, cwd=None):
     return subprocess.run(
         ["git"] + list(args),
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
         cwd=cwd or str(REPO_ROOT),
     )
 
@@ -2056,6 +2056,25 @@ def update_version_files(semver: str, calver_date: str):
     )
     PYPROJECT_FILE.write_text(pyproject)
 
+    # Regenerate uv.lock so it matches the new pyproject.toml version. This
+    # was previously left to be done by hand before every publish -- missing
+    # it fails CI's `uv lock --check` job, which then cascades into every
+    # downstream job that depends on a clean `uv sync` (test slices, Docker
+    # builds), turning one stale-lock miss into a dozen unrelated-looking
+    # red checks on the release commit.
+    uv_bin = shutil.which("uv")
+    if uv_bin:
+        lock_result = subprocess.run(
+            [uv_bin, "lock"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            cwd=str(REPO_ROOT),
+        )
+        if lock_result.returncode != 0:
+            print(f"  ✗ uv lock failed: {lock_result.stderr.strip()}")
+            print("    Run `uv lock` manually before committing.")
+    else:
+        print("  ✗ uv not found on PATH -- run `uv lock` manually before committing.")
+
     # Keep the desktop Electron app's package.json version in lockstep with the
     # Python package version. The desktop About panel reads the live Jacky
     # version at runtime, but app.getVersion()/packaging metadata still come
@@ -2070,6 +2089,21 @@ def update_version_files(semver: str, calver_date: str):
             count=1,
         )
         desktop_pkg.write_text(pkg_text, encoding="utf-8")
+
+    # Keep the npm install shim (jacky-cli-agent) in lockstep with the Python
+    # package version too. This was previously missed entirely -- npm was
+    # only ever bumped by hand before running `npm publish`, which is
+    # exactly the kind of manual step that silently drifts.
+    npm_pkg = REPO_ROOT / "npm" / "package.json"
+    if npm_pkg.exists():
+        pkg_text = npm_pkg.read_text(encoding="utf-8")
+        pkg_text = re.sub(
+            r'("version"\s*:\s*)"[^"]+"',
+            rf'\g<1>"{semver}"',
+            pkg_text,
+            count=1,
+        )
+        npm_pkg.write_text(pkg_text, encoding="utf-8")
 
     # Update ACP Registry manifest + npm launcher (must stay version-locked
     # with pyproject — enforced by tests/acp/test_registry_manifest.py).
@@ -2088,7 +2122,7 @@ def _update_acp_registry_versions(semver: str) -> None:
         manifest["version"] = semver
         uvx = manifest.get("distribution", {}).get("uvx", {})
         if "package" in uvx:
-            uvx["package"] = f"jacky-agent[acp]=={semver}"
+            uvx["package"] = f"jacky-cli[acp]=={semver}"
         # Preserve trailing newline + 2-space indent the file already uses.
         ACP_REGISTRY_MANIFEST.write_text(
             json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
@@ -2115,7 +2149,7 @@ def build_release_artifacts(semver: str) -> list[Path]:
         cmd,
         cwd=str(REPO_ROOT),
         capture_output=True,
-        text=True,
+        text=True, encoding="utf-8", errors="replace",
     )
     if result.returncode != 0:
         print("  ⚠ Could not build Python release artifacts.")
@@ -2293,14 +2327,14 @@ def generate_changelog(commits, tag_name, semver, repo_url="https://github.com/j
     # Header
     now = datetime.now()
     date_str = now.strftime("%B %d, %Y")
-    lines.append(f"# Jacky Agent v{semver} ({tag_name})")
+    lines.append(f"# Jacky v{semver} ({tag_name})")
     lines.append("")
     lines.append(f"**Release Date:** {date_str}")
     lines.append("")
 
     if first_release:
         lines.append("> 🎉 **First official release!** This marks the beginning of regular weekly releases")
-        lines.append("> for Jacky Agent. See below for everything included in this initial release.")
+        lines.append("> for Jacky. See below for everything included in this initial release.")
         lines.append("")
 
     # Group commits by category
@@ -2390,7 +2424,7 @@ def generate_changelog(commits, tag_name, semver, repo_url="https://github.com/j
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Jacky Agent Release Tool")
+    parser = argparse.ArgumentParser(description="Jacky Release Tool")
     parser.add_argument("--bump", choices=["major", "minor", "patch"],
                         help="Which semver component to bump")
     parser.add_argument("--publish", action="store_true",
@@ -2438,7 +2472,7 @@ def main():
             return
 
     print(f"{'='*60}")
-    print("  Jacky Agent Release Preview")
+    print("  Jacky Release Preview")
     print(f"{'='*60}")
     print(f"  CalVer tag:      {tag_name}")
     print(f"  SemVer:          v{current_version} → v{new_version}")
@@ -2476,6 +2510,15 @@ def main():
             add_files = [str(VERSION_FILE), str(PYPROJECT_FILE)]
             if ACP_REGISTRY_MANIFEST.exists():
                 add_files.append(str(ACP_REGISTRY_MANIFEST))
+            desktop_pkg = REPO_ROOT / "apps" / "desktop" / "package.json"
+            if desktop_pkg.exists():
+                add_files.append(str(desktop_pkg))
+            npm_pkg = REPO_ROOT / "npm" / "package.json"
+            if npm_pkg.exists():
+                add_files.append(str(npm_pkg))
+            uv_lock_file = REPO_ROOT / "uv.lock"
+            if uv_lock_file.exists():
+                add_files.append(str(uv_lock_file))
             add_result = git_result("add", *add_files)
             if add_result.returncode != 0:
                 print(f"  ✗ Failed to stage version files: {add_result.stderr.strip()}")
@@ -2492,7 +2535,7 @@ def main():
         # Create annotated tag
         tag_result = git_result(
             "tag", "-a", tag_name, "-m",
-            f"Jacky Agent v{new_version} ({calver_date})\n\nWeekly release"
+            f"Jacky v{new_version} ({calver_date})\n\nWeekly release"
         )
         if tag_result.returncode != 0:
             print(f"  ✗ Failed to create tag {tag_name}: {tag_result.stderr.strip()}")
@@ -2522,7 +2565,7 @@ def main():
 
         gh_cmd = [
             "gh", "release", "create", tag_name,
-            "--title", f"Jacky Agent v{new_version} ({calver_date})",
+            "--title", f"Jacky v{new_version} ({calver_date})",
             "--notes-file", str(changelog_file),
         ]
         gh_cmd.extend(str(path) for path in artifacts)
@@ -2531,7 +2574,7 @@ def main():
         if gh_bin:
             result = subprocess.run(
                 gh_cmd,
-                capture_output=True, text=True,
+                capture_output=True, text=True, encoding="utf-8", errors="replace",
                 cwd=str(REPO_ROOT),
             )
         else:
@@ -2549,7 +2592,7 @@ def main():
             print(f"    Release notes kept at: {changelog_file}")
             print("    Tag was created locally. Create the release manually:")
             print(
-                f"    gh release create {tag_name} --title 'Jacky Agent v{new_version} ({calver_date})' "
+                f"    gh release create {tag_name} --title 'Jacky v{new_version} ({calver_date})' "
                 f"--notes-file .release_notes.md {' '.join(str(path) for path in artifacts)}"
             )
             print(f"\n  ✓ Release artifacts prepared for manual publish: v{new_version} ({tag_name})")

@@ -28,7 +28,9 @@
 #
 services:
   gateway:
-    build: .
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
     image: jacky-agent
     container_name: jacky
     restart: unless-stopped
