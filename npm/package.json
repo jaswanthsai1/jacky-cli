@@ -16,7 +16,7 @@
     "url": "https://github.com/jaswanthsai1/jacky-cli/issues"
   },
   "bin": {
-    "jacky": "./bin/jacky-npm.js"
+    "jacky": "bin/jacky-npm.js"
   },
   "scripts": {
     "postinstall": "node bin/jacky-npm.js --jacky-npm-setup"
